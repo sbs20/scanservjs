@@ -1,7 +1,7 @@
 {
   "name": "@sbs20/scanserv",
   "version": "0.1.0",
-  "description": "scanserv is a simple web-based UI for SANE which allows you to share a scanner\r on a network without the need for drivers or complicated installation. scanserv\r does not do image conversion or manipulation (beyond the bare minimum necessary\r for the purposes of browser preview) or OCR.",
+  "description": "scanserv is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "main": "server.js",
   "repository": {
     "type" : "git",

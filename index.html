@@ -23,7 +23,7 @@
             <div class="navbar-header">
             </div>
             <div id="navbar" class="navbar-collapse collapse">
-                <div class="navbar-nav navbar-right" href="#">scanserv</div>
+                <div class="navbar-nav navbar-right" href="#">scanserv.js</div>
             </div>
             <!--/.nav-collapse -->
         </div>
@@ -270,7 +270,8 @@
             }).done(function (data) {
                 var url = "data/preview/preview.jpg?r=" + Math.random();
                 $("#image").css("background", "url(" + url + ") no-repeat");
-                jcropmanager.jcrop_api.setImage(url);
+                $("#image").css("background-size", "contain");
+                // jcropmanager.jcrop_api.setImage(url);
             })
         },
 
@@ -350,20 +351,15 @@
 
             $(window).on('resize', function () {
                 clearTimeout(page.resizeTimer);
-                page.resizeTimer = setTimeout(jcropmanager.init, 100);
+                page.resizeTimer = setTimeout(function () {
+                    jcropmanager.init();
+                    page.refreshPreviewImage();
+                }, 100);
             });
 
-            $("#preview").on("click", function () {
-                page.preview();
-            });
-
-            $("#scan").on("click", function () {
-                page.scan();
-            });
-
-            $("#cmdexec").on("click", function () {
-                page.cmdexec();
-            });
+            $("#preview").on("click", page.preview);
+            $("#scan").on("click", page.scan);
+            $("#cmdexec").on("click", page.cmdexec);
 
             $(".slider").slider({
                 min: -100,
@@ -388,6 +384,7 @@
             });
             
             jcropmanager.init();
+            page.refreshPreviewImage();
 
             ko.applyBindings({
                 files: page.files
@@ -398,7 +395,6 @@
     };
 
     api.init();
-
     page.init();
     
 </script>

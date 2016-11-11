@@ -26,11 +26,11 @@ This is yet another scanimage-web-front-end. Why?
  * I just wanted to
 
 # roadmap
+ * remember crop on resize
+ * remove deploy
  * autozip dist
- * promises
  * ES2016
  * nginx
- * GIT integration
  * add useful resources under acknowledgements
  * installer script - wget > chmod > exe
  * Setup page (auto diagnostics)
