@@ -1,0 +1,31 @@
+{
+  "name": "@sbs20/scanserv",
+  "version": "0.1.0",
+  "description": "scanserv is a simple web-based UI for SANE which allows you to share a scanner\r on a network without the need for drivers or complicated installation. scanserv\r does not do image conversion or manipulation (beyond the bare minimum necessary\r for the purposes of browser preview) or OCR.",
+  "main": "server.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/sbs20/scanservjs"  
+  },
+  "devDependencies": {
+    "rimraf": "latest",
+    "ncp": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\"",
+    "clean": "rimraf .dist/*",
+    "copy-assets": "ncp classes .dist/classes && ncp assets .dist/assets && ncp data .dist/data && ncp index.html .dist/index.html && ncp server.js .dist/server.js && ncp package.json .dist/package.json && ncp npm-shrinkwrap.json .dist/npm-shinkwrap.json && ncp install.sh .dist/install.sh && ncp scanservjs.service .dist/scanservjs.service",
+    "deploy-clean": "rimraf //storage/public/scanjs",
+    "deploy-assets": "ncp .dist //storage/public/scanjs/",
+    "build": "npm shrinkwrap && npm run clean && npm run copy-assets && npm run deploy-clean && npm run deploy-assets && echo \"DONE\"",
+    "xbuild": "npm run clean"
+  },
+  "author": "Sam Strachan",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3",
+    "body-parser": "^1.15.2",
+    "dateformat": "^1.0.12",
+    "kew": "^0.7.0"
+  }
+}

@@ -1,0 +1,66 @@
+﻿body {
+    padding-top: 60px;
+    padding-bottom: 20px;
+    font-family: 'Montserrat';
+    font-size: large;
+    text-transform: lowercase;
+    background-color: white;
+}
+
+.theme-dropdown .dropdown-menu {
+    position: static;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+    margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+    width: auto;
+}
+
+#navbar > div {
+    color: white;
+    font-size: xx-large;
+}
+
+.navbar-inverse {
+    background-color: #101030;
+    background-image: none;
+    border-color: black;
+}
+
+.form-control {
+    border-radius: 0;
+    border: 1px solid #f0f0f0;
+    background-color: #f0f0f0;
+}
+
+#image {
+    background-color: #d0d0e0;
+    background-image: url('../../assets/image/Scanner-64.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid black;
+}
+
+.credits {
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    font-size: small;
+}
+
+label, th {
+    font-size: x-large;
+    font-weight: 300;
+    color: #0E5EA0;
+}
+
+h1 {
+    font-size: 4em;
+    font-weight: 100;
+    color: #0E5EA0;
+}
