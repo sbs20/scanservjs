@@ -1,31 +1,56 @@
 {
-  "name": "@sbs20/scanserv",
+  "name": "@sbs20/scanservjs",
   "version": "0.1.0",
-  "description": "scanserv is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
+  "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "main": "server.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/sbs20/scanservjs"  
+    "type": "git",
+    "url": "https://github.com/sbs20/scanservjs"
   },
   "devDependencies": {
+    "backbone": "^1.3.3",
+    "backbone.localstorage": "^1.1.16",
+    "backbone.marionette": "^3.1.0",
+    "browserify": "^13.1.1",
+    "browserify-css": "^0.9.2",
+    "browserify-shim": "^3.8.12",
+    "jquery": "^3.1.1",
+    "jquery-jcrop": "^0.9.13",
+    "jqueryui": "^1.11.1",
+    "knockout": "^3.4.1",
+    "ncp": "latest",
     "rimraf": "latest",
-    "ncp": "latest"
+    "toastr": "^2.1.2",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "clean": "rimraf .dist/*",
+    "install-js": "browserify client.js -o assets/script/client-bundle.js",
     "copy-assets": "ncp classes .dist/classes && ncp assets .dist/assets && ncp data .dist/data && ncp index.html .dist/index.html && ncp server.js .dist/server.js && ncp package.json .dist/package.json && ncp npm-shrinkwrap.json .dist/npm-shinkwrap.json && ncp install.sh .dist/install.sh && ncp scanservjs.service .dist/scanservjs.service",
     "deploy-clean": "rimraf //storage/public/scanjs",
     "deploy-assets": "ncp .dist //storage/public/scanjs/",
-    "build": "npm shrinkwrap && npm run clean && npm run copy-assets && npm run deploy-clean && npm run deploy-assets && echo \"DONE\"",
-    "xbuild": "npm run clean"
+    "xbuild": "npm shrinkwrap && npm run install-js && npm run clean && npm run copy-assets && npm run deploy-clean && npm run deploy-assets && echo \"DONE\"",
+    "build": "npm run install-js"
   },
   "author": "Sam Strachan",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.13.3",
     "body-parser": "^1.15.2",
     "dateformat": "^1.0.12",
+    "express": "^4.13.3",
     "kew": "^0.7.0"
+  },
+  "browserify-shim": {
+    "jquery": "$"
+  },
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js",
+    "jquery-ui": "./node_modules/jquery-ui/jquery-ui.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
   }
 }

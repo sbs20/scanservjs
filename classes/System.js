@@ -27,7 +27,7 @@ var System = {
 	execute(cmd) {
 		var deferred = Q.defer();
 
-		var reply = {
+		var res = {
 			cmd: cmd,
 			output: '',
 			code: -1
@@ -37,14 +37,19 @@ var System = {
 			System.trace('System.execute:start', cmd);
 
 			exec(cmd, function (error, stdout, stderr) {
-				System.extend(reply, {
+				if (error) {
+					deferred.reject(error);
+					return;
+				}
+
+				System.extend(res, {
 					output: stdout,
-					code: 0
+					code: error ? -1 : 0
 				});
 
-				System.trace('System.execute:finish', reply);
+				System.trace('System.execute:finish', res);
 
-				deferred.resolve(reply);
+				deferred.resolve(res);
 			});
 		}
 

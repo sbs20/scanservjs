@@ -7,6 +7,7 @@ var System = require('./System');
 var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
 var Scanimage = require('./Scanimage');
+var Convert = require('./Convert');
 
 module.exports = function () {
     var _this = this;
@@ -23,7 +24,7 @@ module.exports = function () {
             var files = list.map(function (f) {
                 return new FileInfo(outdir + f);
             }).filter(function (f) {
-                return f.extension === '.tif';
+                return f.extension === '.tif' || f.extension === '.jpg';
             });
 
             deferred.resolve(files);
@@ -37,21 +38,31 @@ module.exports = function () {
         return Q.resolve(f.delete());
     };
 
-    _this.previewToJpeg = function () {
-        var cmd = Config.Convert +
-            ' ' +
-            Config.PreviewDirectory +
-            'preview.tif ' +
-            Config.PreviewDirectory +
-            'preview.jpg';
+    _this.convert = function () {
+        var options = {
+            source: Config.PreviewDirectory + 'preview.tif',
+            target: Config.PreviewDirectory + 'preview.jpg',
+            trim: true
+        };
 
-        return System.execute(cmd);
+        var convert = new Convert(options);
+
+        // Ignore errors. The FileInfo will either exist or not
+        return convert.execute()
+            .then(function () {
+                var fileInfo = new FileInfo(options.target);
+                if (!fileInfo.exists()) throw new Error("ARSES");
+                return fileInfo;
+            });
     };
 
     _this.scan = function (req) {
         var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        System.extend(req.data, { outputFilepath: Config.OutputDirectory + 'Scan_' + dateString + '.tif' });
-        var scanRequest = new ScanRequest(req.data);
+        System.extend(req, {
+            outputFilepath: Config.OutputDirectory + 'Scan_' + dateString + '.tif'
+        });
+
+        var scanRequest = new ScanRequest(req);
         var scanner = new Scanimage();
         return scanner.execute(scanRequest);
     };
@@ -66,55 +77,27 @@ module.exports = function () {
         return scanner.execute(scanRequest);
     };
 
-    _this.handleRequest = function (params) {
-        var type = params.type;
-        var output = null;
-
-        switch (type) {
-            case "scan":
-                output = _this.scan(params);
-                break;
-
-            case "preview":
-                output = _this.preview(params);
-                break;
-
-            case "fileList":
-                output = _this.fileList();
-                break;
-
-            case "fileDelete":
-                output = _this.fileDelete(params);
-                break;
-
-            case "previewToJpeg":
-                output = _this.previewToJpeg();
-                break;
-
-            case "cmdline":
-                // $responseData = self::HandleCmdlineRequest($request);
-                output = Q.reject("cmdline is disabled. If you wish to debug httpdusr permissions you will need to manually enable this in the source.");
-                break;
-
-            case "ping":
-                output = Q.resolve('Pong@' + new Date().toISOString());
-                break;
-
-            default:
-                type = "unknown";
-                output = Q.reject();
-                break;
+    var testFileExists = function (path) {
+        var file = new FileInfo(path);
+        if (file.exists()) {
+            return {
+                success: true,
+                message: 'Found ' + file.name + ' at "' + path + '"'
+            };
         }
 
-        var deferred = Q.defer();
+        return {
+            success: false,
+            message: 'Unable to find ' + file.name + ' at "' + path + '"'
+        };
+    };
 
-        output.promise.then(function (data) {
-            deferred.resolve({
-                type: type,
-                data: data
-            });
-        });
+    _this.diagnostics = function () {
+        var tests = [];
 
-        return deferred.promise;
+        tests.push(testFileExists(Config.Scanimage));
+        tests.push(testFileExists(Config.Convert));
+
+        return Q.resolve(tests);
     };
 };

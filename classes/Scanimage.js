@@ -41,21 +41,17 @@ module.exports = function () {
 
 			response.cmdline = commandLine(scanRequest);
 
-			var deferred = Q.defer();
-
-			System.execute(response.cmdline)
+			return System.execute(response.cmdline)
 				.then(function (reply) {
 					System.trace('Scanimage.execute:finish', reply);
 					response.output = reply.output;
 					response.code = reply.code;
 					response.image = scanRequest.outputFilepath;
-					deferred.resolve(response);
+					return response;
 				});
 
-			return deferred.promise;
-
 		} else {
-			Q.reject(response);
+			return Q.reject(response);
 		}
 	}
 };

@@ -4,6 +4,7 @@ module.exports = {
 	TraceLineEnding: '',
 	Scanimage: '/usr/bin/scanimage',
 	Convert: '/usr/bin/convert',
+	IgnoreStdError: '2>/dev/null',
 	BypassSystemExecute: false,
 	OutputDirectory: './data/output/',
 	PreviewDirectory: './data/preview/',

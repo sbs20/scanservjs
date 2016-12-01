@@ -5,19 +5,144 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Scan</title>
-    <script src="assets/script/jquery.min.js" type="text/javascript"></script>
-    <script src="assets/script/jquery.Jcrop.js" type="text/javascript"></script>
-    <script src="assets/script/jquery-ui.js" type="text/javascript"></script>
-    <script src="assets/script/knockout-3.3.0.js" type="text/javascript"></script>
+    <script src="assets/script/client-bundle.js" type="text/javascript"></script>
     <script src="assets/script/bootstrap.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="assets/css/jquery.Jcrop.min.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/jquery-ui.css" type="text/css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css" type="text/css">
+    <link rel="stylesheet" href="assets/css/toastr.css" type="text/css">
     <link rel="stylesheet" href="assets/css/theme.css" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" type="text/css">
 </head>
+
+<script type="text/template" id="file-row">
+    <td><a href="<%= fullname%>"><%= name%></a></td>
+    <td><%= new Date(lastModified).toString()%></td>
+    <td><%= size%></td>
+    <td><button type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+</script>
+
+<script type="text/template" id="page">
+    <div class="row">
+        <!-- Padding for larger screens -->
+        <div class="col-lg-2 col-md-1"></div>
+
+        <!-- Fields and buttons -->
+        <div id="fields" class="col-lg-4 col-md-5 col-sm-12">
+
+            <div class="row">
+                <div id="col1" class="col-xs-6">
+                    <div class="form-group">
+                        <label for="top">Top</label>
+                        <input id="top" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="left">Left</label>
+                        <input id="left" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="width">Width</label>
+                        <input id="width" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height">Height</label>
+                        <input id="height" type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="resolution">Resolution</label>
+                        <select id="resolution" class="form-control">
+                            <option value="50">50 dpi</option>
+                            <option value="75">75 dpi</option>
+                            <option value="100">100 dpi</option>
+                            <option value="150" selected="selected">150 dpi</option>
+                            <option value="200">200 dpi</option>
+                            <option value="300">300 dpi</option>
+                            <option value="600">600 dpi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mode">Colour</label>
+                        <select id="mode" class="form-control">
+                            <option value="Gray">Greyscale</option>
+                            <option value="Color" selected="selected">Colour</option>
+                        </select>
+                    </div>
+
+                    <label for="brightness">Brightness</label>
+                    <input id="brightness" type="text" class="form-control" />
+                    <div id="brightness_slider" class="slider"></div>
+
+                    <label for="Contrast">Contrast</label>
+                    <input id="contrast" type="text" class="form-control" />
+                    <div id="contrast_slider" class="slider"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <br />
+            </div>
+
+            <!-- Buttons -->
+            <div class="row">
+                <div class="text-right">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button id="reset" type="button" class="btn btn-lg">reset <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+                        <button id="preview" type="button" class="btn btn-lg">preview <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                        <button id="scan" type="button" class="btn btn-lg">scan <span class="glyphicon glyphicon-camera" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <br />
+            </div>
+        </div>
+
+        <!-- Preview pane -->
+        <div id="previewPane" class="col-lg-4 col-md-5 col-sm-12">
+        </div>
+
+        <!-- Padding for larger screens -->
+        <div class="xcol-lg-2 col-md-1"></div>
+    </div>
+
+    <div class="row">
+        <!-- Padding for larger screens -->
+        <div class="col-lg-2 col-md-1"></div>
+
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Date</th>
+                        <th>Size</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="files-table-body">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Padding for larger screens -->
+        <div class="col-lg-2 col-md-1"></div>
+    </div>
+
+</script>
+
 <body role="document">
+
+    <div id="mask"></div>
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -25,129 +150,12 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <div class="navbar-nav navbar-right" href="#">scanserv.js</div>
             </div>
-            <!--/.nav-collapse -->
         </div>
     </nav>
 
     <div class="container theme-showcase" role="main">
 
-        <div class="row">
-            <!-- Padding for larger screens -->
-            <div class="col-lg-2 col-md-1"></div>
-
-            <!-- Fields and buttons -->
-            <div id="fields" class="col-lg-4 col-md-5 col-sm-12">
-
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="top">Top</label>
-                            <input id="top" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="left">Left</label>
-                            <input id="left" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="width">Width</label>
-                            <input id="width" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="height">Height</label>
-                            <input id="height" type="text" class="form-control" />
-                        </div>
-                    </div>
-
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="resolution">Resolution</label>
-                            <select id="resolution" class="form-control">
-                                <option value="50">50 dpi</option>
-                                <option value="75">75 dpi</option>
-                                <option value="100">100 dpi</option>
-                                <option value="150" selected="selected">150 dpi</option>
-                                <option value="200">200 dpi</option>
-                                <option value="300">300 dpi</option>
-                                <option value="600">600 dpi</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="mode">Colour</label>
-                            <select id="mode" class="form-control">
-                                <option value="Gray">Greyscale</option>
-                                <option value="Color" selected="selected">Colour</option>
-                            </select>
-                        </div>
-
-                        <label for="brightness">Brightness</label>
-                        <input id="brightness" type="text" class="form-control" />
-                        <div id="brightness_slider" class="slider"></div>
-
-                        <label for="Contrast">Contrast</label>
-                        <input id="contrast" type="text" class="form-control" />
-                        <div id="contrast_slider" class="slider"></div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <br />
-                </div>
-
-                <!-- Buttons -->
-                <div class="row">
-                    <div class="text-right">
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button id="preview" type="button" class="btn btn-lg">preview <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                            <button id="scan" type="button" class="btn btn-lg">scan <span class="glyphicon glyphicon-camera" aria-hidden="true"></span></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <br />
-                </div>
-            </div>
-
-            <!-- Preview pane -->
-            <div id="previewPane" class="col-lg-4 col-md-5 col-sm-12">
-            </div>
-
-            <!-- Padding for larger screens -->
-            <div class="xcol-lg-2 col-md-1"></div>
-        </div>
-
-        <!-- File table -->
-        <div class="row">
-            <!-- Padding for larger screens -->
-            <div class="col-lg-2 col-md-1"></div>
-
-            <div class="col-lg-8 col-md-10 col-sm-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Date</th>
-                            <th>Size</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: files">
-                        <tr>
-                            <td><a data-bind="attr: { href: fullname }, text: name"></a></td>
-                            <td data-bind="text: new Date(lastModified).toString()"></td>
-                            <td data-bind="text: size"></td>
-                            <td><button type="button" data-bind="click: function () { page.deletefile(fullname); }"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Padding for larger screens -->
-            <div class="col-lg-2 col-md-1"></div>
+        <div id="app">
         </div>
 
         <div class="hide">
@@ -167,235 +175,4 @@
     </div>
 </body>
 
-<script>
-    var jcropmanager = {
-
-        millimetresPerInch: 25.4,
-        a4: {
-            width: 215,
-            height: 297
-        },
-
-        jcrop_api: null,
-
-        dotsToMm: function (dots) {
-            var millimetresPerDot = this.millimetresPerInch / this.previewDpi;
-            return Math.round(dots * millimetresPerDot);
-        },
-        
-        //jcrop onChange and onSelect event handler
-        showCoords: function (c) {
-            $('#left').val(jcropmanager.dotsToMm(c.x));
-            $('#top').val(jcropmanager.dotsToMm(c.y));
-            $('#width').val(jcropmanager.dotsToMm(c.w));
-            $('#height').val(jcropmanager.dotsToMm(c.h));
-        },
-
-        //jcrop onRelease event handler
-        clearCoords: function () {
-            $('#left').val(0);
-            $('#top').val(0);
-            $('#width').val('');
-            $('#height').val('');
-        },
-
-        init: function () {
-
-            // Get page dimensions
-            var width = $('#fields').width();
-            var factor = jcropmanager.millimetresPerInch / jcropmanager.a4.width;
-
-            $.extend(jcropmanager, {
-                previewDpi: width * factor,
-                canvas: {
-                    width: width,
-                    height: width * jcropmanager.a4.height / jcropmanager.a4.width
-                }
-            });
-
-            // Destroy any existing jcrop
-            if (jcropmanager.jcrop_api) {
-                jcropmanager.jcrop_api.destroy();
-            }
-
-            // Recreate the image container
-            $('#previewPane').append('<div id="image"></div>');
-            $('#image').css('width', jcropmanager.canvas.width);
-            $('#image').css('height', jcropmanager.canvas.height);
-
-            $('#image').Jcrop({
-                onChange: jcropmanager.showCoords,
-                onSelect: jcropmanager.showCoords,
-                onRelease: jcropmanager.clearCoords,
-                setSelect: [0, jcropmanager.canvas.height, jcropmanager.canvas.width, 0]
-            }, function () {
-                jcropmanager.jcrop_api = this;
-            });
-        }
-    };
-
-    var api = {
-        url: null,
-        call: function (data) {
-            var options = {
-                type: "POST",
-                contentType: "application/json",
-                dataType: "json",
-                url: api.url,
-                data: JSON.stringify(data)
-            };
-
-            return $.ajax(options);
-        },
-        
-        init: function () {
-            api.url = 'api';
-        }
-    };
-
-    var page = {
-
-        resizeTimer: null,
-
-        files: ko.observableArray(),
-
-        notify: function (o) {
-            var s = $.isPlainObject(o) ? JSON.stringify(o) : o;
-            $("#response").text(s);
-        },
-
-        refreshPreviewImage: function () {
-            api.call({
-                type: 'previewToJpeg'
-            }).done(function (data) {
-                var url = "data/preview/preview.jpg?r=" + Math.random();
-                $("#image").css("background", "url(" + url + ") no-repeat");
-                $("#image").css("background-size", "contain");
-                // jcropmanager.jcrop_api.setImage(url);
-            })
-        },
-
-        preview: function () {
-            // Keep reloading the preview image
-            $("#preview").attr("disabled", "disabled");
-            var timer = window.setInterval(page.refreshPreviewImage, 1250);
-
-            // Start the scan
-            api.call({
-                type: 'preview'
-            }).done(function (data) {
-                window.clearInterval(timer);
-                $("#preview").removeAttr("disabled");
-            });
-        },
-
-        scan: function () {
-            $("#scan").attr("disabled", "disabled");
-
-            api.call({
-                type: 'scan',
-                data: {
-                    top: parseInt($("#top").val()),
-                    left: parseInt($("#left").val()),
-                    width: parseInt($("#width").val()),
-                    height: parseInt($("#height").val()),
-                    mode: $("#mode").val(),
-                    depth: 8,
-                    resolution: parseInt($("#resolution").val()),
-                    format: 'tiff',
-                    brightness: parseInt($("#brightness").val()),
-                    contrast: parseInt($("#contrast").val())
-                }
-            }).done(function (data) {
-                $("#scan").removeAttr("disabled");
-                page.notify(data);
-                page.listfiles();
-            });
-        },
-
-        listfiles: function () {
-            api.call({
-                type: 'fileList'
-            }).done(function (response) {
-                page.notify(response);
-                page.files.removeAll();
-                for (var index = 0; index < response.data.length; index++) {
-                    page.files.push(response.data[index]);
-                }
-            });
-        },
-
-        deletefile: function (file) {
-            api.call({
-                type: 'fileDelete',
-                data: file
-            }).done(function (response) {
-                page.notify(response);
-                page.listfiles();
-            });
-        },
-
-        cmdexec: function () {
-            $("#cmdexec").attr("disabled", "disabled");
-
-            api.call({
-                type: 'cmdline',
-                data: $("#cmdtext").val()
-            }).done(function (data) {
-                $("#cmdexec").removeAttr("disabled");
-                page.notify(data);
-            })
-        },
-
-        init: function () {
-
-            $(window).on('resize', function () {
-                clearTimeout(page.resizeTimer);
-                page.resizeTimer = setTimeout(function () {
-                    jcropmanager.init();
-                    page.refreshPreviewImage();
-                }, 100);
-            });
-
-            $("#preview").on("click", page.preview);
-            $("#scan").on("click", page.scan);
-            $("#cmdexec").on("click", page.cmdexec);
-
-            $(".slider").slider({
-                min: -100,
-                max: 100,
-                value: 0,
-                step: 1,
-                slide: function (e, ui) {
-                    var $input = $("#" + e.target.id.replace("_slider", ""));
-                    $input.val(ui.value);
-                }
-            });
-
-            $("#brightness, #contrast").val(0);
-            $("#brightness, #contrast").on("change", function (e) {
-                var val = parseInt(e.target.value);
-                var $slider = $("#" + e.target.id + "_slider");
-                val = isNaN(val) ? $slider.slider("value") : val;
-                if (val < -100) val = -100;
-                if (val > 100) val = 100;
-                e.target.value = val;
-                $slider.slider("value", val);
-            });
-            
-            jcropmanager.init();
-            page.refreshPreviewImage();
-
-            ko.applyBindings({
-                files: page.files
-            });
-
-            page.listfiles();
-        }
-    };
-
-    api.init();
-    page.init();
-    
-</script>
 </html>
