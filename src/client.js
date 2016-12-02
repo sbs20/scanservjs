@@ -7,6 +7,7 @@ var toastr = require('toastr');
 require("jqueryui");
 require("jquery-jcrop");
 require('backbone.localstorage');
+require("bootstrap");
 
 $(document).ready(function () {
 

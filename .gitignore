@@ -88,4 +88,4 @@ $RECYCLE.BIN/
 
 # Release folders
 # ===============
-.dist
+build
