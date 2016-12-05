@@ -153,6 +153,8 @@ $(document).ready(function () {
 
             this.model.set(o);
             this.model.save();
+
+            jcropmanager.init(this.model);
         },
 
         diagnostics: function () {
@@ -243,7 +245,6 @@ $(document).ready(function () {
         initialize: function () {
 
             this.files = new FileCollection();
-
             this.listenTo(this.files, 'add', this.add);
 
             var html = this.template();
@@ -251,8 +252,8 @@ $(document).ready(function () {
 
             $(window).on('resize', function () {
                 clearTimeout(page.resizeTimer);
-                this.resizeTimer = setTimeout(function () {
-                    jcropmanager.init();
+                page.resizeTimer = setTimeout(function () {
+                    jcropmanager.init(page.model);
                     page.convert();
                 }, 100);
             });

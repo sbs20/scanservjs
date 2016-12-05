@@ -26,8 +26,6 @@ This is yet another scanimage-web-front-end. Why?
  * I just wanted to
 
 # roadmap
- * remember crop on resize
- * remove deploy
  * autozip dist
  * ES2016
  * nginx
@@ -36,6 +34,7 @@ This is yet another scanimage-web-front-end. Why?
  * Setup page (auto diagnostics)
  * Configuration page for debugging set up assisting new users
  * Multi-language support
+ * uglify, minify, remove sourcemap, jshint etc : https://www.smashingmagazine.com/2014/06/building-with-gulp/
 
 # acknowledgements
  * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/).
