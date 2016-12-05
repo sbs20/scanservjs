@@ -5,7 +5,7 @@ cp -rf /mnt/storage/public/scanjs/* /var/www/scanservjs
 chown -R scanservjs:users /var/www/scanservjs/
 chmod +x /var/www/scanservjs/server.js
 cd /var/www/scanservjs
-npm install
+npm install --only=production
 cp scanservjs.service /etc/systemd/system
 systemctl daemon-reload
 systemctl start scanservjs

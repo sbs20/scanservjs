@@ -1,10 +1,16 @@
+var Q = require('kew');
 var Config = require('./Config');
 var System = require('./System');
-var Q = require('kew');
+var FileInfo = require('./FileInfo');
 
 module.exports = function () {
 
 	var _this = this;
+
+	var exists = function () {
+		var fileInfo = new FileInfo(Config.Scanimage);
+		return fileInfo.exists();
+	}
 
 	var commandLine = function (scanRequest) {
 		var cmd = Config.Scanimage;
@@ -25,6 +31,11 @@ module.exports = function () {
 	}
 
 	_this.execute = function (scanRequest) {
+
+		if (!exists()) {
+			return Q.reject(new Error('Unable to find Scanimage at "' + Config.Scanimage + '"'));
+		}
+
 		var response = {
 			image: null,
 			cmdline: null,

@@ -188,7 +188,8 @@ $(document).ready(function () {
 
             return $.ajax(o).then(function (fileInfo) {
                 if (fileInfo.content) {
-                    $("#image").attr('src',"data:image/jpeg;base64," + fileInfo.content);
+                    $("#image").attr('src', 'data:image/jpeg;base64,' + fileInfo.content);
+                    $("#image").css('display', 'block');
                 }
             });            
         },
@@ -309,12 +310,12 @@ $(document).ready(function () {
         var _this = this;
         
         _this.dotsToMm = function (dots) {
-            var millimetresPerDot = this.millimetresPerInch / this.previewDpi;
+            var millimetresPerDot = _this.millimetresPerInch / _this.previewDpi;
             return Math.round(dots * millimetresPerDot);
         };
 
         _this.mmToDots = function (mm) {
-            var dotsPerMm = this.previewDpi / this.millimetresPerInch;
+            var dotsPerMm = _this.previewDpi / _this.millimetresPerInch;
             return Math.round(mm * dotsPerMm);
         };
 
@@ -355,13 +356,14 @@ $(document).ready(function () {
         _this.draw = function () {
             // Get page dimensions
             var width = $('#fields').width();
+            var height = Math.round(width * _this.a4.height / _this.a4.width);
             var factor = _this.millimetresPerInch / _this.a4.width;
 
             $.extend(_this, {
                 previewDpi: width * factor,
                 canvas: {
                     width: width,
-                    height: width * _this.a4.height / _this.a4.width
+                    height: height
                 }
             });
 
@@ -371,11 +373,11 @@ $(document).ready(function () {
             }
 
             // Recreate the image container
-            $('#previewPane').append('<div id="image"></div>');
-            $('#image').css('width', _this.canvas.width);
-            $('#image').css('height', _this.canvas.height);
+            $('#previewPane').append('<div id="jcrop"><img id="image" style="display: none" /></div>');
+            $('#jcrop, #image').css('width', _this.canvas.width);
+            $('#jcrop, #image').css('height', _this.canvas.height);
 
-            $('#image').Jcrop({
+            $('#jcrop').Jcrop({
                 onChange: _this.showCoords,
                 onSelect: _this.showCoords,
                 onRelease: _this.clearCoords,
@@ -402,6 +404,7 @@ $(document).ready(function () {
         _this.init(model);
     };
 
+    // Run
     var page = new Page();
     page.convert();
     var jcrop = new JcropManager(page.model);
