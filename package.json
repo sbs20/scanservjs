@@ -18,12 +18,15 @@
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-zip": "^3.2.0",
     "jquery": "^3.1.1",
     "jquery-jcrop": "^0.9.13",
     "jqueryui": "^1.11.1",
     "knockout": "^3.4.1",
     "toastr": "^2.1.2",
     "underscore": "^1.8.3",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
