@@ -75,10 +75,6 @@ gulp.task('package', ['build'], function () {
         .pipe(gulp.dest('./release'));
 });
 
-gulp.task('rebuild', ['clean'], function () {
-
-});
-
 gulp.task('deploy', ['build'], function () {
     return gulp.src('./build/**/*.*')
         .pipe(gulp.dest('//storage/public/scanservjs'));
