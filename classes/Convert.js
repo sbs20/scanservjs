@@ -38,12 +38,12 @@ module.exports = function (arg) {
             .fail(function (error) {
                 // Incomplete scan images are corrupt and will throw an error like
                 // convert: Read error on strip 23; got 3343 bytes, expected 8037. `TIFFFillStrip'
-                // We can just ignore that and resolve
+                // We can just ignore that and resolve as there will be an output file
                 if (error.message.indexOf('TIFFFillStrip') !== -1) {
                     return Q.resolve();
                 }
 
-                // If it's something else then reject'
+                // If it's something else then reject
                 return Q.reject(error);
             });
     };
