@@ -154,7 +154,7 @@ $(document).ready(function () {
             this.model.set(o);
             this.model.save();
 
-            jcropmanager.init(this.model);
+            jcrop.draw();
         },
 
         diagnostics: function () {
@@ -253,7 +253,7 @@ $(document).ready(function () {
             $(window).on('resize', function () {
                 clearTimeout(page.resizeTimer);
                 page.resizeTimer = setTimeout(function () {
-                    jcropmanager.init(page.model);
+                    jcrop.draw();
                     page.convert();
                 }, 100);
             });
@@ -304,99 +304,107 @@ $(document).ready(function () {
         }
     });
 
-    var jcropmanager = {
+    var JcropManager = function (model) {
 
-        model: null,
-
-        millimetresPerInch: 25.4,
-        a4: {
-            width: 215,
-            height: 297
-        },
-
-        jcrop_api: null,
-
-        dotsToMm: function (dots) {
+        var _this = this;
+        
+        _this.dotsToMm = function (dots) {
             var millimetresPerDot = this.millimetresPerInch / this.previewDpi;
             return Math.round(dots * millimetresPerDot);
-        },
+        };
 
-        mmToDots: function (mm) {
+        _this.mmToDots = function (mm) {
             var dotsPerMm = this.previewDpi / this.millimetresPerInch;
             return Math.round(mm * dotsPerMm);
-        },
+        };
 
         //jcrop onChange and onSelect event handler
-        showCoords: function (c) {
-            jcropmanager.model.set({
-                'left': jcropmanager.dotsToMm(c.x),
-                'top': jcropmanager.dotsToMm(c.y),
-                'width': jcropmanager.dotsToMm(c.w),
-                'height': jcropmanager.dotsToMm(c.h)
+        _this.showCoords = function (c) {
+            _this.model.set({
+                'left': _this.dotsToMm(c.x),
+                'top': _this.dotsToMm(c.y),
+                'width': _this.dotsToMm(c.w),
+                'height': _this.dotsToMm(c.h)
             });
-            jcropmanager.model.save();
-        },
+
+            _this.model.save();
+        };
 
         //jcrop onRelease event handler
-        clearCoords: function () {
-            jcropmanager.model.set({
+        _this.clearCoords = function () {
+            _this.model.set({
                 'left': 0,
                 'top': 0,
-                'width': jcropmanager.canvas.width,
-                'height': jcropmanager.canvas.height
+                'width': _this.canvas.width,
+                'height': _this.canvas.height
             });
-            jcropmanager.model.save();
-        },
 
-        getSelect: function () {
-            var data = jcropmanager.model.toJSON();
+            _this.model.save();
+        };
+
+        _this.getSelect = function () {
+            var data = _this.model.toJSON();
             return [
-                jcropmanager.mmToDots(data.left),
-                jcropmanager.mmToDots(data.height + data.top),
-                jcropmanager.mmToDots(data.width + data.left),
-                jcropmanager.mmToDots(data.top)
+                _this.mmToDots(data.left),
+                _this.mmToDots(data.height + data.top),
+                _this.mmToDots(data.width + data.left),
+                _this.mmToDots(data.top)
             ];
-        },
+        };
 
-        init: function (model) {
-
+        _this.draw = function () {
             // Get page dimensions
             var width = $('#fields').width();
-            var factor = jcropmanager.millimetresPerInch / jcropmanager.a4.width;
+            var factor = _this.millimetresPerInch / _this.a4.width;
 
-            $.extend(jcropmanager, {
+            $.extend(_this, {
                 previewDpi: width * factor,
                 canvas: {
                     width: width,
-                    height: width * jcropmanager.a4.height / jcropmanager.a4.width
-                },
-                model: model
+                    height: width * _this.a4.height / _this.a4.width
+                }
             });
 
             // Destroy any existing jcrop
-            if (jcropmanager.jcrop_api) {
-                jcropmanager.jcrop_api.destroy();
+            if (_this.jcrop_api) {
+                _this.jcrop_api.destroy();
             }
 
             // Recreate the image container
             $('#previewPane').append('<div id="image"></div>');
-            $('#image').css('width', jcropmanager.canvas.width);
-            $('#image').css('height', jcropmanager.canvas.height);
+            $('#image').css('width', _this.canvas.width);
+            $('#image').css('height', _this.canvas.height);
 
             $('#image').Jcrop({
-                onChange: jcropmanager.showCoords,
-                onSelect: jcropmanager.showCoords,
-                onRelease: jcropmanager.clearCoords,
-                setSelect: jcropmanager.getSelect()
+                onChange: _this.showCoords,
+                onSelect: _this.showCoords,
+                onRelease: _this.clearCoords,
+                setSelect: _this.getSelect()
             }, function () {
-                jcropmanager.jcrop_api = this;
+                _this.jcrop_api = this;
             });
-        }
+        };
+
+        _this.init = function (model) {
+            $.extend(_this, {
+                millimetresPerInch: 25.4,
+                a4: {
+                    width: 215,
+                    height: 297
+                },
+                jcrop_api: null,
+                model: model
+            });
+
+            _this.draw();
+        };
+
+        _this.init(model);
     };
 
     var page = new Page();
     page.convert();
-    jcropmanager.init(page.model);
+    var jcrop = new JcropManager(page.model);
     page.diagnostics();
 });
 
