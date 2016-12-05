@@ -42,7 +42,7 @@ module.exports = function () {
         var options = {
             source: Config.PreviewDirectory + 'preview.tif',
             target: Config.PreviewDirectory + 'preview.jpg',
-            trim: true
+            trim: false
         };
 
         var convert = new Convert(options);
