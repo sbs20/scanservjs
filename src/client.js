@@ -367,8 +367,12 @@ $(document).ready(function () {
                 }
             });
 
+            // Existing image data
+            var image = null;
+
             // Destroy any existing jcrop
             if (_this.jcrop_api) {
+                image = $("#image").attr('src');
                 _this.jcrop_api.destroy();
             }
 
@@ -376,6 +380,10 @@ $(document).ready(function () {
             $('#previewPane').append('<div id="jcrop"><img id="image" style="display: none" /></div>');
             $('#jcrop, #image').css('width', _this.canvas.width);
             $('#jcrop, #image').css('height', _this.canvas.height);
+            if (image) {
+                $("#image").attr('src', image);
+                $("#image").css('display', 'block');
+            }
 
             $('#jcrop').Jcrop({
                 onChange: _this.showCoords,
