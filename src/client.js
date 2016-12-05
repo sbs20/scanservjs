@@ -106,6 +106,7 @@ $(document).ready(function () {
             var d = this.model.defaults();
             this.model.set(d);
             this.model.save();
+            jcrop.draw();
         },
 
         // For debug only - but useful for when things

@@ -26,7 +26,6 @@ This is yet another scanimage-web-front-end. Why?
  * I just wanted to
 
 # roadmap
- * autozip dist
  * ES2016
  * nginx
  * add useful resources under acknowledgements
