@@ -5,7 +5,7 @@ or complicated installation. scanservjs does not do image conversion or
 manipulation (beyond the bare minimum necessary for the purposes of browser 
 preview) or OCR.
 
-![screenshot](https://github.com/sbs20/scanimagejs/raw/master/screen0.png)
+![screenshot](https://github.com/sbs20/scanservjs/raw/master/screen0.png)
 
 Copyright 2016	[Sam Strachan](https://github.com/sbs20)
 
