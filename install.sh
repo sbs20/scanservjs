@@ -8,7 +8,7 @@
 useradd -m scanservjs
 
 # Add the user to the scanner group
-sudo usermod -G scanner scanservhttpd
+sudo usermod -G scanner scanservjs
 
 # Create a target directory for the website
 mkdir -p /var/www/scanservjs
