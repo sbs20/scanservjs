@@ -14,7 +14,7 @@ $(document).ready(function () {
     // Set up toastr how we want it
     toastr.options = {
         "positionClass": "toast-bottom-right"
-    }
+    };
 
     // Files are always created on the server. All we need here
     // is idAttribute so backbone knows what the id field is
@@ -89,7 +89,6 @@ $(document).ready(function () {
             'change select': 'update',
             'click #preview': 'preview',
             'click #reset': 'reset',
-            'click #test': 'convert',
             'click #scan': 'scan'
         },
 
@@ -121,7 +120,8 @@ $(document).ready(function () {
         },
 
         // When a UI field is updated, its change event
-        // should be propagated here
+        // should be propagated here. This will update
+        // the model and forward updates to JcropManager
         update: function (e) {
             var field = e.target;
             var o = {};
@@ -167,7 +167,7 @@ $(document).ready(function () {
             return $.ajax(o)
                 .done(function (tests) {
                     _.each(tests, function (test) {
-                        if (test.success == true) {
+                        if (test.success === true) {
                             toastr.success(test.message);
                         } else {
                             toastr.error(test.message);

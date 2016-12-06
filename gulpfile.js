@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
+var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var zip = require('gulp-zip');
 var browserify = require('browserify');
@@ -9,7 +10,9 @@ var buffer = require('vinyl-buffer');
 var del = require('del');
 var dateFormat = require('dateformat');
 
-// See recipes: https://github.com/gulpjs/gulp/tree/master/docs/recipes
+// Useful resources
+//  * https://www.smashingmagazine.com/2014/06/building-with-gulp/
+//  * https://github.com/gulpjs/gulp/tree/master/docs/recipes
 
 gulp.task('clean', function () {
     return del([
@@ -18,7 +21,13 @@ gulp.task('clean', function () {
     ]);
 });
 
-gulp.task('js', function () {
+gulp.task('inspect', function () {
+    return gulp.src('./src/client.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));        
+});
+
+gulp.task('js', ['inspect'], function () {
     var b = browserify({
         entries: './src/client.js',
         debug: true,

@@ -27,13 +27,9 @@ This is yet another scanimage-web-front-end. Why?
 
 # roadmap
  * ES2016
- * nginx
- * add useful resources under acknowledgements
- * installer script - wget > chmod > exe
  * Setup page (auto diagnostics)
  * Configuration page for debugging set up assisting new users
  * Multi-language support
- * uglify, minify, remove sourcemap, jshint etc : https://www.smashingmagazine.com/2014/06/building-with-gulp/
 
 # acknowledgements
  * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/).
