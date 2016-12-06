@@ -36,7 +36,7 @@
     "build": "gulp"
   },
   "author": "Sam Strachan",
-  "license": "MIT",
+  "license": "GPL-2.0",
   "dependencies": {
     "body-parser": "^1.15.2",
     "dateformat": "^1.0.12",
