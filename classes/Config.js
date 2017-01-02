@@ -9,5 +9,7 @@ module.exports = {
 	OutputDirectory: './data/output/',
 	PreviewDirectory: './data/preview/',
 	MaximumScanWidthInMm: 215,
-	MaximumScanHeightInMm: 297
+	MaximumScanHeightInMm: 297,
+	PreviewResolution: 100,
+	SupportsDepth: false;
 };

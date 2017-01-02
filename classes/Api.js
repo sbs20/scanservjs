@@ -73,7 +73,7 @@ module.exports = function () {
             brightness: req.brightness,
             contrast: req.contrast,
             outputFilepath: Config.PreviewDirectory + 'preview.tif',
-            resolution: 50
+            resolution: Config.PreviewResolution
         });
 
         var scanner = new Scanimage();

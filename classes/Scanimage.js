@@ -15,7 +15,10 @@ module.exports = function () {
 	var commandLine = function (scanRequest) {
 		var cmd = Config.Scanimage;
 		cmd += ' --mode ' + scanRequest.mode;
-		cmd += ' --depth ' + scanRequest.depth;
+		
+		if (Config.SupportsDepth) {
+		  cmd += ' --depth ' + scanRequest.depth;
+		}
 		cmd += ' --resolution ' + scanRequest.resolution;
 		cmd += ' -l ' + scanRequest.left;
 		cmd += ' -t ' + scanRequest.top;
