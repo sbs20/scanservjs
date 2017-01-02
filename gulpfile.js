@@ -9,6 +9,14 @@ var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var del = require('del');
 var dateFormat = require('dateformat');
+var minimist = require('minimist');
+
+var knownOptions = {
+  string: 'dest',
+  default: { dest: '/var/www/scanservjs' }
+};
+
+var options = minimist(process.argv.slice(2), knownOptions);
 
 // Useful resources
 //  * https://www.smashingmagazine.com/2014/06/building-with-gulp/
@@ -17,7 +25,8 @@ var dateFormat = require('dateformat');
 gulp.task('clean', function () {
     return del([
         './assets/*',
-        './build/*'
+        './build/*',
+        './release/*'
     ]);
 });
 
@@ -86,7 +95,7 @@ gulp.task('package', ['build'], function () {
 
 gulp.task('deploy', ['build'], function () {
     return gulp.src('./build/**/*.*')
-        .pipe(gulp.dest('//storage/public/scanservjs'));
+        .pipe(gulp.dest(options.dest));
 });
 
 gulp.task('default', [

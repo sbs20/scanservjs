@@ -1,34 +1,43 @@
 
-# If this is not the first time you've installed this on a device then
-# you may need to stop the service first
-#systemctl stop scanservjs
+srcdir="$( cd "$( dirname "$0" )" && pwd )"
+scansrvjs_home=/var/www/scanservjs
+scanservjs_status=`systemctl is-active scanservjs 2>&1 | tr -s \\n`
+scanservjs_user_exists=`grep scanservjs /etc/passwd 2>&1 | tr -s \\n`
+
+# If this is not the first time you've installed this on a device
+# then stop the service first
+
+if [ "$scanservjs_status" = "active" ]; then
+systemctl stop scanservjs
+fi
 
 # And if you want to completely wipe any previous install then...
-#rm -r /var/www/scanservjs
+rm -r $scansrvjs_home
 
 # You need to install SANE first
 # See: https://github.com/sbs20/scanserv/blob/master/install-sane.md
 
+if [ -z "$scanservjs_user_exists" ]; then
 # Create a user for this service
 useradd -m scanservjs
-
 # Add the new user to the scanner group
-sudo usermod -G scanner scanservjs
+usermod -G scanner scanservjs
+fi
 
 # Create a target directory for the website
-mkdir -p /var/www/scanservjs
+mkdir -p $scansrvjs_home
 
 # Download and copy to target location
-# cp -rf /mnt/storage/public/scanjs/* /var/www/scanservjs
+cp -rf $srcdir/* $scansrvjs_home
 
 # Set the owner
-chown -R scanservjs:users /var/www/scanservjs/
+chown -R scanservjs:scanservjs $scansrvjs_home/
 
 # ... and ensure the server is executable
-chmod +x /var/www/scanservjs/server.js
+chmod +x $scansrvjs_home/server.js
 
 # Change to the target location
-cd /var/www/scanservjs
+cd $scansrvjs_home
 
 # Install all the node dependencies
 npm install --only=production

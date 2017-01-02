@@ -11,5 +11,14 @@ e.g.
  * Arch: `sudo pacman -S nodejs npm`
  * Debian: `sudo apt-get install nodejs npm`
 
+
+Note: Debian calls the node binary "nodejs", which results in npm not being able to find the command.
+ Use one of the following to resolve the issue:
+ * ln -s /usr/bin/nodejs /usr/bin/node
+ * sudo apt-get install nodejs-legacy
+ 
+See [run npm command gives error "/usr/bin/env: node: No such file or directory" #3911]
+(https://github.com/nodejs/node-v0.x-archive/issues/3911#issuecomment-8956154) for more details.
+
 ## web app
 See [install](install.sh)
