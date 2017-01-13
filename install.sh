@@ -1,14 +1,25 @@
 
+# This script assumes you have already downloaded (or built) a 
+# *release* version of scanservjs. To download go to
+# https://github.com/sbs20/scanservjs/releases and get the latest file
+
+# Example:
+# wget -O ~/scanservjs-release.zip https://github.com/sbs20/scanservjs/releases/download/v0.1.1/scanservjs_20170113.173920.zip
+# unzip scanservjs-release.zip -d scanserv-release && rm scanservjs-release.zip
+
+
 srcdir="$( cd "$( dirname "$0" )" && pwd )"
+
 scansrvjs_home=/var/www/scanservjs
 scanservjs_status=`systemctl is-active scanservjs 2>&1 | tr -s \\n`
 scanservjs_user_exists=`grep scanservjs /etc/passwd 2>&1 | tr -s \\n`
+
 
 # If this is not the first time you've installed this on a device
 # then stop the service first
 
 if [ "$scanservjs_status" = "active" ]; then
-systemctl stop scanservjs
+    systemctl stop scanservjs
 fi
 
 # And if you want to completely wipe any previous install then...
@@ -18,10 +29,10 @@ rm -r $scansrvjs_home
 # See: https://github.com/sbs20/scanserv/blob/master/install-sane.md
 
 if [ -z "$scanservjs_user_exists" ]; then
-# Create a user for this service
-useradd -m scanservjs
-# Add the new user to the scanner group
-usermod -G scanner scanservjs
+    # Create a user for this service
+    useradd -m scanservjs
+    # Add the new user to the scanner group
+    usermod -G scanner scanservjs
 fi
 
 # Create a target directory for the website
