@@ -21,4 +21,12 @@ See [run npm command gives error "/usr/bin/env: node: No such file or directory"
 (https://github.com/nodejs/node-v0.x-archive/issues/3911#issuecomment-8956154) for more details.
 
 ## web app
-See [install](install.sh)
+Download the [latest release](https://github.com/sbs20/scanservjs/releases) and unzip.
+
+e.g.
+```
+wget -O ~/scanservjs-release.zip https://github.com/sbs20/scanservjs/releases/download/v0.1.1/scanservjs_20170113.173920.zip
+unzip scanservjs-release.zip -d scanserv-release && rm scanservjs-release.zip
+```
+
+Then see [install](install.sh)
