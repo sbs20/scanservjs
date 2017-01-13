@@ -49,7 +49,7 @@ var ScanRequest = function (def) {
 		}
 
 		return errors;
-	}
+	};
 };
 
 ScanRequest.default = {

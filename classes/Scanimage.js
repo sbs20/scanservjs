@@ -10,7 +10,7 @@ module.exports = function () {
 	var exists = function () {
 		var fileInfo = new FileInfo(Config.Scanimage);
 		return fileInfo.exists();
-	}
+	};
 
 	var commandLine = function (scanRequest) {
 		var cmd = Config.Scanimage;
@@ -31,7 +31,7 @@ module.exports = function () {
 		// Last
 		cmd += ' > "' + scanRequest.outputFilepath + '"';
 		return cmd;
-	}
+	};
 
 	_this.execute = function (scanRequest) {
 
@@ -67,5 +67,5 @@ module.exports = function () {
 		} else {
 			return Q.reject(response);
 		}
-	}
+	};
 };

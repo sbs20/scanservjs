@@ -26,6 +26,7 @@
     "jqueryui": "^1.11.1",
     "jshint": "^2.9.4",
     "knockout": "^3.4.1",
+    "minimist": "^1.2.0",
     "toastr": "^2.1.2",
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",

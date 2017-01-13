@@ -4,11 +4,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-var Config = require('./classes/Config')
+var Config = require('./classes/Config');
 var Api = require('./classes/Api');
 
 var forbidden = function (req, res) {
-    res.status(403).send('<h1>Error 403: Forbidden</h1>')
+    res.status(403).send('<h1>Error 403: Forbidden</h1>');
 };
 
 var wrapError = function (err) {
@@ -16,7 +16,7 @@ var wrapError = function (err) {
         message: err.message,
         code: err.code
     };
-}
+};
 
 app.use(bodyParser.urlencoded({
     extended: true

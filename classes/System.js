@@ -24,7 +24,7 @@ var System = {
 		}
 	},
 
-	execute(cmd) {
+	execute: function (cmd) {
 		var deferred = Q.defer();
 
 		var res = {

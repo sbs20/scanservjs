@@ -11,5 +11,5 @@ module.exports = {
 	MaximumScanWidthInMm: 215,
 	MaximumScanHeightInMm: 297,
 	PreviewResolution: 100,
-	SupportsDepth: false;
+	SupportsDepth: false
 };

@@ -47,4 +47,4 @@ module.exports = function (arg) {
                 return Q.reject(error);
             });
     };
-}
+};

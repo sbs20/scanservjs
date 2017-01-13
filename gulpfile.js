@@ -36,7 +36,13 @@ gulp.task('inspect', function () {
         .pipe(jshint.reporter('default'));        
 });
 
-gulp.task('js', ['inspect'], function () {
+gulp.task('server-js', ['inspect'], function () {
+    gulp.src(['server.js', './classes/*.js'])
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));        
+});
+
+gulp.task('client-js', ['inspect'], function () {
     var b = browserify({
         entries: './src/client.js',
         debug: true,
@@ -70,7 +76,7 @@ gulp.task('files', function () {
     return streams;
 });
 
-gulp.task('compile', ['files', 'css', 'js']);
+gulp.task('compile', ['files', 'css', 'client-js', 'server-js']);
 
 gulp.task('build', ['compile'], function () {
     return gulp.src([
