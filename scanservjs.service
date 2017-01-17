@@ -6,7 +6,7 @@ After=network.target
 ExecStart=/var/www/scanservjs/server.js
 Restart=always
 User=scanservjs
-Group=scanservjs
+Group=users
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
 WorkingDirectory=/var/www/scanservjs
