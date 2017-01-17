@@ -25,10 +25,11 @@ rm -r $scansrvjs_home
 # You need to install SANE first
 # See: https://github.com/sbs20/scanserv/blob/master/install-sane.md
 if [ -z "$scanservjs_user_exists" ]; then
-    # Create a user for this service
-    useradd -m scanservjs
-    # Add the new user to the scanner group
-    usermod -G scanner scanservjs
+    # Create a user for this service and set primary group to "users"
+    useradd -m -g users scanservjs
+
+    # Add the new user to the scanner group too (created by SANE)
+    usermod -aG scanner scanservjs
 fi
 
 # Create a target directory for the website
@@ -37,8 +38,11 @@ mkdir -p $scansrvjs_home
 # Download and copy to target location
 cp -rf $srcdir/* $scansrvjs_home
 
-# Set the owner
-chown -R scanservjs:scanservjs $scansrvjs_home/
+# Set the file owners
+chown -R scanservjs:users $scansrvjs_home/
+
+# Update directory permissions so we can look inside
+find . -type d -exec chmod 755 {} +
 
 # ... and ensure the server is executable
 chmod +x $scansrvjs_home/server.js

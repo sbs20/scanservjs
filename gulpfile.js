@@ -82,6 +82,7 @@ gulp.task('build', ['compile'], function () {
     return gulp.src([
         './index.html',
         './install.sh',
+        './uninstall.sh',
         './package.json',
         './npm-shrinkwrap.json',
         './scanservjs.service',
