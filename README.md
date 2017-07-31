@@ -34,10 +34,10 @@ This is yet another scanimage-web-front-end. Why?
  * Multi-language support
 
 # acknowledgements
- * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/).
-   In many respects phpsane is more powerful than this. Scanservjs does not support jpeg
-   conversion or OCR. phpSANE, however, is also more brittle and somewhat dated in its
-   implementation.
+ * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/)
+ * In many respects phpsane is more powerful than this. Scanservjs does not 
+   support jpeg conversion or OCR. phpSANE, however, is also more brittle and 
+   somewhat dated in its implementation.
    
 # more about SANE
  * http://www.sane-project.org/

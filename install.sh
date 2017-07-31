@@ -4,6 +4,8 @@
 # *release* version of scanservjs. To download go to
 # https://github.com/sbs20/scanservjs/releases and get the latest file
 
+# ALSO - RUN THIS WITH SUDO
+
 # Example:
 # wget -O ~/scanservjs-release.zip https://github.com/sbs20/scanservjs/releases/download/v0.1.1/scanservjs_20170113.173920.zip
 # unzip scanservjs-release.zip -d scanserv-release && rm scanservjs-release.zip
@@ -19,8 +21,8 @@ if [ "$scanservjs_status" = "active" ]; then
     systemctl stop scanservjs
 fi
 
-# And if you want to completely wipe any previous install then...
-rm -r $scansrvjs_home
+# Completely wipe any previous install
+rm -rf $scansrvjs_home
 
 # You need to install SANE first
 # See: https://github.com/sbs20/scanserv/blob/master/install-sane.md
@@ -61,3 +63,6 @@ systemctl daemon-reload
 
 # Start the new service
 systemctl start scanservjs
+
+# If you have problems with the service starting use 
+# `journalctl -xe`
