@@ -3,6 +3,10 @@ var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var zip = require('gulp-zip');
+var chmod = require('gulp-chmod');
+var filter = require('gulp-filter');
+var tar = require('gulp-tar');
+var gzip = require('gulp-gzip');
 var browserify = require('browserify');
 var browserifyshim = require('browserify-shim');
 var source = require('vinyl-source-stream');
@@ -94,9 +98,14 @@ gulp.task('build', ['compile'], function () {
 });
 
 gulp.task('package', ['build'], function () {
-    var filename = 'scanservjs_' + dateFormat(new Date(), 'yyyymmdd.HHMMss') + '.zip';
+    var filename = 'scanservjs_' + dateFormat(new Date(), 'yyyymmdd.HHMMss') + '.tar';
+    var shellFilter = filter('**/*.sh', {restore: true})
     return gulp.src('./build/**/*')
-        .pipe(zip(filename))
+        .pipe(shellFilter)
+        .pipe(chmod(0o755))
+        .pipe(shellFilter.restore)
+        .pipe(tar(filename))
+        .pipe(gzip())
         .pipe(gulp.dest('./release'));
 });
 
