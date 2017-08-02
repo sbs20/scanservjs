@@ -1,16 +1,31 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script assumes you have already downloaded (or built) a 
 # *release* version of scanservjs. To download go to
-# https://github.com/sbs20/scanservjs/releases and get the latest file
+# https://github.com/sbs20/scanservjs/releases/latest and get the latest file
 
-# ALSO - RUN THIS WITH SUDO
+# Check we have the necessary privileges
+ROOTUID="0"
+if [ "$(id -u)" -ne "$ROOTUID" ] ; then
+    echo "Error: This script must be executed with root privileges. Try sudo."
+    exit 1
+fi
 
-# Example:
-# wget -O ~/scanservjs-release.zip https://github.com/sbs20/scanservjs/releases/download/v0.1.1/scanservjs_20170113.173920.zip
-# unzip scanservjs-release.zip -d scanserv-release && rm scanservjs-release.zip
+# Check dependencies
+if ! [ -x "$(command -v node)" ]; then
+    echo 'Error: nodejs is not installed.' >&2
+    exit 1
+fi
+
+if ! [ -x "$(command -v npm)" ]; then
+    echo 'Error: npm is not installed.' >&2
+    exit 1
+fi
+
+# Set correct src dir
 srcdir="$( cd "$( dirname "$0" )" && pwd )"
 
+# Set up variables here
 scansrvjs_home=/var/www/scanservjs
 scanservjs_status=`systemctl is-active scanservjs 2>&1 | tr -s \\n`
 scanservjs_user_exists=`grep scanservjs /etc/passwd 2>&1 | tr -s \\n`
@@ -64,5 +79,7 @@ systemctl daemon-reload
 # Start the new service
 systemctl start scanservjs
 
-# If you have problems with the service starting use 
-# `journalctl -xe`
+echo "scanservjs starting"
+echo "http://127.0.0.1:8080"
+echo
+echo "If you have problems, try 'journalctl -xe'"

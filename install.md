@@ -28,8 +28,9 @@ Download the [latest release](https://github.com/sbs20/scanservjs/releases) and 
 
 e.g.
 ```
-wget -O ~/scanservjs-release.zip https://github.com/sbs20/scanservjs/releases/download/v0.1.2/scanservjs_20170117.144056.zip
-unzip scanservjs-release.zip -d scanserv-release && rm scanservjs-release.zip
+wget -O ~/scanservjs.tar.gz $(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+tar -xf scanservjs.tar.gz
+sudo ./scanservjs/install.sh
 ```
 
 Then see [install](install.sh)

@@ -1,4 +1,12 @@
-#!/bin/bash
+#!/bin/sh
+
+# Check we have the necessary privileges
+ROOTUID="0"
+if [ "$(id -u)" -ne "$ROOTUID" ] ; then
+    echo "Error: This script must be executed with root privileges. Try sudo."
+    exit 1
+fi
+
 scansrvjs_home=/var/www/scanservjs
 
 # Stop and dsiable service
