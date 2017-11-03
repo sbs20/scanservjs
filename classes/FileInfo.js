@@ -33,9 +33,17 @@ module.exports = function (fullpath) {
 		return fs.existsSync(this.fullname);
 	};
 
-	this.toBase64 = function () {
+	this.toBuffer = function () {
 		var bits = fs.readFileSync(this.fullname);
-		return new Buffer(bits).toString('base64');
+		return new Buffer(bits);
+	};
+
+	this.toBase64 = function () {
+		return this.toBuffer().toString('base64');
+	};
+
+	this.toText = function () {
+		return this.toBuffer().toString();
 	};
 
 	this.init();

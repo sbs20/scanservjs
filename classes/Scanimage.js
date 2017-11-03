@@ -1,5 +1,6 @@
 var Q = require('kew');
 var Config = require('./Config');
+var Device = require('./Device');
 var System = require('./System');
 var FileInfo = require('./FileInfo');
 
@@ -13,20 +14,33 @@ module.exports = function () {
 	};
 
 	var commandLine = function (scanRequest) {
+		var device = new Device();
+
+		if ('device' in scanRequest && scanRequest.device) {
+			device.load(scanRequest.device);
+		}
+
 		var cmd = Config.Scanimage;
 		cmd += ' --mode ' + scanRequest.mode;
 		
-		if (Config.SupportsDepth) {
-		  cmd += ' --depth ' + scanRequest.depth;
+		if (device.isFeatureSupported('--depth')) {
+			cmd += ' --depth ' + scanRequest.depth;
 		}
+
 		cmd += ' --resolution ' + scanRequest.resolution;
 		cmd += ' -l ' + scanRequest.left;
 		cmd += ' -t ' + scanRequest.top;
 		cmd += ' -x ' + scanRequest.width;
 		cmd += ' -y ' + scanRequest.height;
 		cmd += ' --format ' + scanRequest.format;
-		cmd += ' --brightness ' + scanRequest.brightness;
-		cmd += ' --contrast ' + scanRequest.contrast;
+
+		if (device.isFeatureSupported('--brightness')) {
+			cmd += ' --brightness ' + scanRequest.brightness;
+		}
+
+		if (device.isFeatureSupported('--contrast')) {
+			cmd += ' --contrast ' + scanRequest.contrast;
+		}
 
 		// Last
 		cmd += ' > "' + scanRequest.outputFilepath + '"';

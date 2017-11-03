@@ -10,6 +10,5 @@ module.exports = {
 	PreviewDirectory: './data/preview/',
 	MaximumScanWidthInMm: 215,
 	MaximumScanHeightInMm: 297,
-	PreviewResolution: 100,
-	SupportsDepth: false
+	PreviewResolution: 100
 };

@@ -3,6 +3,7 @@ var fs = require('fs');
 var Q = require('kew');
 
 var Config = require('./Config');
+var Device = require('./Device');
 var System = require('./System');
 var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
@@ -102,5 +103,9 @@ module.exports = function () {
         tests.push(testFileExists(Config.Convert));
 
         return Q.resolve(tests);
+    };
+
+    _this.device = function () {
+        return new Device().find();
     };
 };

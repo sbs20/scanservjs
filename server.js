@@ -94,4 +94,16 @@ app.get('/diagnostics', function (req, res) {
         });
 });
 
+app.get('/device', function (req, res) {
+    var api = new Api();
+    api.device()
+        .then(function (data) {
+            res.send(data);
+        })
+        .fail(function (data) {
+            var err = wrapError(data);
+            res.status(500).send(err);
+        });
+});
+
 app.listen(Config.Port, function () { console.log('listening'); });

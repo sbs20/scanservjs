@@ -4,11 +4,23 @@ var Q = require('kew');
 
 var System = {
 
+	isArray: function (obj) {
+		return Array.isArray(obj);
+	},
+
+	isObject: function (obj) {
+		return obj === Object(obj);
+	},
+
 	log: function (k, v) {
-		if (Array.isArray(v)) {
+		if (System.isArray(v)) {
 			v.forEach(function (e) {
 				System.trace(k, e);
 			});
+
+		} else if (System.isObject(v)) {
+			System.trace(k, JSON.stringify(v));
+
 		} else {
 			if (v === null) {
 				v = "{NULL}";

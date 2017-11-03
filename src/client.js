@@ -78,7 +78,7 @@ $(document).ready(function () {
     });
 
     var Page = Backbone.View.extend({
-
+        device: null,
         resizeTimer: null,
         files: null,
         el: $("#app"),
@@ -159,12 +159,8 @@ $(document).ready(function () {
         },
 
         diagnostics: function () {
-            var o = {
-                url: 'diagnostics',
-            };
-
             // Start the scan
-            return $.ajax(o)
+            return $.ajax({ url: 'diagnostics' })
                 .done(function (tests) {
                     _.each(tests, function (test) {
                         if (test.success === true) {
@@ -173,6 +169,18 @@ $(document).ready(function () {
                             toastr.error(test.message);
                         }
                     });
+
+                    toastr.success('Detecting device...');
+                    return $.ajax({ url: 'device' })
+                        .fail(function (xhr) {
+                            page.mask(false);
+                            toastr.error(xhr.responseJSON.message);                                    
+                        })
+                        .done(function (device) {
+                            page.device = device;
+                            toastr.success('Found device: ' + device.name);
+                            page.mask(false);
+                        });
                 });
         },
 
@@ -225,12 +233,15 @@ $(document).ready(function () {
         scan: function () {
             page.mask(true);
 
+            var data = this.model.toJSON();
+            data.device = page.device;
+            
             var o = {
                 url: 'scan',
                 type: "POST",
                 contentType: "application/json",
                 dataType: "json",
-                data: JSON.stringify(this.model.toJSON())
+                data: JSON.stringify(data)
             };
 
             return $.ajax(o)
@@ -245,7 +256,6 @@ $(document).ready(function () {
         },
 
         initialize: function () {
-
             this.files = new FileCollection();
             this.listenTo(this.files, 'add', this.add);
 
@@ -415,6 +425,7 @@ $(document).ready(function () {
 
     // Run
     var page = new Page();
+    page.mask(true);
     page.convert();
     var jcrop = new JcropManager(page.model);
     page.diagnostics();
