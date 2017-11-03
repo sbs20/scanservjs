@@ -46,5 +46,9 @@ module.exports = function (fullpath) {
 		return this.toBuffer().toString();
 	};
 
+	this.save = function (data) {
+		fs.writeFileSync(this.fullname, data);
+	};
+
 	this.init();
 };

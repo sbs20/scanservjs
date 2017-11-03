@@ -106,6 +106,6 @@ module.exports = function () {
     };
 
     _this.device = function () {
-        return new Device().find();
+        return new Device().get();
     };
 };

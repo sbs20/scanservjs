@@ -11,6 +11,7 @@ module.exports = function () {
         _this.data = data;
     };
 
+    /// Parses the response of scanimage -A into a dictionary
     var parse = function (response) {
         // find any number of spaces
         // ... match 1 or two hyphens with letters, numbers or hypen
@@ -40,28 +41,36 @@ module.exports = function () {
         return device;
     };
 
-    _this.find = function () {
+    /// Executes scanimageA and returns a promise of parsed results
+    var scanimageA = function () {
         var cmd = Config.Scanimage + ' -A';
-
-        // Uncomment to test
-        // return Q.resolve({
-        //     name: 'canon',
-        //     features: {
-        //         '--brightness': '0'
-        //     }
-        // });
 
         return System.execute(cmd)
             .then(function (reply) {
-                //System.trace('Scanner.buildFeatures:finish', reply);
                 try {
                     var data = parse(reply.output);
                     System.trace('device', data);
-                    return Q.resolve(data); 
+                    return data;
                 } catch (exception) {
                     return Q.reject(exception);
                 }
             });
+    };
+
+    /// Attempts to get a stored configuration of our device and if
+    /// not gets it from the command line.
+    _this.get = function () {
+        var conf = new FileInfo('./device.conf');
+        if (!conf.exists()) {
+            System.trace('device.conf', null)
+            return scanimageA().then(function (data) {
+                // Humans might read this, so pretty
+                conf.save(JSON.stringify(data, null, 4));
+                return data;
+            });
+        } else {
+            return Q.resolve(JSON.parse(conf.toText()));            
+        }
     };
 
     _this.isFeatureSupported = function (feature) {
