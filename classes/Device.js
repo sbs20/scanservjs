@@ -62,7 +62,6 @@ module.exports = function () {
     _this.get = function () {
         var conf = new FileInfo('./device.conf');
         if (!conf.exists()) {
-            System.trace('device.conf', null)
             return scanimageA().then(function (data) {
                 // Humans might read this, so pretty
                 conf.save(JSON.stringify(data, null, 4));
