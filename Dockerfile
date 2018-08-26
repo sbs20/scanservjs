@@ -1,7 +1,7 @@
 FROM node:8
 
 # Install sane
-RUN apt-get update && apt-get install -yq sane sane-utils imagemagick
+RUN apt-get update && apt-get install -yq sane sane-utils
 
 
 ENV APP_DIR=/app
