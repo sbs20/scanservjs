@@ -52,3 +52,12 @@ sudo ./scanservjs/install.sh
 ```
 
 Or have a look at [other releases](https://github.com/sbs20/scanservjs/releases)
+
+# development / build
+
+  * Install nodejs
+  * `npm install`
+  * `npm link gulp`
+  * `gulp`
+  * `cd ./build/scanservjs`
+  * `node /server.js`
