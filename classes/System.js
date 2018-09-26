@@ -4,6 +4,8 @@ var Q = require('kew');
 
 var System = {
 
+	version: '1.0.1',
+
 	isArray: function (obj) {
 		return Array.isArray(obj);
 	},
@@ -20,6 +22,9 @@ var System = {
 
 		} else if (System.isObject(v)) {
 			System.trace(k, JSON.stringify(v));
+
+		} else if (v === undefined) {
+			console.log(k + config.TraceLineEnding);
 
 		} else {
 			if (v === null) {
