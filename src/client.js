@@ -98,13 +98,16 @@ $(document).ready(function () {
             'click #scan': 'scan'
         },
 
-        mask: function (show) {
-            var m = $('#mask');
-            if (show) {
-                m.fadeIn();
-            } else {
-                m.fadeOut();
-            }
+        mask: function () {
+            $('#mask').fadeIn();
+        },
+
+        unmask: function () {
+            $('#mask').fadeOut();
+        },
+
+        fail: function (xhr) {
+            toastr.error(xhr.responseJSON.message);
         },
 
         reset: function () {
@@ -184,7 +187,7 @@ $(document).ready(function () {
         },
 
         preview: function () {
-            page.mask(true);
+            page.mask();
 
             // Keep reloading the preview image
             var timer = window.setInterval(this.convert, 500);
@@ -199,19 +202,15 @@ $(document).ready(function () {
 
             // Start the scan
             return $.ajax(request)
-                .fail(function (xhr) {
+                .fail(page.fail)
+                .always(function () {
                     window.clearInterval(timer);
-                    page.mask(false);
-                    toastr.error(xhr.responseJSON.message);
-                })
-                .done(function () {
-                    window.clearInterval(timer);
-                    page.mask(false);
+                    page.unmask();
                 });
         },
 
         scan: function () {
-            page.mask(true);
+            page.mask();
 
             var data = this.model.toJSON();
             data.device = page.device;
@@ -225,14 +224,9 @@ $(document).ready(function () {
             };
 
             return $.ajax(request)
-                .fail(function (xhr) {
-                    page.mask(false);
-                    toastr.error(xhr.responseJSON.message);
-                })
-                .then(function () {
-                    page.mask(false);
-                    page.files.fetch();
-                });            
+                .fail(page.fail)
+                .always(page.unmask)
+                .done(page.files.fetch);
         },
 
         initialize: function () {
