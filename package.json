@@ -15,7 +15,7 @@
     "browserify": "^13.1.1",
     "browserify-css": "^0.14.0",
     "browserify-shim": "^3.8.12",
-    "del": "^2.2.2",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-chmod": "^2.0.0",
     "gulp-concat": "^2.6.1",
