@@ -226,7 +226,9 @@ $(document).ready(function () {
             return $.ajax(request)
                 .fail(page.fail)
                 .always(page.unmask)
-                .done(page.files.fetch);
+                .done(function () {
+                    page.files.fetch();
+                });
         },
 
         initialize: function () {
