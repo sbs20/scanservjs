@@ -128,9 +128,9 @@ $(document).ready(function () {
         // When a UI field is updated, its change event
         // should be propagated here. This will update
         // the model and forward updates to JcropManager
-        update: function (e) {
-            var field = e.target;
-            var o = {};
+        update: function (event) {
+            var field = event.target;
+            var data = {};
 
             switch (field.id) {
                 case 'top':
@@ -138,7 +138,7 @@ $(document).ready(function () {
                 case 'height':
                 case 'width':
                 case 'resolution':
-                    o[field.id] = parseInt(field.value);
+                    data[field.id] = parseInt(field.value);
                     break;
 
                 case 'brightness':
@@ -149,16 +149,16 @@ $(document).ready(function () {
                     if (val < -100) val = -100;
                     if (val > 100) val = 100;
                     field.value = val;
-                    o[field.id] = val;
+                    data[field.id] = val;
                     $slider.slider("value", val);
                     break;
 
                 default:
-                    o[field.id] = field.value;
+                    data[field.id] = field.value;
                     break;
             }
 
-            this.model.set(o);
+            this.model.set(data);
             this.model.save();
 
             jcrop.draw();
@@ -167,7 +167,7 @@ $(document).ready(function () {
         // Called to take the preview image and return it as
         // a base64 encoded jpg and update the UI
         convert: function () {
-            var o = {
+            var request = {
                 url: 'convert',
                 type: "POST",
                 contentType: "application/json",
@@ -175,7 +175,7 @@ $(document).ready(function () {
                 data: JSON.stringify(page.model.toJSON())
             };
 
-            return $.ajax(o).then(function (fileInfo) {
+            return $.ajax(request).then(function (fileInfo) {
                 if (fileInfo.content) {
                     $("#image").attr('src', 'data:image/jpeg;base64,' + fileInfo.content);
                     $("#image").css('display', 'block');
@@ -189,7 +189,7 @@ $(document).ready(function () {
             // Keep reloading the preview image
             var timer = window.setInterval(this.convert, 500);
 
-            var o = {
+            var request = {
                 url: 'preview',
                 type: "POST",
                 contentType: "application/json",
@@ -198,7 +198,7 @@ $(document).ready(function () {
             };
 
             // Start the scan
-            return $.ajax(o)
+            return $.ajax(request)
                 .fail(function (xhr) {
                     window.clearInterval(timer);
                     page.mask(false);
@@ -216,7 +216,7 @@ $(document).ready(function () {
             var data = this.model.toJSON();
             data.device = page.device;
             
-            var o = {
+            var request = {
                 url: 'scan',
                 type: "POST",
                 contentType: "application/json",
@@ -224,7 +224,7 @@ $(document).ready(function () {
                 data: JSON.stringify(data)
             };
 
-            return $.ajax(o)
+            return $.ajax(request)
                 .fail(function (xhr) {
                     page.mask(false);
                     toastr.error(xhr.responseJSON.message);
