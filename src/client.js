@@ -158,8 +158,21 @@ $(document).ready(function () {
             jcrop.draw();
         },
 
+        loadDevice: function () {
+            toastr.success('Detecting device...');
+            return $.ajax({ url: 'device' })
+                .fail(function (xhr) {
+                    page.mask(false);
+                    toastr.error(xhr.responseJSON.message);                                    
+                })
+                .done(function (device) {
+                    page.device = device;
+                    toastr.success('Found device: ' + device.name);
+                    page.mask(false);
+                });
+        },
+
         diagnostics: function () {
-            // Start the scan
             return $.ajax({ url: 'diagnostics' })
                 .done(function (tests) {
                     _.each(tests, function (test) {
@@ -169,18 +182,6 @@ $(document).ready(function () {
                             toastr.error(test.message);
                         }
                     });
-
-                    toastr.success('Detecting device...');
-                    return $.ajax({ url: 'device' })
-                        .fail(function (xhr) {
-                            page.mask(false);
-                            toastr.error(xhr.responseJSON.message);                                    
-                        })
-                        .done(function (device) {
-                            page.device = device;
-                            toastr.success('Found device: ' + device.name);
-                            page.mask(false);
-                        });
                 });
         },
 
@@ -281,6 +282,17 @@ $(document).ready(function () {
                 }
             });
 
+            this.diagnostics()
+                .then(this.loadDevice)
+                .then(function () {
+                    var modes = page.device.features['--mode'].options.split('|');
+                    $mode = $('#mode');
+                    $mode.empty();
+                    _.each(modes, function (val) {
+                        $mode.append('<option>' + val + '</option>');
+                    });
+                });
+    
             this.files.fetch();
 
             this.model = new ScanRequest();
@@ -427,8 +439,9 @@ $(document).ready(function () {
     var page = new Page();
     page.mask(true);
     page.convert();
+
     var jcrop = new JcropManager(page.model);
-    page.diagnostics();
+
 });
 
 
