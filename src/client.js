@@ -282,15 +282,19 @@ $(document).ready(function () {
                 }
             });
 
-            this.diagnostics()
-                .then(this.loadDevice)
+            this.diagnostics();
+
+            this.loadDevice()
                 .then(function () {
-                    var modes = page.device.features['--mode'].options.split('|');
+                    var mode = page.device.features['--mode'];
+                    var modes = mode.options.split('|');
                     $mode = $('#mode');
                     $mode.empty();
                     _.each(modes, function (val) {
                         $mode.append('<option>' + val + '</option>');
                     });
+
+                    $mode.val(mode.default);
                 });
     
             this.files.fetch();
