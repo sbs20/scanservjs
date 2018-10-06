@@ -18,16 +18,20 @@ $(document).ready(function () {
 
     // Files are always created on the server. All we need here
     // is idAttribute so backbone knows what the id field is
-    var File = Backbone.Model.extend({
-        idAttribute: "fullname"
-    });
+    var File = Backbone.Model.extend({ idAttribute: "fullname" });
 
-    // FileCollections are cery simple but we need to specify
+    // FileCollections are very simple but we need to specify
     // the url and model type
     var FileCollection = Backbone.Collection.extend({
         url: 'file',
         model: File
     });
+
+    // Diagnostics runs basic tests to establish if this might work or not
+    var Diagnostics = Backbone.Model.extend({ url: 'diagnostics' });
+
+    // Device contains information about the scanner itself
+    var Device = Backbone.Model.extend({ url: 'device' });
 
     // ScanRequest is what gets sent to the scanner and contains
     // the various fields which define what the scanner will do
@@ -43,7 +47,7 @@ $(document).ready(function () {
                 width: 215,
                 height: 297,
                 resolution: 150,
-                mode: 'Color',
+                mode: null,
                 brightness: 0,
                 contrast: 0,
                 type: 'tif'
@@ -78,9 +82,11 @@ $(document).ready(function () {
     });
 
     var Page = Backbone.View.extend({
+        diagnostics: null,
         device: null,
-        resizeTimer: null,
         files: null,
+        resizeTimer: null,
+
         el: $("#app"),
         tagName: 'div',
         template: _.template($('#page').html()),
@@ -102,8 +108,8 @@ $(document).ready(function () {
         },
 
         reset: function () {
-            var d = this.model.defaults();
-            this.model.set(d);
+            var defaults = this.model.defaults();
+            this.model.set(defaults);
             this.model.save();
             jcrop.draw();
         },
@@ -156,33 +162,6 @@ $(document).ready(function () {
             this.model.save();
 
             jcrop.draw();
-        },
-
-        loadDevice: function () {
-            toastr.success('Detecting device...');
-            return $.ajax({ url: 'device' })
-                .fail(function (xhr) {
-                    page.mask(false);
-                    toastr.error(xhr.responseJSON.message);                                    
-                })
-                .done(function (device) {
-                    page.device = device;
-                    toastr.success('Found device: ' + device.name);
-                    page.mask(false);
-                });
-        },
-
-        diagnostics: function () {
-            return $.ajax({ url: 'diagnostics' })
-                .done(function (tests) {
-                    _.each(tests, function (test) {
-                        if (test.success === true) {
-                            toastr.success(test.message);
-                        } else {
-                            toastr.error(test.message);
-                        }
-                    });
-                });
         },
 
         // Called to take the preview image and return it as
@@ -257,9 +236,6 @@ $(document).ready(function () {
         },
 
         initialize: function () {
-            this.files = new FileCollection();
-            this.listenTo(this.files, 'add', this.add);
-
             var html = this.template();
             this.$el.append(html);
 
@@ -282,31 +258,47 @@ $(document).ready(function () {
                 }
             });
 
-            this.diagnostics();
+            this.diagnostics = new Diagnostics();
+            this.diagnostics.on("sync", this.diagnosticsSync, this);
+            this.diagnostics.fetch();
 
-            this.loadDevice()
-                .then(function () {
-                    var mode = page.device.features['--mode'];
-                    var modes = mode.options.split('|');
-                    $mode = $('#mode');
-                    $mode.empty();
-                    _.each(modes, function (val) {
-                        $mode.append('<option>' + val + '</option>');
-                    });
-
-                    $mode.val(mode.default);
-                });
-    
-            this.files.fetch();
+            this.device = new Device();
+            this.device.on("sync", this.deviceSync, this);
+            this.device.fetch();
 
             this.model = new ScanRequest();
-
-            // Now listen to the model and call render
+            this.model.on("sync", this.render, this);
             this.model.on("change", this.render, this);
-
-            // Get our data
             this.model.fetch();
 
+            this.files = new FileCollection();
+            this.listenTo(this.files, 'add', this.add);
+            this.files.fetch();
+        },
+
+        diagnosticsSync: function (diagnostics) {
+            _.each(diagnostics.attributes, function (test) {
+                if (test.success === true) {
+                    toastr.success(test.message);
+                } else {
+                    toastr.error(test.message);
+                }
+            });
+        },
+
+        deviceSync: function (device) {
+            this.device = device;
+            var modes = device.attributes.features['--mode'].options.split('|');
+            $mode = $('#mode');
+            _.each(modes, function (val) {
+                $mode.append('<option>' + val + '</option>');
+            });
+
+            if (this.model.attributes.mode === null) {
+                this.model.attributes.mode = device.attributes.features['--mode'].default;
+            }
+
+            // We've changed the UI mode options so refresh
             this.render();
         },
 
@@ -441,7 +433,6 @@ $(document).ready(function () {
 
     // Run
     var page = new Page();
-    page.mask(true);
     page.convert();
 
     var jcrop = new JcropManager(page.model);
