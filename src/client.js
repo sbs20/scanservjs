@@ -294,6 +294,8 @@ $(document).ready(function () {
                 this.model.attributes.mode = device.attributes.features['--mode'].default;
             }
 
+            $('#version').text(device.attributes.version);
+            
             // We've changed the UI mode options so refresh
             this.render();
         },
