@@ -57,7 +57,7 @@ Or have a look at [other releases](https://github.com/sbs20/scanservjs/releases)
 
   * Install nodejs
   * `npm install`
-  * `npm link gulp`
+  * `npm install -g gulp-cli`
   * `gulp`
   * `cd ./build/scanservjs`
   * `node /server.js`
