@@ -40,24 +40,22 @@ gulp.task('inspect', function () {
         .pipe(jshint.reporter('default'));        
 });
 
-gulp.task('server-js', ['inspect'], function () {
-    gulp.src(['server.js', './classes/*.js'])
+gulp.task('server-js', gulp.series(['inspect'], function () {
+    return gulp.src(['server.js', './classes/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));        
-});
+}));
 
-gulp.task('client-js', ['inspect'], function () {
-    var b = browserify({
+gulp.task('client-js', gulp.series(['inspect'], function () {
+    return browserify({
         entries: './src/client.js',
         debug: true,
-    });
-
-    return b.bundle()
+    }).bundle()
         .pipe(source('app.js'))
         .pipe(buffer()) // convert from streaming to buffered vinyl file object
         .pipe(uglify()) // now gulp-uglify works 
         .pipe(gulp.dest('./assets/js/'));
-});
+}));
 
 gulp.task('css', function () {
     return gulp.src([
@@ -70,34 +68,33 @@ gulp.task('css', function () {
         .pipe(gulp.dest('./assets/css'));
 });
 
-gulp.task('files', function () {
-    var streams = [
-        gulp.src('./node_modules/bootstrap/dist/fonts/glyph*').pipe(gulp.dest('./assets/fonts')),
-        gulp.src('./node_modules/jquery-jcrop/css/Jcrop.gif').pipe(gulp.dest('./assets/css')),
-        gulp.src('./node_modules/jqueryui/images/ui-*.png').pipe(gulp.dest('./assets/css/images')),
-    ];
-
-    return streams;
+gulp.task('files', function (done) {
+    gulp.src('./node_modules/bootstrap/dist/fonts/glyph*').pipe(gulp.dest('./assets/fonts'));
+    gulp.src('./node_modules/jquery-jcrop/css/Jcrop.gif').pipe(gulp.dest('./assets/css'));
+    gulp.src('./node_modules/jqueryui/images/ui-*.png').pipe(gulp.dest('./assets/css/images'));
+    done();
 });
 
-gulp.task('compile', ['files', 'css', 'client-js', 'server-js']);
+gulp.task('compile', gulp.series(['files', 'css', 'client-js', 'server-js'], function(done) {
+    done();
+}));
 
-gulp.task('build', ['compile'], function () {
+gulp.task('build', gulp.series(['compile'], function () {
     return gulp.src([
         './index.html',
         './install.sh',
         './uninstall.sh',
         './package.json',
-        './npm-shrinkwrap.json',
+        './package-lock.json',
         './scanservjs.service',
         './server.js',
         './*assets/**/*',
         './*classes/**/*',
         './*data/**/*.md',
     ]).pipe(gulp.dest('./build/scanservjs'));
-});
+}));
 
-gulp.task('package', ['build'], function () {
+gulp.task('package', gulp.series(['build'], function () {
     var filename = 'scanservjs_' + dateFormat(new Date(), 'yyyymmdd.HHMMss') + '.tar';
     var shellFilter = filter('**/*.sh', {restore: true})
     return gulp.src('./build/**/*')
@@ -110,13 +107,13 @@ gulp.task('package', ['build'], function () {
         .pipe(tar(filename))
         .pipe(gzip())
         .pipe(gulp.dest('./release'));
-});
+}));
 
-gulp.task('deploy', ['build'], function () {
+gulp.task('deploy', gulp.series(['build'], function () {
     return gulp.src('./build/**/*.*')
         .pipe(gulp.dest(options.dest));
-});
+}));
 
-gulp.task('default', [
-    'build'
-]);
+gulp.task('default', gulp.series(['build'], function(done) {
+    done();
+}));
