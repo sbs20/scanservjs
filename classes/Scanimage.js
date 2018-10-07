@@ -42,6 +42,10 @@ module.exports = function () {
 			cmd += ' --contrast ' + scanRequest.contrast;
 		}
 
+		if (scanRequest.convertFormat !== 'tif') {
+			cmd += ' | convert - ' + scanRequest.convertFormat + ':-';
+		}
+
 		// Last
 		cmd += ' > "' + scanRequest.outputFilepath + '"';
 		return cmd;
@@ -79,7 +83,8 @@ module.exports = function () {
 				});
 
 		} else {
-			return Q.reject(response);
+			var error = new Error(response.errors.join('\n'));
+			return Q.reject(error);
 		}
 	};
 };

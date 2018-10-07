@@ -1,10 +1,8 @@
-var dateFormat = require('dateformat');
 var fs = require('fs');
 var Q = require('kew');
 
 var Config = require('./Config');
 var Device = require('./Device');
-var System = require('./System');
 var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
 var Scanimage = require('./Scanimage');
@@ -58,11 +56,6 @@ module.exports = function () {
     };
 
     _this.scan = function (req) {
-        var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        System.extend(req, {
-            outputFilepath: Config.OutputDirectory + 'Scan_' + dateString + '.tif'
-        });
-
         var scanRequest = new ScanRequest(req);
         var scanner = new Scanimage();
         return scanner.execute(scanRequest);

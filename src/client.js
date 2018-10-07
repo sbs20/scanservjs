@@ -50,7 +50,7 @@ $(document).ready(function () {
                 mode: null,
                 brightness: 0,
                 contrast: 0,
-                type: 'tif'
+                convertFormat: 'tif'
             };
         },
 

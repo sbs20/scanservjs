@@ -1,22 +1,20 @@
+var dateFormat = require('dateformat');
 var Config = require('./Config');
 var System = require('./System');
 
 var ScanRequest = function (def) {
 
-	var Mode = {
-		Lineart: 'Lineart',
-		Gray: 'Gray',
-		Color: 'Color'
-	};
-
 	_this = this;
 
 	System.extend(_this, ScanRequest.default, def);
 
+	var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
+	_this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + _this.convertFormat;
+
 	_this.validate = function () {
 		var errors = [];
 
-		if (Mode[_this.mode] === undefined) {
+		if (_this.mode === undefined) {
 			errors.push('Invalid mode: ' + _this.mode);
 		}
 
@@ -48,6 +46,10 @@ var ScanRequest = function (def) {
 			errors.push('Top + height exceed maximum dimensions');
 		}
 
+		if (['tif', 'jpg', 'png'].indexOf(_this.convertFormat) === -1) {
+			errors.push('Invalid format type');
+		}
+
 		return errors;
 	};
 };
@@ -55,15 +57,16 @@ var ScanRequest = function (def) {
 ScanRequest.default = {
 	top: 0,
 	left: 0,
-	width: 215,
-	height: 297,
+	width: Config.MaximumScanWidthInMm,
+	height: Config.MaximumScanHeightInMm,
 	mode: "Color",
 	depth: 8,
 	resolution: 200,
 	format: "tiff",
 	outputFilepath: "",
 	brightness: 0,
-	contrast: 0
+	contrast: 0,
+	convertFormat: 'tif'
 };
 
 module.exports = ScanRequest;
