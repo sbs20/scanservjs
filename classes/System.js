@@ -1,4 +1,4 @@
-var packageJson = require("../package.json")
+var packageJson = require("../package.json");
 var config = require("./Config");
 var exec = require('child_process').exec;
 var Q = require('kew');
