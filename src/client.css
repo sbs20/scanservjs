@@ -1,5 +1,4 @@
 ﻿body {
-    padding-top: 60px;
     padding-bottom: 20px;
     font-family: 'Montserrat';
     font-size: large;
@@ -24,6 +23,10 @@
 #navbar > div {
     color: white;
     font-size: xx-large;
+}
+
+.container {
+    margin-top: 1em;
 }
 
 .navbar-inverse {
