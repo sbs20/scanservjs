@@ -1,10 +1,11 @@
+var packageJson = require("../package.json")
 var config = require("./Config");
 var exec = require('child_process').exec;
 var Q = require('kew');
 
 var System = {
 
-	version: '1.0.1',
+	version: packageJson.version,
 
 	isArray: function (obj) {
 		return Array.isArray(obj);
