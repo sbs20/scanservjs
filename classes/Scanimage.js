@@ -23,7 +23,7 @@ module.exports = function () {
 		var cmd = Config.Scanimage;
 		cmd += ' --mode "' + scanRequest.mode + '"';
 		
-		if (device.isFeatureSupported('--depth')) {
+		if (device.isFeatureSupported('--depth') && 'depth' in scanRequest) {
 			cmd += ' --depth ' + scanRequest.depth;
 		}
 
