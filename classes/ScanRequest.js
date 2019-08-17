@@ -43,6 +43,10 @@ var ScanRequest = function (def) {
 			errors.push('Invalid contrast: ' + _this.contrast);
 		}
 
+		if ('depth' in _this && !Number.isInteger(_this.depth)) {
+			errors.push('Invalid depth: ' + _this.depth);
+		}
+
 		if (_this.top + _this.height > Config.MaximumScanHeightInMm) {
 			errors.push('Top + height exceed maximum dimensions');
 		}
@@ -61,7 +65,6 @@ ScanRequest.default = {
 	width: Config.MaximumScanWidthInMm,
 	height: Config.MaximumScanHeightInMm,
 	mode: "Color",
-	depth: 8,
 	resolution: 200,
 	format: "tiff",
 	outputFilepath: "",
