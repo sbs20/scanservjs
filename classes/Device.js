@@ -27,7 +27,7 @@ module.exports = function () {
             'features': {}
         };
         
-        var pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) (.*) \[(.*)\]\n/g;
+        var pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
         var match;
         while ((match = pattern.exec(response)) !== null) {
             device.features[match[1]] = {
