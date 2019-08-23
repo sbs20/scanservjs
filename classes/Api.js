@@ -63,9 +63,11 @@ module.exports = function () {
 
     _this.preview = function (req) {
         var scanRequest = new ScanRequest({
+            device: req.device,
             mode: req.mode,
             brightness: req.brightness,
             contrast: req.contrast,
+            disableDynamicLineart: req.disableDynamicLineart,
             outputFilepath: Config.PreviewDirectory + 'preview.tif',
             resolution: Config.PreviewResolution
         });

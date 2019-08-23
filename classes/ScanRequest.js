@@ -12,7 +12,7 @@ var ScanRequest = function (def) {
 		_this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + _this.convertFormat;
 	}
 
-	_this.validate = function () {
+	_this.validate = function (device) {
 		var errors = [];
 
 		if (_this.mode === undefined) {
@@ -55,6 +55,10 @@ var ScanRequest = function (def) {
 			errors.push('Invalid format type');
 		}
 
+		if (_this.disableDynamicLineart && !device.isFeatureSupported('--disable-dynamic-lineart')) {
+			errors.push('disableDynamicLineart set to true, but unsupported by device');
+		}
+
 		return errors;
 	};
 };
@@ -70,7 +74,8 @@ ScanRequest.default = {
 	outputFilepath: "",
 	brightness: 0,
 	contrast: 0,
-	convertFormat: 'tif'
+	convertFormat: 'tif',
+	disableDynamicLineart: false
 };
 
 module.exports = ScanRequest;
