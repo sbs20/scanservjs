@@ -13,13 +13,7 @@ module.exports = function () {
 		return fileInfo.exists();
 	};
 
-	var commandLine = function (scanRequest) {
-		var device = new Device();
-
-		if ('device' in scanRequest && scanRequest.device) {
-			device.load(scanRequest.device);
-		}
-
+	var commandLine = function (scanRequest, device) {
 		var cmd = Config.Scanimage;
 		cmd += ' --mode "' + scanRequest.mode + '"';
 		
@@ -42,6 +36,10 @@ module.exports = function () {
 			cmd += ' --contrast ' + scanRequest.contrast;
 		}
 
+		if (scanRequest.mode === 'Lineart' && scanRequest.disableDynamicLineart) {
+			cmd += ' --disable-dynamic-lineart=yes ';
+		}
+
 		if (scanRequest.convertFormat !== 'tif') {
 			cmd += ' | convert - ' + scanRequest.convertFormat + ':-';
 		}
@@ -57,6 +55,12 @@ module.exports = function () {
 			return Q.reject(new Error('Unable to find Scanimage at "' + Config.Scanimage + '"'));
 		}
 
+		var device = new Device();
+
+		if ('device' in scanRequest && scanRequest.device) {
+			device.load(scanRequest.device);
+		}
+
 		var response = {
 			image: null,
 			cmdline: null,
@@ -67,11 +71,11 @@ module.exports = function () {
 
 		System.trace('Scanimage.execute:start');
 
-		response.errors = scanRequest.validate();
+		response.errors = scanRequest.validate(device);
 
 		if (response.errors.length === 0) {
 
-			response.cmdline = commandLine(scanRequest);
+			response.cmdline = commandLine(scanRequest, device);
 
 			return System.execute(response.cmdline)
 				.then(function (reply) {
