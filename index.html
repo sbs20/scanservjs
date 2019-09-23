@@ -19,11 +19,8 @@
 
 <script type="text/template" id="page">
     <div class="row">
-        <!-- Padding for larger screens -->
-        <div class="col-lg-2 col-md-1"></div>
-
         <!-- Fields and buttons -->
-        <div id="fields" class="col-lg-4 col-md-5 col-sm-12">
+        <div id="fields" class="col-lg-6 col-md-6 col-sm-12">
 
             <div class="row">
                 <div id="col1" class="col">
@@ -69,9 +66,12 @@
                         </select>
                     </div>
 
-                    <div class="form-check" id="formGroupDisableDynamicLineart">
-                        <label for="disableDynamicLineart" class="form-check-label">Disable dynamic lineart</label>
-                        <input id="disableDynamicLineart" type="checkbox" class="form-check-input" />
+                    <div class="form-group" id="formGroupDynamicLineart" style="display: none">
+                        <label for="mode">Dynamic lineart</label>
+                        <select id="dynamicLineart" class="form-control">
+                            <option value="false">disabled</option>
+                            <option value="true">enabled</option>
+                        </select>
                     </div>
 
                     <label for="brightness">Brightness</label>
@@ -108,9 +108,6 @@
         <!-- Preview pane -->
         <div id="previewPane" class="col-lg-4 col-md-5 col-sm-12">
         </div>
-
-        <!-- Padding for larger screens -->
-        <div class="xcol-lg-2 col-md-1"></div>
     </div>
 
     <div class="row">

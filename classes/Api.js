@@ -50,7 +50,9 @@ module.exports = function () {
         return convert.execute()
             .then(function () {
                 var fileInfo = new FileInfo(options.target);
-                if (!fileInfo.exists()) throw new Error("File does not exist");
+                if (!fileInfo.exists()) {
+                    throw new Error("File does not exist");
+                }
                 return fileInfo;
             });
     };
@@ -67,7 +69,7 @@ module.exports = function () {
             mode: req.mode,
             brightness: req.brightness,
             contrast: req.contrast,
-            disableDynamicLineart: req.disableDynamicLineart,
+            dynamicLineart: req.dynamicLineart,
             outputFilepath: Config.PreviewDirectory + 'preview.tif',
             resolution: Config.PreviewResolution
         });

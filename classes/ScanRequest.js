@@ -55,10 +55,6 @@ var ScanRequest = function (def) {
 			errors.push('Invalid format type');
 		}
 
-		if (_this.disableDynamicLineart && !device.isFeatureSupported('--disable-dynamic-lineart')) {
-			errors.push('disableDynamicLineart set to true, but unsupported by device');
-		}
-
 		return errors;
 	};
 };
@@ -75,7 +71,7 @@ ScanRequest.default = {
 	brightness: 0,
 	contrast: 0,
 	convertFormat: 'tif',
-	disableDynamicLineart: false
+	dynamicLineart: true
 };
 
 module.exports = ScanRequest;

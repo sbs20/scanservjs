@@ -36,7 +36,8 @@ module.exports = function () {
 			cmd += ' --contrast ' + scanRequest.contrast;
 		}
 
-		if (scanRequest.mode === 'Lineart' && scanRequest.disableDynamicLineart) {
+		if (scanRequest.mode === 'Lineart' && !scanRequest.dynamicLineart &&
+				device.isFeatureSupported('--disable-dynamic-lineart')) {
 			cmd += ' --disable-dynamic-lineart=yes ';
 		}
 
@@ -50,7 +51,6 @@ module.exports = function () {
 	};
 
 	_this.execute = function (scanRequest) {
-
 		if (!exists()) {
 			return Q.reject(new Error('Unable to find Scanimage at "' + Config.Scanimage + '"'));
 		}
@@ -70,11 +70,9 @@ module.exports = function () {
 		};
 
 		System.trace('Scanimage.execute:start');
-
 		response.errors = scanRequest.validate(device);
 
 		if (response.errors.length === 0) {
-
 			response.cmdline = commandLine(scanRequest, device);
 
 			return System.execute(response.cmdline)

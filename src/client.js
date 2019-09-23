@@ -9,22 +9,7 @@ require("jquery-jcrop");
 require('backbone.localstorage');
 require("bootstrap");
 
-function updateDynamicLineartVisibility(mode, device) {
-    var $div = $("#formGroupDisableDynamicLineart");
-    var features = device.attributes.features;
-    // this function might be called before fetching the device model, which might result in this variable
-    // being potentially erroneously set to false at that time : however, since deviceSync() calls render(),
-    // an update to the correct value will eventually happen once the device model is fetched.
-    var disableSupported = (features !== undefined && '--disable-dynamic-lineart' in features);
-    if (mode === 'Lineart' && disableSupported) {
-        $div.show();
-    } else {
-        $div.hide();
-    }
-}
-
 $(document).ready(function () {
-
     // Set up toastr how we want it
     toastr.options = {
         "positionClass": "toast-bottom-right"
@@ -50,7 +35,6 @@ $(document).ready(function () {
     // ScanRequest is what gets sent to the scanner and contains
     // the various fields which define what the scanner will do
     var ScanRequest = Backbone.Model.extend({
-
         defaults: function () {
             return {
                 // LocalStorage requires an id in order to
@@ -65,7 +49,7 @@ $(document).ready(function () {
                 brightness: 0,
                 contrast: 0,
                 convertFormat: 'tif',
-                disableDynamicLineart: false
+                dynamicLineart: true
             };
         },
 
@@ -76,7 +60,6 @@ $(document).ready(function () {
 
     // Views
     var FileView = Backbone.View.extend({
-
         tagName: 'tr',
         template: _.template($('#file-row').html()),
         events: {
@@ -171,8 +154,8 @@ $(document).ready(function () {
                     $slider.slider("value", val);
                     break;
 
-                case 'disableDynamicLineart':
-                    data[field.id] = field.checked;
+                case 'dynamicLineart':
+                    data[field.id] = field.value === 'true';
                     break;
 
                 default:
@@ -324,7 +307,7 @@ $(document).ready(function () {
 
         render: function (ev) {
             var attrs = (ev && ev.changed) || this.model.attributes;
-            var dev = this.device;
+            var device = this.device;
             _.each(attrs, function (val, id) {
                 var $e = this.$('#' + id);
                 if ($e) {
@@ -334,12 +317,16 @@ $(document).ready(function () {
                 if (id === 'contrast' || id === 'brightness') {
                     $e = this.$('#' + id + '_slider');
                     $e.slider('value', val);
-                }
-                else if (id === 'mode') {
-                    updateDynamicLineartVisibility(val, dev);
-                }
-                else if (id === 'disableDynamicLineart') {
-                    $e.prop("checked", val);
+                } else if (id === 'mode' && device) {
+                    // This might be called before fetching the device model, in which case
+                    // `features` might be incorrect. This will self-correct once the device
+                    // model is fetched.
+                    var features = device.attributes.features;
+                    var isDisableSupported = features && '--disable-dynamic-lineart' in features;
+                    var visible = val === 'Lineart' && isDisableSupported;
+                    $("#formGroupDynamicLineart").toggle(visible);
+                } else if (id === 'dynamicLineart') {
+                    $e.val(String(val));
                 }
             });
         },
@@ -352,7 +339,6 @@ $(document).ready(function () {
     });
 
     var JcropManager = function (model) {
-
         var _this = this;
         
         _this.dotsToMm = function (dots) {
@@ -463,7 +449,6 @@ $(document).ready(function () {
     page.convert();
 
     var jcrop = new JcropManager(page.model);
-
 });
 
 

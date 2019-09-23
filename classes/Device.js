@@ -86,9 +86,7 @@ module.exports = function () {
     };
 
     _this.isFeatureSupported = function (feature) {
-        if (_this.data && 
-            _this.data.features &&
-            feature in _this.data.features) {
+        if (_this.data && _this.data.features && feature in _this.data.features) {
             return _this.data.features[feature].default !== 'inactive';
         }
 
