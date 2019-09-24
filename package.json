@@ -16,6 +16,7 @@
     "browserify-css": "^0.15.0",
     "browserify-shim": "^3.8.14",
     "del": "^3.0.0",
+    "gulp": "^4.0.2",
     "gulp-chmod": "^2.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-filter": "^5.1.0",
@@ -58,5 +59,6 @@
     "transform": [
       "browserify-shim"
     ]
-  }
+  },
+  "optionalDependencies": {}
 }

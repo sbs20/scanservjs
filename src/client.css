@@ -81,3 +81,11 @@ h1 {
     display: none;
     z-index: 10;
 }
+
+.toast-success {
+    background-color: green
+}
+
+.toast-error {
+    background-color: red
+}
