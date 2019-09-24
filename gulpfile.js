@@ -8,7 +8,6 @@ var tar = require('gulp-tar');
 var gzip = require('gulp-gzip');
 
 var browserify = require('browserify');
-var browserifyshim = require('browserify-shim');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var del = require('del');
