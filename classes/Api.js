@@ -1,10 +1,8 @@
-var dateFormat = require('dateformat');
 var fs = require('fs');
 var Q = require('kew');
 
 var Config = require('./Config');
 var Device = require('./Device');
-var System = require('./System');
 var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
 var Scanimage = require('./Scanimage');
@@ -52,17 +50,14 @@ module.exports = function () {
         return convert.execute()
             .then(function () {
                 var fileInfo = new FileInfo(options.target);
-                if (!fileInfo.exists()) throw new Error("File does not exist");
+                if (!fileInfo.exists()) {
+                    throw new Error("File does not exist");
+                }
                 return fileInfo;
             });
     };
 
     _this.scan = function (req) {
-        var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        System.extend(req, {
-            outputFilepath: Config.OutputDirectory + 'Scan_' + dateString + '.tif'
-        });
-
         var scanRequest = new ScanRequest(req);
         var scanner = new Scanimage();
         return scanner.execute(scanRequest);
@@ -70,9 +65,11 @@ module.exports = function () {
 
     _this.preview = function (req) {
         var scanRequest = new ScanRequest({
+            device: req.device,
             mode: req.mode,
             brightness: req.brightness,
             contrast: req.contrast,
+            dynamicLineart: req.dynamicLineart,
             outputFilepath: Config.PreviewDirectory + 'preview.tif',
             resolution: Config.PreviewResolution
         });
