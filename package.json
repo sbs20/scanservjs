@@ -29,7 +29,7 @@
     "jqueryui": "^1.11.1",
     "jshint": "^2.10.2",
     "knockout": "^3.5.0",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.3",
     "popper.js": "^1.15.0",
     "toastr": "^2.1.4",
     "underscore": "^1.9.1",
