@@ -25,7 +25,7 @@ $ docker run -p 8080:8080 --name scanservjs --privileged scanservjs
 
 scanservjs will now be accessible from `http://your-computer's-ip-here:8080/`
 
-### Manual installation
+### manual installation
  * See the installation notes [here](docs/install.md)
 
 # background
