@@ -9,7 +9,7 @@ RUN npm install
 
 # run a gulp build
 COPY . "$APP_DIR"
-RUN ./node_modules/.bin/gulp
+RUN npm run build
 
 # production image
 FROM node:8
