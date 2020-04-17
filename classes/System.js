@@ -1,8 +1,11 @@
+var packageJson = require("../package.json");
 var config = require("./Config");
 var exec = require('child_process').exec;
 var Q = require('kew');
 
 var System = {
+
+	version: packageJson.version,
 
 	isArray: function (obj) {
 		return Array.isArray(obj);
@@ -20,6 +23,9 @@ var System = {
 
 		} else if (System.isObject(v)) {
 			System.trace(k, JSON.stringify(v));
+
+		} else if (v === undefined) {
+			console.log(k + config.TraceLineEnding);
 
 		} else {
 			if (v === null) {

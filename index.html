@@ -14,19 +14,16 @@
     <td><a href="<%= fullname%>"><%= name%></a></td>
     <td><%= new Date(lastModified).toString()%></td>
     <td><%= size%></td>
-    <td><button type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+    <td><button type="button" class="btn btn-lg">X</button></td>
 </script>
 
 <script type="text/template" id="page">
     <div class="row">
-        <!-- Padding for larger screens -->
-        <div class="col-lg-2 col-md-1"></div>
-
         <!-- Fields and buttons -->
-        <div id="fields" class="col-lg-4 col-md-5 col-sm-12">
+        <div id="fields" class="col-lg-6 col-md-6 col-sm-12">
 
             <div class="row">
-                <div id="col1" class="col-xs-6">
+                <div id="col1" class="col">
                     <div class="form-group">
                         <label for="top">Top</label>
                         <input id="top" type="text" class="form-control" />
@@ -48,7 +45,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-6">
+                <div class="col">
                     <div class="form-group">
                         <label for="resolution">Resolution</label>
                         <select id="resolution" class="form-control">
@@ -66,8 +63,14 @@
                     <div class="form-group">
                         <label for="mode">Colour</label>
                         <select id="mode" class="form-control">
-                            <option value="Gray">Greyscale</option>
-                            <option value="Color" selected="selected">Colour</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="formGroupDynamicLineart" style="display: none">
+                        <label for="mode">Dynamic lineart</label>
+                        <select id="dynamicLineart" class="form-control">
+                            <option value="false">disabled</option>
+                            <option value="true">enabled</option>
                         </select>
                     </div>
 
@@ -78,16 +81,20 @@
                     <label for="Contrast">Contrast</label>
                     <input id="contrast" type="text" class="form-control" />
                     <div id="contrast_slider" class="slider"></div>
-                </div>
-            </div>
 
-            <div class="row">
-                <br />
+                    <div class="form-group">
+                        <label for="convertFormat">Format</label>
+                        <select id="convertFormat" class="form-control">
+                            <option>tif</option>
+                            <option>jpg</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Buttons -->
             <div class="row">
-                <div class="text-right">
+                <div class="col text-right">
                     <div class="btn-group" role="group" aria-label="...">
                         <button id="reset" type="button" class="btn btn-lg">reset <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
                         <button id="preview" type="button" class="btn btn-lg">preview <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
@@ -96,17 +103,15 @@
                 </div>
             </div>
 
-            <div class="row">
-                <br />
-            </div>
         </div>
 
         <!-- Preview pane -->
         <div id="previewPane" class="col-lg-4 col-md-5 col-sm-12">
         </div>
+    </div>
 
-        <!-- Padding for larger screens -->
-        <div class="xcol-lg-2 col-md-1"></div>
+    <div class="row">
+        <div class="col">&nbsp;</div>
     </div>
 
     <div class="row">
@@ -138,13 +143,10 @@
 
     <div id="mask"></div>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <div class="navbar-nav navbar-right" href="#">scanserv-js</div>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
+        <div class="navbar-header"></div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <div class="navbar-nav ml-auto" href="#">scanserv-js (v<span id="version"></span>)</div>
         </div>
     </nav>
 
@@ -153,7 +155,7 @@
         <div id="app">
         </div>
 
-        <div class="hide">
+        <div class="d-none">
             <div class="collapse-group">
                 Welcome to scanservjs. If you are seeing this then you have
                 probably tried to run the source code instead of the build.

@@ -1,5 +1,4 @@
 ﻿body {
-    padding-top: 60px;
     padding-bottom: 20px;
     font-family: 'Montserrat';
     font-size: large;
@@ -24,6 +23,10 @@
 #navbar > div {
     color: white;
     font-size: xx-large;
+}
+
+.container {
+    margin-top: 1em;
 }
 
 .navbar-inverse {
@@ -58,6 +61,10 @@ label, th {
     color: #0E5EA0;
 }
 
+.form-check-label {
+    font-size: smaller;
+}
+
 h1 {
     font-size: 4em;
     font-weight: 100;
@@ -73,4 +80,12 @@ h1 {
     left: 0;
     display: none;
     z-index: 10;
+}
+
+.toast-success {
+    background-color: green
+}
+
+.toast-error {
+    background-color: red
 }

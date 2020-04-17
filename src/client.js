@@ -10,7 +10,6 @@ require('backbone.localstorage');
 require("bootstrap");
 
 $(document).ready(function () {
-
     // Set up toastr how we want it
     toastr.options = {
         "positionClass": "toast-bottom-right"
@@ -18,21 +17,24 @@ $(document).ready(function () {
 
     // Files are always created on the server. All we need here
     // is idAttribute so backbone knows what the id field is
-    var File = Backbone.Model.extend({
-        idAttribute: "fullname"
-    });
+    var File = Backbone.Model.extend({ idAttribute: "fullname" });
 
-    // FileCollections are cery simple but we need to specify
+    // FileCollections are very simple but we need to specify
     // the url and model type
     var FileCollection = Backbone.Collection.extend({
         url: 'file',
         model: File
     });
 
+    // Diagnostics runs basic tests to establish if this might work or not
+    var Diagnostics = Backbone.Model.extend({ url: 'diagnostics' });
+
+    // Device contains information about the scanner itself
+    var Device = Backbone.Model.extend({ url: 'device' });
+
     // ScanRequest is what gets sent to the scanner and contains
     // the various fields which define what the scanner will do
     var ScanRequest = Backbone.Model.extend({
-
         defaults: function () {
             return {
                 // LocalStorage requires an id in order to
@@ -43,10 +45,11 @@ $(document).ready(function () {
                 width: 215,
                 height: 297,
                 resolution: 150,
-                mode: 'Color',
+                mode: null,
                 brightness: 0,
                 contrast: 0,
-                type: 'tif'
+                convertFormat: 'tif',
+                dynamicLineart: true
             };
         },
 
@@ -57,7 +60,6 @@ $(document).ready(function () {
 
     // Views
     var FileView = Backbone.View.extend({
-
         tagName: 'tr',
         template: _.template($('#file-row').html()),
         events: {
@@ -78,9 +80,11 @@ $(document).ready(function () {
     });
 
     var Page = Backbone.View.extend({
+        diagnostics: null,
         device: null,
-        resizeTimer: null,
         files: null,
+        resizeTimer: null,
+
         el: $("#app"),
         tagName: 'div',
         template: _.template($('#page').html()),
@@ -92,18 +96,21 @@ $(document).ready(function () {
             'click #scan': 'scan'
         },
 
-        mask: function (show) {
-            var m = $('#mask');
-            if (show) {
-                m.fadeIn();
-            } else {
-                m.fadeOut();
-            }
+        mask: function () {
+            $('#mask').fadeIn();
+        },
+
+        unmask: function () {
+            $('#mask').fadeOut();
+        },
+
+        fail: function (xhr) {
+            toastr.error(xhr.responseJSON.message);
         },
 
         reset: function () {
-            var d = this.model.defaults();
-            this.model.set(d);
+            var defaults = this.model.defaults();
+            this.model.set(defaults);
             this.model.save();
             jcrop.draw();
         },
@@ -122,9 +129,9 @@ $(document).ready(function () {
         // When a UI field is updated, its change event
         // should be propagated here. This will update
         // the model and forward updates to JcropManager
-        update: function (e) {
-            var field = e.target;
-            var o = {};
+        update: function (event) {
+            var field = event.target;
+            var data = {};
 
             switch (field.id) {
                 case 'top':
@@ -132,7 +139,7 @@ $(document).ready(function () {
                 case 'height':
                 case 'width':
                 case 'resolution':
-                    o[field.id] = parseInt(field.value);
+                    data[field.id] = parseInt(field.value);
                     break;
 
                 case 'brightness':
@@ -143,51 +150,29 @@ $(document).ready(function () {
                     if (val < -100) val = -100;
                     if (val > 100) val = 100;
                     field.value = val;
-                    o[field.id] = val;
+                    data[field.id] = val;
                     $slider.slider("value", val);
                     break;
 
+                case 'dynamicLineart':
+                    data[field.id] = field.value === 'true';
+                    break;
+
                 default:
-                    o[field.id] = field.value;
+                    data[field.id] = field.value;
                     break;
             }
 
-            this.model.set(o);
+            this.model.set(data);
             this.model.save();
 
             jcrop.draw();
         },
 
-        diagnostics: function () {
-            // Start the scan
-            return $.ajax({ url: 'diagnostics' })
-                .done(function (tests) {
-                    _.each(tests, function (test) {
-                        if (test.success === true) {
-                            toastr.success(test.message);
-                        } else {
-                            toastr.error(test.message);
-                        }
-                    });
-
-                    toastr.success('Detecting device...');
-                    return $.ajax({ url: 'device' })
-                        .fail(function (xhr) {
-                            page.mask(false);
-                            toastr.error(xhr.responseJSON.message);                                    
-                        })
-                        .done(function (device) {
-                            page.device = device;
-                            toastr.success('Found device: ' + device.name);
-                            page.mask(false);
-                        });
-                });
-        },
-
         // Called to take the preview image and return it as
         // a base64 encoded jpg and update the UI
         convert: function () {
-            var o = {
+            var request = {
                 url: 'convert',
                 type: "POST",
                 contentType: "application/json",
@@ -195,7 +180,7 @@ $(document).ready(function () {
                 data: JSON.stringify(page.model.toJSON())
             };
 
-            return $.ajax(o).then(function (fileInfo) {
+            return $.ajax(request).then(function (fileInfo) {
                 if (fileInfo.content) {
                     $("#image").attr('src', 'data:image/jpeg;base64,' + fileInfo.content);
                     $("#image").css('display', 'block');
@@ -204,39 +189,38 @@ $(document).ready(function () {
         },
 
         preview: function () {
-            page.mask(true);
+            page.mask();
 
             // Keep reloading the preview image
             var timer = window.setInterval(this.convert, 500);
 
-            var o = {
+            var data = this.model.toJSON();
+            data.device = page.device;
+
+            var request = {
                 url: 'preview',
                 type: "POST",
                 contentType: "application/json",
                 dataType: "json",
-                data: JSON.stringify(this.model.toJSON())
+                data: JSON.stringify(data)
             };
 
             // Start the scan
-            return $.ajax(o)
-                .fail(function (xhr) {
+            return $.ajax(request)
+                .fail(page.fail)
+                .always(function () {
                     window.clearInterval(timer);
-                    page.mask(false);
-                    toastr.error(xhr.responseJSON.message);
-                })
-                .done(function () {
-                    window.clearInterval(timer);
-                    page.mask(false);
+                    page.unmask();
                 });
         },
 
         scan: function () {
-            page.mask(true);
+            page.mask();
 
             var data = this.model.toJSON();
             data.device = page.device;
             
-            var o = {
+            var request = {
                 url: 'scan',
                 type: "POST",
                 contentType: "application/json",
@@ -244,21 +228,15 @@ $(document).ready(function () {
                 data: JSON.stringify(data)
             };
 
-            return $.ajax(o)
-                .fail(function (xhr) {
-                    page.mask(false);
-                    toastr.error(xhr.responseJSON.message);
-                })
-                .then(function () {
-                    page.mask(false);
+            return $.ajax(request)
+                .fail(page.fail)
+                .always(page.unmask)
+                .done(function () {
                     page.files.fetch();
-                });            
+                });
         },
 
         initialize: function () {
-            this.files = new FileCollection();
-            this.listenTo(this.files, 'add', this.add);
-
             var html = this.template();
             this.$el.append(html);
 
@@ -281,21 +259,55 @@ $(document).ready(function () {
                 }
             });
 
-            this.files.fetch();
+            this.diagnostics = new Diagnostics();
+            this.diagnostics.on("sync", this.diagnosticsSync, this);
+            this.diagnostics.fetch();
+
+            this.device = new Device();
+            this.device.on("sync", this.deviceSync, this);
+            this.device.fetch();
 
             this.model = new ScanRequest();
-
-            // Now listen to the model and call render
+            this.model.on("sync", this.render, this);
             this.model.on("change", this.render, this);
-
-            // Get our data
             this.model.fetch();
 
+            this.files = new FileCollection();
+            this.listenTo(this.files, 'add', this.add);
+            this.files.fetch();
+        },
+
+        diagnosticsSync: function (diagnostics) {
+            _.each(diagnostics.attributes, function (test) {
+                if (test.success === true) {
+                    toastr.success(test.message);
+                } else {
+                    toastr.error(test.message);
+                }
+            });
+        },
+
+        deviceSync: function (device) {
+            this.device = device;
+            var modes = device.attributes.features['--mode'].options.split('|');
+            $mode = $('#mode');
+            _.each(modes, function (val) {
+                $mode.append('<option>' + val + '</option>');
+            });
+
+            if (this.model.attributes.mode === null) {
+                this.model.attributes.mode = device.attributes.features['--mode'].default;
+            }
+
+            $('#version').text(device.attributes.version);
+            
+            // We've changed the UI mode options so refresh
             this.render();
         },
 
         render: function (ev) {
             var attrs = (ev && ev.changed) || this.model.attributes;
+            var device = this.device;
             _.each(attrs, function (val, id) {
                 var $e = this.$('#' + id);
                 if ($e) {
@@ -305,6 +317,16 @@ $(document).ready(function () {
                 if (id === 'contrast' || id === 'brightness') {
                     $e = this.$('#' + id + '_slider');
                     $e.slider('value', val);
+                } else if (id === 'mode' && device) {
+                    // This might be called before fetching the device model, in which case
+                    // `features` might be incorrect. This will self-correct once the device
+                    // model is fetched.
+                    var features = device.attributes.features;
+                    var isDisableSupported = features && '--disable-dynamic-lineart' in features;
+                    var visible = val === 'Lineart' && isDisableSupported;
+                    $("#formGroupDynamicLineart").toggle(visible);
+                } else if (id === 'dynamicLineart') {
+                    $e.val(String(val));
                 }
             });
         },
@@ -317,7 +339,6 @@ $(document).ready(function () {
     });
 
     var JcropManager = function (model) {
-
         var _this = this;
         
         _this.dotsToMm = function (dots) {
@@ -425,10 +446,9 @@ $(document).ready(function () {
 
     // Run
     var page = new Page();
-    page.mask(true);
     page.convert();
+
     var jcrop = new JcropManager(page.model);
-    page.diagnostics();
 });
 
 
