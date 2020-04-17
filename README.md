@@ -24,6 +24,7 @@ $ docker run -p 8080:8080 --name scanservjs --privileged scanservjs
 (`--privileged` is required for the container to access the host's devices, to allow it to talk to the scanner)
 
 scanservjs will now be accessible from `http://your-computer's-ip-here:8080/`
+
  * Manual installation notes [here](docs/install.md)
 
 # background
