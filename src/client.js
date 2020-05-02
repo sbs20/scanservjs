@@ -241,8 +241,8 @@ $(document).ready(function () {
             this.$el.append(html);
 
             $(window).on('resize', function () {
-                clearTimeout(page.resizeTimer);
-                page.resizeTimer = setTimeout(function () {
+                window.clearTimeout(page.resizeTimer);
+                page.resizeTimer = window.setTimeout(function () {
                     jcrop.draw();
                     page.convert();
                 }, 100);
@@ -290,7 +290,7 @@ $(document).ready(function () {
         deviceSync: function (device) {
             this.device = device;
             var modes = device.attributes.features['--mode'].options.split('|');
-            $mode = $('#mode');
+            var $mode = $('#mode');
             _.each(modes, function (val) {
                 $mode.append('<option>' + val + '</option>');
             });

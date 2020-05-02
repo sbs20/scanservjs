@@ -1,8 +1,9 @@
 # installation
 
 ## tl;dr;
+
 ```
-sudo apt install npm sane-utils imagemagick curl`
+sudo apt install npm sane-utils imagemagick curl
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt install -y nodejs
 wget -O ~/scanservjs.tar.gz $(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
@@ -32,6 +33,11 @@ sudo apt install -y nodejs
 sudo apt-get install npm sane-utils imagemagick`
 ```
 
+#### Debian 10:
+```
+sudo apt install -y nodejs npm sane-utils imagemagick
+```
+
 For more on problems installing an up to date nodejs on Debian which includes
 `npm`. See [here](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
 
@@ -55,9 +61,12 @@ Or have a look at [other releases](https://github.com/sbs20/scanservjs/releases)
 
 # development / build
 
-  * Install nodejs
-  * `npm install`
-  * `npm install -g gulp-cli`
-  * `gulp`
-  * `cd ./build/scanservjs`
-  * `node /server.js`
+* Install nodejs
+* `npm install`
+* `npm install -g gulp-cli`
+* `gulp`
+* `cd ./build/scanservjs`
+* `node /server.js`
+
+# Updating dependencies
+* `npm audit fix` or `npm update`. This won't remove old packages. Delete node_modules and reinstall
