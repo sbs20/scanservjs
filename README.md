@@ -15,7 +15,18 @@ Copyright 2016	[Sam Strachan](https://github.com/sbs20)
   * nodejs
 
 # installation notes
- * Installation notes [here](docs/install.md)
+For an easy docker-based install (assuming that SANE supports your scanner out-of-the-box on Debian):
+
+```console
+$ docker build -t scanservjs .
+$ docker run -p 8080:8080 --name scanservjs --privileged scanservjs
+```
+(`--privileged` is required for the container to access the host's devices, to allow it to talk to the scanner)
+
+scanservjs will now be accessible from `http://your-computer's-ip-here:8080/`
+
+## manual installation
+ * See the installation notes [here](docs/install.md)
 
 # background
 This is yet another scanimage-web-front-end. Why?
