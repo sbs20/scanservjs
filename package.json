@@ -24,7 +24,7 @@
     "gulp-jshint": "^2.1.0",
     "gulp-tar": "^2.1.0",
     "gulp-uglify": "^2.1.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-jcrop": "^0.9.13",
     "jqueryui": "^1.11.1",
     "jshint": "^2.10.2",
