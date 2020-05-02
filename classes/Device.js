@@ -47,7 +47,11 @@ module.exports = function () {
 
     /// Executes scanimageA and returns a promise of parsed results
     var scanimageA = function () {
-        var cmd = Config.Scanimage + ' -A';
+        var cmd = Config.Scanimage;
+        if(Config.DeviceName){
+            cmd += ' -d "'+Config.DeviceName+'"';
+        }
+        cmd += ' -A';
 
         return System.execute(cmd)
             .then(function (reply) {
