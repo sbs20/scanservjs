@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
-var jshint = require('gulp-jshint');
+var eslint = require('gulp-eslint');
 var concat = require('gulp-concat');
 var chmod = require('gulp-chmod');
 var filter = require('gulp-filter');
@@ -20,6 +20,43 @@ var knownOptions = {
 };
 
 var options = minimist(process.argv.slice(2), knownOptions);
+var linter = function () {
+    return eslint({
+        'parserOptions': {
+            'ecmaVersion': 2017
+        },
+        'env': {
+            'es6': true,
+            'browser': true
+        },
+        'globals': [
+            'console',
+            'document',
+            'module',
+            'require',
+            'window',
+            'Buffer'
+        ],
+        'rules': {
+            'array-bracket-spacing': 1,
+            'brace-style': 1,
+            'comma-spacing': 1,
+            'eqeqeq': 1,
+            'indent': ['error', 4, {'SwitchCase': 1}],
+            'keyword-spacing': 1,
+            'no-mixed-spaces-and-tabs': 1,
+            'no-undef': 1,
+            'no-unused-vars': 1,
+            //'no-var': 1,
+            //'object-shorthand': [1, 'methods'],
+            //'prefer-arrow-callback': 1,
+            //'quotes': ['error', 'single'],
+            'semi': ['error', 'always'],
+            'space-before-blocks': 1,
+            'space-infix-ops': 1
+        }
+    });
+};
 
 // Useful resources
 //  * https://www.smashingmagazine.com/2014/06/building-with-gulp/
@@ -35,14 +72,17 @@ gulp.task('clean', function () {
 
 gulp.task('inspect', function () {
     return gulp.src('./src/client.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));        
+        // See rules: https://eslint.org/docs/rules/
+        .pipe(linter())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 });
 
 gulp.task('server-js', gulp.series(['inspect'], function () {
     return gulp.src(['server.js', './classes/*.js'])
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));        
+        .pipe(linter())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 }));
 
 gulp.task('client-js', gulp.series(['inspect'], function () {

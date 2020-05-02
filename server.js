@@ -105,4 +105,6 @@ app.get('/device', function (req, res) {
         });
 });
 
-app.listen(Config.Port, function () { console.log('listening'); });
+app.listen(Config.Port, function () {
+    console.log('listening');
+});

@@ -1,6 +1,4 @@
-var fs = require('fs');
 var Q = require('kew');
-
 var Config = require('./Config');
 var System = require('./System');
 
