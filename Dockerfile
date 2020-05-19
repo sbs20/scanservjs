@@ -1,4 +1,4 @@
-FROM node:8 AS builder
+FROM node:buster AS builder
 
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
@@ -12,7 +12,7 @@ COPY . "$APP_DIR"
 RUN npm run build
 
 # production image
-FROM node:8
+FROM node:buster-slim
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 # Install sane
@@ -23,8 +23,13 @@ COPY --from=builder "$APP_DIR/build/scanservjs" "$APP_DIR/"
 # Install dependencies
 RUN npm install --production
 
+
+ENV NET_HOST=""
+
 # Copy built assets from builder image
 
-CMD ["node", "server.js"]
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
 
 EXPOSE 8080
