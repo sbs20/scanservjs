@@ -23,7 +23,7 @@ module.exports = function () {
             var files = list.map(function (f) {
                 return new FileInfo(outdir + f);
             }).filter(function (f) {
-                return f.extension === '.tif' || f.extension === '.jpg';
+                return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
             });
 
             deferred.resolve(files);

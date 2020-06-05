@@ -50,7 +50,7 @@ var ScanRequest = function (def) {
             errors.push('Top + height exceed maximum dimensions');
         }
 
-        if (['tif', 'jpg', 'png'].indexOf(_this.convertFormat) === -1) {
+        if (['tif', 'jpg', 'png', 'pdf'].indexOf(_this.convertFormat) === -1) {
             errors.push('Invalid format type');
         }
 
