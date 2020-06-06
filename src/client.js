@@ -110,11 +110,10 @@ $(document).ready(function () {
 
         reset: function () {
             var defaults = this.model.defaults();
+            defaults.mode = this.device.attributes.features['--mode'].default; // Set colour/mode to device default
             this.model.set(defaults);
-            this.model.attributes.mode = this.device.attributes.features['--mode'].default; // Set colour/mode to device default
             this.model.save();
             jcrop.draw();
-            this.render(); // We need this to update the combo box
         },
 
         // For debug only - but useful for when things
