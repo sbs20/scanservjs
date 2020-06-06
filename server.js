@@ -72,6 +72,19 @@ app.post('/scan', function (req, res) {
         });
 });
 
+app.post('/finish', function (req, res) {
+    var param = req.body;
+    var api = new Api();
+    api.finishMerge(param)
+        .then(function (data) {
+            res.send(data);
+        })
+        .fail(function (data) {
+            var err = wrapError(data);
+            res.status(500).send(err);
+        });
+});
+
 app.post('/preview', function (req, res) {
     var param = req.body;
     var api = new Api();

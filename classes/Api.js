@@ -1,3 +1,4 @@
+var dateFormat = require('dateformat');
 var fs = require('fs');
 var Q = require('kew');
 
@@ -7,6 +8,7 @@ var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
 var Scanimage = require('./Scanimage');
 var Convert = require('./Convert');
+var FinishMerge = require('./FinishMerge');
 
 module.exports = function () {
     var _this = this;
@@ -61,6 +63,25 @@ module.exports = function () {
         var scanRequest = new ScanRequest(req);
         var scanner = new Scanimage();
         return scanner.execute(scanRequest);
+    };
+
+    _this.finishMerge = function (req) {
+        var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
+        var outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + req.convertFormat;
+        console.log(outputFilepath);
+        var options = {
+            target: outputFilepath,
+            pages: req.pages
+        };
+        var finishMerge = new FinishMerge(options);
+        return finishMerge.execute()
+            .then(function () {
+                var fileInfo = new FileInfo(options.target);
+                if (!fileInfo.exists()) {
+                    throw new Error("File does not exist");
+                }
+                return fileInfo;
+            });
     };
 
     _this.preview = function (req) {

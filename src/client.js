@@ -49,7 +49,9 @@ $(document).ready(function () {
                 brightness: 0,
                 contrast: 0,
                 convertFormat: 'tif',
-                dynamicLineart: true
+                dynamicLineart: true,
+                multiplePages: false,
+                pages: []
             };
         },
 
@@ -93,7 +95,8 @@ $(document).ready(function () {
             'change select': 'update',
             'click #preview': 'preview',
             'click #reset': 'reset',
-            'click #scan': 'scan'
+            'click #scan': 'scan',
+            'click #finish': 'finish'
         },
 
         mask: function () {
@@ -156,6 +159,10 @@ $(document).ready(function () {
                     break;
 
                 case 'dynamicLineart':
+                    data[field.id] = field.value === 'true';
+                    break;
+
+                case 'multiplePages':
                     data[field.id] = field.value === 'true';
                     break;
 
@@ -223,6 +230,31 @@ $(document).ready(function () {
             
             var request = {
                 url: 'scan',
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(data)
+            };
+
+            return $.ajax(request)
+                .fail(page.fail)
+                .always(page.unmask)
+                .done(function (data) {
+                    if (page.model.attributes.multiplePages) {
+                        page.model.set({pages: page.model.attributes.pages.concat([data.image])});
+                        page.model.save();
+                    }
+                    page.files.fetch();
+                });
+        },
+
+        finish: function() {
+            page.mask();
+
+            var data = this.model.toJSON();
+
+            var request = {
+                url: 'finish',
                 type: "POST",
                 contentType: "application/json",
                 dataType: "json",
@@ -326,8 +358,15 @@ $(document).ready(function () {
                     var isDisableSupported = features && '--disable-dynamic-lineart' in features;
                     var visible = val === 'Lineart' && isDisableSupported;
                     $("#formGroupDynamicLineart").toggle(visible);
+                } else if (id === 'convertFormat') {
+                    $('#formGroupDynamicMultiplePages').toggle(val === 'pdf');
                 } else if (id === 'dynamicLineart') {
                     $e.val(String(val));
+                } else if (id === 'multiplePages') {
+                    $e.val(String(val));
+                    $('#finish').toggle(val);
+                } else if (id === 'pages') {
+                    $e.html(val.length);
                 }
             });
         },

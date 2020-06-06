@@ -8,7 +8,7 @@ var ScanRequest = function (def) {
     System.extend(_this, ScanRequest.default, def);
     if (!_this.outputFilepath) {
         var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        _this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + _this.convertFormat;
+        _this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + (_this.multiplePages ? "tif" : _this.convertFormat);
     }
 
     _this.validate = function () {
@@ -54,6 +54,10 @@ var ScanRequest = function (def) {
             errors.push('Invalid format type');
         }
 
+        if (!typeof _this.multiplePages === 'boolean') {
+            errors.push('Invalid value for multiple pages: ' + _this.multiplePages);
+        }
+
         return errors;
     };
 };
@@ -70,7 +74,8 @@ ScanRequest.default = {
     brightness: 0,
     contrast: 0,
     convertFormat: 'tif',
-    dynamicLineart: true
+    dynamicLineart: true,
+    multiplePages: false
 };
 
 module.exports = ScanRequest;

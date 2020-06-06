@@ -90,6 +90,14 @@
                             <option>pdf</option>
                         </select>
                     </div>
+
+                    <div class="form-group" id="formGroupDynamicMultiplePages" style="display: none">
+                        <label for="multiplePages">Multiple pages</label>
+                        <select id="multiplePages" class="form-control">
+                            <option value="false">disabled</option>
+                            <option value="true">enabled</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -100,6 +108,10 @@
                         <button id="reset" type="button" class="btn btn-lg">reset <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
                         <button id="preview" type="button" class="btn btn-lg">preview <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                         <button id="scan" type="button" class="btn btn-lg">scan <span class="glyphicon glyphicon-camera" aria-hidden="true"></span></button>
+                        <button id="finish" type="button" class="btn btn-lg" style="display: none">finish 
+                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            (<span id="pages">0</span> pages)
+                        </button>
                     </div>
                 </div>
             </div>
