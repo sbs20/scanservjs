@@ -110,6 +110,7 @@ $(document).ready(function () {
 
         reset: function () {
             var defaults = this.model.defaults();
+            defaults.mode = this.device.attributes.features['--mode'].default; // Set colour/mode to device default
             this.model.set(defaults);
             this.model.save();
             jcrop.draw();
