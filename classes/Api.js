@@ -68,7 +68,7 @@ module.exports = function () {
     _this.finishMerge = function (req) {
         var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
         var outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + req.convertFormat;
-        console.log(outputFilepath);
+        
         var options = {
             target: outputFilepath,
             pages: req.pages

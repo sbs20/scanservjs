@@ -31,6 +31,9 @@ module.exports = function (arg) {
 
     // Returns a promise
     _this.execute = function () {
+        if(_this.args.pages.length === 0) {
+            return Q.reject(new Error('no pages supplied'));
+        }
         var cmd = _this.cmd();
         return System.execute(cmd)
             .fail(function (error) {
