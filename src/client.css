@@ -89,3 +89,8 @@ h1 {
 .toast-error {
     background-color: red
 }
+
+/* center the icons vertically */
+.material-icons {
+    vertical-align: middle;
+}
