@@ -102,6 +102,7 @@ gulp.task('css', function () {
         './node_modules/jquery-jcrop/**/*.min.css',
         './node_modules/toastr/**/*.min.css',
         './node_modules/bootstrap/dist/**/*.min.css',
+        './node_modules/tingle.js/**/*.min.css',
         './src/client.css'
     ]).pipe(concat('app.css'))
         .pipe(gulp.dest('./assets/css'));

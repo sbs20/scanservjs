@@ -44,7 +44,7 @@ module.exports = function () {
             cmd += ' --disable-dynamic-lineart=yes ';
         }
 
-        if (scanRequest.convertFormat !== 'tif' && !scanRequest.multiplePages) {
+        if (scanRequest.convertFormat !== 'tif' && scanRequest.convertFormat !== 'pdf') {
             cmd += ' | convert - ' + scanRequest.convertFormat + ':-';
         }
 

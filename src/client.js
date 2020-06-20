@@ -3,6 +3,7 @@ var jQuery = require('jquery');
 var $ = jQuery;
 var _ = require('underscore');
 var toastr = require('toastr');
+var tingle = require("tingle.js");
 
 require("jqueryui");
 require("jquery-jcrop");
@@ -50,7 +51,6 @@ $(document).ready(function () {
                 contrast: 0,
                 convertFormat: 'tif',
                 dynamicLineart: true,
-                multiplePages: false,
                 pages: []
             };
         },
@@ -96,7 +96,6 @@ $(document).ready(function () {
             'click #preview': 'preview',
             'click #reset': 'reset',
             'click #scan': 'scan',
-            'click #finish': 'finish'
         },
 
         mask: function () {
@@ -159,10 +158,6 @@ $(document).ready(function () {
                     break;
 
                 case 'dynamicLineart':
-                    data[field.id] = field.value === 'true';
-                    break;
-
-                case 'multiplePages':
                     data[field.id] = field.value === 'true';
                     break;
 
@@ -240,9 +235,24 @@ $(document).ready(function () {
                 .fail(page.fail)
                 .always(page.unmask)
                 .done(function (data) {
-                    if (page.model.attributes.multiplePages) {
+                    if (page.model.attributes.convertFormat === 'pdf') {
                         page.model.set({pages: page.model.attributes.pages.concat([data.image])});
                         page.model.save();
+
+                        var modal = new tingle.modal({
+                            footer: true,
+                            stickyFooter: false,
+                            closeMethods: []
+                        });
+                        modal.setContent('<h3>Do you want to scan more pages?</h3>');
+                        modal.addFooterBtn('Yes, scan more', 'tingle-btn tingle-btn--primary', function() {
+                            modal.close();
+                        });
+                        modal.addFooterBtn('No, finish', 'tingle-btn tingle-btn--primary', function() {
+                            page.finish();
+                            modal.close();
+                        });
+                        modal.open();
                     }
                     page.files.fetch();
                 });
@@ -265,6 +275,9 @@ $(document).ready(function () {
                 .fail(page.fail)
                 .always(page.unmask)
                 .done(function () {
+                    page.model.set({pages: []});
+                    page.model.save();
+
                     page.files.fetch();
                 });
         },
@@ -358,15 +371,8 @@ $(document).ready(function () {
                     var isDisableSupported = features && '--disable-dynamic-lineart' in features;
                     var visible = val === 'Lineart' && isDisableSupported;
                     $("#formGroupDynamicLineart").toggle(visible);
-                } else if (id === 'convertFormat') {
-                    $('#formGroupDynamicMultiplePages').toggle(val === 'pdf');
                 } else if (id === 'dynamicLineart') {
                     $e.val(String(val));
-                } else if (id === 'multiplePages') {
-                    $e.val(String(val));
-                    $('#finish').toggle(val);
-                } else if (id === 'pages') {
-                    $e.html(val.length);
                 }
             });
         },

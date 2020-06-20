@@ -8,7 +8,9 @@ var ScanRequest = function (def) {
     System.extend(_this, ScanRequest.default, def);
     if (!_this.outputFilepath) {
         var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        _this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + (_this.multiplePages ? "tif" : _this.convertFormat);
+        _this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' +
+            // for scanning as PDF, save a TIF first and convert it later
+            (_this.convertFormat === 'pdf' ? "tif" : _this.convertFormat);
     }
 
     _this.validate = function () {
@@ -52,10 +54,6 @@ var ScanRequest = function (def) {
 
         if (['tif', 'jpg', 'png', 'pdf'].indexOf(_this.convertFormat) === -1) {
             errors.push('Invalid format type');
-        }
-
-        if (!typeof _this.multiplePages === 'boolean') {
-            errors.push('Invalid value for multiple pages: ' + _this.multiplePages);
         }
 
         return errors;
