@@ -67,16 +67,17 @@ module.exports = function () {
 
     _this.finishMerge = function (req) {
         var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        var outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + req.convertFormat;
+        var outputFilepath = Config.OutputDirectory + 'scan_' + dateString;
         
         var options = {
             target: outputFilepath,
-            pages: req.pages
+            pages: req.pages,
+            ocr: req.ocr
         };
         var finishMerge = new FinishMerge(options);
         return finishMerge.execute()
             .then(function () {
-                var fileInfo = new FileInfo(options.target);
+                var fileInfo = new FileInfo(options.target + '.pdf');
                 if (!fileInfo.exists()) {
                     throw new Error("File does not exist");
                 }
@@ -119,6 +120,7 @@ module.exports = function () {
 
         tests.push(testFileExists(Config.Scanimage));
         tests.push(testFileExists(Config.Convert));
+        tests.push(testFileExists(Config.Tesseract));
 
         return Q.resolve(tests);
     };

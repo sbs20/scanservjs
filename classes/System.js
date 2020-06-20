@@ -74,6 +74,41 @@ var System = {
         return deferred.promise;
     },
 
+    executeWrite: function (cmd, stdin) {
+        var deferred = Q.defer();
+
+        var res = {
+            cmd: cmd,
+            output: '',
+            code: -1
+        };
+
+        if (!config.BypassSystemExecute) {
+            System.trace('System.executeWrite:start', cmd);
+
+            var child = exec(cmd, function (error, stdout) {
+                if (error) {
+                    deferred.reject(error);
+                    return;
+                }
+
+                System.extend(res, {
+                    output: stdout,
+                    code: error ? -1 : 0
+                });
+
+                System.trace('System.executeWrite:finish', res);
+
+                deferred.resolve(res);
+            });
+            child.stdin.setEncoding = 'utf-8';
+            child.stdin.write(stdin);
+            child.stdin.end();
+        }
+
+        return deferred.promise;
+    },
+
     error: function (e) {
         System.log("Error", e);
     },

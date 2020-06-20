@@ -12,7 +12,8 @@ module.exports = function (arg) {
         trim: false,
         sharpen: 0,
         quality: undefined,
-        ignoreStdError: false
+        ignoreStdError: false,
+        ocr: false
     }, arg);
 
     _this.cmd = function () {
@@ -26,7 +27,22 @@ module.exports = function (arg) {
         return Config.Convert + ' '  +
             params +
             '"' + _this.args.pages.join('" "') + '" "' +
-            _this.args.target + '"';
+            _this.args.target + '.pdf"';
+    };
+
+    _this.executeTesseract = function () {
+        var params = ' ';
+        params += '-l ' + Config.TesseractLanguage + ' ';
+        params += '--psm 3 ';
+
+        var cmd = Config.Tesseract + ' ' +
+            params +
+            'stdin "' +
+            _this.args.target + '" pdf';
+
+        var pages = _this.args.pages.join('\n');
+
+        return System.executeWrite(cmd, pages);
     };
 
     // Returns a promise
@@ -34,8 +50,8 @@ module.exports = function (arg) {
         if (_this.args.pages.length === 0) {
             return Q.reject(new Error('no pages supplied'));
         }
-        var cmd = _this.cmd();
-        return System.execute(cmd)
+        var promise = _this.args.ocr ? _this.executeTesseract() : System.execute(_this.cmd());
+        return promise
             .fail(function (error) {
                 // Incomplete scan images are corrupt and will throw an error like
                 // convert: Read error on strip 23; got 3343 bytes, expected 8037. `TIFFFillStrip'

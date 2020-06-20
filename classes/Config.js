@@ -5,6 +5,8 @@ module.exports = {
     DeviceName: null,
     Scanimage: '/usr/bin/scanimage',
     Convert: '/usr/bin/convert',
+    Tesseract: '/usr/bin/tesseract',
+    TesseractLanguage: 'eng',
     IgnoreStdError: '2>/dev/null',
     BypassSystemExecute: false,
     OutputDirectory: './data/output/',

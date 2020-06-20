@@ -249,7 +249,11 @@ $(document).ready(function () {
                             modal.close();
                         });
                         modal.addFooterBtn('No, finish', 'tingle-btn tingle-btn--primary', function() {
-                            page.finish();
+                            page.finish(false);
+                            modal.close();
+                        });
+                        modal.addFooterBtn('No, finish with OCR', 'tingle-btn tingle-btn--primary', function() {
+                            page.finish(true);
                             modal.close();
                         });
                         modal.open();
@@ -258,10 +262,11 @@ $(document).ready(function () {
                 });
         },
 
-        finish: function() {
+        finish: function(ocr) {
             page.mask();
 
             var data = this.model.toJSON();
+            data.ocr = ocr;
 
             var request = {
                 url: 'finish',
