@@ -87,6 +87,7 @@ $(document).ready(function () {
         device: null,
         files: null,
         resizeTimer: null,
+        ocr: false,
 
         el: $("#app"),
         tagName: 'div',
@@ -253,10 +254,12 @@ $(document).ready(function () {
                             page.finish(false);
                             modal.close();
                         });
-                        modal.addFooterBtn('No, finish with OCR', 'tingle-btn tingle-btn--primary', function() {
-                            page.finish(true);
-                            modal.close();
-                        });
+                        if (page.ocr) {
+                            modal.addFooterBtn('No, finish with OCR', 'tingle-btn tingle-btn--primary', function() {
+                                page.finish(true);
+                                modal.close();
+                            });
+                        }
                         modal.open();
                     }
                     page.files.fetch();
@@ -339,6 +342,9 @@ $(document).ready(function () {
                     toastr.warning(test.message);
                 }
             });
+
+            page.ocr = _.findWhere(diagnostics.attributes, {key: 'tesseract'}).success === true &&
+                       _.findWhere(diagnostics.attributes, {key: 'tesseract-lang'}).success === true;
         },
 
         deviceSync: function (device) {

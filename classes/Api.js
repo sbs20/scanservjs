@@ -106,6 +106,7 @@ module.exports = function () {
         if (file.exists()) {
             return {
                 success: true,
+                key: file.name,
                 message: 'Found ' + file.name + ' at "' + path + '"'
             };
         }
@@ -113,6 +114,7 @@ module.exports = function () {
         return {
             success: false,
             critical: critical,
+            key: file.name,
             message: 'Unable to find ' + file.name + ' at "' + path + '"'
         };
     };
@@ -130,12 +132,14 @@ module.exports = function () {
                 if (lines.includes(language)) {
                     return {
                         success: true,
+                        key: 'tesseract-lang',
                         message: 'Selected language ' + language + ' is available in tesseract'
                     };
                 } else {
                     return {
                         success: false,
                         critical: critical,
+                        key: 'tesseract-lang',
                         message: 'Selected language ' + language + ' is not available in tesseract'
                     };
                 }
@@ -146,6 +150,7 @@ module.exports = function () {
                 return {
                     success: false,
                     critical: critical,
+                    key: 'tesseract-lang',
                     message: 'Cannot execute tesseract'
                 };
             });
