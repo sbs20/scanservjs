@@ -72,8 +72,7 @@ ScanRequest.default = {
     brightness: 0,
     contrast: 0,
     convertFormat: 'tif',
-    dynamicLineart: true,
-    multiplePages: false
+    dynamicLineart: true
 };
 
 module.exports = ScanRequest;
