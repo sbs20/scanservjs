@@ -13,7 +13,8 @@ require("bootstrap");
 $(document).ready(function () {
     // Set up toastr how we want it
     toastr.options = {
-        "positionClass": "toast-bottom-right"
+        "positionClass": "toast-bottom-right",
+        timeOut: 30000
     };
 
     // Files are always created on the server. All we need here
@@ -332,8 +333,10 @@ $(document).ready(function () {
             _.each(diagnostics.attributes, function (test) {
                 if (test.success === true) {
                     toastr.success(test.message);
-                } else {
+                } else if (test.critical === true) {
                     toastr.error(test.message);
+                } else {
+                    toastr.warning(test.message);
                 }
             });
         },

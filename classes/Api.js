@@ -101,7 +101,7 @@ module.exports = function () {
         return scanner.execute(scanRequest);
     };
 
-    var testFileExists = function (path) {
+    var testFileExists = function (path, critical) {
         var file = new FileInfo(path);
         if (file.exists()) {
             return {
@@ -112,11 +112,12 @@ module.exports = function () {
 
         return {
             success: false,
+            critical: critical,
             message: 'Unable to find ' + file.name + ' at "' + path + '"'
         };
     };
 
-    var testTesseractLanguage = function (path, language) {
+    var testTesseractLanguage = function (path, language, critical) {
         var cmd = path;
         cmd += ' --list-langs';
 
@@ -134,6 +135,7 @@ module.exports = function () {
                 } else {
                     return {
                         success: false,
+                        critical: critical,
                         message: 'Selected language ' + language + ' is not available in tesseract'
                     };
                 }
@@ -143,6 +145,7 @@ module.exports = function () {
 
                 return {
                     success: false,
+                    critical: critical,
                     message: 'Cannot execute tesseract'
                 };
             });
@@ -151,14 +154,14 @@ module.exports = function () {
     _this.diagnostics = function () {
         var tests = [];
 
-        tests.push(Q.resolve(testFileExists(Config.Scanimage)));
-        tests.push(Q.resolve(testFileExists(Config.Convert)));
+        tests.push(Q.resolve(testFileExists(Config.Scanimage, true)));
+        tests.push(Q.resolve(testFileExists(Config.Convert, true)));
 
-        var tesseractResult = testFileExists(Config.Tesseract);
+        var tesseractResult = testFileExists(Config.Tesseract, false);
         tests.push(Q.resolve(tesseractResult));
 
         if (tesseractResult.success) {
-            tests.push(testTesseractLanguage(Config.Tesseract, Config.TesseractLanguage));
+            tests.push(testTesseractLanguage(Config.Tesseract, Config.TesseractLanguage, true));
         };
 
         return Q.all(tests);
