@@ -3,6 +3,7 @@ var fs = require('fs');
 var Q = require('kew');
 
 var Config = require('./Config');
+var System = require('./System');
 var Device = require('./Device');
 var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
@@ -115,14 +116,52 @@ module.exports = function () {
         };
     };
 
+    var testTesseractLanguage = function (path, language) {
+        var cmd = path;
+        cmd += ' --list-langs';
+
+        return System.execute(cmd)
+            .then(function (reply) {
+                var lines = reply.output.split('\n');
+                lines.shift(); // remove "List of available languages (n):\n"
+                lines.pop(); // remove element created by last '\n'
+
+                if (lines.includes(language)) {
+                    return {
+                        success: true,
+                        message: 'Selected language ' + language + ' is available in tesseract'
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: 'Selected language ' + language + ' is not available in tesseract'
+                    };
+                }
+            })
+            .fail(function (data) {
+                console.log(data);
+
+                return {
+                    success: false,
+                    message: 'Cannot execute tesseract'
+                };
+            });
+    };
+
     _this.diagnostics = function () {
         var tests = [];
 
-        tests.push(testFileExists(Config.Scanimage));
-        tests.push(testFileExists(Config.Convert));
-        tests.push(testFileExists(Config.Tesseract));
+        tests.push(Q.resolve(testFileExists(Config.Scanimage)));
+        tests.push(Q.resolve(testFileExists(Config.Convert)));
 
-        return Q.resolve(tests);
+        var tesseractResult = testFileExists(Config.Tesseract);
+        tests.push(Q.resolve(tesseractResult));
+
+        if (tesseractResult.success) {
+            tests.push(testTesseractLanguage(Config.Tesseract, Config.TesseractLanguage));
+        };
+
+        return Q.all(tests);
     };
 
     _this.device = function () {
