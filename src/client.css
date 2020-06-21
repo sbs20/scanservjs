@@ -89,3 +89,7 @@ h1 {
 .toast-error {
     background-color: red
 }
+
+.disabled-label {
+    color: gray;
+}
