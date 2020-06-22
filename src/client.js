@@ -311,6 +311,15 @@ $(document).ready(function () {
                 this.model.attributes.mode = device.attributes.features['--mode'].default;
             }
 
+            _.each(device.attributes.features, function(val, key) {
+                var id = key.substr(2, key.length - 2); // remove leading "--" of which we just assume that it's present
+
+                var $e = this.$('#' + id + '_option');
+                if ($e) {
+                    $e.toggle(true);
+                }
+            });
+
             $('#version').text(device.attributes.version);
             
             // We've changed the UI mode options so refresh
