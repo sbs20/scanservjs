@@ -84,6 +84,7 @@ $(document).ready(function () {
         device: null,
         files: null,
         resizeTimer: null,
+        limits: null,
 
         el: $("#app"),
         tagName: 'div',
@@ -148,8 +149,10 @@ $(document).ready(function () {
                     var val = parseInt(field.value);
                     var $slider = $("#" + field.id + "_slider");
                     val = isNaN(val) ? $slider.slider("value") : val;
-                    if (val < -100) val = -100;
-                    if (val > 100) val = 100;
+                    if (this.limits && this.limits[field.id]) {
+                        if (val < this.limits[field.id].min) val = this.limits[field.id].min;
+                        if (val > this.limits[field.id].max) val = this.limits[field.id].max;
+                    }
                     field.value = val;
                     data[field.id] = val;
                     $slider.slider("value", val);
@@ -276,6 +279,8 @@ $(document).ready(function () {
             this.files = new FileCollection();
             this.listenTo(this.files, 'add', this.add);
             this.files.fetch();
+
+            this.limits = {};
         },
 
         diagnosticsSync: function (diagnostics) {
@@ -317,6 +322,22 @@ $(document).ready(function () {
                 var $e = this.$('#' + id + '_option');
                 if ($e) {
                     $e.toggle(true);
+                }
+
+                if (id === 'contrast' || id === 'brightness') {
+                    var bounds = val.options.split('..');
+
+                    // save limits
+                    page.limits[id] = {min: bounds[0], max: bounds[1]};
+
+                    // adjust current values to limit
+                    if (page.model.attributes[id] < bounds[0])
+                        page.model.attributes[id] = bounds[0];
+                    if (page.model.attributes[id] > bounds[1])
+                        page.model.attributes[id] = bounds[1];
+
+                    $e = this.$('#' + id + '_slider');
+                    $e.slider({min: bounds[0], max: bounds[1]});
                 }
             });
 
