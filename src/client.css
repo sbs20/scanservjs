@@ -93,3 +93,7 @@ h1 {
 .toast-warning {
     background-color: #F89406;
 }
+
+.disabled-label {
+    color: gray;
+}

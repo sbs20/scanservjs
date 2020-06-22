@@ -387,6 +387,10 @@ $(document).ready(function () {
                     $("#formGroupDynamicLineart").toggle(visible);
                 } else if (id === 'dynamicLineart') {
                     $e.val(String(val));
+                } else if (id === 'pages') {
+                    var disabled = val.length > 0;
+                    $("#convertFormat").prop('disabled', disabled);
+                    $("#convertFormatLabel").toggleClass('disabled-label', disabled);
                 }
             });
         },
