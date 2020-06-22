@@ -95,7 +95,7 @@ $(document).ready(function () {
             'change select': 'update',
             'click #preview': 'preview',
             'click #reset': 'reset',
-            'click #scan': 'scan',
+            'click #scan': 'scan'
         },
 
         mask: function () {
