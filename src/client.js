@@ -13,8 +13,7 @@ require("bootstrap");
 $(document).ready(function () {
     // Set up toastr how we want it
     toastr.options = {
-        "positionClass": "toast-bottom-right",
-        timeOut: 30000
+        "positionClass": "toast-bottom-right"
     };
 
     // Files are always created on the server. All we need here
