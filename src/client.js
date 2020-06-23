@@ -301,16 +301,20 @@ $(document).ready(function () {
                 $mode.append('<option>' + val + '</option>');
             });
 
-            var resolutionString = device.attributes.features['--resolution'].options;
-            if (resolutionString.endsWith('dpi')) { // remove trailing "dpi" if present
-                resolutionString = resolutionString.substr(0, resolutionString.length - 3);
-            }
+            if (device.attributes.features['--resolution']) {
+                var resolutionString = device.attributes.features['--resolution'].options;
+                if (resolutionString.endsWith('dpi')) { // remove trailing "dpi" if present
+                    resolutionString = resolutionString.substr(0, resolutionString.length - 3);
+                }
 
-            var resolutions = resolutionString.split('|');
-            var $resolution = $('#resolution');
-            _.each(resolutions, function (val) {
-                $resolution.append('<option value="' + val + '">' + val + ' dpi</option>');
-            });
+                var resolutions = resolutionString.split('|');
+                var $resolution = $('#resolution');
+                _.each(resolutions, function (val) {
+                    $resolution.append('<option value="' + val + '">' + val + ' dpi</option>');
+                });
+            } else {
+                toastr.error("no resolutions available for scanner");
+            }
 
             if (this.model.attributes.mode === null) {
                 this.model.attributes.mode = device.attributes.features['--mode'].default;
