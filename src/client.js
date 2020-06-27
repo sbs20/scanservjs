@@ -84,6 +84,7 @@ $(document).ready(function () {
         device: null,
         files: null,
         resizeTimer: null,
+        limits: null,
 
         el: $("#app"),
         tagName: 'div',
@@ -148,8 +149,10 @@ $(document).ready(function () {
                     var val = parseInt(field.value);
                     var $slider = $("#" + field.id + "_slider");
                     val = isNaN(val) ? $slider.slider("value") : val;
-                    if (val < -100) val = -100;
-                    if (val > 100) val = 100;
+                    if (this.limits && this.limits[field.id]) {
+                        if (val < this.limits[field.id].min) val = this.limits[field.id].min;
+                        if (val > this.limits[field.id].max) val = this.limits[field.id].max;
+                    }
                     field.value = val;
                     data[field.id] = val;
                     $slider.slider("value", val);
@@ -276,6 +279,8 @@ $(document).ready(function () {
             this.files = new FileCollection();
             this.listenTo(this.files, 'add', this.add);
             this.files.fetch();
+
+            this.limits = {};
         },
 
         diagnosticsSync: function (diagnostics) {
@@ -296,9 +301,49 @@ $(document).ready(function () {
                 $mode.append('<option>' + val + '</option>');
             });
 
+            if (device.attributes.features['--resolution']) {
+                var resolutionString = device.attributes.features['--resolution'].options;
+                if (resolutionString.endsWith('dpi')) { // remove trailing "dpi" if present
+                    resolutionString = resolutionString.substr(0, resolutionString.length - 3);
+                }
+
+                var resolutions = resolutionString.split('|');
+                var $resolution = $('#resolution');
+                _.each(resolutions, function (val) {
+                    $resolution.append('<option value="' + val + '">' + val + ' dpi</option>');
+                });
+            } else {
+                toastr.error("no resolutions available for scanner");
+            }
+
             if (this.model.attributes.mode === null) {
                 this.model.attributes.mode = device.attributes.features['--mode'].default;
             }
+
+            _.each(device.attributes.features, function(val, key) {
+                var id = key.substr(2, key.length - 2); // remove leading "--" of which we just assume that it's present
+
+                var $e = this.$('#' + id + '_option');
+                if ($e) {
+                    $e.toggle(true);
+                }
+
+                if (id === 'contrast' || id === 'brightness') {
+                    var bounds = val.options.split('..');
+
+                    // save limits
+                    page.limits[id] = {min: bounds[0], max: bounds[1]};
+
+                    // adjust current values to limit
+                    if (page.model.attributes[id] < bounds[0])
+                        page.model.attributes[id] = bounds[0];
+                    if (page.model.attributes[id] > bounds[1])
+                        page.model.attributes[id] = bounds[1];
+
+                    $e = this.$('#' + id + '_slider');
+                    $e.slider({min: bounds[0], max: bounds[1]});
+                }
+            });
 
             $('#version').text(device.attributes.version);
             
