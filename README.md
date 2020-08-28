@@ -19,7 +19,7 @@ For an easy docker-based install (assuming that SANE supports your scanner out-o
 
 ```console
 $ docker build -t scanservjs .
-$ docker run -p 8080:8080 --name scanservjs --privileged scanservjs
+$ docker run -p 8080:8080 --restart unless-stopped --name scanservjs --privileged scanservjs
 ```
 (`--privileged` is required for the container to access the host's devices, to allow it to talk to the scanner)
 
