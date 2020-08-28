@@ -1,13 +1,27 @@
 {
   "name": "scanservjs",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
   "main": "server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sbs20/scanservjs"
   },
   "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11",
+    "vue-slider-component": "3.2.5",
+    "vue-advanced-cropper": "0.16.10",
     "backbone": "^1.4.0",
     "backbone.localstorage": "^1.1.16",
     "backbone.marionette": "^3.5.1",
@@ -36,13 +50,11 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "build": "gulp"
-  },
   "author": "Sam Strachan",
   "license": "GPL-2.0",
   "dependencies": {
+    "core-js": "^3.6.5",
+    "vue": "^2.6.11",
     "body-parser": "^1.19.0",
     "dateformat": "^1.0.12",
     "express": "^4.17.1",
@@ -60,5 +72,24 @@
       "browserify-shim"
     ]
   },
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
