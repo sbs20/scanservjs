@@ -35,8 +35,7 @@
     "vue": "^2.6.11",
     "body-parser": "^1.19.0",
     "dateformat": "^1.0.12",
-    "express": "^4.17.1",
-    "kew": "^0.7.0"
+    "express": "^4.17.1"
   },
   "optionalDependencies": {},
   "eslintConfig": {
