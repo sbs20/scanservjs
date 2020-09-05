@@ -1,5 +1,4 @@
 const fs = require('fs');
-const Q = require('kew');
 
 const Constants = require('./Constants');
 const Device = require('./Device');
@@ -25,29 +24,29 @@ function testFileExists(path) {
 
 class Api {
   static fileList() {
-    let deferred = Q.defer();
-    let outdir = Constants.OutputDirectory;
-
-    fs.readdir(outdir, (err, list) => {
-      if (err) {
-        deferred.reject(err);
-      }
-
-      let files = list.map((f) => {
-        return new FileInfo(outdir + f);
-      }).filter((f) => {
-        return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
+    return new Promise((resolve, reject) => {
+      let outdir = Constants.OutputDirectory;
+      fs.readdir(outdir, (err, list) => {
+        if (err) {
+          reject(err);
+        }
+  
+        let files = list.map((f) => {
+          return new FileInfo(outdir + f);
+        }).filter((f) => {
+          return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
+        });
+  
+        resolve(files);
       });
-
-      deferred.resolve(files);
     });
-
-    return deferred.promise;
   }
 
   static fileDelete(req) {
-    let f = new FileInfo(req.data);
-    return Q.resolve(f.delete());
+    return new Promise(resolve => {
+      const file = new FileInfo(req.data);
+      resolve(file.delete());
+    });
   }
 
   static convert() {
@@ -58,23 +57,25 @@ class Api {
       trim: false
     };
 
-    let source = new FileInfo(options.source);
-    if (!source.exists()) {
-      let fileInfo = new FileInfo(options.default);
-      return Q.resolve(fileInfo);
-    }
-
-    let convert = new Convert(options);
-
-    // Ignore errors. The FileInfo will either exist or not
-    return convert.execute()
-      .then(() => {
-        let fileInfo = new FileInfo(options.target);
-        if (!fileInfo.exists()) {
-          throw new Error('File does not exist');
-        }
-        return fileInfo;
-      });
+    return new Promise(resolve => {
+      let source = new FileInfo(options.source);
+      if (!source.exists()) {
+        let fileInfo = new FileInfo(options.default);
+        resolve(fileInfo);
+      }
+  
+      let convert = new Convert(options);
+  
+      // Ignore errors. The FileInfo will either exist or not
+      return convert.execute()
+        .then(() => {
+          let fileInfo = new FileInfo(options.target);
+          if (!fileInfo.exists()) {
+            throw new Error('File does not exist');
+          }
+          resolve(fileInfo);
+        });  
+    });
   }
 
   static scan(req) {
@@ -100,10 +101,12 @@ class Api {
   }
 
   static diagnostics() {
-    let tests = [];
-    tests.push(testFileExists(Constants.Scanimage));
-    tests.push(testFileExists(Constants.Convert));
-    return Q.resolve(tests);
+    return new Promise(resolve => {
+      let tests = [];
+      tests.push(testFileExists(Constants.Scanimage));
+      tests.push(testFileExists(Constants.Convert));
+      resolve(tests);  
+    });
   }
 
   static device() {

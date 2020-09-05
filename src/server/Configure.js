@@ -51,7 +51,7 @@ module.exports = app => {
         fileInfo.content = fileInfo.toBase64();
         res.send(fileInfo);
       })
-      .fail((data) => {
+      .catch((data) => {
         const err = wrapError(data);
         res.status(500).send(err);
       });
