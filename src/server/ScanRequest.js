@@ -1,5 +1,5 @@
 const dateFormat = require('dateformat');
-const Config = require('./Config');
+const Constants = require('./Constants');
 const Device = require('./Device');
 const System = require('./System');
 
@@ -21,25 +21,20 @@ class ScanRequest {
     };
   }
 
-  static build(input) {
-    const device = new Device();
-    if ('device' in input && input.device) {
-      device.load(input.device);
-    }
-
-    const request = System.extend(ScanRequest.createDefault(device), input);
+  build(input) {
+    const request = System.extend(ScanRequest.createDefault(this.device), input);
 
     if ('outputFilepath' in request === false) {
       const dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-      request.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + request.convertFormat;
+      request.outputFilepath = Constants.OutputDirectory + 'scan_' + dateString + '.' + request.convertFormat;
     }
-    if ('--brightness' in device.features === false) {
+    if ('--brightness' in this.device.features === false) {
       delete request.brightness;
     }
-    if ('--contrast' in device.features === false) {
+    if ('--contrast' in this.device.features === false) {
       delete request.contrast;
     }
-    if ('--disable-dynamic-lineart' in device.features === false) {
+    if ('--disable-dynamic-lineart' in this.device.features === false) {
       delete request.dynamicLineart;
     }
 
@@ -47,7 +42,12 @@ class ScanRequest {
   }
 
   constructor(arg) {
-    System.extend(this, ScanRequest.build(arg));
+    this.device = null;
+    if ('device' in arg && arg.device) {
+      this.device = new Device(arg.device);
+    }
+
+    System.extend(this, this.build(arg));
     console.log(this);
   }
 
@@ -86,7 +86,7 @@ class ScanRequest {
       errors.push('Invalid depth: ' + this.depth);
     }
 
-    if (this.top + this.height > Config.MaximumScanHeightInMm) {
+    if (this.top + this.height > this.device.features['-y'].limits[1]) {
       errors.push('Top + height exceed maximum dimensions');
     }
 

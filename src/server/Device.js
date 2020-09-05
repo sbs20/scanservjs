@@ -1,5 +1,5 @@
 const Q = require('kew');
-const Config = require('./Config');
+const Constants = require('./Constants');
 const System = require('./System');
 const FileInfo = require('./FileInfo');
 
@@ -75,9 +75,9 @@ const parse = function (response) {
 
 /// Executes scanimageA and returns a promise of parsed results
 const scanimageA = function () {
-  let cmd = Config.Scanimage;
-  if (Config.DeviceName) {
-    cmd += ' -d "' + Config.DeviceName + '"';
+  let cmd = Constants.Scanimage;
+  if (Constants.DeviceName) {
+    cmd += ' -d "' + Constants.DeviceName + '"';
   }
   cmd += ' -A';
 
@@ -94,7 +94,10 @@ const scanimageA = function () {
 };
 
 class Device {
-  constructor() {
+  constructor(arg) {
+    if (arg) {
+      this.load(arg);
+    }
   }
 
   load(data) {

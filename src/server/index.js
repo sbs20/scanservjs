@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 const express = require('express');
-const configurer = require('./Configure');
-const Config = require('./classes/Config');
+const Constants = require('./Constants');
 
+const configurer = require('./Configure');
 const app = express();
 configurer(app);
 
-app.listen(Config.Port, () => {
+app.listen(Constants.Port, () => {
   console.log('listening');
 });

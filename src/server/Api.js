@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Q = require('kew');
 
-const Config = require('./Config');
+const Constants = require('./Constants');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
 const ScanRequest = require('./ScanRequest');
@@ -24,9 +24,9 @@ function testFileExists(path) {
 }
 
 class Api {
-  fileList() {
+  static fileList() {
     let deferred = Q.defer();
-    let outdir = Config.OutputDirectory;
+    let outdir = Constants.OutputDirectory;
 
     fs.readdir(outdir, (err, list) => {
       if (err) {
@@ -45,16 +45,16 @@ class Api {
     return deferred.promise;
   }
 
-  fileDelete(req) {
+  static fileDelete(req) {
     let f = new FileInfo(req.data);
     return Q.resolve(f.delete());
   }
 
-  convert() {
+  static convert() {
     let options = {
-      default: Config.PreviewDirectory + 'default.jpg',
-      source: Config.PreviewDirectory + 'preview.tif',
-      target: Config.PreviewDirectory + 'preview.jpg',
+      default: Constants.PreviewDirectory + 'default.jpg',
+      source: Constants.PreviewDirectory + 'preview.tif',
+      target: Constants.PreviewDirectory + 'preview.jpg',
       trim: false
     };
 
@@ -77,13 +77,13 @@ class Api {
       });
   }
 
-  scan(req) {
+  static scan(req) {
     let scanRequest = new ScanRequest(req);
     let scanner = new Scanimage();
     return scanner.execute(scanRequest);
   }
 
-  preview(req) {
+  static preview(req) {
     let scanRequest = new ScanRequest({
       device: req.device,
       mode: req.mode,
@@ -92,21 +92,21 @@ class Api {
       dynamicLineart: req.dynamicLineart
     });
 
-    scanRequest.outputFilepath = Config.PreviewDirectory + 'preview.tif';
-    scanRequest.resolution = Config.PreviewResolution;
+    scanRequest.outputFilepath = Constants.PreviewDirectory + 'preview.tif';
+    scanRequest.resolution = Constants.PreviewResolution;
 
     let scanner = new Scanimage();
     return scanner.execute(scanRequest);
   }
 
-  diagnostics() {
+  static diagnostics() {
     let tests = [];
-    tests.push(testFileExists(Config.Scanimage));
-    tests.push(testFileExists(Config.Convert));
+    tests.push(testFileExists(Constants.Scanimage));
+    tests.push(testFileExists(Constants.Convert));
     return Q.resolve(tests);
   }
 
-  device() {
+  static device() {
     return new Device().get();
   }
 }

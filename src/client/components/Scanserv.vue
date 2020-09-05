@@ -193,8 +193,8 @@ export default {
       return JSON.parse(JSON.stringify(o));
     },
 
-    // Gets the preview image as a base64 encoded jpg and updates the UI
     convert() {
+      // Gets the preview image as a base64 encoded jpg and updates the UI
       fetch('convert', {
         method: 'POST',
         body: JSON.stringify(this.request),

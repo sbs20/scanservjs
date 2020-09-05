@@ -9,7 +9,5 @@ module.exports = {
   BypassSystemExecute: false,
   OutputDirectory: './data/output/',
   PreviewDirectory: './data/preview/',
-  MaximumScanWidthInMm: 215,
-  MaximumScanHeightInMm: 297,
   PreviewResolution: 100
 };

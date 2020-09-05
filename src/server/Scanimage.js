@@ -1,16 +1,16 @@
 const Q = require('kew');
-const Config = require('./Config');
+const Constants = require('./Constants');
 const Device = require('./Device');
 const System = require('./System');
 const FileInfo = require('./FileInfo');
 
 const exists = function () {
-  const fileInfo = new FileInfo(Config.Scanimage);
+  const fileInfo = new FileInfo(Constants.Scanimage);
   return fileInfo.exists();
 };
 
 const commandLine = function (scanRequest, device) {
-  let cmd = Config.Scanimage;
+  let cmd = Constants.Scanimage;
   if (device.name) {
     cmd += ' -d "' + device.name + '"';
   }
@@ -52,7 +52,7 @@ const commandLine = function (scanRequest, device) {
 class Scanimage {
   execute(scanRequest) {
     if (!exists()) {
-      return Q.reject(new Error('Unable to find Scanimage at "' + Config.Scanimage + '"'));
+      return Q.reject(new Error('Unable to find Scanimage at "' + Constants.Scanimage + '"'));
     }
 
     const device = new Device();

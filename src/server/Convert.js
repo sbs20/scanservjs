@@ -1,5 +1,5 @@
 const Q = require('kew');
-const Config = require('./Config');
+const Constants = require('./Constants');
 const System = require('./System');
 
 class Convert {
@@ -17,13 +17,13 @@ class Convert {
 
   cmd() {
     let params = ' ';
-    if (this.args.ignoreStdError) params += Config.IgnoreStdError + ' ';
+    if (this.args.ignoreStdError) params += Constants.IgnoreStdError + ' ';
     if (this.args.normalize) params += '-normalize ';
     if (this.args.trim) params += '-trim ';
     if (this.args.sharpen) params += '-sharpen ' + this.args.sharpen + ' ';
     if (this.args.quality) params += '-quality ' + this.args.quality + ' ';
 
-    return Config.Convert + ' ' +
+    return Constants.Convert + ' ' +
       params +
       this.args.source + ' ' +
       this.args.target;

@@ -23,8 +23,7 @@ module.exports = app => {
   app.get('/api.js', forbidden);
 
   app.get('/files', (req, res) => {
-    const api = new Api();
-    api.fileList().then((reply) => {
+    Api.fileList().then((reply) => {
       res.send(reply);
     });
   });
@@ -37,8 +36,7 @@ module.exports = app => {
 
   app.delete('/files/*', (req, res) => {
     const fullpath = req.params[0];
-    const api = new Api();
-    api.fileDelete({ data: fullpath }).then((reply) => {
+    Api.fileDelete({ data: fullpath }).then((reply) => {
       res.send(reply);
     });
   });
@@ -48,8 +46,7 @@ module.exports = app => {
   });
 
   app.post('/convert', (req, res) => {
-    const api = new Api();
-    api.convert()
+    Api.convert()
       .then((fileInfo) => {
         fileInfo.content = fileInfo.toBase64();
         res.send(fileInfo);
@@ -62,8 +59,7 @@ module.exports = app => {
 
   app.post('/scan', (req, res) => {
     const param = req.body;
-    const api = new Api();
-    api.scan(param)
+    Api.scan(param)
       .then((data) => {
         res.send(data);
       })
@@ -75,8 +71,7 @@ module.exports = app => {
 
   app.post('/preview', (req, res) => {
     const param = req.body;
-    const api = new Api();
-    api.preview(param)
+    Api.preview(param)
       .then((data) => {
         res.send(data);
       })
@@ -87,16 +82,14 @@ module.exports = app => {
   });
 
   app.get('/diagnostics', (req, res) => {
-    const api = new Api();
-    api.diagnostics()
+    Api.diagnostics()
       .then((tests) => {
         res.send(tests);
       });
   });
 
   app.get('/device', (req, res) => {
-    const api = new Api();
-    api.device()
+    Api.device()
       .then((data) => {
         res.send(data);
       })

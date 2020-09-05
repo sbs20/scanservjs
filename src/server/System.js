@@ -1,5 +1,5 @@
 const packageJson = require('../../package.json');
-const config = require('./Config');
+const Constants = require('./Constants');
 const exec = require('child_process').exec;
 const Q = require('kew');
 
@@ -24,19 +24,19 @@ const System = {
       System.trace(k, JSON.stringify(v));
 
     } else if (v === undefined) {
-      console.log(k + config.TraceLineEnding);
+      console.log(k + Constants.TraceLineEnding);
 
     } else {
       if (v === null) {
         v = '{NULL}';
       }
 
-      console.log(k + '=' + v + config.TraceLineEnding);
+      console.log(k + '=' + v + Constants.TraceLineEnding);
     }
   },
 
   trace(k, v) {
-    if (config.IsTrace) {
+    if (Constants.IsTrace) {
       System.log(k, v);
     }
   },
@@ -50,7 +50,7 @@ const System = {
       code: -1
     };
 
-    if (!config.BypassSystemExecute) {
+    if (!Constants.BypassSystemExecute) {
       System.trace('System.execute:start', cmd);
 
       exec(cmd, (error, stdout) => {
@@ -78,7 +78,7 @@ const System = {
   },
 
   scannerDevices() {
-    const cmd = config.Scanimage + ' -L';
+    const cmd = Constants.Scanimage + ' -L';
     return System.execute(cmd);
   },
 
