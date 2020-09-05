@@ -1,10 +1,20 @@
 const packageJson = require('../../package.json');
 const Constants = require('./Constants');
 const exec = require('child_process').exec;
-const Q = require('kew');
 
 const System = {
   version: packageJson.version,
+
+  extend() {
+    const t = arguments[0];
+    for (let i = 1; i < arguments.length; i++) {
+      const s = arguments[i];
+      for (const p in s) {
+        t[p] = s[p];
+      }
+    }
+    return t;
+  },
 
   isArray(obj) {
     return Array.isArray(obj);
@@ -41,56 +51,42 @@ const System = {
     }
   },
 
-  execute(cmd) {
-    const deferred = Q.defer();
-
-    const res = {
+  async execute(cmd) {
+    const result = {
       cmd: cmd,
       output: '',
       code: -1
     };
 
-    if (!Constants.BypassSystemExecute) {
-      System.trace('System.execute:start', cmd);
-
-      exec(cmd, (error, stdout) => {
-        if (error) {
-          deferred.reject(error);
-          return;
-        }
-
-        System.extend(res, {
-          output: stdout,
-          code: error ? -1 : 0
+    return await new Promise((resolve, reject) => {
+      if (!Constants.BypassSystemExecute) {
+        System.trace('System.execute:start', cmd);
+  
+        exec(cmd, (error, stdout) => {
+          if (error) {
+            System.trace('System.execute:error', result);
+            reject(error);
+          }
+  
+          System.extend(result, {
+            output: stdout,
+            code: error ? -1 : 0
+          });
+  
+          System.trace('System.execute:finish', result);
+          resolve(result);
         });
-
-        System.trace('System.execute:finish', res);
-
-        deferred.resolve(res);
-      });
-    }
-
-    return deferred.promise;
+      }
+    });
   },
 
   error(e) {
     System.log('Error', e);
   },
 
-  scannerDevices() {
+  async scannerDevices() {
     const cmd = Constants.Scanimage + ' -L';
-    return System.execute(cmd);
-  },
-
-  extend() {
-    const t = arguments[0];
-    for (let i = 1; i < arguments.length; i++) {
-      const s = arguments[i];
-      for (const p in s) {
-        t[p] = s[p];
-      }
-    }
-    return t;
+    return await System.execute(cmd);
   }
 };
 

@@ -1,4 +1,3 @@
-const Q = require('kew');
 const Constants = require('./Constants');
 const System = require('./System');
 const FileInfo = require('./FileInfo');
@@ -74,23 +73,17 @@ const parse = function (response) {
 };
 
 /// Executes scanimageA and returns a promise of parsed results
-const scanimageA = function () {
+const scanimageA = async function () {
   let cmd = Constants.Scanimage;
   if (Constants.DeviceName) {
     cmd += ' -d "' + Constants.DeviceName + '"';
   }
   cmd += ' -A';
 
-  return System.execute(cmd)
-    .then((reply) => {
-      try {
-        const data = parse(reply.output);
-        System.trace('device', data);
-        return data;
-      } catch (exception) {
-        return Q.reject(exception);
-      }
-    });
+  const result = await System.execute(cmd);
+  const data = parse(result.output);
+  System.trace('device', data);
+  return data;
 };
 
 class Device {
@@ -106,7 +99,7 @@ class Device {
 
   /// Attempts to get a stored configuration of our device and if
   /// not gets it from the command line.
-  get() {
+  async get() {
     const conf = new FileInfo('./device.conf');
     let isLoadRequired = false;
     if (!conf.exists()) {
@@ -118,13 +111,12 @@ class Device {
     }
 
     if (isLoadRequired) {
-      return scanimageA().then((data) => {
-        // Humans might read this, so pretty
-        conf.save(JSON.stringify(data, null, 4));
-        return decorate(data);
-      });
+      const data = await scanimageA();
+      // Humans might read this, so pretty
+      conf.save(JSON.stringify(data, null, 4));
+      return decorate(data);
     } else {
-      return Q.resolve(decorate(JSON.parse(conf.toText())));
+      return decorate(JSON.parse(conf.toText()));
     }
   }
 

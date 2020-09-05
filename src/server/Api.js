@@ -23,33 +23,29 @@ function testFileExists(path) {
 }
 
 class Api {
-  static fileList() {
-    return new Promise((resolve, reject) => {
+  static async fileList() {
+    return await new Promise((resolve, reject) => {
       let outdir = Constants.OutputDirectory;
       fs.readdir(outdir, (err, list) => {
         if (err) {
           reject(err);
         }
   
-        let files = list.map((f) => {
-          return new FileInfo(outdir + f);
-        }).filter((f) => {
-          return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
-        });
+        let files = list
+          .map(f => new FileInfo(outdir + f))
+          .filter(f => f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf');
   
         resolve(files);
       });
     });
   }
 
-  static fileDelete(req) {
-    return new Promise(resolve => {
-      const file = new FileInfo(req.data);
-      resolve(file.delete());
-    });
+  static fileDelete(fullpath) {
+    const file = new FileInfo(fullpath);
+    return file.delete();
   }
 
-  static convert() {
+  static async convert() {
     let options = {
       default: Constants.PreviewDirectory + 'default.jpg',
       source: Constants.PreviewDirectory + 'preview.tif',
@@ -57,34 +53,27 @@ class Api {
       trim: false
     };
 
-    return new Promise(resolve => {
-      let source = new FileInfo(options.source);
-      if (!source.exists()) {
-        let fileInfo = new FileInfo(options.default);
-        resolve(fileInfo);
-      }
+    let source = new FileInfo(options.source);
+    if (!source.exists()) {
+      return new FileInfo(options.default);
+    }
   
-      let convert = new Convert(options);
-  
-      // Ignore errors. The FileInfo will either exist or not
-      return convert.execute()
-        .then(() => {
-          let fileInfo = new FileInfo(options.target);
-          if (!fileInfo.exists()) {
-            throw new Error('File does not exist');
-          }
-          resolve(fileInfo);
-        });  
-    });
+    const convert = new Convert(options);
+    await convert.execute();
+    let fileInfo = new FileInfo(options.target);
+    if (!fileInfo.exists()) {
+      throw new Error('File does not exist');
+    }
+    return fileInfo;
   }
 
-  static scan(req) {
+  static async scan(req) {
     let scanRequest = new ScanRequest(req);
-    let scanner = new Scanimage();
-    return scanner.execute(scanRequest);
+    let scanimage = new Scanimage();
+    return await scanimage.execute(scanRequest);
   }
 
-  static preview(req) {
+  static async preview(req) {
     let scanRequest = new ScanRequest({
       device: req.device,
       mode: req.mode,
@@ -96,21 +85,19 @@ class Api {
     scanRequest.outputFilepath = Constants.PreviewDirectory + 'preview.tif';
     scanRequest.resolution = Constants.PreviewResolution;
 
-    let scanner = new Scanimage();
-    return scanner.execute(scanRequest);
+    let scanimage = new Scanimage();
+    return await scanimage.execute(scanRequest);
   }
 
   static diagnostics() {
-    return new Promise(resolve => {
-      let tests = [];
-      tests.push(testFileExists(Constants.Scanimage));
-      tests.push(testFileExists(Constants.Convert));
-      resolve(tests);  
-    });
+    let tests = [];
+    tests.push(testFileExists(Constants.Scanimage));
+    tests.push(testFileExists(Constants.Convert));
+    return tests;  
   }
 
-  static device() {
-    return new Device().get();
+  static async device() {
+    return await new Device().get();
   }
 }
 

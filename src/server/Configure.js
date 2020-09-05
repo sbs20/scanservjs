@@ -22,10 +22,8 @@ module.exports = app => {
   app.get('/node*', forbidden);
   app.get('/api.js', forbidden);
 
-  app.get('/files', (req, res) => {
-    Api.fileList().then((reply) => {
-      res.send(reply);
-    });
+  app.get('/files', async (req, res) => {
+    res.send(await Api.fileList());
   });
 
   app.get('/files/*', (req, res) => {
@@ -36,67 +34,55 @@ module.exports = app => {
 
   app.delete('/files/*', (req, res) => {
     const fullpath = req.params[0];
-    Api.fileDelete({ data: fullpath }).then((reply) => {
-      res.send(reply);
-    });
+    res.send(Api.fileDelete(fullpath));
   });
 
   app.get('/ping', (req, res) => {
     res.send('Pong@' + new Date().toISOString());
   });
 
-  app.post('/convert', (req, res) => {
-    Api.convert()
-      .then((fileInfo) => {
-        fileInfo.content = fileInfo.toBase64();
-        res.send(fileInfo);
-      })
-      .catch((data) => {
-        const err = wrapError(data);
-        res.status(500).send(err);
-      });
+  app.post('/convert', async (req, res) => {
+    try {
+      const fileInfo = await Api.convert();
+      fileInfo.content = fileInfo.toBase64();
+      res.send(fileInfo);
+    } catch (error) {
+      const err = wrapError(error);
+      res.status(500).send(err);
+    }
   });
 
-  app.post('/scan', (req, res) => {
+  app.post('/scan', async (req, res) => {
     const param = req.body;
-    Api.scan(param)
-      .then((data) => {
-        res.send(data);
-      })
-      .fail((data) => {
-        const err = wrapError(data);
-        res.status(500).send(err);
-      });
+    try {
+      res.send(await Api.scan(param));
+    } catch (error) {
+      const err = wrapError(error);
+      res.status(500).send(err);
+    }
   });
 
-  app.post('/preview', (req, res) => {
+  app.post('/preview', async (req, res) => {
     const param = req.body;
-    Api.preview(param)
-      .then((data) => {
-        res.send(data);
-      })
-      .fail((data) => {
-        const err = wrapError(data);
-        res.status(500).send(err);
-      });
+    try {
+      res.send(await Api.preview(param));
+    } catch (error) {
+      const err = wrapError(error);
+      res.status(500).send(err);
+    }
   });
 
   app.get('/diagnostics', (req, res) => {
-    Api.diagnostics()
-      .then((tests) => {
-        res.send(tests);
-      });
+    res.send(Api.diagnostics());
   });
 
-  app.get('/device', (req, res) => {
-    Api.device()
-      .then((data) => {
-        res.send(data);
-      })
-      .fail((data) => {
-        const err = wrapError(data);
-        res.status(500).send(err);
-      });
+  app.get('/device', async (req, res) => {
+    try {
+      res.send(await Api.device());
+    } catch (error) {
+      const err = wrapError(error);
+      res.status(500).send(err);
+    }
   });
 
   app.use(bodyParser.json());

@@ -1,4 +1,3 @@
-const Q = require('kew');
 const Constants = require('./Constants');
 const System = require('./System');
 
@@ -30,20 +29,20 @@ class Convert {
   }
 
   // Returns a promise
-  execute() {
+  async execute() {
     const cmd = this.cmd();
-    return System.execute(cmd)
-      .fail((error) => {
-        // Incomplete scan images are corrupt and will throw an error like
-        // convert: Read error on strip 23; got 3343 bytes, expected 8037. `TIFFFillStrip'
-        // We can just ignore that and resolve as there will be an output file
-        if (error.message.indexOf('TIFFFillStrip') !== -1) {
-          return Q.resolve();
-        }
+    try {
+      return await System.execute(cmd);
+    } catch (error) {
+      // Incomplete scan images are corrupt and will throw an error like
+      // convert: Read error on strip 23; got 3343 bytes, expected 8037. `TIFFFillStrip'
+      // We can just ignore that and resolve as there will be an output file
+      if (error.message.indexOf('TIFFFillStrip') !== -1) {
+        return null;
+      }
 
-        // If it's something else then reject
-        return Q.reject(error);
-      });
+      throw error;
+    }
   }
 }
 

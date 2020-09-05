@@ -1,4 +1,3 @@
-const Q = require('kew');
 const Constants = require('./Constants');
 const Device = require('./Device');
 const System = require('./System');
@@ -50,13 +49,12 @@ const commandLine = function (scanRequest, device) {
 };
 
 class Scanimage {
-  execute(scanRequest) {
+  async execute(scanRequest) {
     if (!exists()) {
-      return Q.reject(new Error('Unable to find Scanimage at "' + Constants.Scanimage + '"'));
+      throw new Error('Unable to find Scanimage at "' + Constants.Scanimage + '"');
     }
 
     const device = new Device();
-
     if ('device' in scanRequest && scanRequest.device) {
       device.load(scanRequest.device);
     }
@@ -74,19 +72,14 @@ class Scanimage {
 
     if (response.errors.length === 0) {
       response.cmdline = commandLine(scanRequest, device);
-
-      return System.execute(response.cmdline)
-        .then((reply) => {
-          System.trace('Scanimage.execute:finish', reply);
-          response.output = reply.output;
-          response.code = reply.code;
-          response.image = scanRequest.outputFilepath;
-          return response;
-        });
-
+      const result = await System.execute(response.cmdline);
+      System.trace('Scanimage.execute:finish', result);
+      response.output = result.output;
+      response.code = result.code;
+      response.image = scanRequest.outputFilepath;
+      return response;
     } else {
-      const error = new Error(response.errors.join('\n'));
-      return Q.reject(error);
+      throw new Error(response.errors.join('\n'));
     }
   }
 }
