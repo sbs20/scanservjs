@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "nodemon --exec 'vue-cli-service serve'",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -17,38 +17,14 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "bootstrap": "^4.3.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11",
-    "vue-slider-component": "3.2.5",
+    "nodemon": "^2.0.4",
+    "vue-toastr": "2.1.2",
     "vue-advanced-cropper": "0.16.10",
-    "backbone": "^1.4.0",
-    "backbone.localstorage": "^1.1.16",
-    "backbone.marionette": "^3.5.1",
-    "bootstrap": "^4.3.1",
-    "browserify": "^13.3.0",
-    "browserify-css": "^0.15.0",
-    "browserify-shim": "^3.8.14",
-    "del": "^3.0.0",
-    "gulp": "^4.0.2",
-    "gulp-chmod": "^2.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^6.0.0",
-    "gulp-filter": "^5.1.0",
-    "gulp-gzip": "^1.4.2",
-    "gulp-tar": "^2.1.0",
-    "gulp-uglify": "^2.1.2",
-    "jquery": "^3.5.0",
-    "jquery-jcrop": "^0.9.13",
-    "jqueryui": "^1.11.1",
-    "jshint": "^2.10.2",
-    "knockout": "^3.5.0",
-    "minimist": "^1.2.3",
-    "popper.js": "^1.15.0",
-    "toastr": "^2.1.4",
-    "underscore": "^1.9.1",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "vue-slider-component": "3.2.5",
+    "vue-template-compiler": "^2.6.11"
   },
   "author": "Sam Strachan",
   "license": "GPL-2.0",
@@ -59,18 +35,6 @@
     "dateformat": "^1.0.12",
     "express": "^4.17.1",
     "kew": "^0.7.0"
-  },
-  "browserify-shim": {
-    "jquery": "$"
-  },
-  "browser": {
-    "jquery": "./node_modules/jquery/dist/jquery.js",
-    "jquery-ui": "./node_modules/jquery-ui/jquery-ui.js"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
   },
   "optionalDependencies": {},
   "eslintConfig": {
@@ -91,5 +55,10 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "nodemonConfig": {
+    "watch": [
+      "src/server"
+    ]
+  }
 }

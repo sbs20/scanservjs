@@ -88,17 +88,6 @@ h1 {
     color: #0E5EA0;
 }
 
-#mask {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,.3);
-    top: 0;
-    left: 0;
-    display: none;
-    z-index: 10;
-}
-
 .toast-success {
     background-color: green
 }

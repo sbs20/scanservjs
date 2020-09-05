@@ -1,4 +1,9 @@
+const configure = require('./src/server/configure')
+
 module.exports = {
+  devServer: {
+    before: configure
+  },
   pages: {
     index: {
       // entry for the page

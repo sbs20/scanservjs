@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div id="mask"></div>
+    <div v-if="maskRef" id="mask"></div>
+    <Toastr ref="toastr"></Toastr>
 
     <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
       <div class="navbar-header"></div>
@@ -36,23 +37,19 @@
               <div class="form-group">
                 <label>Resolution</label>
                 <select class="form-control" v-model="request.resolution">
-                  <option v-for="item in device.features['--resolution']['_options']" v-bind:key="item">{{ item }}</option>
+                  <option v-for="item in device.features['--resolution']['options']" v-bind:key="item">{{ item }}</option>
                 </select>    
               </div>
 
               <div class="form-group">
                 <label>Mode</label>
                 <select class="form-control" v-model="request.mode">
-                  <option v-for="item in device.features['--mode']['_options']" v-bind:key="item">{{ item }}</option>
+                  <option v-for="item in device.features['--mode']['options']" v-bind:key="item">{{ item }}</option>
                 </select>    
               </div>
 
               <div class="form-group" v-if="'--disable-dynamic-lineart' in device.features">
                 <label for="mode">Dynamic lineart</label>
-                <!-- <div class="form-check">
-                  <input type="checkbox" class="form-check-input-lg" v-model="request.dynamicLineart">
-                  <label class="form-check-label">Enabled</label>
-                </div> -->
                 <select id="dynamicLineart" class="form-control" v-model="request.dynamicLineart">
                   <option v-bind:value="false">Disabled</option>
                   <option v-bind:value="true">Enabled</option>
@@ -102,10 +99,46 @@
         <!-- Preview pane -->
         <div class="col-lg-6 col-md-5 col-sm-12">
           <cropper ref="cropper" class="cropper"
-              :default-position="defaultPosition" :default-size="defaultSize"
+              :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col">&nbsp;</div>
+      </div>
+
+      <div class="row">
+        <div>
+          <!-- Padding for larger screens -->
+          <div class="col-lg-2 col-md-1"></div>
+
+          <div class="col-lg-8 col-md-10 col-sm-12">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Date</th>
+                  <th>Size</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="file in files" v-bind:key="file.name">
+                  <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
+                  <td>{{ file.lastModified }}</td>
+                  <td>{{ file.size }}</td>
+                  <td><button type="button" class="btn btn-lg" v-on:click="fileRemove(file)">X</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Padding for larger screens -->
+          <div class="col-lg-2 col-md-1"></div>
+        </div>    
+      </div>
+
     </div>
   </div>
 </template>
@@ -114,83 +147,113 @@
 import Slider from "vue-slider-component";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-slider-component/theme/antd.css";
+import Toastr from "vue-toastr";
 
 export default {
   name: "Scanserv",
   components: {
     Slider,
     Cropper,
+    Toastr
   },
 
   data() {
     return {
       device: this.defaultDevice(),
-      request: this.defaultRequest(this.defaultDevice()),
-      img: require('../assets/default.jpg')
+      files: [],
+      img: null,
+      maskRef: 0,
+      request: this.readRequest(this.defaultDevice())
     };
+  },
+
+  mounted() {
+    this.readDiagnostics();
+    this.readDevice();
+    this.convert();
+    this.fileList();
+
+    this.$refs.toastr.defaultPosition = "toast-bottom-right";
+    this.$refs.toastr.defaultTimeout = 5000;
   },
 
   watch: {
     request: {
       handler(request) {
-        // TODO : save the request to local storage
-        const requestJson = JSON.stringify(request);
-        console.log(requestJson);
+        localStorage.request = JSON.stringify(request);
+        console.log("save:", localStorage.request);
+        this.onCoordinatesChange();
       },
       deep: true
     }
   },
 
   methods: {
+    _clone(o) {
+      return JSON.parse(JSON.stringify(o));
+    },
+
+    // Gets the preview image as a base64 encoded jpg and updates the UI
+    convert() {
+      fetch('convert', {
+        method: 'POST',
+        body: JSON.stringify(this.request),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        response.json().then(fileInfo => {
+          if (fileInfo.content) {
+            this.img = 'data:image/jpeg;base64,' + fileInfo.content;
+          }
+        });
+      });
+    },
+
+    cropperDefaultPosition() {
+      const adjust = (n) => Math.round(n * this.pixelsPerMm());
+      return {
+        left: adjust(this.request.left),
+        top: adjust(this.request.top)
+      };
+    },
+
+    cropperDefaultSize() {
+      const adjust = (n) => Math.floor(n * this.pixelsPerMm());
+      return {
+        width: adjust(this.request.width),
+        height: adjust(this.request.height)
+      };
+    },
+
     defaultDevice() {
       return {
         name: "Unspecified",
         version: "0",
         features: {
           "--mode": {
-            default: "24bit Color",
-            options:
-              "Black & White|Gray[Error Diffusion]|True Gray|24bit Color",
-            _options: [
-              "Black & White",
-              "Gray[Error Diffusion]",
-              "True Gray",
-              "24bit Color",
-            ],
+            options: [],
           },
           "--resolution": {
-            default: "50",
-            options: "50..1200dpi",
-            _options: ["50", "75", "100", "150", "200", "300", "600", "1200"],
+            options: [],
           },
           "-l": {
-            default: "0",
-            options: "0..215mm",
             limits: [0, 215],
           },
           "-t": {
-            default: "0",
-            options: "0..297mm",
             limits: [0, 297],
           },
           "-x": {
-            default: "103",
-            options: "0..215mm",
             limits: [0, 215],
           },
           "-y": {
-            default: "76.21",
-            options: "0..297mm",
             limits: [0, 297],
           },
           "--brightness": {
-            default: "0",
-            options: "-100..100% (in steps of 1)",
             limits: [-100, 100],
           },
           "--contrast": {
-            default: "0",
-            options: "-100..100% (in steps of 1)",
             limits: [-100, 100],
           },
           "--disable-dynamic-lineart": {}
@@ -198,42 +261,31 @@ export default {
       };
     },
 
-    defaultRequest(device) {
-      let request = {
-        top: 0,
-        left: 0,
-        width: device.features['-x'].limits[1],
-        height: device.features['-y'].limits[1],
-        resolution: device.features['--resolution'].default,
-        mode: device.features['--mode'].default,
-        convertFormat: "tif"
-      };
-
-      if ('--brightness' in device.features) {
-        request.brightness = 0;
-      }
-      if ('--contrast' in device.features) {
-        request.contrast = 0;
-      }
-      if ('--disable-dynamic-lineart' in device.features) {
-        request.dynamicLineart = true;
-      }
-
-      return request;
+    fileList() {
+      this.mask(1);
+      fetch('files').then((response) => {
+        response.json().then(files => {
+          this.files = files;
+          this.mask(-1);
+        });
+      });
     },
 
-    defaultPosition() {
-      return {
-        left: 0,
-        top: 0
-      };
+    fileRemove(file) {
+      this.mask(1);
+      fetch('files/' + file.fullname, {
+        method: 'DELETE'
+      }).then((response) => {
+        response.json().then(data => {
+          console.log("fileRemove", data);
+          this.fileList();
+          this.mask(-1);
+        });
+      });
     },
 
-    defaultSize() {
-      return {
-        width: 3000,
-        height: 4000,
-      };
+    mask(add) {
+      this.maskRef += add;
     },
 
     onCoordinatesChange() {
@@ -265,17 +317,129 @@ export default {
     },
 
     preview() {
-      window.alert("Preview");
+      this.mask(1);
+
+      // Keep reloading the preview image
+      const timer = window.setInterval(this.convert, 1000);
+
+      let data = this._clone(this.request);
+      data.device = this._clone(this.device);
+
+      fetch('preview', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        response.json().then(() => {
+          window.clearInterval(timer);
+          this.mask(-1);
+        })
+      });
+    },
+
+    readDevice() {
+      this.mask(1);
+      fetch('device').then((response) => {
+        response.json().then(device => {
+          if ('features' in device) {
+            this.device = device;
+            this.request = this.readRequest(device);
+            this.mask(-1);
+          }
+        });
+      });
+    },
+
+    readDiagnostics() {
+      this.mask(1);
+      fetch('diagnostics').then((response) => {
+        response.json().then(data => {
+          for (let test of data) {
+            if (test.success === true) {
+              this.$refs.toastr.s(test.message);
+            } else {
+              this.$refs.toastr.e(test.message);
+            }
+          }
+          this.mask(-1);
+        });
+      });
+    },
+
+    readRequest(device) {
+      let request = null;
+      if (localStorage.request) {
+        request = JSON.parse(localStorage.request);
+        console.log("load", request);
+      } else {
+        request = {
+          top: 0,
+          left: 0,
+          width: device.features['-x'].limits[1],
+          height: device.features['-y'].limits[1],
+          resolution: device.features['--resolution'].default,
+          mode: device.features['--mode'].default,
+          convertFormat: "tif",
+          brightness: 0,
+          contrast: 0,
+          dynamicLineart: true
+        };
+      }
+
+      if ('--brightness' in device.features === false) {
+        delete request.brightness;
+      }
+      if ('--contrast' in device.features === false) {
+        delete request.contrast;
+      }
+      if ('--disable-dynamic-lineart' in device.features === false) {
+        delete request.dynamicLineart;
+      }
+
+      return request;
     },
 
     reset() {
-      window.alert("Reset");
+      localStorage.removeItem("request");
+      this.request = this.readRequest(this.device);
     },
 
     scan() {
-      window.alert("Scan");
-    },
+      this.mask(1);
 
+      let data = this._clone(this.request);
+      data.device = this._clone(this.device);
+      
+      fetch('scan', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        response.json().then(() => {
+          this.fileList();
+          this.mask(-1);
+        })
+      });
+    }
   }
 };
 </script>
+
+<style scoped>
+#mask {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.3);
+    top: 0;
+    left: 0;
+    /* display: none; */
+    z-index: 10;
+}
+</style>

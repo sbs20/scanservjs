@@ -11,12 +11,42 @@ module.exports = function () {
         _this.data = data;
     };
 
+    var decorate = function (device) {
+        for (var key in device.features) {
+            var feature = device.features[key];
+            switch (key) {
+                case '--mode':
+                    feature.options = feature.parameters.split('|');
+                    break;
+
+                case '--resolution':
+                    feature.options = ['50', '75', '100', '150', '200', '300', '600', '1200'];
+                    if (feature.parameters.indexOf('|') > -1) {
+                        feature.options = feature.parameters.split('|');
+                    }
+                    break;
+
+                case '-l':
+                case '-t':
+                case '-x':
+                case '-y':
+                    var parameters = feature.parameters.replace(/[a-z]/ig, '').split('..');
+                    feature.limits = [Number(parameters[0]), Number(parameters[1])];
+                    break;
+
+                case '--brightness':
+                case '--contrast':
+                    var parameters = feature.parameters.split('%')[0].split('..');
+                    feature.limits = [Number(parameters[0]), Number(parameters[1])];
+                    break;
+            }            
+        }
+
+        return device;
+    };
+
     /// Parses the response of scanimage -A into a dictionary
     var parse = function (response) {
-        // find any number of spaces
-        // ... match 1 or two hyphens with letters, numbers or hypen
-        // find anything
-        // ... match anything inside square brackets
         if (response === null || response === '') {
             throw new Error('No device found');
         }
@@ -27,12 +57,16 @@ module.exports = function () {
             'features': {}
         };
         
+        // find any number of spaces
+        // ... match 1 or two hyphens with letters, numbers or hypen
+        // find anything
+        // ... match anything inside square brackets
         var pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
         var match;
         while ((match = pattern.exec(response)) !== null) {
             device.features[match[1]] = {
                 'default': match[3],
-                'options': match[2]
+                'parameters': match[2]
             };
         }
 
@@ -82,10 +116,10 @@ module.exports = function () {
             return scanimageA().then(function (data) {
                 // Humans might read this, so pretty
                 conf.save(JSON.stringify(data, null, 4));
-                return data;
+                return decorate(data);
             });
         } else {
-            return Q.resolve(JSON.parse(conf.toText()));            
+            return Q.resolve(decorate(JSON.parse(conf.toText())));
         }
     };
 

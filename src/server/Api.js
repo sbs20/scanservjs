@@ -7,6 +7,7 @@ var FileInfo = require('./FileInfo');
 var ScanRequest = require('./ScanRequest');
 var Scanimage = require('./Scanimage');
 var Convert = require('./Convert');
+const System = require('./System');
 
 module.exports = function () {
     var _this = this;
@@ -39,10 +40,17 @@ module.exports = function () {
 
     _this.convert = function () {
         var options = {
+            default: Config.PreviewDirectory + 'default.jpg',
             source: Config.PreviewDirectory + 'preview.tif',
             target: Config.PreviewDirectory + 'preview.jpg',
             trim: false
         };
+
+        var source = new FileInfo(options.source);
+        if (!source.exists()) {
+            let fileInfo = new FileInfo(options.default);
+            return Q.resolve(fileInfo);
+        }
 
         var convert = new Convert(options);
 
