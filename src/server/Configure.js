@@ -1,11 +1,11 @@
-const bodyParser = require('body-parser')
-const Api = require('./Api')
+const bodyParser = require('body-parser');
+const Api = require('./Api');
 
-var forbidden = function (req, res) {
+const forbidden = function (req, res) {
   res.status(403).send('<h1>Error 403: Forbidden</h1>');
 };
 
-var wrapError = function (err) {
+const wrapError = function (err) {
   return {
     message: err.message,
     code: err.code
@@ -22,90 +22,89 @@ module.exports = app => {
   app.get('/node*', forbidden);
   app.get('/api.js', forbidden);
 
-  app.get('/files', function (req, res) {
-    var api = new Api();
-    api.fileList().then(function (reply) {
+  app.get('/files', (req, res) => {
+    const api = new Api();
+    api.fileList().then((reply) => {
       res.send(reply);
     });
   });
 
-  app.get('/files/*', function (req, res) {
-    var fullpath = req.params[0];
+  app.get('/files/*', (req, res) => {
+    const fullpath = req.params[0];
     const file = `${fullpath}`;
     res.download(file);
   });
 
-  app.delete('/files/*', function (req, res) {
-    var fullpath = req.params[0];
-    var api = new Api();
-    api.fileDelete({ data: fullpath }).then(function (reply) {
+  app.delete('/files/*', (req, res) => {
+    const fullpath = req.params[0];
+    const api = new Api();
+    api.fileDelete({ data: fullpath }).then((reply) => {
       res.send(reply);
     });
   });
 
-  app.get('/ping', function (req, res) {
+  app.get('/ping', (req, res) => {
     res.send('Pong@' + new Date().toISOString());
   });
 
-  app.post('/convert', function (req, res) {
-    var api = new Api();
+  app.post('/convert', (req, res) => {
+    const api = new Api();
     api.convert()
-      .then(function (fileInfo) {
+      .then((fileInfo) => {
         fileInfo.content = fileInfo.toBase64();
         res.send(fileInfo);
       })
-      .fail(function (data) {
-        var err = wrapError(data);
+      .fail((data) => {
+        const err = wrapError(data);
         res.status(500).send(err);
       });
   });
 
-  app.post('/scan', function (req, res) {
-    var param = req.body;
-    var api = new Api();
+  app.post('/scan', (req, res) => {
+    const param = req.body;
+    const api = new Api();
     api.scan(param)
-      .then(function (data) {
+      .then((data) => {
         res.send(data);
       })
-      .fail(function (data) {
-        var err = wrapError(data);
+      .fail((data) => {
+        const err = wrapError(data);
         res.status(500).send(err);
       });
   });
 
-  app.post('/preview', function (req, res) {
-    console.log(req);
-    var param = req.body;
-    var api = new Api();
+  app.post('/preview', (req, res) => {
+    const param = req.body;
+    const api = new Api();
     api.preview(param)
-      .then(function (data) {
+      .then((data) => {
         res.send(data);
       })
-      .fail(function (data) {
-        var err = wrapError(data);
+      .fail((data) => {
+        const err = wrapError(data);
         res.status(500).send(err);
       });
   });
 
-  app.get('/diagnostics', function (req, res) {
-    var api = new Api();
+  app.get('/diagnostics', (req, res) => {
+    const api = new Api();
     api.diagnostics()
-      .then(function (tests) {
+      .then((tests) => {
         res.send(tests);
       });
   });
 
-  app.get('/device', function (req, res) {
-    var api = new Api();
+  app.get('/device', (req, res) => {
+    const api = new Api();
     api.device()
-      .then(function (data) {
+      .then((data) => {
         res.send(data);
       })
-      .fail(function (data) {
-        var err = wrapError(data);
+      .fail((data) => {
+        const err = wrapError(data);
         res.status(500).send(err);
       });
   });
 
   app.use(bodyParser.json());
-}
+};

@@ -1,53 +1,50 @@
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-module.exports = function (fullpath) {
-
+class FileInfo {
+  constructor(fullpath) {
     this.fullname = fullpath;
+    this.name = path.basename(this.fullname);
+    this.path = path.dirname(this.fullname);
+    if (this.exists()) {
+      const stat = fs.statSync(this.fullname);
+      this.extension = path.extname(this.fullname);
+      this.lastModified = stat.mtime;
+      this.size = stat.size;
+    }
+  }
 
-    this.init = function () {
-        this.name = path.basename(this.fullname);
-        this.path = path.dirname(this.fullname);
+  delete() {
+    try {
+      fs.unlinkSync(this.fullname);
+      this.deleted = true;
+    } catch (e) {
+      this.deleted = false;
+    }
 
-        if (this.exists()) {
-            var stat = fs.statSync(this.fullname);
-            this.extension = path.extname(this.fullname);
-            this.lastModified = stat.mtime;
-            this.size = stat.size;
-        }
-    };
+    return this;
+  }
 
-    this.delete = function () {
-        try {
-            fs.unlinkSync(this.fullname);
-            this.deleted = true;
-        } catch (e) {
-            this.deleted = false;
-        }
+  exists() {
+    return fs.existsSync(this.fullname);
+  }
 
-        return this;
-    };
+  save(data) {
+    fs.writeFileSync(this.fullname, data);
+  }
 
-    this.exists = function () {
-        return fs.existsSync(this.fullname);
-    };
+  toBase64() {
+    return this.toBuffer().toString('base64');
+  }
 
-    this.toBuffer = function () {
-        var bits = fs.readFileSync(this.fullname);
-        return new Buffer(bits);
-    };
+  toBuffer() {
+    const bits = fs.readFileSync(this.fullname);
+    return new Buffer(bits);
+  }
 
-    this.toBase64 = function () {
-        return this.toBuffer().toString('base64');
-    };
+  toText() {
+    return this.toBuffer().toString();
+  }
+}
 
-    this.toText = function () {
-        return this.toBuffer().toString();
-    };
-
-    this.save = function (data) {
-        fs.writeFileSync(this.fullname, data);
-    };
-
-    this.init();
-};
+module.exports = FileInfo;

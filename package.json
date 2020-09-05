@@ -20,6 +20,8 @@
     "bootstrap": "^4.3.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "gulp": "4.0.2",
+    "gulp-eslint": "6.0.0",
     "nodemon": "^2.0.4",
     "vue-toastr": "2.1.2",
     "vue-advanced-cropper": "0.16.10",

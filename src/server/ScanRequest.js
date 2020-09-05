@@ -1,76 +1,101 @@
-var dateFormat = require('dateformat');
-var Config = require('./Config');
-var System = require('./System');
+const dateFormat = require('dateformat');
+const Config = require('./Config');
+const Device = require('./Device');
+const System = require('./System');
 
-var ScanRequest = function (def) {
-    var _this = this;
+class ScanRequest {
 
-    System.extend(_this, ScanRequest.default, def);
-    if (!_this.outputFilepath) {
-        var dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-        _this.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + _this.convertFormat;
+  static createDefault(device) {
+    return {
+      top: 0,
+      left: 0,
+      width: device.features['-x'].limits[1],
+      height: device.features['-y'].limits[1],
+      resolution: device.features['--resolution'].default,
+      mode: device.features['--mode'].default,
+      format: 'tiff',
+      brightness: 0,
+      contrast: 0,
+      convertFormat: 'tif',
+      dynamicLineart: true
+    };
+  }
+
+  static build(input) {
+    const device = new Device();
+    if ('device' in input && input.device) {
+      device.load(input.device);
     }
 
-    _this.validate = function () {
-        var errors = [];
+    const request = System.extend(ScanRequest.createDefault(device), input);
 
-        if (_this.mode === undefined) {
-            errors.push('Invalid mode: ' + _this.mode);
-        }
+    if ('outputFilepath' in request === false) {
+      const dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
+      request.outputFilepath = Config.OutputDirectory + 'scan_' + dateString + '.' + request.convertFormat;
+    }
+    if ('--brightness' in device.features === false) {
+      delete request.brightness;
+    }
+    if ('--contrast' in device.features === false) {
+      delete request.contrast;
+    }
+    if ('--disable-dynamic-lineart' in device.features === false) {
+      delete request.dynamicLineart;
+    }
 
-        if (!Number.isInteger(_this.width)) {
-            errors.push('Invalid width: ' + _this.width);
-        }
+    return request;
+  }
 
-        if (!Number.isInteger(_this.height)) {
-            errors.push('Invalid height: ' + _this.height);
-        }
+  constructor(arg) {
+    System.extend(this, ScanRequest.build(arg));
+    console.log(this);
+  }
 
-        if (!Number.isInteger(_this.top)) {
-            errors.push('Invalid top: ' + _this.top);
-        }
+  validate() {
+    const errors = [];
 
-        if (!Number.isInteger(_this.left)) {
-            errors.push('Invalid left: ' + _this.left);
-        }
+    if (this.mode === undefined) {
+      errors.push('Invalid mode: ' + this.mode);
+    }
 
-        if (!Number.isInteger(_this.brightness)) {
-            errors.push('Invalid brightness: ' + _this.brightness);
-        }
+    if (!Number.isInteger(this.width)) {
+      errors.push('Invalid width: ' + this.width);
+    }
 
-        if (!Number.isInteger(_this.contrast)) {
-            errors.push('Invalid contrast: ' + _this.contrast);
-        }
+    if (!Number.isInteger(this.height)) {
+      errors.push('Invalid height: ' + this.height);
+    }
 
-        if ('depth' in _this && !Number.isInteger(_this.depth)) {
-            errors.push('Invalid depth: ' + _this.depth);
-        }
+    if (!Number.isInteger(this.top)) {
+      errors.push('Invalid top: ' + this.top);
+    }
 
-        if (_this.top + _this.height > Config.MaximumScanHeightInMm) {
-            errors.push('Top + height exceed maximum dimensions');
-        }
+    if (!Number.isInteger(this.left)) {
+      errors.push('Invalid left: ' + this.left);
+    }
 
-        if (['tif', 'jpg', 'png', 'pdf'].indexOf(_this.convertFormat) === -1) {
-            errors.push('Invalid format type');
-        }
+    if (!Number.isInteger(this.brightness)) {
+      errors.push('Invalid brightness: ' + this.brightness);
+    }
 
-        return errors;
-    };
-};
+    if (!Number.isInteger(this.contrast)) {
+      errors.push('Invalid contrast: ' + this.contrast);
+    }
 
-ScanRequest.default = {
-    top: 0,
-    left: 0,
-    width: Config.MaximumScanWidthInMm,
-    height: Config.MaximumScanHeightInMm,
-    mode: "Color",
-    resolution: 200,
-    format: "tiff",
-    outputFilepath: "",
-    brightness: 0,
-    contrast: 0,
-    convertFormat: 'tif',
-    dynamicLineart: true
-};
+    if ('depth' in this && !Number.isInteger(this.depth)) {
+      errors.push('Invalid depth: ' + this.depth);
+    }
+
+    if (this.top + this.height > Config.MaximumScanHeightInMm) {
+      errors.push('Top + height exceed maximum dimensions');
+    }
+
+    if (['tif', 'jpg', 'png', 'pdf'].indexOf(this.convertFormat) === -1) {
+      errors.push('Invalid format type');
+    }
+
+    return errors;
+  }
+}
 
 module.exports = ScanRequest;

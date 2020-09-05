@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-var express = require('express');
-var configurer = require('./Configure');
-var Config = require('./classes/Config');
+const express = require('express');
+const configurer = require('./Configure');
+const Config = require('./classes/Config');
 
-var app = express();
+const app = express();
 configurer(app);
 
-app.listen(Config.Port, function () {
-    console.log('listening');
+app.listen(Config.Port, () => {
+  console.log('listening');
 });

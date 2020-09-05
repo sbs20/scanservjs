@@ -1,116 +1,114 @@
-var fs = require('fs');
-var Q = require('kew');
+const fs = require('fs');
+const Q = require('kew');
 
-var Config = require('./Config');
-var Device = require('./Device');
-var FileInfo = require('./FileInfo');
-var ScanRequest = require('./ScanRequest');
-var Scanimage = require('./Scanimage');
-var Convert = require('./Convert');
-const System = require('./System');
+const Config = require('./Config');
+const Device = require('./Device');
+const FileInfo = require('./FileInfo');
+const ScanRequest = require('./ScanRequest');
+const Scanimage = require('./Scanimage');
+const Convert = require('./Convert');
 
-module.exports = function () {
-    var _this = this;
+function testFileExists(path) {
+  let file = new FileInfo(path);
+  if (file.exists()) {
+    return {
+      success: true,
+      message: 'Found ' + file.name + ' at "' + path + '"'
+    };
+  }
 
-    _this.fileList = function () {
-        var deferred = Q.defer();
-        var outdir = Config.OutputDirectory;
+  return {
+    success: false,
+    message: 'Unable to find ' + file.name + ' at "' + path + '"'
+  };
+}
 
-        fs.readdir(outdir, function (err, list) {
-            if (err) {
-                deferred.reject(err);
-            }
+class Api {
+  fileList() {
+    let deferred = Q.defer();
+    let outdir = Config.OutputDirectory;
 
-            var files = list.map(function (f) {
-                return new FileInfo(outdir + f);
-            }).filter(function (f) {
-                return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
-            });
+    fs.readdir(outdir, (err, list) => {
+      if (err) {
+        deferred.reject(err);
+      }
 
-            deferred.resolve(files);
-        });
+      let files = list.map((f) => {
+        return new FileInfo(outdir + f);
+      }).filter((f) => {
+        return f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf';
+      });
 
-        return deferred.promise;
+      deferred.resolve(files);
+    });
+
+    return deferred.promise;
+  }
+
+  fileDelete(req) {
+    let f = new FileInfo(req.data);
+    return Q.resolve(f.delete());
+  }
+
+  convert() {
+    let options = {
+      default: Config.PreviewDirectory + 'default.jpg',
+      source: Config.PreviewDirectory + 'preview.tif',
+      target: Config.PreviewDirectory + 'preview.jpg',
+      trim: false
     };
 
-    _this.fileDelete = function (req) {
-        var f = new FileInfo(req.data);
-        return Q.resolve(f.delete());
-    };
+    let source = new FileInfo(options.source);
+    if (!source.exists()) {
+      let fileInfo = new FileInfo(options.default);
+      return Q.resolve(fileInfo);
+    }
 
-    _this.convert = function () {
-        var options = {
-            default: Config.PreviewDirectory + 'default.jpg',
-            source: Config.PreviewDirectory + 'preview.tif',
-            target: Config.PreviewDirectory + 'preview.jpg',
-            trim: false
-        };
+    let convert = new Convert(options);
 
-        var source = new FileInfo(options.source);
-        if (!source.exists()) {
-            let fileInfo = new FileInfo(options.default);
-            return Q.resolve(fileInfo);
+    // Ignore errors. The FileInfo will either exist or not
+    return convert.execute()
+      .then(() => {
+        let fileInfo = new FileInfo(options.target);
+        if (!fileInfo.exists()) {
+          throw new Error('File does not exist');
         }
+        return fileInfo;
+      });
+  }
 
-        var convert = new Convert(options);
+  scan(req) {
+    let scanRequest = new ScanRequest(req);
+    let scanner = new Scanimage();
+    return scanner.execute(scanRequest);
+  }
 
-        // Ignore errors. The FileInfo will either exist or not
-        return convert.execute()
-            .then(function () {
-                var fileInfo = new FileInfo(options.target);
-                if (!fileInfo.exists()) {
-                    throw new Error("File does not exist");
-                }
-                return fileInfo;
-            });
-    };
+  preview(req) {
+    let scanRequest = new ScanRequest({
+      device: req.device,
+      mode: req.mode,
+      brightness: req.brightness,
+      contrast: req.contrast,
+      dynamicLineart: req.dynamicLineart
+    });
 
-    _this.scan = function (req) {
-        var scanRequest = new ScanRequest(req);
-        var scanner = new Scanimage();
-        return scanner.execute(scanRequest);
-    };
+    scanRequest.outputFilepath = Config.PreviewDirectory + 'preview.tif';
+    scanRequest.resolution = Config.PreviewResolution;
 
-    _this.preview = function (req) {
-        var scanRequest = new ScanRequest({
-            device: req.device,
-            mode: req.mode,
-            brightness: req.brightness,
-            contrast: req.contrast,
-            dynamicLineart: req.dynamicLineart,
-            outputFilepath: Config.PreviewDirectory + 'preview.tif',
-            resolution: Config.PreviewResolution
-        });
+    let scanner = new Scanimage();
+    return scanner.execute(scanRequest);
+  }
 
-        var scanner = new Scanimage();
-        return scanner.execute(scanRequest);
-    };
+  diagnostics() {
+    let tests = [];
+    tests.push(testFileExists(Config.Scanimage));
+    tests.push(testFileExists(Config.Convert));
+    return Q.resolve(tests);
+  }
 
-    var testFileExists = function (path) {
-        var file = new FileInfo(path);
-        if (file.exists()) {
-            return {
-                success: true,
-                message: 'Found ' + file.name + ' at "' + path + '"'
-            };
-        }
+  device() {
+    return new Device().get();
+  }
+}
 
-        return {
-            success: false,
-            message: 'Unable to find ' + file.name + ' at "' + path + '"'
-        };
-    };
-
-    _this.diagnostics = function () {
-        var tests = [];
-
-        tests.push(testFileExists(Config.Scanimage));
-        tests.push(testFileExists(Config.Convert));
-
-        return Q.resolve(tests);
-    };
-
-    _this.device = function () {
-        return new Device().get();
-    };
-};
+module.exports = Api;
