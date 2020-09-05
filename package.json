@@ -23,10 +23,10 @@
     "gulp": "4.0.2",
     "gulp-eslint": "6.0.0",
     "nodemon": "^2.0.4",
-    "vue-toastr": "2.1.2",
     "vue-advanced-cropper": "0.16.10",
     "vue-slider-component": "3.2.5",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "vue-toastr": "2.1.2"
   },
   "author": "Sam Strachan",
   "license": "GPL-2.0",
