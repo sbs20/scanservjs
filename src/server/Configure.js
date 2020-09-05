@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser')
 const Api = require('./Api')
-//const express = require('express');
 
 var forbidden = function (req, res) {
   res.status(403).send('<h1>Error 403: Forbidden</h1>');
@@ -19,7 +18,6 @@ module.exports = app => {
   }));
 
   app.use(bodyParser.json());
-  //app.use('/files', express.static('./data/output'));
 
   app.get('/node*', forbidden);
   app.get('/api.js', forbidden);
@@ -110,4 +108,4 @@ module.exports = app => {
   });
 
   app.use(bodyParser.json());
- }
+}
