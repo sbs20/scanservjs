@@ -4,7 +4,6 @@ const Device = require('./Device');
 const System = require('./System');
 
 class ScanRequest {
-
   static createDefault(device) {
     return {
       top: 0,

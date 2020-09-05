@@ -17,12 +17,12 @@ class CmdBuilder {
   }
 
   pipe() {
-    this.cmd += ` |`;
+    this.cmd += ' |';
     return this;
   }
 
   redirect() {
-    this.cmd += ` >`;
+    this.cmd += ' >';
     return this;
   }
 

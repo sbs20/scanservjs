@@ -1,8 +1,9 @@
+const CmdBuilder = require('./CmdBuilder');
 const Constants = require('./Constants');
 const System = require('./System');
 const FileInfo = require('./FileInfo');
 
-const decorate = function (device) {
+const decorate = (device) => {
   for (const key in device.features) {
     let feature = device.features[key];
     let params = null;
@@ -39,7 +40,7 @@ const decorate = function (device) {
 };
 
 /// Parses the response of scanimage -A into a dictionary
-const parse = function (response) {
+const parse = (response) => {
   if (response === null || response === '') {
     throw new Error('No device found');
   }
@@ -73,12 +74,10 @@ const parse = function (response) {
 };
 
 /// Executes scanimageA and returns a promise of parsed results
-const scanimageA = async function () {
-  let cmd = Constants.Scanimage;
-  if (Constants.DeviceName) {
-    cmd += ' -d "' + Constants.DeviceName + '"';
-  }
-  cmd += ' -A';
+const scanimageA = async () => {
+  const cmd = new CmdBuilder(Constants.Scanimage)
+    .arg(' -A')
+    .build();
 
   const result = await System.execute(cmd);
   const data = parse(result.output);
@@ -126,10 +125,6 @@ class Device {
     }
 
     return false;
-  }
-
-  modes() {
-    return this.features['--mode'].options.split('|');
   }
 }
 

@@ -39,7 +39,7 @@ class FileInfo {
 
   toBuffer() {
     const bits = fs.readFileSync(this.fullname);
-    return new Buffer(bits);
+    return Buffer.from(bits);
   }
 
   toText() {

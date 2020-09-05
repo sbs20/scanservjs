@@ -1,3 +1,4 @@
+const CmdBuilder = require('./CmdBuilder');
 const Constants = require('./Constants');
 const System = require('./System');
 
@@ -15,17 +16,26 @@ class Convert {
   }
 
   cmd() {
-    let params = ' ';
-    if (this.args.ignoreStdError) params += Constants.IgnoreStdError + ' ';
-    if (this.args.normalize) params += '-normalize ';
-    if (this.args.trim) params += '-trim ';
-    if (this.args.sharpen) params += '-sharpen ' + this.args.sharpen + ' ';
-    if (this.args.quality) params += '-quality ' + this.args.quality + ' ';
-
-    return Constants.Convert + ' ' +
-      params +
-      this.args.source + ' ' +
-      this.args.target;
+    const cmdBuilder = new CmdBuilder(Constants.Convert);
+    if (this.args.ignoreStdError) {
+      cmdBuilder.arg(Constants.IgnoreStdError);
+    }
+    if (this.args.normalize) {
+      cmdBuilder.arg('-normalize');
+    }
+    if (this.args.trim) {
+      cmdBuilder.arg('-trim');
+    }
+    if (this.args.sharpen) {
+      cmdBuilder.arg('-sharpen', this.args.sharpen);
+    }
+    if (this.args.quality) {
+      cmdBuilder.arg('-quality', this.args.quality);
+    }
+    return cmdBuilder
+      .arg(this.args.source)
+      .arg(this.args.target)
+      .build();
   }
 
   // Returns a promise

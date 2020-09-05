@@ -38,12 +38,14 @@ const commandLine = function (scanRequest, device) {
   }
 
   if (scanRequest.convertFormat !== 'tif') {
-    cmdBuilder.pipe()
+    cmdBuilder
+      .pipe()
       .arg(`convert - ${scanRequest.convertFormat}:-`);
   }
 
   // Last
-  return cmdBuilder.redirect()
+  return cmdBuilder
+    .redirect()
     .arg(`"${scanRequest.outputFilepath}"`)
     .build();
 };

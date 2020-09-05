@@ -2,7 +2,6 @@ module.exports = {
   Port: 8080,
   IsTrace: true,
   TraceLineEnding: '',
-  DeviceName: null,
   Scanimage: '/usr/bin/scanimage',
   Convert: '/usr/bin/convert',
   IgnoreStdError: '2>/dev/null',
