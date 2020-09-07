@@ -9,15 +9,6 @@ const filter = require('gulp-filter');
 const run = require('gulp-run');
 const tar = require('gulp-tar');
 
-// const minimist = require('minimist');
-
-// const knownOptions = {
-//   string: 'dest',
-//   default: { dest: '/var/www/scanservjs' }
-// };
-
-// const options = minimist(process.argv.slice(2), knownOptions);
-
 const linter = () => {
   return eslint({
     'parserOptions': {
@@ -103,11 +94,6 @@ gulp.task('release', gulp.series(['build'], () => {
     .pipe(gulp.dest('./release'));
 }));
 
-gulp.task('deploy', gulp.series(['build'], function () {
-    return gulp.src('./dist/**/*.*')
-        .pipe(gulp.dest(options.dest));
-}));
-
-gulp.task('default', gulp.series(['server-lint'], (done) => {
+gulp.task('default', gulp.series(['build'], (done) => {
   done();
 }));
