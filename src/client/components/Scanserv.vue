@@ -80,7 +80,6 @@
                   <option>pdf</option>
                 </select>
               </div>
-
             </div>
           </div>
 
@@ -106,9 +105,8 @@
         <div class="col-lg-1"></div>
       </div>
 
-      <div class="row">
+      <div class="row mt-5">
         <div class="col">
-          &nbsp;
         </div>
       </div>
 
