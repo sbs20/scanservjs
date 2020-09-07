@@ -34,6 +34,9 @@ or do a release:
 gulp release
 ```
 
+## Updating dependencies
+* `npm audit fix` or `npm update`. This won't remove old packages. Delete node_modules and reinstall
+
 ## References
 * [Run server with webpack](https://dennisreimann.de/articles/vue-cli-serve-express.html)
 

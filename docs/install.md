@@ -61,12 +61,4 @@ Or have a look at [other releases](https://github.com/sbs20/scanservjs/releases)
 
 # development / build
 
-* Install nodejs
-* `npm install`
-* `npm install -g gulp-cli`
-* `gulp`
-* `cd ./build/scanservjs`
-* `node /server.js`
-
-# Updating dependencies
-* `npm audit fix` or `npm update`. This won't remove old packages. Delete node_modules and reinstall
+See [development notes](development.md)
