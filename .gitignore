@@ -89,11 +89,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # Release folders
-./build
-./assets
-./release
-./etc
-./dist
+release/**/*
+dist/**/*
 
 # VSCode
 .vscode
