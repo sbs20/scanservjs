@@ -88,55 +88,52 @@
           <div class="row">
             <div class="col text-right">
               <div class="btn-group" role="group" aria-label="...">
-                <button id="reset" type="button" class="btn btn-lg" v-on:click="reset">reset <span class="material-icons" aria-hidden="true">autorenew</span></button>
-                <button id="preview" type="button" class="btn btn-lg" v-on:click="preview">preview <span class="material-icons" aria-hidden="true">search</span></button>
-                <button id="scan" type="button" class="btn btn-lg" v-on:click="scan">scan <span class="material-icons" aria-hidden="true">photo_camera</span></button>
+                <button id="reset" type="button" class="btn btn-lg" v-on:click="reset">reset <img src="../assets/autorenew-black-18dp.svg"></button>
+                <button id="preview" type="button" class="btn btn-lg" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
+                <button id="scan" type="button" class="btn btn-lg" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
               </div>
             </div>
           </div>
 
         </div>
         <!-- Preview pane -->
-        <div class="col-lg-6 col-md-5 col-sm-12">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4 col-md-6 col-sm-12">
           <cropper ref="cropper" class="cropper"
               :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
         </div>
+        <div class="col-lg-1"></div>
       </div>
 
       <div class="row">
-        <div class="col">&nbsp;</div>
+        <div class="col">
+          &nbsp;
+        </div>
       </div>
 
       <div class="row">
-        <div>
-          <!-- Padding for larger screens -->
-          <div class="col-lg-2 col-md-1"></div>
-
-          <div class="col-lg-8 col-md-10 col-sm-12">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>File</th>
-                  <th>Date</th>
-                  <th>Size</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="file in files" v-bind:key="file.name">
-                  <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
-                  <td>{{ file.lastModified }}</td>
-                  <td>{{ file.size }}</td>
-                  <td><button type="button" class="btn btn-lg" v-on:click="fileRemove(file)">X</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Padding for larger screens -->
-          <div class="col-lg-2 col-md-1"></div>
-        </div>    
+        <!-- Padding for larger screens -->
+        <div class="col">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Date</th>
+                <th>Size</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="file in files" v-bind:key="file.name">
+                <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
+                <td>{{ file.lastModified }}</td>
+                <td>{{ file.size }}</td>
+                <td><button type="button" class="btn btn-lg" v-on:click="fileRemove(file)">X</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
