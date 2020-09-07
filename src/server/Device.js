@@ -25,12 +25,14 @@ const decorate = (device) => {
       case '-y':
         params = feature.parameters.replace(/[a-z]/ig, '').split('..');
         feature.limits = [Number(params[0]), Number(params[1])];
+        feature.default = Number(feature.default);
         break;
       
       case '--brightness':
       case '--contrast':
         params = feature.parameters.split('%')[0].split('..');
         feature.limits = [Number(params[0]), Number(params[1])];
+        feature.default = Number(feature.default);
         break;
       
     }
@@ -70,52 +72,55 @@ const parse = (response) => {
     device.name = match[1];
   }
 
+  if (match === null) {
+    throw new Error('Scanimage output contains no matching expressions');
+  }
+
   return device;
 };
 
-/// Executes scanimageA and returns a promise of parsed results
-const scanimageA = async () => {
-  const cmd = new CmdBuilder(Constants.Scanimage)
-    .arg(' -A')
-    .build();
-
-  const result = await System.execute(cmd);
-  const data = parse(result.output);
-  System.trace('device', data);
-  return data;
-};
-
 class Device {
-  constructor(arg) {
-    if (arg) {
-      this.load(arg);
-    }
+  constructor() {
   }
 
-  load(data) {
-    System.extend(this, data);
+  static from(o) {
+    const device = new Device();
+    if (typeof o === 'object') {
+      const decorated = decorate(o);
+      System.extend(device, decorated);
+      return device;      
+    } else if (typeof o === 'string') {
+      const data = parse(o);
+      return Device.from(data);
+    } else {
+      throw new Error('Unexpected data for Device');
+    }
   }
 
   /// Attempts to get a stored configuration of our device and if
   /// not gets it from the command line.
-  async get() {
+  static async get() {
     const conf = new FileInfo('./device.conf');
-    let isLoadRequired = false;
+    let isCached = true;
     if (!conf.exists()) {
       System.trace('device.conf does not exist. Reloading');
-      isLoadRequired = true;
-    } else if (JSON.parse(conf.toText()).version !== System.version) {
+      isCached = false;
+    } else if (Device.from(conf.toJson()).version !== System.version) {
       System.trace('device.conf version is old. Reloading');
-      isLoadRequired = true;
+      isCached = false;
     }
 
-    if (isLoadRequired) {
-      const data = await scanimageA();
-      // Humans might read this, so pretty
-      conf.save(JSON.stringify(data, null, 4));
-      return decorate(data);
+    if (!isCached) {
+      const cmd = new CmdBuilder(Constants.Scanimage)
+        .arg(' -A')
+        .build();
+  
+      const data = await System.execute(cmd);
+      const device = Device.from(data.output);
+      conf.save(JSON.stringify(device, null, 2));
+      return device;
     } else {
-      return decorate(JSON.parse(conf.toText()));
+      return Device.from(conf.toJson());
     }
   }
 

@@ -41,11 +41,7 @@ class ScanRequest {
   }
 
   constructor(arg) {
-    this.device = null;
-    if ('device' in arg && arg.device) {
-      this.device = new Device(arg.device);
-    }
-
+    this.device = Device.from(arg.device);
     System.extend(this, this.build(arg));
     console.log(this);
   }

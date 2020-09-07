@@ -45,6 +45,10 @@ class FileInfo {
   toText() {
     return this.toBuffer().toString();
   }
+
+  toJson() {
+    return JSON.parse(this.toText());
+  }
 }
 
 module.exports = FileInfo;

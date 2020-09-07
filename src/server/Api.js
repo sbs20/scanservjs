@@ -97,7 +97,7 @@ class Api {
   }
 
   static async device() {
-    return await new Device().get();
+    return await Device.get();
   }
 }
 

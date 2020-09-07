@@ -56,10 +56,11 @@ class Scanimage {
       throw new Error('Unable to find Scanimage at "' + Constants.Scanimage + '"');
     }
 
-    const device = new Device();
-    if ('device' in scanRequest && scanRequest.device) {
-      device.load(scanRequest.device);
+    if ('device' in scanRequest === false || !scanRequest.device) {
+      throw new Error('No device found in request');
     }
+
+    const device = Device.from(scanRequest.device);
 
     const response = {
       image: null,
