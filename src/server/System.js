@@ -1,10 +1,10 @@
-const packageJson = require('../../package.json');
 const Constants = require('./Constants');
+const Package = require('./Package');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
 const System = {
-  version: packageJson.version,
+  version: Package.version,
 
   extend() {
     const t = arguments[0];
@@ -63,11 +63,6 @@ const System = {
 
   error(e) {
     System.log('Error', e);
-  },
-
-  async scannerDevices() {
-    const cmd = Constants.Scanimage + ' -L';
-    return await System.execute(cmd);
   }
 };
 

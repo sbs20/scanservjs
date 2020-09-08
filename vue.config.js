@@ -1,4 +1,5 @@
 const configure = require('./src/server/Configure')
+const path = require("path");
 
 module.exports = {
   devServer: {
@@ -24,5 +25,6 @@ module.exports = {
     // and falls back to `public/index.html` if not found.
     // Output filename is inferred to be `subpage.html`.
     //subpage: 'src/subpage/main.js'
-  }
+  },
+  outputDir: path.resolve(__dirname, "./dist/client")
 }
