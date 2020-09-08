@@ -76,9 +76,10 @@ module.exports = app => {
     res.send(Api.diagnostics());
   });
 
-  app.get('/device', async (req, res) => {
+  app.get(['/device', '/device/:force'], async (req, res) => {
+    const force = req.params.force && req.params.force === 'force';
     try {
-      res.send(await Api.device());
+      res.send(await Api.device(force));
     } catch (error) {
       const err = wrapError(error);
       res.status(500).send(err);

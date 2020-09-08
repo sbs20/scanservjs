@@ -96,7 +96,10 @@ class Api {
     return tests;  
   }
 
-  static async device() {
+  static async device(force) {
+    if (force) {
+      Device.reset();
+    }
     return await Device.get();
   }
 }

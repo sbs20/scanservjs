@@ -34,7 +34,6 @@ const decorate = (device) => {
         feature.limits = [Number(params[0]), Number(params[1])];
         feature.default = Number(feature.default);
         break;
-      
     }
   }
 
@@ -80,6 +79,11 @@ const parse = (response) => {
 };
 
 class Device {
+
+  static filepath() {
+    return './device.conf';
+  }
+
   constructor() {
   }
 
@@ -100,12 +104,12 @@ class Device {
   /// Attempts to get a stored configuration of our device and if
   /// not gets it from the command line.
   static async get() {
-    const conf = new FileInfo('./device.conf');
+    const file = new FileInfo(Device.filepath());
     let isCached = true;
-    if (!conf.exists()) {
+    if (!file.exists()) {
       System.trace('device.conf does not exist. Reloading');
       isCached = false;
-    } else if (Device.from(conf.toJson()).version !== System.version) {
+    } else if (Device.from(file.toJson()).version !== System.version) {
       System.trace('device.conf version is old. Reloading');
       isCached = false;
     }
@@ -117,10 +121,17 @@ class Device {
   
       const data = await System.execute(cmd);
       const device = Device.from(data.output);
-      conf.save(JSON.stringify(device, null, 2));
+      file.save(JSON.stringify(device, null, 2));
       return device;
     } else {
-      return Device.from(conf.toJson());
+      return Device.from(file.toJson());
+    }
+  }
+
+  static reset() {
+    const file = new FileInfo(Device.filepath());
+    if (file.exists()) {
+      file.delete();
     }
   }
 

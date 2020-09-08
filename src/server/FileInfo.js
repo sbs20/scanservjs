@@ -3,6 +3,9 @@ const path = require('path');
 
 class FileInfo {
   constructor(fullpath) {
+    if (fullpath.indexOf('../') !== -1) {
+      throw new Error('Relative paths disallowed');
+    }
     this.fullname = fullpath;
     this.name = path.basename(this.fullname);
     this.path = path.dirname(this.fullname);

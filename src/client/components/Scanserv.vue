@@ -87,9 +87,10 @@
           <div class="row">
             <div class="col text-right">
               <div class="btn-group" role="group" aria-label="...">
-                <button id="reset" type="button" class="btn btn-lg" v-on:click="reset">reset <img src="../assets/autorenew-black-18dp.svg"></button>
-                <button id="preview" type="button" class="btn btn-lg" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
-                <button id="scan" type="button" class="btn btn-lg" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
+                <button type="button" class="btn btn-lg btn-light" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></button>
+                <button type="button" class="btn btn-lg btn-light" v-on:click="reset">reset <img src="../assets/autorenew-black-18dp.svg"></button>
+                <button type="button" class="btn btn-lg btn-light" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
+                <button type="button" class="btn btn-lg btn-light" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
               </div>
             </div>
           </div>
@@ -127,7 +128,7 @@
                 <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
                 <td>{{ file.lastModified }}</td>
                 <td>{{ file.size }}</td>
-                <td><button type="button" class="btn btn-lg" v-on:click="fileRemove(file)">X</button></td>
+                <td><button class="btn btn-sm" v-on:click="fileRemove(file)"><img src="../assets/delete-24px.svg"></button></td>
               </tr>
             </tbody>
           </table>
@@ -335,9 +336,10 @@ export default {
       });
     },
 
-    readDevice() {
+    readDevice(force) {
       this.mask(1);
-      fetch('device').then((response) => {
+      const url = 'device' + (force ? '/force' : '');
+      fetch(url).then((response) => {
         response.json().then(device => {
           if ('features' in device) {
             this.device = device;
@@ -395,6 +397,10 @@ export default {
       }
 
       return request;
+    },
+
+    reinitialize() {
+      this.readDevice(true);
     },
 
     reset() {
