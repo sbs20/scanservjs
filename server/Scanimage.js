@@ -4,7 +4,6 @@ const CmdBuilder = require('./CmdBuilder');
 const Constants = require('./Constants');
 const Device = require('./Device');
 const System = require('./System');
-const FileInfo = require('./FileInfo');
 
 const exists = function () {
   return System.fileExists(Constants.Scanimage);
