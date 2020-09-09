@@ -40,11 +40,13 @@
   "author": "Sam Strachan",
   "license": "GPL-2.0",
   "dependencies": {
-    "core-js": "^3.6.5",
-    "vue": "^2.6.11",
     "body-parser": "^1.19.0",
+    "core-js": "^3.6.5",
     "dateformat": "^1.0.12",
-    "express": "^4.17.1"
+    "loglevel": "1.7.0",
+    "loglevel-plugin-prefix": "0.8.4",
+    "express": "^4.17.1",
+    "vue": "^2.6.11"
   },
   "optionalDependencies": {},
   "eslintConfig": {
@@ -68,7 +70,7 @@
   ],
   "nodemonConfig": {
     "watch": [
-      "src/server"
+      "server"
     ]
   }
 }

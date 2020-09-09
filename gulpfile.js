@@ -64,7 +64,7 @@ gulp.task('test', () => {
 });
 
 gulp.task('server-lint', () => {
-  return gulp.src(['./src/server/*.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./server/*.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -77,7 +77,7 @@ gulp.task('build', gulp.series(['server-lint', 'test', 'clean', 'client'], () =>
     './package.json',
     './package-lock.json',
     './scanservjs.service',
-    './src/*server/**/*',
+    './*server/**/*',
     './*data/**/*.md',
     './*data/**/default.jpg',
   ]).pipe(gulp.dest('./dist/'));    

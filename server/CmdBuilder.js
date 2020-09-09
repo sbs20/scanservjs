@@ -1,3 +1,5 @@
+const log = require('loglevel').getLogger('CmdBuilder');
+
 class CmdBuilder {
   constructor(cmd) {
     this.cmd = cmd;
@@ -27,7 +29,7 @@ class CmdBuilder {
   }
 
   build() {
-    console.log('CmdBuilder.build()', this.cmd);
+    log.debug('build()', this.cmd);
     return this.cmd;
   }
 }

@@ -1,29 +1,31 @@
 const fs = require('fs');
+const log = require('loglevel').getLogger('Api');
 
 const Constants = require('./Constants');
+const Convert = require('./Convert');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
 const ScanRequest = require('./ScanRequest');
 const Scanimage = require('./Scanimage');
-const Convert = require('./Convert');
+const System = require('./System');
 
 function testFileExists(path) {
-  let file = new FileInfo(path);
-  if (file.exists()) {
+  if (System.fileExists(path)) {
     return {
       success: true,
-      message: 'Found ' + file.name + ' at "' + path + '"'
+      message: `Found ${path}`
     };
   }
 
   return {
     success: false,
-    message: 'Unable to find ' + file.name + ' at "' + path + '"'
+    message: `Unable to find ${path}`
   };
 }
 
 class Api {
   static async fileList() {
+    log.debug('fileList()');
     return await new Promise((resolve, reject) => {
       let outdir = Constants.OutputDirectory;
       fs.readdir(outdir, (err, list) => {
@@ -34,7 +36,8 @@ class Api {
         let files = list
           .map(f => new FileInfo(outdir + f))
           .filter(f => f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf');
-  
+
+        log.debug(files);
         resolve(files);
       });
     });

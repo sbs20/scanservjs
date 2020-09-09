@@ -1,3 +1,5 @@
+const log = require('loglevel').getLogger('Scanimage');
+
 const CmdBuilder = require('./CmdBuilder');
 const Constants = require('./Constants');
 const Device = require('./Device');
@@ -5,8 +7,7 @@ const System = require('./System');
 const FileInfo = require('./FileInfo');
 
 const exists = function () {
-  const fileInfo = new FileInfo(Constants.Scanimage);
-  return fileInfo.exists();
+  return System.fileExists(Constants.Scanimage);
 };
 
 const commandLine = function (scanRequest, device) {
@@ -70,13 +71,13 @@ class Scanimage {
       returnCode: -1
     };
 
-    System.trace('Scanimage.execute:start');
+    log.debug('Scanimage.execute:start');
     response.errors = scanRequest.validate(device);
 
     if (response.errors.length === 0) {
       response.cmdline = commandLine(scanRequest, device);
       const result = await System.execute(response.cmdline);
-      System.trace('Scanimage.execute:finish', result);
+      log.debug('Scanimage.execute:finish', result);
       response.output = result.output;
       response.code = result.code;
       response.image = scanRequest.outputFilepath;

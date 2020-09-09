@@ -1,4 +1,4 @@
-const configure = require('./src/server/Configure')
+const configure = require('./server/Configure')
 const path = require("path");
 
 module.exports = {
@@ -8,9 +8,9 @@ module.exports = {
   pages: {
     index: {
       // entry for the page
-      entry: 'src/client/main.js',
+      entry: 'client/main.js',
       // the source template
-      template: 'src/index.html',
+      template: 'client/index.html',
       // output as dist/index.html
       filename: 'index.html',
       // when using title option,
@@ -20,11 +20,6 @@ module.exports = {
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
-    // when using the entry-only string format,
-    // template is inferred to be `public/subpage.html`
-    // and falls back to `public/index.html` if not found.
-    // Output filename is inferred to be `subpage.html`.
-    //subpage: 'src/subpage/main.js'
   },
   outputDir: path.resolve(__dirname, "./dist/client")
 }

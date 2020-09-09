@@ -1,3 +1,5 @@
+const log = require('loglevel').getLogger('ScanRequest');
+
 const dateFormat = require('dateformat');
 const Constants = require('./Constants');
 const Device = require('./Device');
@@ -43,7 +45,7 @@ class ScanRequest {
   constructor(arg) {
     this.device = Device.from(arg.device);
     System.extend(this, this.build(arg));
-    console.log(this);
+    log.debug(this);
   }
 
   validate() {

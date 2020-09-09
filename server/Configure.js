@@ -1,3 +1,13 @@
+const log = require('loglevel');
+const prefix = require('loglevel-plugin-prefix');
+const Config = require('../config/config');
+
+// We need to apply logging setting prior to anything else using a logger
+prefix.reg(log);
+log.enableAll();
+log.setLevel(Config.log.level);
+prefix.apply(log, Config.log.prefix);
+
 const bodyParser = require('body-parser');
 const Api = require('./Api');
 

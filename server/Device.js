@@ -1,3 +1,5 @@
+const log = require('loglevel').getLogger('Device');
+
 const CmdBuilder = require('./CmdBuilder');
 const Constants = require('./Constants');
 const System = require('./System');
@@ -107,10 +109,10 @@ class Device {
     const file = new FileInfo(Device.filepath());
     let isCached = true;
     if (!file.exists()) {
-      System.trace('device.conf does not exist. Reloading');
+      log.debug('device.conf does not exist. Reloading');
       isCached = false;
     } else if (Device.from(file.toJson()).version !== System.version) {
-      System.trace('device.conf version is old. Reloading');
+      log.debug('device.conf version is old. Reloading');
       isCached = false;
     }
 
