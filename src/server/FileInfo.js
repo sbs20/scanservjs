@@ -1,11 +1,19 @@
 const fs = require('fs');
 const path = require('path');
 
+const checkPath = (fullpath) => {
+  if (fullpath.indexOf('../') !== -1) {
+    throw new Error('Relative paths disallowed');
+  }
+
+  if (fullpath.indexOf('/') === 0) {
+    throw new Error('Root paths disallowed');
+  }
+};
+
 class FileInfo {
   constructor(fullpath) {
-    if (fullpath.indexOf('../') !== -1) {
-      throw new Error('Relative paths disallowed');
-    }
+    checkPath(fullpath);
     this.fullname = fullpath;
     this.name = path.basename(this.fullname);
     this.path = path.dirname(this.fullname);

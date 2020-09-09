@@ -59,14 +59,18 @@ gulp.task('client', () => {
   return run('npm run build').exec();
 });
 
+gulp.task('test', () => {
+  return run('npm run test').exec();
+});
+
 gulp.task('server-lint', () => {
-  return gulp.src(['./src/server/*.js', 'gulpfile.js'])
+  return gulp.src(['./src/server/*.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('build', gulp.series(['server-lint', 'clean', 'client'], () => {
+gulp.task('build', gulp.series(['server-lint', 'test', 'clean', 'client'], () => {
   return gulp.src([
     './install.sh',
     './uninstall.sh',
