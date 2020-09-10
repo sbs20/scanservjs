@@ -46,11 +46,18 @@ class Convert {
     } catch (error) {
       // Incomplete scan images are corrupt and will throw an error like
       // convert: Read error on strip 23; got 3343 bytes, expected 8037. `TIFFFillStrip'
-      // We can just ignore that and resolve as there will be an output file
-      if (error.message.indexOf('TIFFFillStrip') !== -1) {
-        return null;
-      }
+      // Ignore these
+      const ignores = [
+        'TIFFFillStrip',
+        'Cannot read TIFF header'
+      ];
 
+      for (let ignore of ignores) {
+        if (error.message.indexOf(ignore) !== -1) {
+          return null;
+        }  
+      }
+      
       throw error;
     }
   }

@@ -15,11 +15,18 @@ const forbidden = function (req, res) {
   res.status(403).send('<h1>Error 403: Forbidden</h1>');
 };
 
-const wrapError = function (err) {
-  return {
-    message: err.message,
-    code: err.code
+const sendError = (res, httpCode, data) => {
+  let content = {
+    message: '',
+    code: -1
   };
+  if (typeof data === 'object') {
+    content.message = data.message || JSON.stringify(data);
+    content.code = data.code || -1;
+  } else if (typeof data === 'string') {
+    content.message = data;
+  }
+  res.status(httpCode).send(content);
 };
 
 module.exports = app => {
@@ -33,18 +40,30 @@ module.exports = app => {
   app.get('/api.js', forbidden);
 
   app.get('/files', async (req, res) => {
-    res.send(await Api.fileList());
+    try {
+      res.send(await Api.fileList());
+    } catch (error) {
+      sendError(res, 500, error);
+    }
   });
 
   app.get('/files/*', (req, res) => {
-    const fullpath = req.params[0];
-    const file = `${fullpath}`;
-    res.download(file);
+    try {
+      const fullpath = req.params[0];
+      const file = `${fullpath}`;
+      res.download(file);
+    } catch (error) {
+      sendError(res, 500, error);
+    }
   });
 
   app.delete('/files/*', (req, res) => {
-    const fullpath = req.params[0];
-    res.send(Api.fileDelete(fullpath));
+    try {
+      const fullpath = req.params[0];
+      res.send(Api.fileDelete(fullpath));
+    } catch (error) {
+      sendError(res, 500, error);
+    }
   });
 
   app.get('/ping', (req, res) => {
@@ -57,8 +76,7 @@ module.exports = app => {
       fileInfo.content = fileInfo.toBase64();
       res.send(fileInfo);
     } catch (error) {
-      const err = wrapError(error);
-      res.status(500).send(err);
+      sendError(res, 500, error);
     }
   });
 
@@ -67,8 +85,7 @@ module.exports = app => {
     try {
       res.send(await Api.scan(param));
     } catch (error) {
-      const err = wrapError(error);
-      res.status(500).send(err);
+      sendError(res, 500, error);
     }
   });
 
@@ -77,8 +94,7 @@ module.exports = app => {
     try {
       res.send(await Api.preview(param));
     } catch (error) {
-      const err = wrapError(error);
-      res.status(500).send(err);
+      sendError(res, 500, error);
     }
   });
 
@@ -91,8 +107,7 @@ module.exports = app => {
     try {
       res.send(await Api.device(force));
     } catch (error) {
-      const err = wrapError(error);
-      res.status(500).send(err);
+      sendError(res, 500, error);
     }
   });
 

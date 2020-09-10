@@ -140,13 +140,13 @@
 </template>
 
 <script>
-import Slider from "vue-slider-component";
-import { Cropper } from "vue-advanced-cropper";
-import "vue-slider-component/theme/antd.css";
-import Toastr from "vue-toastr";
+import Slider from 'vue-slider-component';
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-slider-component/theme/antd.css';
+import Toastr from 'vue-toastr';
 
 export default {
-  name: "Scanserv",
+  name: 'Scanserv',
   components: {
     Slider,
     Cropper,
@@ -169,7 +169,7 @@ export default {
     this.convert();
     this.fileList();
 
-    this.$refs.toastr.defaultPosition = "toast-bottom-right";
+    this.$refs.toastr.defaultPosition = 'toast-bottom-right';
     this.$refs.toastr.defaultTimeout = 5000;
   },
 
@@ -177,7 +177,7 @@ export default {
     request: {
       handler(request) {
         localStorage.request = JSON.stringify(request);
-        console.log("save:", localStorage.request);
+        console.log('save:', localStorage.request);
         this.onCoordinatesChange();
       },
       deep: true
@@ -189,21 +189,33 @@ export default {
       return JSON.parse(JSON.stringify(o));
     },
 
+    _fetch(url, options) {
+      return fetch(url, options)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          response.json().then(error => {
+            this.$refs.toastr.e(error.message);
+          }).catch(error => {
+            this.$refs.toastr.e(error);
+          });
+        });
+    },
+
     convert() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      fetch('convert', {
+      this._fetch('convert', {
         method: 'POST',
         body: JSON.stringify(this.request),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(response => {
-        response.json().then(fileInfo => {
-          if (fileInfo.content) {
-            this.img = 'data:image/jpeg;base64,' + fileInfo.content;
-          }
-        });
+      }).then(fileInfo => {
+        if (fileInfo.content) {
+          this.img = 'data:image/jpeg;base64,' + fileInfo.content;
+        }
       });
     },
 
@@ -225,58 +237,54 @@ export default {
 
     defaultDevice() {
       return {
-        name: "Unspecified",
-        version: "0",
+        name: 'Unspecified',
+        version: '0',
         features: {
-          "--mode": {
+          '--mode': {
             options: [],
           },
-          "--resolution": {
+          '--resolution': {
             options: [],
           },
-          "-l": {
+          '-l': {
             limits: [0, 215],
           },
-          "-t": {
+          '-t': {
             limits: [0, 297],
           },
-          "-x": {
+          '-x': {
             limits: [0, 215],
           },
-          "-y": {
+          '-y': {
             limits: [0, 297],
           },
-          "--brightness": {
+          '--brightness': {
             limits: [-100, 100],
           },
-          "--contrast": {
+          '--contrast': {
             limits: [-100, 100],
           },
-          "--disable-dynamic-lineart": {}
+          '--disable-dynamic-lineart': {}
         }
       };
     },
 
     fileList() {
       this.mask(1);
-      fetch('files').then((response) => {
-        response.json().then(files => {
-          this.files = files;
-          this.mask(-1);
-        });
+      this._fetch('files').then(files => {
+        this.files = files;
+        this.mask(-1);
       });
     },
 
     fileRemove(file) {
       this.mask(1);
-      fetch('files/' + file.fullname, {
+      this._fetch('files/' + file.fullname, {
         method: 'DELETE'
-      }).then((response) => {
-        response.json().then(data => {
-          console.log("fileRemove", data);
-          this.fileList();
-          this.mask(-1);
-        });
+      }).then(data => {
+        console.log('fileRemove', data);
+        this.fileList();
+        this.mask(-1);
       });
     },
 
@@ -321,48 +329,42 @@ export default {
       let data = this._clone(this.request);
       data.device = this._clone(this.device);
 
-      fetch('preview', {
+      this._fetch('preview', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(response => {
-        response.json().then(() => {
-          window.clearInterval(timer);
-          this.mask(-1);
-        })
+      }).then(() => {
+        window.clearInterval(timer);
+        this.mask(-1);
       });
     },
 
     readDevice(force) {
       this.mask(1);
       const url = 'device' + (force ? '/force' : '');
-      fetch(url).then((response) => {
-        response.json().then(device => {
-          if ('features' in device) {
-            this.device = device;
-            this.request = this.readRequest(device);
-            this.mask(-1);
-          }
-        });
+      this._fetch(url).then(device => {
+        if ('features' in device) {
+          this.device = device;
+          this.request = this.readRequest(device);
+          this.mask(-1);
+        }
       });
     },
 
     readDiagnostics() {
       this.mask(1);
-      fetch('diagnostics').then((response) => {
-        response.json().then(data => {
-          for (let test of data) {
-            if (test.success === true) {
-              this.$refs.toastr.s(test.message);
-            } else {
-              this.$refs.toastr.e(test.message);
-            }
+      this._fetch('diagnostics').then(data => {
+        for (let test of data) {
+          if (test.success === true) {
+            this.$refs.toastr.s(test.message);
+          } else {
+            this.$refs.toastr.e(test.message);
           }
-          this.mask(-1);
-        });
+        }
+        this.mask(-1);
       });
     },
 
@@ -370,7 +372,7 @@ export default {
       let request = null;
       if (localStorage.request) {
         request = JSON.parse(localStorage.request);
-        console.log("load", request);
+        console.log('load', request);
       } else {
         request = {
           top: 0,
@@ -379,7 +381,7 @@ export default {
           height: device.features['-y'].limits[1],
           resolution: device.features['--resolution'].default,
           mode: device.features['--mode'].default,
-          convertFormat: "tif",
+          convertFormat: 'tif',
           brightness: 0,
           contrast: 0,
           dynamicLineart: true
@@ -404,7 +406,7 @@ export default {
     },
 
     reset() {
-      localStorage.removeItem("request");
+      localStorage.removeItem('request');
       this.request = this.readRequest(this.device);
     },
 
@@ -414,18 +416,16 @@ export default {
       let data = this._clone(this.request);
       data.device = this._clone(this.device);
       
-      fetch('scan', {
+      this._fetch('scan', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(response => {
-        response.json().then(() => {
-          this.fileList();
-          this.mask(-1);
-        })
+      }).then(() => {
+        this.fileList();
+        this.mask(-1);
       });
     }
   }
