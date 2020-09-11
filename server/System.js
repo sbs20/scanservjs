@@ -4,6 +4,7 @@ const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
 
 const Package = require('../package.json');
+const { pipeline } = require('stream');
 
 const System = {
   version: Package.version,
@@ -32,8 +33,9 @@ const System = {
     };
   },
 
-  async spawn(cmd, stdin) {
+  async spawn(cmd, stdin, ignoreErrors) {
     const MAX_BUFFER = 50 * 1024 * 1024;
+    ignoreErrors = ignoreErrors === undefined ? false : true;
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
@@ -51,12 +53,14 @@ const System = {
         stderr += data;
       });
 
-      proc.on('error', (exception) => {
-        reject(new Error(`${cmd} error: ${exception.message}, stderr: ${stderr}`));
-      });
+      if (!ignoreErrors) {
+        proc.on('error', (exception) => {
+          reject(new Error(`${cmd} error: ${exception.message}, stderr: ${stderr}`));
+        });  
+      }
 
       proc.on('close', (code) => {
-        if (code !== 0) {
+        if (code !== 0 && !ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {
           resolve(stdout);
@@ -68,6 +72,15 @@ const System = {
         proc.stdin.end();  
       }
     });
+  },
+
+  async pipe(cmdArray, stdin, ignoreErrors) {
+    let stdout = null;
+    for (let cmd of cmdArray) {
+      stdout = await System.spawn(cmd, stdin, ignoreErrors);
+      stdin = stdout;
+    }
+    return stdout;
   }
 };
 

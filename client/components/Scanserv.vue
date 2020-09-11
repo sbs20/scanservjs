@@ -212,10 +212,8 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(fileInfo => {
-        if (fileInfo.content) {
-          this.img = 'data:image/jpeg;base64,' + fileInfo.content;
-        }
+      }).then(data => {
+        this.img = 'data:image/jpeg;base64,' + data.content;
       });
     },
 

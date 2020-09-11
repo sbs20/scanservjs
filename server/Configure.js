@@ -73,9 +73,10 @@ module.exports = app => {
 
   app.post('/convert', async (req, res) => {
     try {
-      const fileInfo = await Api.convert();
-      fileInfo.content = fileInfo.toBase64();
-      res.send(fileInfo);
+      const buffer = await Api.convert();
+      res.send({
+        content: buffer.toString('base64')
+      });
     } catch (error) {
       sendError(res, 500, error);
     }

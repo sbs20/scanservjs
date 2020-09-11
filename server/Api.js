@@ -58,16 +58,11 @@ class Api {
 
     let source = new FileInfo(options.source);
     if (!source.exists()) {
-      return new FileInfo(options.default);
+      return new FileInfo(options.default).toBuffer();
     }
   
-    const convert = new Convert(options);
-    await convert.execute();
-    let fileInfo = new FileInfo(options.target);
-    if (!fileInfo.exists()) {
-      throw new Error('File does not exist');
-    }
-    return fileInfo;
+    let buffer = source.toBuffer();
+    return await System.pipe(Config.previewPipeline.commands, buffer, true);
   }
 
   static async scan(req) {

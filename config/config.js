@@ -29,7 +29,7 @@ const Config = {
     extension: 'jpg',
     description: 'JPG (Low Quality)',
     commands: [
-      'convert - -quality 50 jpg:-'
+      'convert - -quality 75 jpg:-'
     ]
   },
   pipelines: [
