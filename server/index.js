@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const express = require('express');
-const Constants = require('./Constants');
+const Config = require('../config/config');
 const configurer = require('./Configure');
 const log = require('loglevel').getLogger('index');
 
@@ -10,6 +10,6 @@ app.use(express.static('client'));
 
 configurer(app);
 
-app.listen(Constants.Port, () => {
+app.listen(Config.port, () => {
   log.info('Started');
 });

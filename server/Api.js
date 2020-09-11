@@ -1,7 +1,7 @@
 const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
 
-const Constants = require('./Constants');
+const Config = require('../config/config');
 const Convert = require('./Convert');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
@@ -27,7 +27,7 @@ class Api {
   static async fileList() {
     log.debug('fileList()');
     return await new Promise((resolve, reject) => {
-      let outdir = Constants.OutputDirectory;
+      let outdir = Config.outputDirectory;
       fs.readdir(outdir, (err, list) => {
         if (err) {
           reject(err);
@@ -50,9 +50,9 @@ class Api {
 
   static async convert() {
     let options = {
-      default: Constants.PreviewDirectory + 'default.jpg',
-      source: Constants.PreviewDirectory + 'preview.tif',
-      target: Constants.PreviewDirectory + 'preview.jpg',
+      default: Config.previewDirectory + 'default.jpg',
+      source: Config.previewDirectory + 'preview.tif',
+      target: Config.previewDirectory + 'preview.jpg',
       trim: false
     };
 
@@ -85,8 +85,8 @@ class Api {
       dynamicLineart: req.dynamicLineart
     });
 
-    scanRequest.outputFilepath = Constants.PreviewDirectory + 'preview.tif';
-    scanRequest.resolution = Constants.PreviewResolution;
+    scanRequest.outputFilepath = Config.previewDirectory + 'preview.tif';
+    scanRequest.resolution = Config.previewResolution;
 
     let scanimage = new Scanimage();
     return await scanimage.execute(scanRequest);
@@ -94,8 +94,8 @@ class Api {
 
   static diagnostics() {
     let tests = [];
-    tests.push(testFileExists(Constants.Scanimage));
-    tests.push(testFileExists(Constants.Convert));
+    tests.push(testFileExists(Config.scanimage));
+    tests.push(testFileExists(Config.convert));
     return tests;  
   }
 

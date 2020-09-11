@@ -1,5 +1,5 @@
 const CmdBuilder = require('./CmdBuilder');
-const Constants = require('./Constants');
+const Config = require('../config/config');
 const System = require('./System');
 
 class Convert {
@@ -16,10 +16,7 @@ class Convert {
   }
 
   cmd() {
-    const cmdBuilder = new CmdBuilder(Constants.Convert);
-    if (this.args.ignoreStdError) {
-      cmdBuilder.arg(Constants.IgnoreStdError);
-    }
+    const cmdBuilder = new CmdBuilder(Config.convert);
     if (this.args.normalize) {
       cmdBuilder.arg('-normalize');
     }
@@ -35,7 +32,7 @@ class Convert {
     return cmdBuilder
       .arg(this.args.source)
       .arg(this.args.target)
-      .build();
+      .build(this.args.ignoreStdError);
   }
 
   // Returns a promise

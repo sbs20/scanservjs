@@ -1,7 +1,7 @@
 const log = require('loglevel').getLogger('ScanRequest');
 
 const dateFormat = require('dateformat');
-const Constants = require('./Constants');
+const Config = require('../config/config');
 const Device = require('./Device');
 const System = require('./System');
 
@@ -27,7 +27,7 @@ class ScanRequest {
 
     if ('outputFilepath' in request === false) {
       const dateString = dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss');
-      request.outputFilepath = Constants.OutputDirectory + 'scan_' + dateString + '.' + request.convertFormat;
+      request.outputFilepath = Config.outputDirectory + 'scan_' + dateString + '.' + request.convertFormat;
     }
     if ('--brightness' in this.device.features === false) {
       delete request.brightness;

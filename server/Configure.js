@@ -20,6 +20,7 @@ const sendError = (res, httpCode, data) => {
     message: '',
     code: -1
   };
+  log.error(data);
   if (typeof data === 'object') {
     content.message = data.message || JSON.stringify(data);
     content.code = data.code || -1;

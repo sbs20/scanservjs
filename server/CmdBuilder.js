@@ -3,34 +3,32 @@ const log = require('loglevel').getLogger('CmdBuilder');
 class CmdBuilder {
   constructor(cmd) {
     this.cmd = cmd;
+    this.args = [];
   }
 
   arg(key, value) {
-    this.cmd += ` ${key}`;
-
+    this.args.push(key);
     if (value !== undefined) {
       if (typeof value === 'string') {
-        this.cmd += ` "${value}"`;
+        this.args.push(`"${value}"`);
       } else {
-        this.cmd += ` ${value}`;
+        this.args.push(`${value}`);
       }
     }
     return this;
   }
 
-  pipe() {
-    this.cmd += ' |';
-    return this;
-  }
-
-  redirect() {
-    this.cmd += ' >';
-    return this;
-  }
-
-  build() {
-    log.debug('build()', this.cmd);
-    return this.cmd;
+  build(ignoreStderr) {
+    log.trace('build()', this);
+    let cmd = this.cmd;
+    for (const arg of this.args) {
+      cmd += ' ' + arg;
+    }
+    if (ignoreStderr) {
+      cmd += ' 2>/dev/null';
+    }
+    log.debug('build()', cmd);
+    return cmd;
   }
 }
 

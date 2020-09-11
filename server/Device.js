@@ -1,7 +1,7 @@
 const log = require('loglevel').getLogger('Device');
 
 const CmdBuilder = require('./CmdBuilder');
-const Constants = require('./Constants');
+const Config = require('../config/config');
 const System = require('./System');
 const FileInfo = require('./FileInfo');
 
@@ -117,7 +117,7 @@ class Device {
     }
 
     if (!isCached) {
-      const cmd = new CmdBuilder(Constants.Scanimage)
+      const cmd = new CmdBuilder(Config.scanimage)
         .arg(' -A')
         .build();
   
