@@ -5,13 +5,15 @@ const Package = require('../package.json');
 const TOOLS = ['scanimage', 'convert'];
 
 class Context {
+  constructor(devices) {
+    this.devices = devices;
+    this.version = Package.version;
+    this.tools = TOOLS;
+    this.pipelines = Config.pipelines;
+  }
+
   static async create() {
-    return {
-      devices: [await Device.get()],
-      version: Package.version,
-      tools: TOOLS,
-      pipelines: Config.pipelines  
-    };
+    return new Context([await Device.get()]);
   }
 }
 

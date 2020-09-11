@@ -6,7 +6,7 @@
     <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
       <div class="navbar-header"></div>
       <div id="navbar" class="navbar-collapse collapse">
-        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ device.version }}) | Scanner: {{ device.name }}</div>
+        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ context.version }}) | Scanner: {{ device.name }}</div>
       </div>
     </nav>
 
@@ -18,39 +18,39 @@
             <div class="col">
               <div class="form-group">
                 <label>Top</label>
-                <input class="form-control" type="number" v-model="request.top" @change="onCoordinatesChange">
+                <input class="form-control" type="number" v-model="request.params.top" @change="onCoordinatesChange">
               </div>
               <div class="form-group">
                 <label>Left</label>
-                <input class="form-control" type="number" v-model="request.left" @change="onCoordinatesChange">
+                <input class="form-control" type="number" v-model="request.params.left" @change="onCoordinatesChange">
               </div>
               <div class="form-group">
                 <label>Width</label>
-                <input class="form-control" type="number" v-model="request.width" @change="onCoordinatesChange">
+                <input class="form-control" type="number" v-model="request.params.width" @change="onCoordinatesChange">
               </div>
               <div class="form-group">
                 <label>Height</label>
-                <input class="form-control" type="number" v-model="request.height" @change="onCoordinatesChange">
+                <input class="form-control" type="number" v-model="request.params.height" @change="onCoordinatesChange">
               </div>
             </div>
             <div class="col">
               <div class="form-group">
                 <label>Resolution</label>
-                <select class="form-control" v-model="request.resolution">
+                <select class="form-control" v-model="request.params.resolution">
                   <option v-for="item in device.features['--resolution']['options']" v-bind:key="item">{{ item }}</option>
                 </select>    
               </div>
 
               <div class="form-group">
                 <label>Mode</label>
-                <select class="form-control" v-model="request.mode">
+                <select class="form-control" v-model="request.params.mode">
                   <option v-for="item in device.features['--mode']['options']" v-bind:key="item">{{ item }}</option>
                 </select>    
               </div>
 
               <div class="form-group" v-if="'--disable-dynamic-lineart' in device.features">
                 <label for="mode">Dynamic lineart</label>
-                <select id="dynamicLineart" class="form-control" v-model="request.dynamicLineart">
+                <select id="dynamicLineart" class="form-control" v-model="request.params.dynamicLineart">
                   <option v-bind:value="false">Disabled</option>
                   <option v-bind:value="true">Enabled</option>
                 </select>
@@ -58,28 +58,27 @@
 
               <div class="form-group" v-if="'--brightness' in device.features">
                 <label>Brightness</label>
-                <input class="form-control" type="number" v-model="request.brightness">
-                <Slider v-model="request.brightness"
+                <input class="form-control" type="number" v-model="request.params.brightness">
+                <Slider v-model="request.params.brightness"
                   :min="device.features['--brightness']['limits'][0]"
                   :max="device.features['--brightness']['limits'][1]"></Slider>
               </div>
 
               <div class="form-group" v-if="'--contrast' in device.features">
                 <label>Contrast</label>
-                <input class="form-control" type="number" v-model="request.contrast">
-                <Slider v-model="request.contrast"
+                <input class="form-control" type="number" v-model="request.params.contrast">
+                <Slider v-model="request.params.contrast"
                   :min="device.features['--contrast']['limits'][0]"
                   :max="device.features['--contrast']['limits'][1]"></Slider>
               </div>
 
               <div class="form-group">
-                <label for="convertFormat">Format</label>
-                <select id="convertFormat" class="form-control" v-model="request.convertFormat">
-                  <option>tif</option>
-                  <option>jpg</option>
-                  <option>pdf</option>
+                <label>Format</label>
+                <select class="form-control" v-model="request.pipeline">
+                  <option v-for="item in context.pipelines" v-bind:key="item.description">{{ item.description }}</option>
                 </select>
               </div>
+
             </div>
           </div>
 
@@ -154,18 +153,71 @@ export default {
   },
 
   data() {
+    const device = {
+      name: 'Unspecified',
+      features: {
+        '--mode': {
+          options: [],
+        },
+        '--resolution': {
+          options: [],
+        },
+        '-l': {
+          limits: [0, 215],
+        },
+        '-t': {
+          limits: [0, 297],
+        },
+        '-x': {
+          limits: [0, 215],
+        },
+        '-y': {
+          limits: [0, 297],
+        },
+        '--brightness': {
+          limits: [-100, 100],
+        },
+        '--contrast': {
+          limits: [-100, 100],
+        },
+        '--disable-dynamic-lineart': {}
+      }
+    };
+    
+    const request = {
+      params: {
+        deviceId: device.name,
+        top: 0,
+        left: 0,
+        width: device.features['-x'].limits[1],
+        height: device.features['-y'].limits[1],
+        resolution: device.features['--resolution'].default,
+        mode: device.features['--mode'].default,
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: ''
+    };
+
     return {
-      device: this.defaultDevice(),
+      context: {
+        devices: [
+          device
+        ],
+        pipelines: [],
+        version: '0'
+      },
+      device: device,
       files: [],
       img: null,
       maskRef: 0,
-      request: this.readRequest(this.defaultDevice())
+      request: request
     };
   },
 
   mounted() {
-    this.readDiagnostics();
-    this.readDevice();
+    this.readContext();
     this.convert();
     this.fileList();
 
@@ -205,9 +257,9 @@ export default {
 
     convert() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      this._fetch('convert', {
-        method: 'POST',
-        body: JSON.stringify(this.request),
+      this._fetch('preview', {
+        cache: 'no-store',
+        method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -220,50 +272,16 @@ export default {
     cropperDefaultPosition() {
       const adjust = (n) => Math.round(n * this.pixelsPerMm());
       return {
-        left: adjust(this.request.left),
-        top: adjust(this.request.top)
+        left: adjust(this.request.params.left),
+        top: adjust(this.request.params.top)
       };
     },
 
     cropperDefaultSize() {
       const adjust = (n) => Math.floor(n * this.pixelsPerMm());
       return {
-        width: adjust(this.request.width),
-        height: adjust(this.request.height)
-      };
-    },
-
-    defaultDevice() {
-      return {
-        name: 'Unspecified',
-        version: '0',
-        features: {
-          '--mode': {
-            options: [],
-          },
-          '--resolution': {
-            options: [],
-          },
-          '-l': {
-            limits: [0, 215],
-          },
-          '-t': {
-            limits: [0, 297],
-          },
-          '-x': {
-            limits: [0, 215],
-          },
-          '-y': {
-            limits: [0, 297],
-          },
-          '--brightness': {
-            limits: [-100, 100],
-          },
-          '--contrast': {
-            limits: [-100, 100],
-          },
-          '--disable-dynamic-lineart': {}
-        }
+        width: adjust(this.request.params.width),
+        height: adjust(this.request.params.height)
       };
     },
 
@@ -292,20 +310,22 @@ export default {
 
     onCoordinatesChange() {
       const adjust = (n) => Math.round(n * this.pixelsPerMm());
+      const params = this.request.params;
       this.$refs.cropper.setCoordinates({
-        width: adjust(this.request.width),
-        height: adjust(this.request.height),
-        left: adjust(this.request.left),
-        top: adjust(this.request.top)
+        width: adjust(params.width),
+        height: adjust(params.height),
+        left: adjust(params.left),
+        top: adjust(params.top)
       });
     },
 
     onCrop({coordinates}) {
       const adjust = (n) => Math.round(n / this.pixelsPerMm());
-      this.request.width = adjust(coordinates.width);
-      this.request.height = adjust(coordinates.height);
-      this.request.left = adjust(coordinates.left);
-      this.request.top = adjust(coordinates.top);
+      const params = this.request.params;
+      params.width = adjust(coordinates.width);
+      params.height = adjust(coordinates.height);
+      params.left = adjust(coordinates.left);
+      params.top = adjust(coordinates.top);
     },
 
     pixelsPerMm() {
@@ -325,7 +345,6 @@ export default {
       const timer = window.setInterval(this.convert, 1000);
 
       let data = this._clone(this.request);
-      data.device = this._clone(this.device);
 
       this._fetch('preview', {
         method: 'POST',
@@ -340,15 +359,14 @@ export default {
       });
     },
 
-    readDevice(force) {
+    readContext(force) {
       this.mask(1);
-      const url = 'device' + (force ? '/force' : '');
-      this._fetch(url).then(device => {
-        if ('features' in device) {
-          this.device = device;
-          this.request = this.readRequest(device);
-          this.mask(-1);
-        }
+      const url = 'context' + (force ? '/force' : '');
+      this._fetch(url).then(context => {
+        this.context = context;
+        this.device = context.devices[0];
+        this.request = this.readRequest();
+        this.mask(-1);
       });
     },
 
@@ -366,53 +384,62 @@ export default {
       });
     },
 
-    readRequest(device) {
+    readRequest() {
+      const device = this.device;
       let request = null;
       if (localStorage.request) {
         request = JSON.parse(localStorage.request);
+        if (request.version !== this.context.version) {
+          request = null;
+        }
         console.log('load', request);
-      } else {
+      }
+      
+      if (request === null) {
         request = {
-          top: 0,
-          left: 0,
-          width: device.features['-x'].limits[1],
-          height: device.features['-y'].limits[1],
-          resolution: device.features['--resolution'].default,
-          mode: device.features['--mode'].default,
-          convertFormat: 'tif',
-          brightness: 0,
-          contrast: 0,
-          dynamicLineart: true
+          version: this.context.version,
+          params: {
+            deviceId: device.name,
+            top: 0,
+            left: 0,
+            width: device.features['-x'].limits[1],
+            height: device.features['-y'].limits[1],
+            resolution: device.features['--resolution'].default,
+            mode: device.features['--mode'].default,
+            brightness: 0,
+            contrast: 0,
+            dynamicLineart: true
+          },
+          pipeline: this.context.pipelines[0].description
         };
       }
 
       if ('--brightness' in device.features === false) {
-        delete request.brightness;
+        delete request.params.brightness;
       }
       if ('--contrast' in device.features === false) {
-        delete request.contrast;
+        delete request.params.contrast;
       }
       if ('--disable-dynamic-lineart' in device.features === false) {
-        delete request.dynamicLineart;
+        delete request.params.dynamicLineart;
       }
 
       return request;
     },
 
     reinitialize() {
-      this.readDevice(true);
+      this.readContext(true);
     },
 
     reset() {
       localStorage.removeItem('request');
-      this.request = this.readRequest(this.device);
+      this.request = this.readRequest();
     },
 
     scan() {
       this.mask(1);
 
       let data = this._clone(this.request);
-      data.device = this._clone(this.device);
       
       this._fetch('scan', {
         method: 'POST',

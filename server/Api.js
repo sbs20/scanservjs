@@ -2,9 +2,10 @@ const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
 
 const Config = require('../config/config');
+const Context = require('./Context');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
-const ScanRequest = require('./ScanRequest');
+const Request = require('./Request');
 const Scanimage = require('./Scanimage');
 const System = require('./System');
 
@@ -47,7 +48,26 @@ class Api {
     return file.delete();
   }
 
-  static async convert() {
+  static async createPreview(req) {
+    const context = await Context.create();
+    const request = new Request(context).extend({
+      params: {
+        deviceId: req.params.deviceId,
+        mode: req.params.mode,
+        resolution: Config.previewResolution,
+        brightness: req.params.brightness,
+        contrast: req.params.contrast,
+        dynamicLineart: req.params.dynamicLineart
+      }
+    });
+
+    const cmd = `${Scanimage.command(request)} > ${Config.previewDirectory}preview.tif`;
+    log.debug('Executing cmd:', cmd);
+    await System.spawn(cmd);
+    return {};
+  }
+
+  static async readPreview() {
     let options = {
       default: Config.previewDirectory + 'default.jpg',
       source: Config.previewDirectory + 'preview.tif',
@@ -65,25 +85,19 @@ class Api {
   }
 
   static async scan(req) {
-    let scanRequest = new ScanRequest(req);
-    let scanimage = new Scanimage();
-    return await scanimage.execute(scanRequest);
-  }
+    const context = await Context.create();
+    const request = new Request(context).extend(req);
+    const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+    const cmds = [Scanimage.command(request)].concat(pipeline.commands);
 
-  static async preview(req) {
-    let scanRequest = new ScanRequest({
-      device: req.device,
-      mode: req.mode,
-      brightness: req.brightness,
-      contrast: req.contrast,
-      dynamicLineart: req.dynamicLineart
-    });
+    log.debug('Executing cmds:', cmds);
+    const buffer = await System.pipe(cmds);
+    const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
+    const file = new FileInfo(filename);
+    file.save(buffer);
+    log.debug(`Written data to: ${filename}`);
 
-    scanRequest.outputFilepath = Config.previewDirectory + 'preview.tif';
-    scanRequest.resolution = Config.previewResolution;
-
-    let scanimage = new Scanimage();
-    return await scanimage.execute(scanRequest);
+    return {};
   }
 
   static diagnostics() {
@@ -93,11 +107,11 @@ class Api {
     return tests;  
   }
 
-  static async device(force) {
+  static async context(force) {
     if (force) {
       Device.reset();
     }
-    return await Device.get();
+    return await Context.create();
   }
 }
 

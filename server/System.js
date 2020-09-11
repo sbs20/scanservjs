@@ -1,5 +1,6 @@
 const fs = require('fs');
 const util = require('util');
+const log = require('loglevel').getLogger('System');
 const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
 
@@ -35,6 +36,7 @@ const System = {
   async spawn(cmd, stdin, ignoreErrors) {
     const MAX_BUFFER = 50 * 1024 * 1024;
     ignoreErrors = ignoreErrors === undefined ? false : true;
+    log.debug(cmd, stdin, ignoreErrors);
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
@@ -59,6 +61,7 @@ const System = {
       }
 
       proc.on('close', (code) => {
+        log.debug(`close(${code}): ${cmd}`);
         if (code !== 0 && !ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {

@@ -71,17 +71,6 @@ module.exports = app => {
     res.send('Pong@' + new Date().toISOString());
   });
 
-  app.post('/convert', async (req, res) => {
-    try {
-      const buffer = await Api.convert();
-      res.send({
-        content: buffer.toString('base64')
-      });
-    } catch (error) {
-      sendError(res, 500, error);
-    }
-  });
-
   app.post('/scan', async (req, res) => {
     const param = req.body;
     try {
@@ -91,10 +80,21 @@ module.exports = app => {
     }
   });
 
+  app.get('/preview', async (req, res) => {
+    try {
+      const buffer = await Api.readPreview();
+      res.send({
+        content: buffer.toString('base64')
+      });
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
   app.post('/preview', async (req, res) => {
     const param = req.body;
     try {
-      res.send(await Api.preview(param));
+      res.send(await Api.createPreview(param));
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -104,10 +104,10 @@ module.exports = app => {
     res.send(Api.diagnostics());
   });
 
-  app.get(['/device', '/device/:force'], async (req, res) => {
+  app.get(['/context', '/context/:force'], async (req, res) => {
     const force = req.params.force && req.params.force === 'force';
     try {
-      res.send(await Api.device(force));
+      res.send(await Api.context(force));
     } catch (error) {
       sendError(res, 500, error);
     }

@@ -82,7 +82,7 @@ const Config = {
     },
     {
       extension: 'pdf',
-      description: 'PDF (Full TIF)',
+      description: 'PDF (LZW TIF)',
       commands: [
         'convert - -compress lzw tif:-',
         'convert - pdf:-'
