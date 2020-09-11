@@ -2,7 +2,6 @@ const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
 
 const Config = require('../config/config');
-const Convert = require('./Convert');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
 const ScanRequest = require('./ScanRequest');

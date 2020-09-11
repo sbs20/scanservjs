@@ -4,7 +4,6 @@ const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
 
 const Package = require('../package.json');
-const { pipeline } = require('stream');
 
 const System = {
   version: Package.version,
