@@ -2,8 +2,10 @@ const log = require('loglevel').getLogger('Device');
 
 const CmdBuilder = require('./CmdBuilder');
 const Config = require('../config/config');
-const System = require('./System');
+const extend = require('./Util').extend;
 const FileInfo = require('./FileInfo');
+const Package = require('../package.json');
+const Process = require('./Process');
 
 const decorate = (device) => {
   for (const key in device.features) {
@@ -42,7 +44,7 @@ const decorate = (device) => {
   return device;
 };
 
-/// Parses the response of scanimage -A into a dictionary
+// Parses the response of scanimage -A into a dictionary
 const parse = (response) => {
   if (response === null || response === '') {
     throw new Error('No device found');
@@ -50,7 +52,7 @@ const parse = (response) => {
 
   let device = {
     'name': '',
-    'version': System.version,
+    'version': Package.version,
     'features': {}
   };
 
@@ -93,7 +95,7 @@ class Device {
     const device = new Device();
     if (typeof o === 'object') {
       const decorated = decorate(o);
-      System.extend(device, decorated);
+      extend(device, decorated);
       return device;      
     } else if (typeof o === 'string') {
       const data = parse(o);
@@ -111,7 +113,7 @@ class Device {
     if (!file.exists()) {
       log.debug('device.conf does not exist. Reloading');
       isCached = false;
-    } else if (Device.from(file.toJson()).version !== System.version) {
+    } else if (Device.from(file.toJson()).version !== Package.version) {
       log.debug('device.conf version is old. Reloading');
       isCached = false;
     }
@@ -121,7 +123,7 @@ class Device {
         .arg(' -A')
         .build();
   
-      const data = await System.execute(cmd);
+      const data = await Process.execute(cmd);
       const device = Device.from(data.output);
       file.save(JSON.stringify(device, null, 2));
       return device;

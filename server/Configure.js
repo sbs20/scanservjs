@@ -67,10 +67,6 @@ module.exports = app => {
     }
   });
 
-  app.get('/ping', (req, res) => {
-    res.send('Pong@' + new Date().toISOString());
-  });
-
   app.post('/scan', async (req, res) => {
     const param = req.body;
     try {
@@ -98,10 +94,6 @@ module.exports = app => {
     } catch (error) {
       sendError(res, 500, error);
     }
-  });
-
-  app.get('/diagnostics', (req, res) => {
-    res.send(Api.diagnostics());
   });
 
   app.get(['/context', '/context/:force'], async (req, res) => {

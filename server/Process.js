@@ -1,29 +1,9 @@
-const fs = require('fs');
 const util = require('util');
-const log = require('loglevel').getLogger('System');
+const log = require('loglevel').getLogger('Process');
 const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
 
-const Package = require('../package.json');
-
-const System = {
-  version: Package.version,
-
-  extend() {
-    const t = arguments[0];
-    for (let i = 1; i < arguments.length; i++) {
-      const s = arguments[i];
-      for (const p in s) {
-        t[p] = s[p];
-      }
-    }
-    return t;
-  },
-
-  fileExists(path) {
-    return fs.existsSync(path);
-  },
-
+const Process = {
   async execute(cmd) {
     const { stdout } = await exec(cmd);
     return {
@@ -76,14 +56,14 @@ const System = {
     });
   },
 
-  async pipe(cmdArray, stdin, ignoreErrors) {
+  async chain(cmdArray, stdin, ignoreErrors) {
     let stdout = null;
     for (let cmd of cmdArray) {
-      stdout = await System.spawn(cmd, stdin, ignoreErrors);
+      stdout = await Process.spawn(cmd, stdin, ignoreErrors);
       stdin = stdout;
     }
     return stdout;
   }
 };
 
-module.exports = System;
+module.exports = Process;

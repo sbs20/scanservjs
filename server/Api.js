@@ -5,23 +5,9 @@ const Config = require('../config/config');
 const Context = require('./Context');
 const Device = require('./Device');
 const FileInfo = require('./FileInfo');
+const Process = require('./Process');
 const Request = require('./Request');
 const Scanimage = require('./Scanimage');
-const System = require('./System');
-
-function testFileExists(path) {
-  if (System.fileExists(path)) {
-    return {
-      success: true,
-      message: `Found ${path}`
-    };
-  }
-
-  return {
-    success: false,
-    message: `Unable to find ${path}`
-  };
-}
 
 class Api {
   static async fileList() {
@@ -63,7 +49,7 @@ class Api {
 
     const cmd = `${Scanimage.command(request)} > ${Config.previewDirectory}preview.tif`;
     log.debug('Executing cmd:', cmd);
-    await System.spawn(cmd);
+    await Process.spawn(cmd);
     return {};
   }
 
@@ -81,7 +67,7 @@ class Api {
     }
   
     let buffer = source.toBuffer();
-    return await System.pipe(Config.previewPipeline.commands, buffer, true);
+    return await Process.chain(Config.previewPipeline.commands, buffer, true);
   }
 
   static async scan(req) {
@@ -91,20 +77,13 @@ class Api {
     const cmds = [Scanimage.command(request)].concat(pipeline.commands);
 
     log.debug('Executing cmds:', cmds);
-    const buffer = await System.pipe(cmds);
+    const buffer = await Process.chain(cmds);
     const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
     const file = new FileInfo(filename);
     file.save(buffer);
     log.debug(`Written data to: ${filename}`);
 
     return {};
-  }
-
-  static diagnostics() {
-    let tests = [];
-    tests.push(testFileExists(Config.scanimage));
-    tests.push(testFileExists(Config.convert));
-    return tests;  
   }
 
   static async context(force) {

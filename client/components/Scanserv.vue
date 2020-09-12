@@ -366,19 +366,9 @@ export default {
         this.context = context;
         this.device = context.devices[0];
         this.request = this.readRequest();
-        this.mask(-1);
-      });
-    },
-
-    readDiagnostics() {
-      this.mask(1);
-      this._fetch('diagnostics').then(data => {
-        for (let test of data) {
-          if (test.success === true) {
-            this.$refs.toastr.s(test.message);
-          } else {
-            this.$refs.toastr.e(test.message);
-          }
+        for (let test of context.diagnostics) {
+          const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
+          toast(test.message);
         }
         this.mask(-1);
       });

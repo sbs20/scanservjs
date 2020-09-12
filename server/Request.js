@@ -1,5 +1,5 @@
 const log = require('loglevel').getLogger('Request');
-const System = require('./System');
+const extend = require('./Util').extend;
 
 const bound = (n, min, max, def) => {
   return Math.max(Math.min(n || def, max), min);
@@ -19,7 +19,7 @@ class Request {
       ? this.context.devices.filter(device => device.name === data.params.deviceId)[0]
       : this.context.devices[0];
 
-    System.extend(this, {
+    extend(this, {
       params: {
         deviceId: device.name,
         top: bound(data.params.top, device.features['-t'].limits[0], device.features['-t'].limits[1], 0),
