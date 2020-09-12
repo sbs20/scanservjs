@@ -36,4 +36,14 @@ describe('Process', () => {
     // It should be about 4179 but different convert implementations may vary
     assert.strictEqual(jpg.length > 4000, true);
   });
+
+  it('chain: cat ./test/resource/logo.png | convert - pdf:-', async () => {
+    const cmds = [
+      'cat ./test/resource/logo.png',
+      'convert - pdf:-'
+    ];
+    const pdf = await Process.chain(cmds);
+    assert.strictEqual(pdf.length > 4000, true);
+  });
+
 });

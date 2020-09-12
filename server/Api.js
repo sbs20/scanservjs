@@ -21,7 +21,7 @@ class Api {
   
         let files = list
           .map(f => new FileInfo(outdir + f))
-          .filter(f => f.extension === '.tif' || f.extension === '.jpg' || f.extension === '.pdf');
+          .filter(f => ['.tif', '.jpg', '.png', '.pdf'].includes(f.extension));
 
         log.debug(files);
         resolve(files);

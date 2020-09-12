@@ -3,7 +3,7 @@ Description=scanservjs
 After=network.target
 
 [Service]
-ExecStart=/var/www/scanservjs/server.js
+ExecStart=/var/www/scanservjs/server/Server.js
 Restart=always
 User=scanservjs
 Group=users

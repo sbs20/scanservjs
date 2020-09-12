@@ -94,6 +94,8 @@ dist/**/*
 
 # Project specific
 *.tif
+*.pdf
+*.png
 scan*.jpg
 config/devices.json
 var

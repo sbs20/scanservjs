@@ -77,7 +77,7 @@ gulp.task('build', gulp.series(['server-lint', 'test', 'clean', 'client'], () =>
     './package.json',
     './package-lock.json',
     './scanservjs.service',
-    './*config/**/*',
+    './*config/**/*.js',
     './*server/**/*',
     './*data/**/*.md',
     './*data/**/default.jpg',
