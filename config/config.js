@@ -27,41 +27,29 @@ const Config = {
   },
   previewPipeline: {
     extension: 'jpg',
-    description: 'JPG (Low Quality)',
+    description: 'JPG (Low quality)',
     commands: [
       'convert - -quality 75 jpg:-'
     ]
   },
   pipelines: [
     {
-      extension: 'tif',
-      description: 'TIF (uncompressed)',
-      commands: []
-    },
-    {
-      extension: 'tif',
-      description: 'TIF (LZW)',
-      commands: [
-        'convert - -compress lzw tif:-'
-      ]
-    },
-    {
       extension: 'jpg',
-      description: 'JPG (High Quality)',
+      description: 'JPG (High quality)',
       commands: [
         'convert - -quality 92 jpg:-'
       ]
     },
     {
       extension: 'jpg',
-      description: 'JPG (Medium Quality)',
+      description: 'JPG (Medium quality)',
       commands: [
         'convert - -quality 75 jpg:-'
       ]
     },
     {
       extension: 'jpg',
-      description: 'JPG (Low Quality)',
+      description: 'JPG (Low quality)',
       commands: [
         'convert - -quality 50 jpg:-'
       ]
@@ -74,8 +62,20 @@ const Config = {
       ]
     },
     {
+      extension: 'tif',
+      description: 'TIF (Uncompressed)',
+      commands: []
+    },
+    {
+      extension: 'tif',
+      description: 'TIF (LZW)',
+      commands: [
+        'convert - -compress lzw tif:-'
+      ]
+    },
+    {
       extension: 'pdf',
-      description: 'PDF (Full TIF)',
+      description: 'PDF (TIF)',
       commands: [
         'convert - pdf:-'
       ]
@@ -90,7 +90,7 @@ const Config = {
     },
     {
       extension: 'pdf',
-      description: 'PDF (With JPG compression)',
+      description: 'PDF (JPG)',
       commands: [
         'convert - -quality 92 jpg:-',
         'convert - pdf:-'
