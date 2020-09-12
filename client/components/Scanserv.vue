@@ -98,7 +98,7 @@
         <!-- Preview pane -->
         <div class="col-lg-1"></div>
         <div class="col-lg-4 col-md-6 col-sm-12">
-          <cropper ref="cropper" class="cropper"
+          <cropper ref="cropper" class="cropper" transitionTime="1"
               :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
         </div>

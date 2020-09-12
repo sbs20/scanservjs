@@ -7,6 +7,9 @@ const FileInfo = require('./FileInfo');
 const Package = require('../package.json');
 const Process = require('./Process');
 
+// Relative to execution path
+const FILEPATH = './config/devices.json';
+
 const decorate = (device) => {
   for (const key in device.features) {
     let feature = device.features[key];
@@ -83,11 +86,6 @@ const parse = (response) => {
 };
 
 class Device {
-
-  static filepath() {
-    return './device.conf';
-  }
-
   constructor() {
   }
 
@@ -108,7 +106,7 @@ class Device {
   /// Attempts to get a stored configuration of our device and if
   /// not gets it from the command line.
   static async get() {
-    const file = new FileInfo(Device.filepath());
+    const file = new FileInfo(FILEPATH);
     let isCached = true;
     if (!file.exists()) {
       log.debug('device.conf does not exist. Reloading');
@@ -133,7 +131,7 @@ class Device {
   }
 
   static reset() {
-    const file = new FileInfo(Device.filepath());
+    const file = new FileInfo(FILEPATH);
     if (file.exists()) {
       file.delete();
     }
