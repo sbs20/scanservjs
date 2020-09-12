@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import Scanserv from "./components/Scanserv.vue";
-import "bootstrap/dist/css/bootstrap.css";
+import Scanserv from './components/Scanserv.vue';
+import 'bootstrap/dist/css/bootstrap.css';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Scanserv,
   },

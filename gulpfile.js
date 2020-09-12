@@ -55,12 +55,8 @@ gulp.task('clean', () => {
   return del(['./dist/*']);
 });
 
-gulp.task('client', () => {
-  return run('npm run build').exec();
-});
-
-gulp.task('test', () => {
-  return run('npm run test').exec();
+gulp.task('client-build', () => {
+  return run('npm run client-build').exec();
 });
 
 gulp.task('server-lint', () => {
@@ -70,7 +66,7 @@ gulp.task('server-lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('build', gulp.series(['server-lint', 'test', 'clean', 'client'], () => {
+gulp.task('server-build', () => {
   return gulp.src([
     './install.sh',
     './uninstall.sh',
@@ -81,7 +77,15 @@ gulp.task('build', gulp.series(['server-lint', 'test', 'clean', 'client'], () =>
     './*server/**/*',
     './*data/**/*.md',
     './*data/**/default.jpg',
-  ]).pipe(gulp.dest('./dist/'));    
+  ]).pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('test', () => {
+  return run('npm run test').exec();
+});
+
+gulp.task('build', gulp.series(['clean', 'server-lint', 'client-build', 'server-build', 'test'], (done) => {
+  done();
 }));
 
 gulp.task('release', gulp.series(['build'], () => {

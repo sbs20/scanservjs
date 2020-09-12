@@ -1,15 +1,12 @@
+# builder image
 FROM node:buster AS builder
-
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
-
-# install build dependencies
-COPY package.json "$APP_DIR"
+COPY package*.json "$APP_DIR/"
 RUN npm install
-
-# run a gulp build
 COPY . "$APP_DIR"
-RUN npm run build
+RUN npm run server-build
+RUN npm run client-build
 
 # production image
 FROM node:buster-slim
@@ -18,18 +15,15 @@ WORKDIR "$APP_DIR"
 # Install sane
 RUN apt-get update && apt-get install -yq sane sane-utils imagemagick
 RUN sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
-COPY --from=builder "$APP_DIR/build/scanservjs" "$APP_DIR/"
+COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
 
 # Install dependencies
 RUN npm install --production
 
-
 ENV NET_HOST=""
 
-# Copy built assets from builder image
-
-COPY entrypoint.sh /entrypoint.sh
-
-ENTRYPOINT [ "/entrypoint.sh" ]
-
+# Copy entry point
+COPY run.sh /run.sh
+RUN ["chmod", "+x", "/run.sh"]
+ENTRYPOINT [ "/run.sh" ]
 EXPOSE 8080
