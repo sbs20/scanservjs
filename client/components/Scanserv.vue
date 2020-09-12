@@ -419,6 +419,7 @@ export default {
 
     reinitialize() {
       this.readContext(true);
+      this.reset();
     },
 
     reset() {
