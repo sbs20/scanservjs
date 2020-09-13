@@ -13,4 +13,13 @@ describe('FileInfo', () => {
     assert.throws(() => new FileInfo('../package.json'), Error, '../package.json');
     assert.throws(() => new FileInfo('/usr/bin/ls'), Error, '/usr/bin/ls');
   });
+  it('Check file path variations', () => {
+    const dir1 = new FileInfo('./test/resource');
+    const dir2 = new FileInfo('test/resource');
+    assert.strictEqual(dir1.equals(dir2), true);
+
+    const file1 = new FileInfo('./test/resource/logo.png');
+    const file2 = new FileInfo('test/resource/logo.png');
+    assert.strictEqual(file1.equals(file2), true);
+  });
 });
