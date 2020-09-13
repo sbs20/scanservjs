@@ -9,10 +9,12 @@ describe('FileInfo', () => {
     assert.strictEqual(file.size > 0, true);
     assert.strictEqual(file.toText().indexOf('scanservjs is a simple web-based UI') > 0, true);
   });
+
   it('Security', () => {
     assert.throws(() => new FileInfo('../package.json'), Error, '../package.json');
     assert.throws(() => new FileInfo('/usr/bin/ls'), Error, '/usr/bin/ls');
   });
+
   it('Check file path variations', () => {
     const dir1 = new FileInfo('./test/resource');
     const dir2 = new FileInfo('test/resource');

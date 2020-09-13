@@ -23,6 +23,15 @@ const decorate = (device) => {
         feature.options = ['50', '75', '100', '150', '200', '300', '600', '1200'];
         if (feature.parameters.indexOf('|') > -1) {
           feature.options = feature.parameters.split('|');
+        } else if (feature.parameters.indexOf('..') > -1) {
+          params = feature.parameters.replace(/[a-z]/ig, '').split('..');
+          feature.options = [];
+          for (let value = Number(params[1]); value > Number(params[0]); value /= 2) {
+            feature.options.push(value);
+          }
+          feature.options.push(Number(params[0]));
+          feature.options.sort((a, b) => a - b);
+          feature.options = feature.options.map(n => n.toString());
         }
         break;
 

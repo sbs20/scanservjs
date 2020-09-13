@@ -1,0 +1,88 @@
+
+All options specific to device `plustek:libusb:001:008':
+  Scan Mode:
+    --mode Lineart|Gray|Color [Color]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --depth 8|16bit [8]
+        Number of bits per sample, typical values are 1 for "line-art" and 8
+        for multibit scans.
+    --source Normal|Transparency|Negative [inactive]
+        Selects the scan source (such as a document-feeder).
+    --resolution 50..1200dpi [50]
+        Sets the resolution of the scanned image.
+    --preview[=(yes|no)] [no]
+        Request a preview-quality scan.
+  Geometry:
+    -l 0..215mm [0]
+        Top-left x position of scan area.
+    -t 0..297mm [0]
+        Top-left y position of scan area.
+    -x 0..215mm [103]
+        Width of scan-area.
+    -y 0..297mm [76.21]
+        Height of scan-area.
+  Enhancement:
+    --brightness -100..100% (in steps of 1) [0]
+        Controls the brightness of the acquired image.
+    --contrast -100..100% (in steps of 1) [0]
+        Controls the contrast of the acquired image.
+    --custom-gamma[=(yes|no)] [no]
+        Determines whether a builtin or a custom gamma-table should be used.
+    --gamma-table 0..255,... [inactive]
+        Gamma-correction table.  In color mode this option equally affects the
+        red, green, and blue channels simultaneously (i.e., it is an intensity
+        gamma table).
+    --red-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the red band.
+    --green-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the green band.
+    --blue-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the blue band.
+  Device-Settings:
+    --lamp-switch[=(yes|no)] [no]
+        Manually switching the lamp(s).
+    --lampoff-time 0..999 (in steps of 1) [300]
+        Lampoff-time in seconds.
+    --lamp-off-at-exit[=(yes|no)] [yes]
+        Turn off lamp when program exits
+    --warmup-time -1..999 (in steps of 1) [inactive]
+        Warmup-time in seconds.
+    --lamp-off-during-dcal[=(yes|no)] [inactive]
+        Always switches lamp off when doing dark calibration.
+    --calibration-cache[=(yes|no)] [no]
+        Enables or disables calibration data cache.
+    --speedup-switch[=(yes|no)] [inactive]
+        Enables or disables speeding up sensor movement.
+    --calibrate [inactive]
+        Performs calibration
+  Analog frontend:
+    --red-gain -1..63 (in steps of 1) [-1]
+        Red gain value of the AFE
+    --green-gain -1..63 (in steps of 1) [-1]
+        Green gain value of the AFE
+    --blue-gain -1..63 (in steps of 1) [-1]
+        Blue gain value of the AFE
+    --red-offset -1..63 (in steps of 1) [-1]
+        Red offset value of the AFE
+    --green-offset -1..63 (in steps of 1) [-1]
+        Green offset value of the AFE
+    --blue-offset -1..63 (in steps of 1) [-1]
+        Blue offset value of the AFE
+    --redlamp-off -1..16363 (in steps of 1) [-1]
+        Defines red lamp off parameter
+    --greenlamp-off -1..16363 (in steps of 1) [-1]
+        Defines green lamp off parameter
+    --bluelamp-off -1..16363 (in steps of 1) [-1]
+        Defines blue lamp off parameter
+  Buttons:
+    --button 0[=(yes|no)] [no] [hardware]
+        This option reflects the status of the scanner buttons.
+    --button 1[=(yes|no)] [no] [hardware]
+        This option reflects the status of the scanner buttons.
+    --button 2[=(yes|no)] [no] [hardware]
+        This option reflects the status of the scanner buttons.
+    --button 3[=(yes|no)] [inactive]
+        This option reflects the status of the scanner buttons.
+    --button 4[=(yes|no)] [inactive]
+        This option reflects the status of the scanner buttons.
+
