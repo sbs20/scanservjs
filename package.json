@@ -1,6 +1,6 @@
 {
   "name": "scanservjs",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "scripts": {
     "serve": "nodemon --exec 'vue-cli-service serve'",
@@ -67,16 +67,31 @@
       "brace-style": 1,
       "comma-spacing": 1,
       "eqeqeq": 1,
-      "indent": ["error", 2, { "SwitchCase": 1 }],
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
       "keyword-spacing": 1,
       "no-mixed-spaces-and-tabs": 1,
       "no-undef": 1,
       "no-unused-vars": 1,
       "no-var": 1,
-      "object-shorthand": [1, "methods"],
+      "object-shorthand": [
+        1,
+        "methods"
+      ],
       "prefer-arrow-callback": 1,
-      "quotes": ["error", "single"],
-      "semi": ["error", "always"],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
       "space-before-blocks": 1,
       "space-infix-ops": 1
     }
