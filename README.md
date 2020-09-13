@@ -1,54 +1,64 @@
 # scanservjs
-scanservjs is a nodejs port of scanserv. It's a simple web-based UI for SANE 
-which allows you to share a scanner on a network without the need for drivers 
-or complicated installation. scanservjs does not do image conversion or 
-manipulation (beyond the bare minimum necessary for the purposes of browser 
-preview) or OCR.
+scanservjs is a simple web-based UI for your scanner. It allows you to share a
+scanner (using SANE) on a network without the need for drivers or complicated
+installation. It can save to TIF, JPG, PNG and PDF with varyings compression
+settings. It also allows for configurable output conversions through
+configuration.
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
 
-Copyright 2016	[Sam Strachan](https://github.com/sbs20)
+Copyright 2016 [Sam Strachan](https://github.com/sbs20)
 
-# requirements
-  * SANE
-  * ImageMagick
-  * nodejs
+## Requirements
+* SANE
+* ImageMagick
+* nodejs
 
-# installation notes
-For an easy docker-based install (assuming that SANE supports your scanner out-of-the-box on Debian):
+## Installation notes
+For an easy docker-based install (assuming that SANE supports your scanner
+out-of-the-box on Debian) use the following commands. Please note that by
+default, configuration and scanned images are stored within the container and
+will be lost if you recreate it. If you want to map your scanned images then
+specify the volume mapping option `-v /local/path/:/app/data/output/`
 
 ```console
-$ docker build -t scanservjs .
-$ docker run -p 8080:8080 --restart unless-stopped --name scanservjs --privileged scanservjs
+docker pull sbs20/scanservjs:latest
+docker rm --force scanservjs-container 2> /dev/null
+docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:latest
 ```
-(`--privileged` is required for the container to access the host's devices, to allow it to talk to the scanner)
+(`--privileged` is required for the container to access the host's devices, to
+allow it to talk to the scanner)
 
-scanservjs will now be accessible from `http://your-computer's-ip-here:8080/`
+scanservjs will now be accessible from `http://$host:8080/`
 
-## manual installation
- * See the installation notes [here](docs/install.md)
+If you want to install the latest staging branch (this may contain newer code)
 
-# background
-This is yet another scanimage-web-front-end. Why?
+```console
+docker pull sbs20/scanservjs:staging
+docker rm --force scanservjs-container 2> /dev/null
+docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:staging
+```
 
- * I wanted a simple server which would simply scan an image with as little
-   dependency on other software as possible. I already have Photoshop / GIMP
-   I don't need a webapp to do that stuff
- * Desire for easier and cleaner set up and configuration
- * Separation of presentation and control logic with json-rpc
- * I just wanted to
+More installation options:
 
-# roadmap
- * ES2016
- * Setup page (auto diagnostics)
- * Configuration page for debugging set up assisting new users
- * Multi-language support
+* Manual installation notes [here](docs/install.md)
+* [Development notes](docs/development.md)
+* [Configuring the scanner and SANE](docs/sane.md)
 
-# acknowledgements
+## Why?
+This is yet another scanimage-web-front-end. Why? It originally started as an
+adaptation of phpsane - just to make everything a bit newer, give it a refresh
+and make it work on minimal installations without imagemagick - that version is
+[still available](https://github.com/sbs20/scanserv) but is no longer
+maintained. Then, I just wanted to write in node, and it's been a labour of love
+ever since.
+
+## Roadmap
+* Configuration page for debugging set up assisting new users
+* Multi-language support
+
+## Acknowledgements
  * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/)
- * In many respects phpsane is more powerful than this. Scanservjs does not 
-   support jpeg conversion or OCR. phpSANE, however, is also more brittle and 
-   somewhat dated in its implementation.
-   
-# more about SANE
+
+## More about SANE
  * http://www.sane-project.org/
