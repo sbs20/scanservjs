@@ -19,9 +19,8 @@ For an easy docker-based install (assuming that SANE supports your scanner
 out-of-the-box on Debian):
 
 ```console
-docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
-docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged scanservjs-image
+docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:latest
 ```
 (`--privileged` is required for the container to access the host's devices, to
 allow it to talk to the scanner)
