@@ -16,9 +16,13 @@ Copyright 2016 [Sam Strachan](https://github.com/sbs20)
 
 ## Installation notes
 For an easy docker-based install (assuming that SANE supports your scanner
-out-of-the-box on Debian):
+out-of-the-box on Debian) use the following commands. Please note that by
+default, configuration and scanned images are stored within the container and
+will be lost if you recreate it. If you want to map your scanned images then
+specify the volume mapping option `-v /local/path/:/app/data/output/`
 
 ```console
+docker pull sbs20/scanservjs:latest
 docker rm --force scanservjs-container 2> /dev/null
 docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:latest
 ```
@@ -27,10 +31,19 @@ allow it to talk to the scanner)
 
 scanservjs will now be accessible from `http://$host:8080/`
 
+If you want to install the latest staging branch (this may contain newer code)
+
+```console
+docker pull sbs20/scanservjs:staging
+docker rm --force scanservjs-container 2> /dev/null
+docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:staging
+```
+
 More installation options:
 
 * Manual installation notes [here](docs/install.md)
-* [development notes](development.md)
+* [Development notes](docs/development.md)
+* [Configuring the scanner and SANE](docs/sane.md)
 
 ## Why?
 This is yet another scanimage-web-front-end. Why? It originally started as an

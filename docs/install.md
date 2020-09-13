@@ -13,7 +13,8 @@ manually.
 ```
 sudo apt install -y nodejs npm sane-utils imagemagick curl
 wget -O ~/scanservjs.tar.gz $(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
-tar -xf scanservjs.tar.gz
+mkdir scanservjs
+tar -xf scanservjs.tar.gz -C ./scanservjs/
 sudo ./scanservjs/install.sh
 rm scanservjs.tar.gz
 rm -r scanservjs
