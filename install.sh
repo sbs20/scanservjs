@@ -62,7 +62,7 @@ chown -R scanservjs:users $scansrvjs_home/
 find . -type d -exec chmod 755 {} +
 
 # ... and ensure the server is executable
-chmod +x $scansrvjs_home/server.js
+chmod +x $scansrvjs_home/server/Server.js
 
 # Enable PDF
 sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
