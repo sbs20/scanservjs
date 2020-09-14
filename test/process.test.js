@@ -4,8 +4,8 @@ const Process = require('../server/Process');
 
 describe('Process', () => {
   it('echo', async () => {
-    const r = await Process.execute('echo "hello world"');
-    assert.strictEqual(r.output, 'hello world\n');
+    const result = await Process.execute('echo "hello world"');
+    assert.strictEqual(result, 'hello world\n');
   });
 
   it('echo "1\\n2\\n3" | wc -l', async () => {

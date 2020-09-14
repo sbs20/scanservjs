@@ -6,11 +6,7 @@ const spawn = require('child_process').spawn;
 const Process = {
   async execute(cmd) {
     const { stdout } = await exec(cmd);
-    return {
-      cmd: cmd,
-      output: stdout,
-      code: 0
-    };
+    return stdout;
   },
 
   async spawn(cmd, stdin, ignoreErrors) {

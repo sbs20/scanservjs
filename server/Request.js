@@ -19,15 +19,16 @@ class Request {
       ? this.context.devices.filter(device => device.id === data.params.deviceId)[0]
       : this.context.devices[0];
 
+    const features = device.features;
     extend(this, {
       params: {
         deviceId: device.id,
-        top: bound(data.params.top, device.features['-t'].limits[0], device.features['-t'].limits[1], 0),
-        left: bound(data.params.left, device.features['-l'].limits[0], device.features['-l'].limits[1], 0),
-        width: bound(data.params.width, device.features['-x'].limits[0], device.features['-x'].limits[1], device.features['-x'].limits[1]),
-        height: bound(data.params.height, device.features['-y'].limits[0], device.features['-y'].limits[1], device.features['-y'].limits[1]),
-        resolution: data.params.resolution || device.features['--resolution'].default,
-        mode: data.params.mode || device.features['--mode'].default,
+        top: bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0),
+        left: bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0),
+        width: bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]),
+        height: bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]),
+        resolution: data.params.resolution || features['--resolution'].default,
+        mode: data.params.mode || features['--mode'].default,
         format: 'tiff',
         brightness: data.params.brightness || 0,
         contrast: data.params.contrast || 0,
@@ -36,13 +37,13 @@ class Request {
       pipeline: data.pipeline || null
     });
 
-    if ('--brightness' in device.features === false) {
+    if ('--brightness' in features === false) {
       delete this.params.brightness;
     }
-    if ('--contrast' in device.features === false) {
+    if ('--contrast' in features === false) {
       delete this.params.contrast;
     }
-    if ('--disable-dynamic-lineart' in device.features === false) {
+    if ('--disable-dynamic-lineart' in features === false) {
       delete this.params.dynamicLineart;
     }
 

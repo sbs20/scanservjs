@@ -11,10 +11,6 @@ prefix.apply(log, Config.log.prefix);
 const bodyParser = require('body-parser');
 const Api = require('./Api');
 
-const forbidden = function (req, res) {
-  res.status(403).send('<h1>Error 403: Forbidden</h1>');
-};
-
 const sendError = (res, httpCode, data) => {
   let content = {
     message: '',
@@ -36,9 +32,6 @@ module.exports = app => {
   }));
 
   app.use(bodyParser.json());
-
-  app.get('/node*', forbidden);
-  app.get('/api.js', forbidden);
 
   app.get('/files', async (req, res) => {
     try {

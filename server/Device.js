@@ -137,7 +137,7 @@ class Device {
         .build();
   
       const data = await Process.execute(cmd);
-      const device = Device.from(data.output);
+      const device = Device.from(data);
       file.save(JSON.stringify(device, null, 2));
       return device;
     } else {
@@ -150,14 +150,6 @@ class Device {
     if (file.exists()) {
       file.delete();
     }
-  }
-
-  isFeatureSupported(feature) {
-    if (this.features && feature in this.features) {
-      return this.features[feature].default !== 'inactive';
-    }
-
-    return false;
   }
 }
 

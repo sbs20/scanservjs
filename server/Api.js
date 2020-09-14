@@ -59,19 +59,12 @@ class Api {
   }
 
   static async readPreview() {
-    let options = {
-      default: Config.previewDirectory + 'default.jpg',
-      source: Config.previewDirectory + 'preview.tif',
-      target: Config.previewDirectory + 'preview.jpg',
-      trim: false
-    };
-
-    let source = new FileInfo(options.source);
+    const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
     if (!source.exists()) {
-      return new FileInfo(options.default).toBuffer();
+      return new FileInfo(`${Config.previewDirectory}default.jpg`).toBuffer();
     }
   
-    let buffer = source.toBuffer();
+    const buffer = source.toBuffer();
     return await Process.chain(Config.previewPipeline.commands, buffer, true);
   }
 
