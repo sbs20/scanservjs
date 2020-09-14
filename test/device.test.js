@@ -8,6 +8,7 @@ describe('Device', () => {
     const file = new FileInfo('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
 
+    assert.strictEqual(device.id, 'plustek:libusb:001:008');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Color');
     assert.deepStrictEqual(device.features['--resolution'].options, ['50', '75', '150', '300', '600', '1200']);
@@ -32,6 +33,7 @@ describe('Device', () => {
     const file = new FileInfo('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
 
+    assert.strictEqual(device.id, 'epson2:libusb:001:029');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Lineart');
     assert.deepStrictEqual(device.features['--resolution'].options, ['75', '300', '600', '1200']);

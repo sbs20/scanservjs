@@ -6,7 +6,7 @@
     <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
       <div class="navbar-header"></div>
       <div id="navbar" class="navbar-collapse collapse">
-        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ context.version }}) | Scanner: {{ device.name }}</div>
+        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ context.version }}) | Scanner: {{ device.id }}</div>
       </div>
     </nav>
 
@@ -188,7 +188,7 @@ export default {
     
     const request = {
       params: {
-        deviceId: device.name,
+        deviceId: device.id,
         top: 0,
         left: 0,
         width: device.features['-x'].limits[1],
@@ -394,7 +394,7 @@ export default {
         request = {
           version: this.context.version,
           params: {
-            deviceId: device.name,
+            deviceId: device.id,
             top: 0,
             left: 0,
             width: device.features['-x'].limits[1],

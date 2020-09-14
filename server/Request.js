@@ -16,12 +16,12 @@ class Request {
 
   extend(data) {
     const device = data.params.deviceId
-      ? this.context.devices.filter(device => device.name === data.params.deviceId)[0]
+      ? this.context.devices.filter(device => device.id === data.params.deviceId)[0]
       : this.context.devices[0];
 
     extend(this, {
       params: {
-        deviceId: device.name,
+        deviceId: device.id,
         top: bound(data.params.top, device.features['-t'].limits[0], device.features['-t'].limits[1], 0),
         left: bound(data.params.left, device.features['-l'].limits[0], device.features['-l'].limits[1], 0),
         width: bound(data.params.width, device.features['-x'].limits[0], device.features['-x'].limits[1], device.features['-x'].limits[1]),

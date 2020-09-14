@@ -14,6 +14,8 @@ const decorate = (device) => {
   for (const key in device.features) {
     let feature = device.features[key];
     let params = null;
+    let match = null;
+    
     switch (key) {
       case '--mode':
         feature.options = feature.parameters.split('|');
@@ -46,7 +48,7 @@ const decorate = (device) => {
       
       case '--brightness':
       case '--contrast':
-        const match = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
+        match = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
         feature.interval = match ? Number(match[1]) : 1;
         params = feature.parameters.split('%')[0].split('..');
         feature.limits = [Number(params[0]), Number(params[1])];
@@ -65,7 +67,7 @@ const parse = (response) => {
   }
 
   let device = {
-    'name': '',
+    'id': '',
     'version': Package.version,
     'features': {}
   };
@@ -88,7 +90,7 @@ const parse = (response) => {
   pattern = /All options specific to device `(.*)'/;
   match = pattern.exec(response);
   if (match) {
-    device.name = match[1];
+    device.id = match[1];
   }
 
   if (match === null) {
