@@ -31,6 +31,11 @@ class Api {
 
   static fileDelete(fullpath) {
     const file = new FileInfo(fullpath);
+    const parent = new FileInfo(file.path);
+    const data = new FileInfo(Config.outputDirectory);
+    if (!parent.equals(data)) {
+      throw new Error('Cannot delete outside of data directory');
+    }
     return file.delete();
   }
 

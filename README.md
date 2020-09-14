@@ -1,13 +1,13 @@
 # scanservjs
 scanservjs is a simple web-based UI for your scanner. It allows you to share a
 scanner (using SANE) on a network without the need for drivers or complicated
-installation. It can save to TIF, JPG, PNG and PDF with varyings compression
-settings. It also allows for configurable output conversions through
-configuration.
+installation. It can save to TIF, JPG, PNG and PDF with varying compression
+settings, all of which can configured. It supports all
+[SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
 
-Copyright 2016 [Sam Strachan](https://github.com/sbs20)
+Copyright 2016-2020 [Sam Strachan](https://github.com/sbs20)
 
 ## Requirements
 * SANE
@@ -41,7 +41,7 @@ docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container 
 
 More installation options:
 
-* Manual installation notes [here](docs/install.md)
+* [Manual installation notes](docs/install.md)
 * [Development notes](docs/development.md)
 * [Configuring the scanner and SANE](docs/sane.md)
 
@@ -50,12 +50,8 @@ This is yet another scanimage-web-front-end. Why? It originally started as an
 adaptation of phpsane - just to make everything a bit newer, give it a refresh
 and make it work on minimal installations without imagemagick - that version is
 [still available](https://github.com/sbs20/scanserv) but is no longer
-maintained. Then, I just wanted to write in node, and it's been a labour of love
-ever since.
-
-## Roadmap
-* Configuration page for debugging set up assisting new users
-* Multi-language support
+maintained. Then, I just wanted to write it in node and enhance it a bit, and
+it's been a labour of love ever since.
 
 ## Acknowledgements
  * This project owes a lot to [phpsane](http://sourceforge.net/projects/phpsane/)
