@@ -22,7 +22,16 @@ const decorate = (device) => {
       case '--resolution':
         feature.options = ['50', '75', '100', '150', '200', '300', '600', '1200'];
         if (feature.parameters.indexOf('|') > -1) {
-          feature.options = feature.parameters.split('|');
+          feature.options = feature.parameters.replace(/[a-z]/ig, '').split('|');
+        } else if (feature.parameters.indexOf('..') > -1) {
+          params = feature.parameters.replace(/[a-z]/ig, '').split('..');
+          feature.options = [];
+          for (let value = Number(params[1]); value > Number(params[0]); value /= 2) {
+            feature.options.push(value);
+          }
+          feature.options.push(Number(params[0]));
+          feature.options.sort((a, b) => a - b);
+          feature.options = feature.options.map(n => n.toString());
         }
         break;
 
@@ -31,8 +40,8 @@ const decorate = (device) => {
       case '-x':
       case '-y':
         params = feature.parameters.replace(/[a-z]/ig, '').split('..');
-        feature.limits = [Number(params[0]), Number(params[1])];
-        feature.default = Number(feature.default);
+        feature.limits = [Math.floor(Number(params[0])), Math.floor(Number(params[1]))];
+        feature.default = Math.floor(Number(feature.default));
         break;
       
       case '--brightness':
@@ -66,10 +75,12 @@ const parse = (response) => {
   let pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
   let match;
   while ((match = pattern.exec(response)) !== null) {
-    device.features[match[1]] = {
-      'default': match[3],
-      'parameters': match[2]
-    };
+    if (match[3] !== 'inactive') {
+      device.features[match[1]] = {
+        'default': match[3],
+        'parameters': match[2]
+      };  
+    }
   }
 
   pattern = /All options specific to device `(.*)'/;

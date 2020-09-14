@@ -36,6 +36,10 @@ class FileInfo {
     return this;
   }
 
+  equals(fileinfo) {
+    return path.resolve(this.fullname) === path.resolve(fileinfo.fullname);
+  }
+
   exists() {
     return fs.existsSync(this.fullname);
   }
