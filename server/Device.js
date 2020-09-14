@@ -46,6 +46,8 @@ const decorate = (device) => {
       
       case '--brightness':
       case '--contrast':
+        const match = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
+        feature.interval = match ? Number(match[1]) : 1;
         params = feature.parameters.split('%')[0].split('..');
         feature.limits = [Number(params[0]), Number(params[1])];
         feature.default = Number(feature.default);

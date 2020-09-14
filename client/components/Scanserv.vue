@@ -60,6 +60,7 @@
                 <label>Brightness</label>
                 <input class="form-control" type="number" v-model="request.params.brightness">
                 <Slider v-model="request.params.brightness"
+                  :interval="device.features['--brightness']['interval']"                  
                   :min="device.features['--brightness']['limits'][0]"
                   :max="device.features['--brightness']['limits'][1]"></Slider>
               </div>
@@ -68,6 +69,7 @@
                 <label>Contrast</label>
                 <input class="form-control" type="number" v-model="request.params.contrast">
                 <Slider v-model="request.params.contrast"
+                  :interval="device.features['--contrast']['interval']"                  
                   :min="device.features['--contrast']['limits'][0]"
                   :max="device.features['--contrast']['limits'][1]"></Slider>
               </div>
@@ -87,7 +89,7 @@
             <div class="col text-right">
               <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-lg btn-light" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="reset">reset <img src="../assets/autorenew-black-18dp.svg"></button>
+                <button type="button" class="btn btn-lg btn-light" v-on:click="clear">clear <img src="../assets/autorenew-black-18dp.svg"></button>
                 <button type="button" class="btn btn-lg btn-light" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
                 <button type="button" class="btn btn-lg btn-light" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
               </div>
@@ -369,6 +371,9 @@ export default {
         for (let test of context.diagnostics) {
           const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
           toast(test.message);
+          if (force) {
+            this.clear();
+          }
         }
         this.mask(-1);
       });
@@ -419,10 +424,9 @@ export default {
 
     reinitialize() {
       this.readContext(true);
-      this.reset();
     },
 
-    reset() {
+    clear() {
       localStorage.removeItem('request');
       this.request = this.readRequest();
     },

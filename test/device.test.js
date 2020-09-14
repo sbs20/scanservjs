@@ -22,10 +22,10 @@ describe('Device', () => {
     assert.strictEqual(device.features['-y'].limits[1], 297);
     assert.strictEqual(device.features['--brightness'].limits[0], -100);
     assert.strictEqual(device.features['--brightness'].limits[1], 100);
-    //assert.strictEqual(device.features['--brightness'].interval, 1);
+    assert.strictEqual(device.features['--brightness'].interval, 1);
     assert.strictEqual(device.features['--contrast'].limits[0], -100);
     assert.strictEqual(device.features['--contrast'].limits[1], 100);
-    //assert.strictEqual(device.features['--contrast'].interval, 1);
+    assert.strictEqual(device.features['--contrast'].interval, 1);
   });
 
   it('scanimage-a2.txt', () => {
