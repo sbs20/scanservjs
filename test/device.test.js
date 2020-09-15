@@ -15,18 +15,24 @@ describe('Device', () => {
     assert.strictEqual(device.features['--resolution'].default, 50);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 215);
+    assert.strictEqual(device.features['-l'].default, 0);
     assert.strictEqual(device.features['-t'].limits[0], 0);
     assert.strictEqual(device.features['-t'].limits[1], 297);
+    assert.strictEqual(device.features['-t'].default, 0);
     assert.strictEqual(device.features['-x'].limits[0], 0);
     assert.strictEqual(device.features['-x'].limits[1], 215);
+    assert.strictEqual(device.features['-x'].default, 103);
     assert.strictEqual(device.features['-y'].limits[0], 0);
     assert.strictEqual(device.features['-y'].limits[1], 297);
+    assert.strictEqual(device.features['-y'].default, 76);
     assert.strictEqual(device.features['--brightness'].limits[0], -100);
     assert.strictEqual(device.features['--brightness'].limits[1], 100);
     assert.strictEqual(device.features['--brightness'].interval, 1);
+    assert.strictEqual(device.features['--brightness'].default, 0);
     assert.strictEqual(device.features['--contrast'].limits[0], -100);
     assert.strictEqual(device.features['--contrast'].limits[1], 100);
     assert.strictEqual(device.features['--contrast'].interval, 1);
+    assert.strictEqual(device.features['--contrast'].default, 0);
   });
 
   it('scanimage-a2.txt', () => {
@@ -40,13 +46,45 @@ describe('Device', () => {
     assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 215);
+    assert.strictEqual(device.features['-l'].default, 0);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 297);
+    assert.strictEqual(device.features['-t'].default, 0);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 215);
+    assert.strictEqual(device.features['-x'].default, 215);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 297);
+    assert.strictEqual(device.features['-y'].default, 297);
+    assert.strictEqual(device.features['--brightness'], undefined);
+    assert.strictEqual(device.features['--contrast'], undefined);
+  });
+
+  it('scanimage-a3.txt', () => {
+    const file = new FileInfo('test/resource/scanimage-a3.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'magic');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', '24bitColor']);
+    assert.strictEqual(device.features['--mode'].default, '24bitColor');
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 215);
     assert.strictEqual(device.features['-t'].limits[0], 0);
     assert.strictEqual(device.features['-t'].limits[1], 297);
     assert.strictEqual(device.features['-x'].limits[0], 0);
     assert.strictEqual(device.features['-x'].limits[1], 215);
     assert.strictEqual(device.features['-y'].limits[0], 0);
     assert.strictEqual(device.features['-y'].limits[1], 297);
-    assert.strictEqual(device.features['--brightness'], undefined);
-    assert.strictEqual(device.features['--contrast'], undefined);
+    assert.strictEqual(device.features['--brightness'].limits[0], -50);
+    assert.strictEqual(device.features['--brightness'].limits[1], 50);
+    assert.strictEqual(device.features['--brightness'].interval, 1);
+    assert.strictEqual(device.features['--brightness'].default, 0);
+    assert.strictEqual(device.features['--contrast'].limits[0], -50);
+    assert.strictEqual(device.features['--contrast'].limits[1], 50);
+    assert.strictEqual(device.features['--contrast'].interval, 10);
+    assert.strictEqual(device.features['--contrast'].default, 0);
   });
+
 });

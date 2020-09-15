@@ -10,56 +10,66 @@ const Process = require('./Process');
 // Relative to execution path
 const FILEPATH = './config/devices.json';
 
-const splitNumbers = (string, delimiter) => {
-  return string.replace(/[a-z]/ig, '')
-    .split(delimiter)
-    .map(s => Number(s));
+class Feature {
+  static splitNumbers(string, delimiter) {
+    return string.replace(/[a-z%]/ig, '')
+      .split(delimiter)
+      .map(s => Number(s));
+  }
+
+  static resolution(feature) {
+    feature.options = [50, 75, 100, 150, 200, 300, 600, 1200];
+    if (feature.parameters.indexOf('|') > -1) {
+      feature.options = Feature.splitNumbers(feature.parameters, '|');
+    } else if (feature.parameters.indexOf('..') > -1) {
+      const limits = Feature.splitNumbers(feature.parameters, '..');
+      feature.options = [];
+      for (let value = limits[1]; value > limits[0]; value /= 2) {
+        feature.options.push(value);
+      }
+      feature.options.push(limits[0]);
+      feature.options.sort((a, b) => a - b);
+    }
+    feature.default = Number(feature.default);
+  }
+
+  static geometry(feature) {
+    const limits = Feature.splitNumbers(feature.parameters, '..');
+    feature.limits = [Math.floor(limits[0]), Math.floor(limits[1])];
+    feature.default = Math.floor(Number(feature.default));
+  }
+
+  static lighting(feature) {
+    feature.default = Number(feature.default);
+    const range = /(.*?)(?:\s|$)/g.exec(feature.parameters);
+    feature.limits = Feature.splitNumbers(range[1], '..');
+    const steps = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
+    feature.interval = steps ? Number(steps[1]) : 1;
+  }
 };
 
 const decorate = (device) => {
   for (const key in device.features) {
-    let feature = device.features[key];
-    let params = null;
-    let match = null;
-    
+    const feature = device.features[key];
     switch (key) {
       case '--mode':
         feature.options = feature.parameters.split('|');
         break;
 
       case '--resolution':
-        feature.options = ['50', '75', '100', '150', '200', '300', '600', '1200'];
-        if (feature.parameters.indexOf('|') > -1) {
-          feature.options = feature.parameters.replace(/[a-z]/ig, '').split('|');
-        } else if (feature.parameters.indexOf('..') > -1) {
-          params = feature.parameters.replace(/[a-z]/ig, '').split('..');
-          feature.options = [];
-          for (let value = Number(params[1]); value > Number(params[0]); value /= 2) {
-            feature.options.push(value);
-          }
-          feature.options.push(Number(params[0]));
-          feature.options.sort((a, b) => a - b);
-        }
-        feature.options = feature.options.map(n => Number(n));
-        feature.default = Number(feature.default);
+        Feature.resolution(feature);
         break;
 
       case '-l':
       case '-t':
       case '-x':
       case '-y':
-        params = feature.parameters.replace(/[a-z]/ig, '').split('..');
-        feature.limits = [Math.floor(Number(params[0])), Math.floor(Number(params[1]))];
-        feature.default = Math.floor(Number(feature.default));
+        Feature.geometry(feature);
         break;
       
       case '--brightness':
       case '--contrast':
-        match = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
-        feature.interval = match ? Number(match[1]) : 1;
-        params = feature.parameters.split('%')[0].split('..');
-        feature.limits = [Number(params[0]), Number(params[1])];
-        feature.default = Number(feature.default);
+        Feature.lighting(feature);
         break;
     }
   }
