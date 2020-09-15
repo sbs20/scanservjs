@@ -46,7 +46,7 @@ class Feature {
     const steps = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
     feature.interval = steps ? Number(steps[1]) : 1;
   }
-};
+}
 
 const decorate = (device) => {
   for (const key in device.features) {
