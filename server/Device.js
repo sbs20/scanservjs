@@ -10,6 +10,12 @@ const Process = require('./Process');
 // Relative to execution path
 const FILEPATH = './config/devices.json';
 
+const splitNumbers = (string, delimiter) => {
+  return string.replace(/[a-z]/ig, '')
+    .split(delimiter)
+    .map(s => Number(s));
+};
+
 const decorate = (device) => {
   for (const key in device.features) {
     let feature = device.features[key];
@@ -33,8 +39,9 @@ const decorate = (device) => {
           }
           feature.options.push(Number(params[0]));
           feature.options.sort((a, b) => a - b);
-          feature.options = feature.options.map(n => n.toString());
         }
+        feature.options = feature.options.map(n => Number(n));
+        feature.default = Number(feature.default);
         break;
 
       case '-l':
@@ -72,10 +79,11 @@ const parse = (response) => {
     'features': {}
   };
 
-  // find any number of spaces
-  // ... match 1 or two hyphens with letters, numbers or hypen
-  // find anything
-  // ... match anything inside square brackets
+  // find
+  //   any number of spaces
+  //   match 1 or two hyphens with letters, numbers or hypen
+  //   match anything (until square brackets)
+  //   match anything inside square brackets
   let pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
   let match;
   while ((match = pattern.exec(response)) !== null) {

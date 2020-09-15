@@ -37,7 +37,7 @@
               <div class="form-group">
                 <label>Resolution</label>
                 <select class="form-control" v-model="request.params.resolution">
-                  <option v-for="item in device.features['--resolution']['options']" v-bind:key="item">{{ item }}</option>
+                  <option v-for="item in device.features['--resolution']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</option>
                 </select>    
               </div>
 
@@ -100,7 +100,7 @@
         <!-- Preview pane -->
         <div class="col-lg-1"></div>
         <div class="col-lg-4 col-md-6 col-sm-12">
-          <cropper ref="cropper" class="cropper" transitionTime="1"
+          <cropper ref="cropper" class="cropper" :transitionTime="1"
               :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
         </div>

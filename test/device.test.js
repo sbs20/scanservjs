@@ -11,8 +11,8 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'plustek:libusb:001:008');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Color');
-    assert.deepStrictEqual(device.features['--resolution'].options, ['50', '75', '150', '300', '600', '1200']);
-    assert.strictEqual(device.features['--resolution'].default, '50');
+    assert.deepStrictEqual(device.features['--resolution'].options, [50, 75, 150, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 50);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 215);
     assert.strictEqual(device.features['-t'].limits[0], 0);
@@ -36,8 +36,8 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'epson2:libusb:001:029');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Lineart');
-    assert.deepStrictEqual(device.features['--resolution'].options, ['75', '300', '600', '1200']);
-    assert.strictEqual(device.features['--resolution'].default, '75');
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 215);
     assert.strictEqual(device.features['-t'].limits[0], 0);
