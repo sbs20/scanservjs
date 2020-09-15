@@ -1,11 +1,10 @@
 const log = require('loglevel').getLogger('Device');
 
-const CmdBuilder = require('./CmdBuilder');
-const Config = require('../config/config');
 const extend = require('./Util').extend;
 const FileInfo = require('./FileInfo');
 const Package = require('../package.json');
 const Process = require('./Process');
+const Scanimage = require('./Scanimage');
 
 // Relative to execution path
 const FILEPATH = './config/devices.json';
@@ -48,75 +47,77 @@ class Feature {
   }
 }
 
-const decorate = (device) => {
-  for (const key in device.features) {
-    const feature = device.features[key];
-    switch (key) {
-      case '--mode':
-        feature.options = feature.parameters.split('|');
-        break;
-
-      case '--resolution':
-        Feature.resolution(feature);
-        break;
-
-      case '-l':
-      case '-t':
-      case '-x':
-      case '-y':
-        Feature.geometry(feature);
-        break;
-      
-      case '--brightness':
-      case '--contrast':
-        Feature.lighting(feature);
-        break;
+class Adapter {
+  static decorate(device) {
+    for (const key in device.features) {
+      const feature = device.features[key];
+      switch (key) {
+        case '--mode':
+          feature.options = feature.parameters.split('|');
+          break;
+  
+        case '--resolution':
+          Feature.resolution(feature);
+          break;
+  
+        case '-l':
+        case '-t':
+        case '-x':
+        case '-y':
+          Feature.geometry(feature);
+          break;
+        
+        case '--brightness':
+        case '--contrast':
+          Feature.lighting(feature);
+          break;
+      }
     }
+  
+    return device;
   }
-
-  return device;
-};
-
-// Parses the response of scanimage -A into a dictionary
-const parse = (response) => {
-  if (response === null || response === '') {
-    throw new Error('No device found');
-  }
-
-  let device = {
-    'id': '',
-    'version': Package.version,
-    'features': {}
-  };
-
-  // find
-  //   any number of spaces
-  //   match 1 or two hyphens with letters, numbers or hypen
-  //   match anything (until square brackets)
-  //   match anything inside square brackets
-  let pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
-  let match;
-  while ((match = pattern.exec(response)) !== null) {
-    if (match[3] !== 'inactive') {
-      device.features[match[1]] = {
-        'default': match[3],
-        'parameters': match[2]
-      };  
+  
+  // Parses the response of scanimage -A into a dictionary
+  static parse(response) {
+    if (response === null || response === '') {
+      throw new Error('No device found');
     }
+  
+    let device = {
+      'id': '',
+      'version': Package.version,
+      'features': {}
+    };
+  
+    // find
+    //   any number of spaces
+    //   match 1 or two hyphens with letters, numbers or hypen
+    //   match anything (until square brackets)
+    //   match anything inside square brackets
+    let pattern = /\s+([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]\n/g;
+    let match;
+    while ((match = pattern.exec(response)) !== null) {
+      if (match[3] !== 'inactive') {
+        device.features[match[1]] = {
+          'default': match[3],
+          'parameters': match[2]
+        };  
+      }
+    }
+  
+    pattern = /All options specific to device `(.*)'/;
+    match = pattern.exec(response);
+    if (match) {
+      device.id = match[1];
+    }
+  
+    if (match === null) {
+      throw new Error('Scanimage output contains no matching expressions');
+    }
+  
+    return device;
   }
-
-  pattern = /All options specific to device `(.*)'/;
-  match = pattern.exec(response);
-  if (match) {
-    device.id = match[1];
-  }
-
-  if (match === null) {
-    throw new Error('Scanimage output contains no matching expressions');
-  }
-
-  return device;
-};
+}
 
 class Device {
   constructor() {
@@ -125,11 +126,11 @@ class Device {
   static from(o) {
     const device = new Device();
     if (typeof o === 'object') {
-      const decorated = decorate(o);
+      const decorated = Adapter.decorate(o);
       extend(device, decorated);
       return device;      
     } else if (typeof o === 'string') {
-      const data = parse(o);
+      const data = Adapter.parse(o);
       return Device.from(data);
     } else {
       throw new Error('Unexpected data for Device');
@@ -150,11 +151,7 @@ class Device {
     }
 
     if (!isCached) {
-      const cmd = new CmdBuilder(Config.scanimage)
-        .arg(' -A')
-        .build();
-  
-      const data = await Process.execute(cmd);
+      const data = await Process.execute(Scanimage.all());
       const device = Device.from(data);
       file.save(JSON.stringify(device, null, 2));
       return device;

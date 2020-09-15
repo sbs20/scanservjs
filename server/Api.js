@@ -52,7 +52,7 @@ class Api {
       }
     });
 
-    const cmd = `${Scanimage.command(request)} > ${Config.previewDirectory}preview.tif`;
+    const cmd = `${Scanimage.scan(request)} > ${Config.previewDirectory}preview.tif`;
     log.debug('Executing cmd:', cmd);
     await Process.spawn(cmd);
     return {};
@@ -72,7 +72,7 @@ class Api {
     const context = await Context.create();
     const request = new Request(context).extend(req);
     const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-    const cmds = [Scanimage.command(request)].concat(pipeline.commands);
+    const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
 
     log.debug('Executing cmds:', cmds);
     const buffer = await Process.chain(cmds);

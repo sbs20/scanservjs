@@ -4,7 +4,13 @@ const CmdBuilder = require('./CmdBuilder');
 const Config = require('../config/config');
 
 class Scanimage {
-  static command(request) {
+  static all() {
+    return new CmdBuilder(Config.scanimage)
+      .arg('-A')
+      .build();
+  }
+
+  static scan(request) {
     log.debug(request);
     const params = request.params;
     const cmdBuilder = new CmdBuilder(Config.scanimage);
@@ -32,7 +38,6 @@ class Scanimage {
   
     return cmdBuilder.build();
   }
-
 }
 
 module.exports = Scanimage;
