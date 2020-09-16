@@ -10,7 +10,7 @@ const Process = {
   },
 
   async spawn(cmd, stdin, ignoreErrors) {
-    const MAX_BUFFER = 50 * 1024 * 1024;
+    const MAX_BUFFER = 16 * 1024;
     ignoreErrors = ignoreErrors === undefined ? false : true;
     log.debug(cmd, stdin, ignoreErrors);
     return await new Promise((resolve, reject) => {
