@@ -3,8 +3,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Scanserv from './components/Scanserv.vue';
+import { BootstrapVue } from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+Vue.use(BootstrapVue);
 
 export default {
   name: 'App',
@@ -72,7 +77,7 @@ body {
     font-size: small;
 }
 
-label, th {
+.col-form-label, label, th {
     font-size: x-large;
     font-weight: 300;
     color: #0E5EA0;

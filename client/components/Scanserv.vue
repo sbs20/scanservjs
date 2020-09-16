@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="maskRef" id="mask"></div>
-    <Toastr ref="toastr"></Toastr>
+    <toastr ref="toastr"></toastr>
 
     <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
       <div class="navbar-header"></div>
@@ -10,111 +10,102 @@
       </div>
     </nav>
 
-    <div class="container theme-showcase" role="main">
-      <div class="row">
+    <b-container>
+      <b-row cols="1" cols-md="2">
         <!-- Fields and buttons -->
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="row">
-            <div class="col">
-              <div class="form-group">
-                <label>Top</label>
-                <input class="form-control" type="number" v-model="request.params.top" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Left</label>
-                <input class="form-control" type="number" v-model="request.params.left" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Width</label>
-                <input class="form-control" type="number" v-model="request.params.width" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Height</label>
-                <input class="form-control" type="number" v-model="request.params.height" @change="onCoordinatesChange">
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label>Resolution</label>
-                <select class="form-control" v-model="request.params.resolution">
-                  <option v-for="item in device.features['--resolution']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</option>
-                </select>    
-              </div>
+        <b-col>
+          <b-row>
+            <b-col>
+              <b-form-group label="Top">
+                <b-form-input type="number" v-model="request.params.top" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Left">
+                <b-form-input type="number" v-model="request.params.left" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Width">
+                <b-form-input type="number" v-model="request.params.width" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Height">
+                <b-form-input type="number" v-model="request.params.height" @change="onCoordinatesChange" />
+              </b-form-group>
+            </b-col>
 
-              <div class="form-group">
-                <label>Mode</label>
-                <select class="form-control" v-model="request.params.mode">
-                  <option v-for="item in device.features['--mode']['options']" v-bind:key="item">{{ item }}</option>
-                </select>    
-              </div>
+            <b-col>
+              <b-form-group label="Resolution">
+                <b-form-select class="form-control" v-model="request.params.resolution">
+                  <b-form-select-option v-for="item in device.features['--resolution']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--disable-dynamic-lineart' in device.features">
-                <label for="mode">Dynamic lineart</label>
-                <select id="dynamicLineart" class="form-control" v-model="request.params.dynamicLineart">
-                  <option v-bind:value="false">Disabled</option>
-                  <option v-bind:value="true">Enabled</option>
-                </select>
-              </div>
+              <b-form-group label="Mode">
+                <b-form-select class="form-control" v-model="request.params.mode">
+                  <b-form-select-option v-for="item in device.features['--mode']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--brightness' in device.features">
-                <label>Brightness</label>
-                <input class="form-control" type="number" v-model="request.params.brightness">
-                <Slider v-model="request.params.brightness"
+              <b-form-group v-if="'--disable-dynamic-lineart' in device.features" label="Dynamic Lineart">
+                <b-form-select class="form-control" v-model="request.params.dynamicLineart">
+                  <b-form-select-option v-bind:value="false">Disabled</b-form-select-option>
+                  <b-form-select-option v-bind:value="true">Enabled</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group v-if="'--brightness' in device.features" label="Brightness">
+                <b-form-input type="number" v-model="request.params.brightness" />
+                <slider v-model="request.params.brightness"
                   :interval="device.features['--brightness']['interval']"                  
                   :min="device.features['--brightness']['limits'][0]"
-                  :max="device.features['--brightness']['limits'][1]"></Slider>
-              </div>
+                  :max="device.features['--brightness']['limits'][1]"></slider>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--contrast' in device.features">
-                <label>Contrast</label>
-                <input class="form-control" type="number" v-model="request.params.contrast">
-                <Slider v-model="request.params.contrast"
+              <b-form-group v-if="'--contrast' in device.features" label="Contrast">
+                <b-form-input type="number" v-model="request.params.contrast" />
+                <slider v-model="request.params.contrast"
                   :interval="device.features['--contrast']['interval']"                  
                   :min="device.features['--contrast']['limits'][0]"
-                  :max="device.features['--contrast']['limits'][1]"></Slider>
-              </div>
+                  :max="device.features['--contrast']['limits'][1]"></slider>
+              </b-form-group>
 
-              <div class="form-group">
-                <label>Format</label>
-                <select class="form-control" v-model="request.pipeline">
-                  <option v-for="item in context.pipelines" v-bind:key="item.description">{{ item.description }}</option>
-                </select>
-              </div>
-
-            </div>
-          </div>
+              <b-form-group label="Format">
+                <b-form-select class="form-control" v-model="request.pipeline">
+                  <b-form-select-option v-for="item in context.pipelines" v-bind:key="item.description" v-bind:value="item.description">{{ item.description }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
 
           <!-- Buttons -->
-          <div class="row">
-            <div class="col text-right">
-              <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-lg btn-light" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="clear">clear <img src="../assets/autorenew-black-18dp.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
-              </div>
-            </div>
-          </div>
+          <b-row>
+            <b-col class="text-right">
+              <b-button-group>
+                <b-button variant="light" size="lg" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></b-button>
+                <b-button variant="light" size="lg" v-on:click="clear">clear <img src="../assets/autorenew-24px.svg"></b-button>
+              </b-button-group>
+              &nbsp;
+              <b-button-group>
+                <b-button variant="light" size="lg" v-on:click="preview">preview <img src="../assets/search-24px.svg"></b-button>
+                <b-button variant="light" size="lg" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></b-button>
+              </b-button-group>
+            </b-col>
+          </b-row>
 
-        </div>
+        </b-col>
+
         <!-- Preview pane -->
-        <div class="col-lg-1"></div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
+        <b-col>
           <cropper ref="cropper" class="cropper" :transitionTime="1"
               :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
-        </div>
-        <div class="col-lg-1"></div>
-      </div>
+        </b-col>
+      </b-row>
 
-      <div class="row mt-5">
-        <div class="col">
-        </div>
-      </div>
+      <b-row class="mt-5">
+        <b-col></b-col>
+      </b-row>
 
-      <div class="row">
+      <b-row>
         <!-- Padding for larger screens -->
-        <div class="col">
+        <b-col>
           <table class="table">
             <thead>
               <tr>
@@ -133,10 +124,9 @@
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-    </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
