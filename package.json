@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "test": "mocha"
   },
-  "main": "server/Server.js",
+  "main": "server/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sbs20/scanservjs"
