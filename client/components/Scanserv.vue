@@ -119,7 +119,7 @@
               <tr v-for="file in files" v-bind:key="file.name">
                 <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
                 <td>{{ file.lastModified }}</td>
-                <td>{{ file.size }}</td>
+                <td>{{ file.sizeString }}</td>
                 <td><button class="btn btn-sm" v-on:click="fileRemove(file)"><img src="../assets/delete-24px.svg"></button></td>
               </tr>
             </tbody>
