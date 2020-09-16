@@ -1,6 +1,6 @@
 const log = require('loglevel').getLogger('Scanimage');
 
-const CmdBuilder = require('./CmdBuilder');
+const CmdBuilder = require('./command-builder');
 const Config = require('../config/config');
 
 class Scanimage {

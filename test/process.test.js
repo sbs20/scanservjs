@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Process = require('../server/Process');
+const Process = require('../server/process');
 
 describe('Process', () => {
   it('echo', async () => {

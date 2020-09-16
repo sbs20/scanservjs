@@ -2,12 +2,12 @@ const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
 
 const Config = require('../config/config');
-const Context = require('./Context');
-const Device = require('./Device');
-const FileInfo = require('./FileInfo');
-const Process = require('./Process');
-const Request = require('./Request');
-const Scanimage = require('./Scanimage');
+const Context = require('./context');
+const Device = require('./device');
+const FileInfo = require('./file-info');
+const Process = require('./process');
+const Request = require('./request');
+const Scanimage = require('./scanimage');
 
 class Api {
   static async fileList() {

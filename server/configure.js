@@ -9,7 +9,7 @@ log.setLevel(Config.log.level);
 prefix.apply(log, Config.log.prefix);
 
 const bodyParser = require('body-parser');
-const Api = require('./Api');
+const Api = require('./api');
 
 const sendError = (res, httpCode, data) => {
   let content = {

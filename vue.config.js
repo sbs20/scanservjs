@@ -1,4 +1,4 @@
-const configure = require('./server/Configure')
+const configure = require('./server/configure')
 const path = require("path");
 
 module.exports = {

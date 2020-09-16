@@ -1,10 +1,10 @@
 const log = require('loglevel').getLogger('Device');
 
-const extend = require('./Util').extend;
-const FileInfo = require('./FileInfo');
+const extend = require('./util').extend;
+const FileInfo = require('./file-info');
 const Package = require('../package.json');
-const Process = require('./Process');
-const Scanimage = require('./Scanimage');
+const Process = require('./process');
+const Scanimage = require('./scanimage');
 
 // Relative to execution path
 const FILEPATH = './config/devices.json';

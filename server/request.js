@@ -1,5 +1,5 @@
 const log = require('loglevel').getLogger('Request');
-const extend = require('./Util').extend;
+const extend = require('./util').extend;
 
 const bound = (n, min, max, def) => {
   return Math.max(Math.min(n || def, max), min);

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Config = require('../config/config');
-const Device = require('./Device');
+const Device = require('./device');
 const Package = require('../package.json');
 
 const diagnostic = (path) => {
