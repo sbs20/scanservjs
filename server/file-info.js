@@ -3,7 +3,7 @@ const path = require('path');
 
 const checkPath = (fullpath) => {
   if (fullpath.indexOf('../') !== -1) {
-    throw new Error('Relative paths disallowed');
+    throw new Error('Parent paths disallowed');
   }
 
   if (fullpath.indexOf('/') === 0) {
