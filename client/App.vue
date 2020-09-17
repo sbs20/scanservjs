@@ -42,7 +42,7 @@ body {
     width: auto;
 }
 
-#navbar > div {
+.navbar-brand, .navbar-text {
     color: white;
     font-size: xx-large;
 }
@@ -51,8 +51,8 @@ body {
     margin-top: 1em;
 }
 
-.navbar-inverse {
-    background-color: #101030;
+.bg-dark {
+    background-color: #101030 !important;
     background-image: none;
     border-color: black;
 }

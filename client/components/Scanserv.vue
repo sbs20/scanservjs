@@ -3,12 +3,12 @@
     <div v-if="maskRef" id="mask"></div>
     <toastr ref="toastr"></toastr>
 
-    <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
-      <div class="navbar-header"></div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ context.version }}) | Scanner: {{ device.id }}</div>
-      </div>
-    </nav>
+    <b-navbar type="dark" variant="dark">
+      <b-navbar-brand>scanserv-js (v{{ context.version }})</b-navbar-brand>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-text>Scanner: {{ device.id }}</b-nav-text>
+      </b-navbar-nav>
+    </b-navbar>
 
     <b-container>
       <b-row cols="1" cols-md="2">
@@ -93,9 +93,11 @@
 
         <!-- Preview pane -->
         <b-col>
-          <cropper ref="cropper" class="cropper" :transitionTime="1" :wheelResize="false"
-              :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-              :src="img" @change="onCrop"></cropper>
+          <div style="max-width: 420px;">
+            <cropper ref="cropper" class="cropper" :transitionTime="1" :wheelResize="false" :maxWidth="200"
+                :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
+                :src="img" @change="onCrop"></cropper>
+          </div>
         </b-col>
       </b-row>
 
