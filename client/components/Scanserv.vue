@@ -93,7 +93,7 @@
 
         <!-- Preview pane -->
         <b-col>
-          <cropper ref="cropper" class="cropper" :transitionTime="1"
+          <cropper ref="cropper" class="cropper" :transitionTime="1" :wheelResize="false"
               :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
               :src="img" @change="onCrop"></cropper>
         </b-col>
