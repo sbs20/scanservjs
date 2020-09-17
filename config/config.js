@@ -1,4 +1,4 @@
-const dateFormat = require('dateformat');
+const dayjs = require('dayjs');
 
 const Config = {
   port: 8080,
@@ -23,7 +23,7 @@ const Config = {
     }
   },
   filename() {
-    return `scan_${dateFormat(new Date(), 'yyyy-mm-dd HH.MM.ss')}`;
+    return `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}`;
   },
   previewPipeline: {
     extension: 'jpg',

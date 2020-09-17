@@ -44,7 +44,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
-    "dateformat": "^1.0.12",
+    "dayjs": "1.8.35",
     "loglevel": "1.7.0",
     "loglevel-plugin-prefix": "0.8.4",
     "express": "^4.17.1",
