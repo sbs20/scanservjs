@@ -104,8 +104,7 @@
   ],
   "nodemonConfig": {
     "watch": [
-      "server",
-      "config"
+      "server"
     ]
   }
 }
