@@ -16,7 +16,7 @@ const Process = {
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
-      const proc = spawn(cmd, null, {
+      const proc = spawn(cmd, [], {
         encoding: 'binary',
         shell: true,
         maxBuffer: MAX_BUFFER
