@@ -32,18 +32,22 @@ class Feature {
     feature.default = Number(feature.default);
   }
 
-  static geometry(feature) {
-    const limits = Feature.splitNumbers(feature.parameters, '..');
-    feature.limits = [Math.floor(limits[0]), Math.floor(limits[1])];
+  static range(feature) {
     feature.default = Math.floor(Number(feature.default));
-  }
-
-  static lighting(feature) {
-    feature.default = Number(feature.default);
     const range = /(.*?)(?:\s|$)/g.exec(feature.parameters);
     feature.limits = Feature.splitNumbers(range[1], '..');
     const steps = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
     feature.interval = steps ? Number(steps[1]) : 1;
+  }
+
+  static geometry(feature) {
+    Feature.range(feature);
+    feature.limits[0] = Math.floor(feature.limits[0]);
+    feature.limits[1] = Math.floor(feature.limits[1]);
+  }
+
+  static lighting(feature) {
+    Feature.range(feature);
   }
 }
 

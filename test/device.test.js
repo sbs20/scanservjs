@@ -87,4 +87,24 @@ describe('Device', () => {
     assert.strictEqual(device.features['--contrast'].default, 0);
   });
 
+  it('scanimage-a4.txt', () => {
+    const file = new FileInfo('test/resource/scanimage-a4.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'net:192.168.1.4:xerox_mfp:libusb:001:003');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Halftone', 'Gray', 'Color']);
+    assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 100, 150, 200, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 150);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 215);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 297);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 215);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 297);
+    assert.strictEqual(device.features['--brightness'], undefined);
+    assert.strictEqual(device.features['--contrast'], undefined);
+  });
 });
