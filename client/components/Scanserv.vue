@@ -71,6 +71,14 @@
                   <b-form-select-option v-for="item in context.pipelines" v-bind:key="item.description" v-bind:value="item.description">{{ item.description }}</b-form-select-option>
                 </b-form-select>
               </b-form-group>
+
+              <b-form-group v-if="false" label="Batch">
+                <b-form-select class="form-control" v-model="request.batch">
+                  <b-form-select-option v-bind:value="false">No</b-form-select-option>
+                  <b-form-select-option v-bind:value="true">Yes</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
+
             </b-col>
           </b-row>
 
@@ -191,7 +199,8 @@ export default {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: ''
+      pipeline: '',
+      batch: false
     };
 
     return {
@@ -436,9 +445,20 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(() => {
-        this.fileList();
-        this.mask(-1);
+      }).then((data) => {
+        if ('page' in data) {
+          if (window.confirm('More?')) {
+            this.request.page = data.page;
+            this.scan();
+          } else {
+            this.request.page = -1;
+            this.scan();
+          }
+        } else {
+          this.request.page = 1;
+          this.fileList();
+          this.mask(-1);
+        }
       });
     }
   }

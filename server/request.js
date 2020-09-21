@@ -32,7 +32,9 @@ class Request {
         contrast: data.params.contrast || 0,
         dynamicLineart: true  
       },
-      pipeline: data.pipeline || null
+      pipeline: data.pipeline || null,
+      batch: data.batch || false,
+      page: data.page || 1
     });
 
     if ('--brightness' in features === false) {

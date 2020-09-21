@@ -83,17 +83,41 @@ class Api {
   static async scan(req) {
     const context = await Context.create();
     const request = new Request(context).extend(req);
-    const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-    const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
+    const stem = '~tmp-scan-';
 
-    log.debug('Executing cmds:', cmds);
-    const buffer = await Process.chain(cmds);
-    const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-    const file = new FileInfo(filename);
-    file.save(buffer);
-    log.debug(`Written data to: ${filename}`);
+    if (request.batch === undefined || request.batch === false) {
+      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+      const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
+      log.debug('Executing cmds:', cmds);
+      const buffer = await Process.chain(cmds);
+      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
+      const file = new FileInfo(filename);
+      file.save(buffer);
+      log.debug(`Written data to: ${filename}`);
+      return {};
 
-    return {};
+    } else if (request.batch && request.page > 0) {
+      const buffer = await Process.spawn(Scanimage.scan(request));
+      const number = `000${request.page}`.slice(-4);
+      const filename = `${stem}${number}.tif`;
+      const file = new FileInfo(filename);
+      file.save(buffer);
+      log.debug(`Written data to: ${filename}`);
+      return {
+        page: request.page + 1
+      };
+
+    } else {
+      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+      const cmds = [`ls ${stem}*.tif`].concat(pipeline.commands);
+      log.debug('Executing cmds:', cmds);
+      const buffer = await Process.chain(cmds);
+      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
+      const file = new FileInfo(filename);
+      file.save(buffer);
+      log.debug(`Written data to: ${filename}`);
+      return {};
+    }
   }
 
   static async context(force) {
