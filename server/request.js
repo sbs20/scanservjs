@@ -15,9 +15,7 @@ class Request {
   }
 
   extend(data) {
-    const device = data.params.deviceId
-      ? this.context.devices.filter(device => device.id === data.params.deviceId)[0]
-      : this.context.devices[0];
+    const device = this.context.getDevice(data.params.deviceId);
 
     const features = device.features;
     extend(this, {

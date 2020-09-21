@@ -27,6 +27,12 @@ class Context {
     const devices = [await Device.get()];
     return new Context(devices);
   }
+
+  getDevice(id) {
+    return id
+      ? this.devices.filter(device => device.id === id)[0]
+      : this.devices[0];
+  }
 }
 
 module.exports = Context;
