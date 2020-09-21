@@ -60,13 +60,24 @@ class Api {
   }
 
   static async readPreview() {
+    // The UI relies on this image being the correct aspect ratio. If there is a
+    // preview image then just use it. 
     const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
-    if (!source.exists()) {
-      return new FileInfo(`${Config.previewDirectory}default.jpg`).toBuffer();
+    if (source.exists()) {
+      const buffer = source.toBuffer();
+      return await Process.chain(Config.previewPipeline.commands, buffer, true);
     }
-  
-    const buffer = source.toBuffer();
-    return await Process.chain(Config.previewPipeline.commands, buffer, true);
+
+    // If not then it's possible the default image is not quite the correct aspect ratio
+    const buffer = new FileInfo(`${Config.previewDirectory}default.jpg`).toBuffer();
+
+    // We need to know the correct AR from the device
+    const context = await Context.create();
+    const device = context.getDevice();
+    const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
+    const width = 868;
+    const height = Math.round(width * heightByWidth);
+    return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
   }
 
   static async scan(req) {
@@ -88,6 +99,8 @@ class Api {
   static async context(force) {
     if (force) {
       Device.reset();
+      const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
+      preview.delete();
     }
     return await Context.create();
   }
