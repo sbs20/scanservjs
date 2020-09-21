@@ -21,7 +21,7 @@ class Api {
   
         let files = list
           .map(f => new FileInfo(outdir + f))
-          .filter(f => ['.tif', '.jpg', '.png', '.pdf'].includes(f.extension))
+          .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
           .sort((f1, f2) => f2.lastModified - f1.lastModified);
 
         log.debug(files);
