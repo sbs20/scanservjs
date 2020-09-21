@@ -78,12 +78,12 @@
           <b-row>
             <b-col class="text-right">
               <b-button-group>
-                <b-button variant="light" size="lg" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></b-button>
-                <b-button variant="light" size="lg" v-on:click="clear">clear <img src="../assets/autorenew-24px.svg"></b-button>
+                <b-button variant="light" size="lg" v-on:click="reset">reset <img src="../assets/refresh-24px.svg"></b-button>
+                <b-button v-if="false" variant="light" size="lg" v-on:click="clear">clear <img src="../assets/autorenew-24px.svg"></b-button>
               </b-button-group>
               &nbsp;
               <b-button-group>
-                <b-button variant="light" size="lg" v-on:click="preview">preview <img src="../assets/search-24px.svg"></b-button>
+                <b-button variant="light" size="lg" v-on:click="createPreview">preview <img src="../assets/search-24px.svg"></b-button>
                 <b-button variant="light" size="lg" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></b-button>
               </b-button-group>
             </b-col>
@@ -212,7 +212,7 @@ export default {
 
   mounted() {
     this.readContext();
-    this.convert();
+    this.readPreview();
     this.fileList();
 
     this.$refs.toastr.defaultPosition = 'toast-bottom-right';
@@ -249,17 +249,24 @@ export default {
         });
     },
 
-    convert() {
-      // Gets the preview image as a base64 encoded jpg and updates the UI
+    createPreview() {
+      this.mask(1);
+
+      // Keep reloading the preview image
+      const timer = window.setInterval(this.readPreview, 1000);
+
+      let data = this._clone(this.request);
+
       this._fetch('preview', {
-        cache: 'no-store',
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(data),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(data => {
-        this.img = 'data:image/jpeg;base64,' + data.content;
+      }).then(() => {
+        window.clearInterval(timer);
+        this.mask(-1);
       });
     },
 
@@ -272,7 +279,7 @@ export default {
     },
 
     cropperDefaultSize() {
-      const adjust = (n) => Math.floor(n * this.pixelsPerMm());
+      const adjust = (n) => Math.round(n * this.pixelsPerMm());
       return {
         width: adjust(this.request.params.width),
         height: adjust(this.request.params.height)
@@ -332,27 +339,6 @@ export default {
       return image.height / scanner.height;
     },
 
-    preview() {
-      this.mask(1);
-
-      // Keep reloading the preview image
-      const timer = window.setInterval(this.convert, 1000);
-
-      let data = this._clone(this.request);
-
-      this._fetch('preview', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        window.clearInterval(timer);
-        this.mask(-1);
-      });
-    },
-
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
@@ -363,11 +349,26 @@ export default {
         for (let test of context.diagnostics) {
           const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
           toast(test.message);
-          if (force) {
-            this.clear();
-          }
+        }
+        if (force) {
+          this.clear();
+          this.readPreview();
         }
         this.mask(-1);
+      });
+    },
+
+    readPreview() {
+      // Gets the preview image as a base64 encoded jpg and updates the UI
+      this._fetch('preview', {
+        cache: 'no-store',
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(data => {
+        this.img = 'data:image/jpeg;base64,' + data.content;
       });
     },
 
@@ -414,7 +415,7 @@ export default {
       return request;
     },
 
-    reinitialize() {
+    reset() {
       this.readContext(true);
     },
 
