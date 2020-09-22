@@ -24,7 +24,7 @@ class Api {
           .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
           .sort((f1, f2) => f2.lastModified - f1.lastModified);
 
-        log.debug(files);
+        log.debug(JSON.stringify(files));
         resolve(files);
       });
     });
@@ -87,6 +87,9 @@ class Api {
 
     if (request.batch === undefined || request.batch === false) {
       const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+      if (pipeline === undefined) {
+        throw Error('No matching pipeline');
+      }
       const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
       log.debug('Executing cmds:', cmds);
       const buffer = await Process.chain(cmds);

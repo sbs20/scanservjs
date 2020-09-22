@@ -446,7 +446,7 @@ export default {
           'Content-Type': 'application/json'
         }
       }).then((data) => {
-        if ('page' in data) {
+        if (data && 'page' in data) {
           if (window.confirm('More?')) {
             this.request.page = data.page;
             this.scan();
