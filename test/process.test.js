@@ -10,8 +10,15 @@ describe('Process', () => {
   });
 
   it('echo-security', async () => {
-    const result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
+    let result = null;
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
     assert.strictEqual(result, 'hello" && ls -al;# world');
+
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls -al`').build());
+    assert.strictEqual(result, '`ls -al`');
+
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', '$(date)').build());
+    assert.strictEqual(result, '$(date)');
   });
 
   it('echo "1\\n2\\n3" | wc -l', async () => {

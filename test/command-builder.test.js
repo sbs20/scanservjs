@@ -17,13 +17,19 @@ describe('CommandBuilder', () => {
   it('command-arg2', async () => {
     assert.strictEqual(new CmdBuilder('echo')
       .arg('-n', 'hello world')
-      .build(), 'echo -n "hello world"');
+      .build(), 'echo -n \'hello world\'');
   });
 
-  it('command-security', async () => {
+  it('command-security-1', async () => {
     assert.strictEqual(new CmdBuilder('echo')
       .arg('-n', 'hello" && ls -al;# world')
-      .build(), 'echo -n "hello\\" && ls -al;# world"');
+      .build(), 'echo -n \'hello" && ls -al;# world\'');
+  });
+
+  it('command-security-2', async () => {
+    assert.throws(() => new CmdBuilder('echo')
+      .arg('-n', 'hello\' && echo break shell')
+      .build(), Error, 'Broke shell');
   });
 
   it('command-quotes"', async () => {
