@@ -220,8 +220,9 @@ export default {
   },
 
   mounted() {
-    this.readContext();
-    this.readPreview();
+    this.readContext().then(() => {
+      this.readPreview();
+    });
     this.fileList();
 
     this.$refs.toastr.defaultPosition = 'toast-bottom-right';
@@ -351,7 +352,7 @@ export default {
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
-      this._fetch(url).then(context => {
+      return this._fetch(url).then(context => {
         this.context = context;
         this.device = context.devices[0];
         this.request = this.readRequest();
