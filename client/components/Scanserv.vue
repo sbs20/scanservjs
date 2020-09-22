@@ -72,7 +72,7 @@
                 :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
                 :src="img" @change="onCrop"></cropper>
           </div>
-          <div class="float-left ml-3" style="max-width: 220px">
+          <div class="float-left ml-5" style="max-width: 220px">
             <b-row>
               <b-col>
                 <b-form-group label="Top">
