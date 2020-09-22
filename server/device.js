@@ -156,6 +156,7 @@ class Device {
 
     if (!isCached) {
       const data = await Process.execute(Scanimage.all());
+      log.debug(data);
       const device = Device.from(data);
       file.save(JSON.stringify(device, null, 2));
       return device;

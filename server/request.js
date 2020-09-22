@@ -47,7 +47,7 @@ class Request {
       delete this.params.dynamicLineart;
     }
 
-    log.debug(this);
+    log.debug(JSON.stringify(this));
     return this;
   }
 }
