@@ -1,11 +1,17 @@
 const log = require('loglevel').getLogger('Scanimage');
 
-const CmdBuilder = require('./CmdBuilder');
+const CmdBuilder = require('./command-builder');
 const Config = require('../config/config');
 
 class Scanimage {
-  static command(request) {
-    log.debug(request);
+  static all() {
+    return new CmdBuilder(Config.scanimage)
+      .arg('-A')
+      .build();
+  }
+
+  static scan(request) {
+    log.debug(JSON.stringify(request));
     const params = request.params;
     const cmdBuilder = new CmdBuilder(Config.scanimage);
     cmdBuilder.arg('-d', params.deviceId)
@@ -32,7 +38,6 @@ class Scanimage {
   
     return cmdBuilder.build();
   }
-
 }
 
 module.exports = Scanimage;

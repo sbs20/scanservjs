@@ -3,8 +3,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Scanserv from './components/Scanserv.vue';
+import { BootstrapVue } from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+Vue.use(BootstrapVue);
 
 export default {
   name: 'App',
@@ -37,7 +42,7 @@ body {
     width: auto;
 }
 
-#navbar > div {
+.navbar-brand, .navbar-text {
     color: white;
     font-size: xx-large;
 }
@@ -46,8 +51,8 @@ body {
     margin-top: 1em;
 }
 
-.navbar-inverse {
-    background-color: #101030;
+.bg-dark {
+    background-color: #101030 !important;
     background-image: none;
     border-color: black;
 }
@@ -72,7 +77,7 @@ body {
     font-size: small;
 }
 
-label, th {
+.col-form-label, label, th {
     font-size: x-large;
     font-weight: 300;
     color: #0E5EA0;

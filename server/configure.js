@@ -1,24 +1,20 @@
-const log = require('loglevel');
+const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 const Config = require('../config/config');
 
 // We need to apply logging setting prior to anything else using a logger
-prefix.reg(log);
-log.enableAll();
-log.setLevel(Config.log.level);
-prefix.apply(log, Config.log.prefix);
+prefix.reg(rootLog);
+rootLog.enableAll();
+rootLog.setLevel(Config.log.level);
+prefix.apply(rootLog, Config.log.prefix);
 
+const log = rootLog.getLogger('Http');
 const bodyParser = require('body-parser');
-const Api = require('./Api');
+const Api = require('./api');
 
-const forbidden = function (req, res) {
-  res.status(403).send('<h1>Error 403: Forbidden</h1>');
-};
-
-const sendError = (res, httpCode, data) => {
+const sendError = (res, code, data) => {
   let content = {
-    message: '',
-    code: -1
+    message: ''
   };
   log.error(data);
   if (typeof data === 'object') {
@@ -27,7 +23,22 @@ const sendError = (res, httpCode, data) => {
   } else if (typeof data === 'string') {
     content.message = data;
   }
-  res.status(httpCode).send(content);
+  res.status(code).send(content);
+};
+
+const logRequest = (req) => {
+  const properties = ['method', 'path', 'params', 'query', 'body'];
+  const output = {};
+  for (const property of properties) {
+    if (property in req) {
+      if (typeof req[property] === 'string') {
+        output[property] = req[property];
+      } else if (typeof req[property] === 'object' && Object.keys(req[property]).length > 0) {
+        output[property] = req[property];
+      }
+    }
+  }
+  log.debug('request: ', output);
 };
 
 module.exports = app => {
@@ -37,10 +48,8 @@ module.exports = app => {
 
   app.use(bodyParser.json());
 
-  app.get('/node*', forbidden);
-  app.get('/api.js', forbidden);
-
   app.get('/files', async (req, res) => {
+    logRequest(req);
     try {
       res.send(await Api.fileList());
     } catch (error) {
@@ -49,34 +58,34 @@ module.exports = app => {
   });
 
   app.get('/files/*', (req, res) => {
+    logRequest(req);
     try {
-      const fullpath = req.params[0];
-      const file = `${fullpath}`;
-      res.download(file);
+      res.download(req.params[0]);
     } catch (error) {
       sendError(res, 500, error);
     }
   });
 
   app.delete('/files/*', (req, res) => {
+    logRequest(req);
     try {
-      const fullpath = req.params[0];
-      res.send(Api.fileDelete(fullpath));
+      res.send(Api.fileDelete(req.params[0]));
     } catch (error) {
       sendError(res, 500, error);
     }
   });
 
   app.post('/scan', async (req, res) => {
-    const param = req.body;
+    logRequest(req);
     try {
-      res.send(await Api.scan(param));
+      res.send(await Api.scan(req.body));
     } catch (error) {
       sendError(res, 500, error);
     }
   });
 
   app.get('/preview', async (req, res) => {
+    logRequest(req);
     try {
       const buffer = await Api.readPreview();
       res.send({
@@ -88,15 +97,16 @@ module.exports = app => {
   });
 
   app.post('/preview', async (req, res) => {
-    const param = req.body;
+    logRequest(req);
     try {
-      res.send(await Api.createPreview(param));
+      res.send(await Api.createPreview(req.body));
     } catch (error) {
       sendError(res, 500, error);
     }
   });
 
   app.get(['/context', '/context/:force'], async (req, res) => {
+    logRequest(req);
     const force = req.params.force && req.params.force === 'force';
     try {
       res.send(await Api.context(force));

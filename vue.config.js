@@ -1,4 +1,4 @@
-const configure = require('./server/Configure')
+const configure = require('./server/configure')
 const path = require("path");
 
 module.exports = {
@@ -7,17 +7,11 @@ module.exports = {
   },
   pages: {
     index: {
-      // entry for the page
       entry: 'client/main.js',
-      // the source template
       template: 'client/index.html',
-      // output as dist/index.html
+      favicon: 'client/favicon.ico',
       filename: 'index.html',
-      // when using title option,
-      // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
       title: 'scanserv-js',
-      // chunks to include on this page, by default includes
-      // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
   },

@@ -10,7 +10,10 @@ class CmdBuilder {
     this.args.push(key);
     if (value !== undefined) {
       if (typeof value === 'string') {
-        this.args.push(`"${value}"`);
+        if (value.includes('\'')) {
+          throw Error('Argument must not contain single quote "\'"');
+        }
+        this.args.push(`'${value}'`);
       } else {
         this.args.push(`${value}`);
       }

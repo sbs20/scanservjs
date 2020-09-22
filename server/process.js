@@ -6,21 +6,17 @@ const spawn = require('child_process').spawn;
 const Process = {
   async execute(cmd) {
     const { stdout } = await exec(cmd);
-    return {
-      cmd: cmd,
-      output: stdout,
-      code: 0
-    };
+    return stdout;
   },
 
   async spawn(cmd, stdin, ignoreErrors) {
-    const MAX_BUFFER = 50 * 1024 * 1024;
+    const MAX_BUFFER = 16 * 1024;
     ignoreErrors = ignoreErrors === undefined ? false : true;
     log.debug(cmd, stdin, ignoreErrors);
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
-      const proc = spawn(cmd, null, {
+      const proc = spawn(cmd, [], {
         encoding: 'binary',
         shell: true,
         maxBuffer: MAX_BUFFER

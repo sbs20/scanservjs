@@ -1,5 +1,5 @@
 const version = require('./package.json').version;
-const dateFormat = require('dateformat');
+const dayjs = require('dayjs');
 const chmod = require('gulp-chmod');
 const del = require('del');
 const eslint = require('gulp-eslint');
@@ -89,7 +89,7 @@ gulp.task('build', gulp.series(['clean', 'server-lint', 'client-build', 'server-
 }));
 
 gulp.task('release', gulp.series(['build'], () => {
-  const filename = `scanservjs_v${version}_${dateFormat(new Date(), 'yyyymmdd.HHMMss')}.tar`;
+  const filename = `scanservjs_v${version}_${dayjs().format('YYYYMMDD.HHmmss')}.tar`;
   const shellFilter = filter('**/*.sh', {restore: true});
   return gulp.src('./dist/**/*')
     // Filter to shell scripts and chmod +x
