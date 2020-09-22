@@ -10,7 +10,7 @@ class CmdBuilder {
     this.args.push(key);
     if (value !== undefined) {
       if (typeof value === 'string') {
-        this.args.push(`"${value}"`);
+        this.args.push(`"${value.replace('"', '\\"')}"`);
       } else {
         this.args.push(`${value}`);
       }
