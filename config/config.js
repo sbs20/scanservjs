@@ -5,7 +5,8 @@ const Config = {
 
   scanimage: '/usr/bin/scanimage',
   convert: '/usr/bin/convert',
-  tesseract: '/usr/bin/tesseract',
+  tesseract: '',
+
   ocrLanguage: 'eng',
   outputDirectory: './data/output/',
   previewDirectory: './data/preview/',
@@ -101,24 +102,29 @@ Config.pipelines = [
       'convert - -quality 92 jpg:-',
       'convert - pdf:-'
     ]
-  },
-  {
-    extension: 'pdf',
-    description: 'PDF (JPG) with OCR text',
-    commands: [
-      'cat > tmp.tif && ls tmp.tif',
-      'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-      `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf && rm -f tmp-*.jpg`
-    ]
-  },
-  {
-    extension: 'txt',
-    description: 'Text file (OCR)',
-    commands: [
-      'cat > tmp.tif && ls tmp.tif',
-      `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt && rm -f tmp-*.tif`
-    ]
   }
 ];
+
+if (Config.tesseract) {
+  Config.pipelines = Config.pipelines.concat([
+    {
+      extension: 'pdf',
+      description: 'PDF (JPG) with OCR text',
+      commands: [
+        'cat > tmp.tif && ls tmp.tif',
+        'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf && rm -f tmp-*.jpg`
+      ]
+    },
+    {
+      extension: 'txt',
+      description: 'Text file (OCR)',
+      commands: [
+        'cat > tmp.tif && ls tmp.tif',
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt && rm -f tmp-*.tif`
+      ]
+    }
+  ]);
+}
 
 module.exports = Config;
