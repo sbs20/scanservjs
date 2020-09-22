@@ -220,13 +220,13 @@ export default {
   },
 
   mounted() {
+    this.$refs.toastr.defaultPosition = 'toast-bottom-right';
+    this.$refs.toastr.defaultTimeout = 5000;
+
     this.readContext().then(() => {
       this.readPreview();
     });
     this.fileList();
-
-    this.$refs.toastr.defaultPosition = 'toast-bottom-right';
-    this.$refs.toastr.defaultTimeout = 5000;
   },
 
   watch: {
@@ -352,9 +352,12 @@ export default {
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
+      this.$refs.toastr.i('Finding devices...');
+
       return this._fetch(url).then(context => {
         this.context = context;
         this.device = context.devices[0];
+        this.$refs.toastr.i(`Found device ${this.device.id}`);
         this.request = this.readRequest();
         for (let test of context.diagnostics) {
           const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
