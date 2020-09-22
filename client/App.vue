@@ -19,90 +19,37 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+// Bootstrap
+$primary: #007bff;
+$secondary: #606060;
+$dark: darken($secondary, 20%);
+$text: #d0d0d0;
+$font-size-base: 1rem;
+$body-bg: #404040;
+$body-color: $text;
+$link-color: lighten($primary, 25%);
+$link-hover-color: lighten($link-color, 15%);
+$input-bg: $secondary;
+$input-color: $text;
+$input-border-color: #202020; 
+$input-btn-focus-width: .3rem;
+$nav-tabs-border-color: $secondary;
+$nav-tabs-link-hover-border-color: lighten($nav-tabs-border-color, 5%);
+$nav-tabs-link-active-color: #e0e0e0;
+$nav-tabs-link-active-border-color: $secondary;
+$nav-tabs-border-width: 1px;
+
+// Slider
+$themeColor: $primary;
+
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+@import '~vue-slider-component/lib/theme/default.scss';
+
 body {
-    padding-bottom: 20px;
-    font-family: 'Segoe UI';
-    font-size: large;
-    text-transform: lowercase;
-    background-color: white;
-}
-
-.theme-dropdown .dropdown-menu {
-    position: static;
-    display: block;
-    margin-bottom: 20px;
-}
-
-.theme-showcase > p > .btn {
-    margin: 5px 0;
-}
-
-.theme-showcase .navbar .container {
-    width: auto;
-}
-
-.navbar-brand, .navbar-text {
-    color: white;
-    font-size: xx-large;
-}
-
-.container {
-    margin-top: 1em;
-}
-
-.bg-dark {
-    background-color: #101030 !important;
-    background-image: none;
-    border-color: black;
-}
-
-.form-control {
-    border-radius: 0;
-    border: 1px solid #f0f0f0;
-    background-color: #f0f0f0;
-}
-
-#image {
-    background-color: #d0d0e0;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid black;
-}
-
-.credits {
-    width: 100%;
-    text-align: center;
-    margin: auto;
-    font-size: small;
-}
-
-.col-form-label, label, th {
-    font-size: x-large;
-    font-weight: 300;
-    color: #0E5EA0;
-}
-
-.form-check-label {
-    font-size: smaller;
-}
-
-h1 {
-    font-size: 4em;
-    font-weight: 100;
-    color: #0E5EA0;
-}
-
-.toast-success {
-    background-color: green
-}
-
-.toast-error {
-    background-color: red
-}
-
-.form-group {
-  height: 5em;
+  padding-bottom: 20px;
+  text-transform: lowercase;
 }
 
 input[type=number]::-webkit-inner-spin-button, 
@@ -112,12 +59,28 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+  -moz-appearance:textfield; /* Firefox */
 }
 
-/* center the icons vertically */
-.material-icons {
-    vertical-align: middle;
+.navbar-brand, .navbar-text {
+  font-size: xx-large;
 }
 
+.col-form-label, label, th {
+  font-size: $font-size-base * 1.25;
+  font-weight: 400;
+}
+
+.container, .container-fluid {
+  margin-top: 1em;
+}
+
+.form-group {
+  height: 4em;
+}
+
+.table th, .table td, .table thead th {
+  border: 0;
+  padding: 0.25rem 2rem 0.25rem 0.5rem;
+}
 </style>
