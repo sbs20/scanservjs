@@ -2,6 +2,7 @@ const util = require('util');
 const log = require('loglevel').getLogger('Process');
 const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
+const extend = require('./util').extend;
 
 const Process = {
   async execute(cmd) {
@@ -9,19 +10,20 @@ const Process = {
     return stdout;
   },
 
-  async spawn(cmd, stdin, ignoreErrors) {
+  async spawn(cmd, stdin, options) {
     const MAX_BUFFER = 16 * 1024;
-    ignoreErrors = ignoreErrors === undefined ? false : true;
-    log.debug(cmd, stdin, ignoreErrors);
+    options = extend({
+      encoding: 'binary',
+      shell: true,
+      maxBuffer: MAX_BUFFER,
+      ignoreErrors: false
+    }, options);
+    
+    log.debug(`${cmd}, `, stdin, `, ${JSON.stringify(options)}`);
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
-      const proc = spawn(cmd, [], {
-        encoding: 'binary',
-        shell: true,
-        maxBuffer: MAX_BUFFER
-      });
-
+      const proc = spawn(cmd, [], options);
       proc.stdout.on('data', (data) => {
         stdout = Buffer.concat([stdout, data]);
       });
@@ -30,7 +32,7 @@ const Process = {
         stderr += data;
       });
 
-      if (!ignoreErrors) {
+      if (!options.ignoreErrors) {
         proc.on('error', (exception) => {
           reject(new Error(`${cmd} error: ${exception.message}, stderr: ${stderr}`));
         });  
@@ -38,7 +40,7 @@ const Process = {
 
       proc.on('close', (code) => {
         log.debug(`close(${code}): ${cmd}`);
-        if (code !== 0 && !ignoreErrors) {
+        if (code !== 0 && !options.ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {
           resolve(stdout);
@@ -52,10 +54,10 @@ const Process = {
     });
   },
 
-  async chain(cmdArray, stdin, ignoreErrors) {
+  async chain(cmdArray, stdin, options) {
     let stdout = null;
     for (let cmd of cmdArray) {
-      stdout = await Process.spawn(cmd, stdin, ignoreErrors);
+      stdout = await Process.spawn(cmd, stdin, options);
       stdin = stdout;
     }
     return stdout;

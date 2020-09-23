@@ -24,4 +24,18 @@ describe('FileInfo', () => {
     const file2 = new FileInfo('test/resource/logo.png');
     assert.strictEqual(file1.equals(file2), true);
   });
+
+  it('List file', () => {
+    assert.rejects(async () => new FileInfo('../package.json').list(), Error, 'Not a directory');
+  });
+
+  it('List directory', async () => {
+    const files = await new FileInfo('./test/resource').list();
+    assert.strictEqual(files[0].name, 'logo.png');
+    assert.strictEqual(files.length, 5);
+    const stem = 'logo';
+    const png = files.filter(f => new RegExp(`${stem}.png`).test(f.name));
+    assert.strictEqual(png.length, 1);
+  });
+
 });

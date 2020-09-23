@@ -49,16 +49,16 @@
           </b-form-select>
         </b-form-group>
 
-        <b-form-group label="Format">
-          <b-form-select class="form-control" v-model="request.pipeline">
-            <b-form-select-option v-for="item in context.pipelines" v-bind:key="item.description" v-bind:value="item.description">{{ item.description }}</b-form-select-option>
-          </b-form-select>
-        </b-form-group>
-
-        <b-form-group v-if="false" label="Batch">
+        <b-form-group label="Batch">
           <b-form-select class="form-control" v-model="request.batch">
             <b-form-select-option v-bind:value="false">No</b-form-select-option>
             <b-form-select-option v-bind:value="true">Yes</b-form-select-option>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group label="Format">
+          <b-form-select class="form-control" v-model="request.pipeline">
+            <b-form-select-option v-for="item in context.pipelines" v-bind:key="item.description" v-bind:value="item.description">{{ item.description }}</b-form-select-option>
           </b-form-select>
         </b-form-group>
 
@@ -431,7 +431,9 @@ export default {
             contrast: 0,
             dynamicLineart: true
           },
-          pipeline: this.context.pipelines[0].description
+          pipeline: this.context.pipelines[0].description,
+          batch: false,
+          page: 1
         };
       }
 
@@ -481,8 +483,8 @@ export default {
         } else {
           this.request.page = 1;
           this.fileList();
-          this.mask(-1);
         }
+        this.mask(-1);
       });
     }
   }
