@@ -1,15 +1,23 @@
 <template>
   <div>
-    <div v-if="maskRef" id="mask"></div>
+    <div v-if="maskRef" id="mask">
+      <div style="position: absolute; top: 49%; left: 49%">
+        <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+
+      </div>
+    </div>
     <toastr ref="toastr"></toastr>
 
-    <b-navbar type="dark" variant="dark">
-      <b-navbar-brand>scanserv-js (v{{ context.version }})</b-navbar-brand>
-    </b-navbar>
+    <div class="banner">
+    </div>
 
     <b-container fluid>
       <!-- Main controls and buttons -->
       <div class="float-left">
+        <h1>scanserv-js <span class="d-none d-sm-inline">(v{{ context.version }})</span></h1>
+
         <b-form-group v-if="context.devices.length > 0" label="Device">
           <b-form-select class="form-control" v-model="device">
             <b-form-select-option v-for="item in context.devices" v-bind:key="item.id" v-bind:value="item">{{ item.id }}</b-form-select-option>
@@ -57,22 +65,23 @@
         <b-form-group label="Scanner">
           <div class="text-right">
             <b-button-group>
-              <b-button v-on:click="reset">reset <img src="../assets/refresh-24px.svg"></b-button>
-              <b-button v-on:click="createPreview">preview <img src="../assets/search-24px.svg"></b-button>
+              <b-button v-on:click="reset">reset <img class="d-none d-sm-inline" src="../assets/refresh-24px.svg"></b-button>
+              <b-button v-on:click="createPreview">preview <img class="d-none d-sm-inline" src="../assets/search-24px.svg"></b-button>
               <b-button v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></b-button>
             </b-button-group>
           </div>
         </b-form-group>
       </div>
 
-      <b-tabs class="float-left ml-5">
-        <b-tab title="Preview" active>
-          <div class="float-left mt-3" style="max-width: 420px">
-            <cropper ref="cropper" class="cropper" :transitionTime="1" :wheelResize="false"
+      <!-- Tabs -->
+      <b-tabs class="float-left ml-0 ml-lg-5 mt-3">
+        <b-tab title="Preview" @click="dispatchResize" active>
+          <div class="float-left mt-3" :style="{width: `${preview.width}px`}">
+            <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
                 :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
                 :src="img" @change="onCrop"></cropper>
           </div>
-          <div class="float-left ml-5" style="max-width: 220px">
+          <div class="preview-fields float-left ml-0 ml-md-5">
             <b-row>
               <b-col>
                 <b-form-group label="Top">
@@ -112,7 +121,7 @@
             <thead>
               <tr>
                 <th>Filename</th>
-                <th>Date</th>
+                <th class="file-date">Date</th>
                 <th>Size</th>
                 <th></th>
               </tr>
@@ -120,7 +129,7 @@
             <tbody>
               <tr v-for="file in files" v-bind:key="file.name">
                 <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
-                <td>{{ file.lastModified }}</td>
+                <td class="file-date">{{ file.lastModified }}</td>
                 <td>{{ file.sizeString }}</td>
                 <td><b-button class="btn btn-sm" v-on:click="fileRemove(file)"><img src="../assets/delete-24px.svg"></b-button></td>
               </tr>
@@ -207,18 +216,27 @@ export default {
       files: [],
       img: null,
       maskRef: 0,
-      request: request
+      request: request,
+      preview: {
+        timer: 0,
+        width: 400,
+        key: 0
+      }
     };
   },
 
   mounted() {
     this.$refs.toastr.defaultPosition = 'toast-bottom-right';
     this.$refs.toastr.defaultTimeout = 5000;
-
+    this._updatePreview();
     this.readContext().then(() => {
       this.readPreview();
     });
     this.fileList();
+    window.addEventListener('resize', () => {
+      clearTimeout(this.preview.timer);
+      this.preview.timer = setTimeout(this._updatePreview, 100);
+    });
   },
 
   watch: {
@@ -233,6 +251,20 @@ export default {
   },
 
   methods: {
+    _updatePreview() {
+      const isoPaperRatio = 215 / 297;
+      if (window.innerWidth < 576) {
+        this.preview.width = window.innerWidth - (window.scrollbars.visible ? 25 : 0) - 30;
+      } else {
+        this.preview.width = (window.innerHeight - 120) * isoPaperRatio;
+      }
+
+      this.$nextTick(() => {
+        this.preview.key += 1;
+      });
+      console.log(window.innerWidth, window.innerHeight);
+    },
+
     _clone(o) {
       return JSON.parse(JSON.stringify(o));
     },
@@ -286,6 +318,15 @@ export default {
         width: adjust(this.request.params.width),
         height: adjust(this.request.params.height)
       };
+    },
+
+    dispatchResize() {
+      // Workaround for vue-advanced cropper which sometimes places incorrectly
+      this.mask(1);
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        this.mask(-1);
+      }, 200);
     },
 
     fileList() {
@@ -463,12 +504,12 @@ export default {
 
 <style scoped>
 #mask {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,.3);
-    top: 0;
-    left: 0;
-    z-index: 10;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  top: 0;
+  left: 0;
+  z-index: 10;
 }
 </style>
