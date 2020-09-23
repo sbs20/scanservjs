@@ -75,7 +75,7 @@
 
       <!-- Tabs -->
       <b-tabs class="float-left ml-0 ml-lg-5 mt-3">
-        <b-tab title="Preview" @click="dispatchResize" active>
+        <b-tab title="Preview" @click="_updatePreview" active>
           <div class="float-left mt-3" :style="{width: `${preview.width}px`}">
             <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
                 :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
@@ -258,10 +258,7 @@ export default {
       } else {
         this.preview.width = (window.innerHeight - 120) * isoPaperRatio;
       }
-
-      this.$nextTick(() => {
-        this.preview.key += 1;
-      });
+      this.preview.key += 1;
       console.log(window.innerWidth, window.innerHeight);
     },
 
@@ -318,15 +315,6 @@ export default {
         width: adjust(this.request.params.width),
         height: adjust(this.request.params.height)
       };
-    },
-
-    dispatchResize() {
-      // Workaround for vue-advanced cropper which sometimes places incorrectly
-      this.mask(1);
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-        this.mask(-1);
-      }, 200);
     },
 
     fileList() {
