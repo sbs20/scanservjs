@@ -1,6 +1,6 @@
 {
   "name": "scanservjs",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "scripts": {
     "serve": "nodemon --exec 'vue-cli-service serve'",
@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "test": "mocha"
   },
-  "main": "server/Server.js",
+  "main": "server/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sbs20/scanservjs"
@@ -19,7 +19,8 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
-    "bootstrap": "^4.3.1",
+    "bootstrap": "4.5.2",
+    "bootstrap-vue": "2.17.0",
     "del": "5.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
@@ -43,7 +44,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
-    "dateformat": "^1.0.12",
+    "dayjs": "1.8.35",
     "loglevel": "1.7.0",
     "loglevel-plugin-prefix": "0.8.4",
     "express": "^4.17.1",
@@ -103,8 +104,7 @@
   ],
   "nodemonConfig": {
     "watch": [
-      "server",
-      "config"
+      "server"
     ]
   }
 }

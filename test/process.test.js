@@ -1,15 +1,30 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Process = require('../server/Process');
+const CmdBuilder = require('../server/command-builder');
+const Process = require('../server/process');
 
 describe('Process', () => {
   it('echo', async () => {
-    const r = await Process.execute('echo "hello world"');
-    assert.strictEqual(r.output, 'hello world\n');
+    const result = await Process.execute(new CmdBuilder('echo').arg('hello world').build());
+    assert.strictEqual(result, 'hello world\n');
+  });
+
+  it('echo-security', async () => {
+    let result = null;
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
+    assert.strictEqual(result, 'hello" && ls -al;# world');
+
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls -al`').build());
+    assert.strictEqual(result, '`ls -al`');
+
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', '$(date)').build());
+    assert.strictEqual(result, '$(date)');
   });
 
   it('echo "1\\n2\\n3" | wc -l', async () => {
-    const ls = await Process.spawn('echo "1\n2\n3"');
+    const cmd = new CmdBuilder('echo').arg('"1\n2\n3"').build();
+    assert.strictEqual(cmd, 'echo "1\n2\n3"');
+    const ls = await Process.spawn(cmd);
     const result = await Process.spawn('wc -l', ls);
     assert.strictEqual(result.toString(), '3\n');
     console.log(result);

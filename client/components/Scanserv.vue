@@ -1,118 +1,121 @@
 <template>
   <div>
     <div v-if="maskRef" id="mask"></div>
-    <Toastr ref="toastr"></Toastr>
+    <toastr ref="toastr"></toastr>
 
-    <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
-      <div class="navbar-header"></div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <div class="navbar-nav ml-auto" href="#">scanserv-js (v{{ context.version }}) | Scanner: {{ device.name }}</div>
-      </div>
-    </nav>
+    <b-navbar type="dark" variant="dark">
+      <b-navbar-brand>scanserv-js (v{{ context.version }})</b-navbar-brand>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-text>Scanner: {{ device.id }}</b-nav-text>
+      </b-navbar-nav>
+    </b-navbar>
 
-    <div class="container theme-showcase" role="main">
-      <div class="row">
+    <b-container>
+      <b-row cols="1" cols-md="2">
         <!-- Fields and buttons -->
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="row">
-            <div class="col">
-              <div class="form-group">
-                <label>Top</label>
-                <input class="form-control" type="number" v-model="request.params.top" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Left</label>
-                <input class="form-control" type="number" v-model="request.params.left" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Width</label>
-                <input class="form-control" type="number" v-model="request.params.width" @change="onCoordinatesChange">
-              </div>
-              <div class="form-group">
-                <label>Height</label>
-                <input class="form-control" type="number" v-model="request.params.height" @change="onCoordinatesChange">
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label>Resolution</label>
-                <select class="form-control" v-model="request.params.resolution">
-                  <option v-for="item in device.features['--resolution']['options']" v-bind:key="item">{{ item }}</option>
-                </select>    
-              </div>
+        <b-col>
+          <b-row>
+            <b-col>
+              <b-form-group label="Top">
+                <b-form-input type="number" v-model="request.params.top" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Left">
+                <b-form-input type="number" v-model="request.params.left" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Width">
+                <b-form-input type="number" v-model="request.params.width" @change="onCoordinatesChange" />
+              </b-form-group>
+              <b-form-group label="Height">
+                <b-form-input type="number" v-model="request.params.height" @change="onCoordinatesChange" />
+              </b-form-group>
+            </b-col>
 
-              <div class="form-group">
-                <label>Mode</label>
-                <select class="form-control" v-model="request.params.mode">
-                  <option v-for="item in device.features['--mode']['options']" v-bind:key="item">{{ item }}</option>
-                </select>    
-              </div>
+            <b-col>
+              <b-form-group label="Resolution">
+                <b-form-select class="form-control" v-model="request.params.resolution">
+                  <b-form-select-option v-for="item in device.features['--resolution']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--disable-dynamic-lineart' in device.features">
-                <label for="mode">Dynamic lineart</label>
-                <select id="dynamicLineart" class="form-control" v-model="request.params.dynamicLineart">
-                  <option v-bind:value="false">Disabled</option>
-                  <option v-bind:value="true">Enabled</option>
-                </select>
-              </div>
+              <b-form-group label="Mode">
+                <b-form-select class="form-control" v-model="request.params.mode">
+                  <b-form-select-option v-for="item in device.features['--mode']['options']" v-bind:key="item" v-bind:value="item">{{ item }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--brightness' in device.features">
-                <label>Brightness</label>
-                <input class="form-control" type="number" v-model="request.params.brightness">
-                <Slider v-model="request.params.brightness"
+              <b-form-group v-if="'--disable-dynamic-lineart' in device.features" label="Dynamic Lineart">
+                <b-form-select class="form-control" v-model="request.params.dynamicLineart">
+                  <b-form-select-option v-bind:value="false">Disabled</b-form-select-option>
+                  <b-form-select-option v-bind:value="true">Enabled</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group v-if="'--brightness' in device.features" label="Brightness">
+                <b-form-input type="number" v-model="request.params.brightness" />
+                <slider v-model="request.params.brightness"
+                  :interval="device.features['--brightness']['interval']"                  
                   :min="device.features['--brightness']['limits'][0]"
-                  :max="device.features['--brightness']['limits'][1]"></Slider>
-              </div>
+                  :max="device.features['--brightness']['limits'][1]"></slider>
+              </b-form-group>
 
-              <div class="form-group" v-if="'--contrast' in device.features">
-                <label>Contrast</label>
-                <input class="form-control" type="number" v-model="request.params.contrast">
-                <Slider v-model="request.params.contrast"
+              <b-form-group v-if="'--contrast' in device.features" label="Contrast">
+                <b-form-input type="number" v-model="request.params.contrast" />
+                <slider v-model="request.params.contrast"
+                  :interval="device.features['--contrast']['interval']"                  
                   :min="device.features['--contrast']['limits'][0]"
-                  :max="device.features['--contrast']['limits'][1]"></Slider>
-              </div>
+                  :max="device.features['--contrast']['limits'][1]"></slider>
+              </b-form-group>
 
-              <div class="form-group">
-                <label>Format</label>
-                <select class="form-control" v-model="request.pipeline">
-                  <option v-for="item in context.pipelines" v-bind:key="item.description">{{ item.description }}</option>
-                </select>
-              </div>
+              <b-form-group label="Format">
+                <b-form-select class="form-control" v-model="request.pipeline">
+                  <b-form-select-option v-for="item in context.pipelines" v-bind:key="item.description" v-bind:value="item.description">{{ item.description }}</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
 
-            </div>
-          </div>
+              <b-form-group v-if="false" label="Batch">
+                <b-form-select class="form-control" v-model="request.batch">
+                  <b-form-select-option v-bind:value="false">No</b-form-select-option>
+                  <b-form-select-option v-bind:value="true">Yes</b-form-select-option>
+                </b-form-select>
+              </b-form-group>
+
+            </b-col>
+          </b-row>
 
           <!-- Buttons -->
-          <div class="row">
-            <div class="col text-right">
-              <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-lg btn-light" v-on:click="reinitialize">reinitialize <img src="../assets/refresh-24px.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="reset">reset <img src="../assets/autorenew-black-18dp.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="preview">preview <img src="../assets/search-24px.svg"></button>
-                <button type="button" class="btn btn-lg btn-light" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></button>
-              </div>
-            </div>
-          </div>
+          <b-row>
+            <b-col class="text-right">
+              <b-button-group>
+                <b-button variant="light" size="lg" v-on:click="reset">reset <img src="../assets/refresh-24px.svg"></b-button>
+                <b-button v-if="false" variant="light" size="lg" v-on:click="clear">clear <img src="../assets/autorenew-24px.svg"></b-button>
+              </b-button-group>
+              &nbsp;
+              <b-button-group>
+                <b-button variant="light" size="lg" v-on:click="createPreview">preview <img src="../assets/search-24px.svg"></b-button>
+                <b-button variant="light" size="lg" v-on:click="scan">scan <img src="../assets/photo_camera-24px.svg"></b-button>
+              </b-button-group>
+            </b-col>
+          </b-row>
 
-        </div>
+        </b-col>
+
         <!-- Preview pane -->
-        <div class="col-lg-1"></div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <cropper ref="cropper" class="cropper" transitionTime="1"
-              :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-              :src="img" @change="onCrop"></cropper>
-        </div>
-        <div class="col-lg-1"></div>
-      </div>
+        <b-col>
+          <div style="max-width: 420px;">
+            <cropper ref="cropper" class="cropper" :transitionTime="1" :wheelResize="false" :maxWidth="200"
+                :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
+                :src="img" @change="onCrop"></cropper>
+          </div>
+        </b-col>
+      </b-row>
 
-      <div class="row mt-5">
-        <div class="col">
-        </div>
-      </div>
+      <b-row class="mt-5">
+        <b-col></b-col>
+      </b-row>
 
-      <div class="row">
+      <b-row>
         <!-- Padding for larger screens -->
-        <div class="col">
+        <b-col>
           <table class="table">
             <thead>
               <tr>
@@ -126,15 +129,14 @@
               <tr v-for="file in files" v-bind:key="file.name">
                 <td><a :href="'files/' + file.fullname">{{ file.name }}</a></td>
                 <td>{{ file.lastModified }}</td>
-                <td>{{ file.size }}</td>
+                <td>{{ file.sizeString }}</td>
                 <td><button class="btn btn-sm" v-on:click="fileRemove(file)"><img src="../assets/delete-24px.svg"></button></td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-    </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -186,7 +188,7 @@ export default {
     
     const request = {
       params: {
-        deviceId: device.name,
+        deviceId: device.id,
         top: 0,
         left: 0,
         width: device.features['-x'].limits[1],
@@ -197,7 +199,8 @@ export default {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: ''
+      pipeline: '',
+      batch: false
     };
 
     return {
@@ -217,12 +220,13 @@ export default {
   },
 
   mounted() {
-    this.readContext();
-    this.convert();
-    this.fileList();
-
     this.$refs.toastr.defaultPosition = 'toast-bottom-right';
     this.$refs.toastr.defaultTimeout = 5000;
+
+    this.readContext().then(() => {
+      this.readPreview();
+    });
+    this.fileList();
   },
 
   watch: {
@@ -255,17 +259,24 @@ export default {
         });
     },
 
-    convert() {
-      // Gets the preview image as a base64 encoded jpg and updates the UI
+    createPreview() {
+      this.mask(1);
+
+      // Keep reloading the preview image
+      const timer = window.setInterval(this.readPreview, 1000);
+
+      let data = this._clone(this.request);
+
       this._fetch('preview', {
-        cache: 'no-store',
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(data),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(data => {
-        this.img = 'data:image/jpeg;base64,' + data.content;
+      }).then(() => {
+        window.clearInterval(timer);
+        this.mask(-1);
       });
     },
 
@@ -278,7 +289,7 @@ export default {
     },
 
     cropperDefaultSize() {
-      const adjust = (n) => Math.floor(n * this.pixelsPerMm());
+      const adjust = (n) => Math.round(n * this.pixelsPerMm());
       return {
         width: adjust(this.request.params.width),
         height: adjust(this.request.params.height)
@@ -338,39 +349,39 @@ export default {
       return image.height / scanner.height;
     },
 
-    preview() {
-      this.mask(1);
-
-      // Keep reloading the preview image
-      const timer = window.setInterval(this.convert, 1000);
-
-      let data = this._clone(this.request);
-
-      this._fetch('preview', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        window.clearInterval(timer);
-        this.mask(-1);
-      });
-    },
-
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
-      this._fetch(url).then(context => {
+      this.$refs.toastr.i('Finding devices...');
+
+      return this._fetch(url).then(context => {
         this.context = context;
         this.device = context.devices[0];
+        this.$refs.toastr.i(`Found device ${this.device.id}`);
         this.request = this.readRequest();
         for (let test of context.diagnostics) {
           const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
           toast(test.message);
         }
+        if (force) {
+          this.clear();
+          this.readPreview();
+        }
         this.mask(-1);
+      });
+    },
+
+    readPreview() {
+      // Gets the preview image as a base64 encoded jpg and updates the UI
+      this._fetch('preview', {
+        cache: 'no-store',
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(data => {
+        this.img = 'data:image/jpeg;base64,' + data.content;
       });
     },
 
@@ -389,7 +400,7 @@ export default {
         request = {
           version: this.context.version,
           params: {
-            deviceId: device.name,
+            deviceId: device.id,
             top: 0,
             left: 0,
             width: device.features['-x'].limits[1],
@@ -417,12 +428,11 @@ export default {
       return request;
     },
 
-    reinitialize() {
+    reset() {
       this.readContext(true);
-      this.reset();
     },
 
-    reset() {
+    clear() {
       localStorage.removeItem('request');
       this.request = this.readRequest();
     },
@@ -439,9 +449,20 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then(() => {
-        this.fileList();
-        this.mask(-1);
+      }).then((data) => {
+        if (data && 'page' in data) {
+          if (window.confirm('More?')) {
+            this.request.page = data.page;
+            this.scan();
+          } else {
+            this.request.page = -1;
+            this.scan();
+          }
+        } else {
+          this.request.page = 1;
+          this.fileList();
+          this.mask(-1);
+        }
       });
     }
   }

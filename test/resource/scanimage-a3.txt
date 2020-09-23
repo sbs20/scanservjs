@@ -1,0 +1,20 @@
+
+All options specific to device `magic':
+  Scan Mode:
+    --mode Lineart|Gray|24bitColor [24bitColor]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --brightness -50..50 [0]
+        Selects the brightness.        
+    --contrast -50..50 (in steps of 10) [0]
+        Selects the contrast.
+    --resolution 75|300|600|1200dpi [75]
+        Sets the resolution of the scanned image.
+  Geometry:
+    -l 0..215.9mm [0]
+        Top-left x position of scan area.
+    -t 0..297.18mm [0]
+        Top-left y position of scan area.
+    -x 0..215.9mm [215.9]
+        Width of scan-area.
+    -y 0..297.18mm [297.18]
+        Height of scan-area.

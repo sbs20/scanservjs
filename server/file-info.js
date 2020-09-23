@@ -3,11 +3,27 @@ const path = require('path');
 
 const checkPath = (fullpath) => {
   if (fullpath.indexOf('../') !== -1) {
-    throw new Error('Relative paths disallowed');
+    throw new Error('Parent paths disallowed');
   }
 
   if (fullpath.indexOf('/') === 0) {
     throw new Error('Root paths disallowed');
+  }
+};
+
+const sizeString = (size) => {
+  const kb = 1 << 10;
+  const mb = kb << 10;
+  if (size < 0) {
+    return '0';
+  } else if (size === 1) {
+    return '1 Byte';
+  } else if (size < kb << 1) {
+    return `${size} Bytes`;
+  } else if (size < mb << 1) {
+    return `${Math.round(size / kb)} KB`;
+  } else {
+    return `${Math.round(100.0 * size / mb) / 100.0} MB`;
   }
 };
 
@@ -22,6 +38,7 @@ class FileInfo {
       this.extension = path.extname(this.fullname);
       this.lastModified = stat.mtime;
       this.size = stat.size;
+      this.sizeString = sizeString(this.size);
     }
   }
 
