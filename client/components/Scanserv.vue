@@ -259,7 +259,6 @@ export default {
         this.preview.width = (window.innerHeight - 120) * isoPaperRatio;
       }
       this.preview.key += 1;
-      console.log(window.innerWidth, window.innerHeight);
     },
 
     _clone(o) {
