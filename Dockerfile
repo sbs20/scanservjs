@@ -13,7 +13,7 @@ FROM node:buster-slim
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 # Install sane
-RUN apt-get update && apt-get install -yq sane sane-utils imagemagick
+RUN apt-get update && apt-get install -yq sane sane-utils imagemagick tesseract-ocr
 RUN sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
 
