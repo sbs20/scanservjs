@@ -435,10 +435,7 @@ export default {
             width: device.features['-x'].limits[1],
             height: device.features['-y'].limits[1],
             resolution: device.features['--resolution'].default,
-            mode: device.features['--mode'].default,
-            brightness: 0,
-            contrast: 0,
-            dynamicLineart: true
+            mode: device.features['--mode'].default
           },
           pipeline: this.context.pipelines[0].description,
           batch: false,
@@ -449,14 +446,14 @@ export default {
       if ('--source' in device.features) {
         request.params.source = device.features['--source'].default;
       }
-      if ('--brightness' in device.features === false) {
-        delete request.params.brightness;
+      if ('--brightness' in device.features) {
+        request.params.brightness = 0;
       }
-      if ('--contrast' in device.features === false) {
-        delete request.params.contrast;
+      if ('--contrast' in device.features) {
+        request.params.contrast = 0;
       }
-      if ('--disable-dynamic-lineart' in device.features === false) {
-        delete request.params.dynamicLineart;
+      if ('--disable-dynamic-lineart' in device.features) {
+        request.params.dynamicLineart = true;
       }
 
       return request;

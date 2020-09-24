@@ -1,7 +1,7 @@
 const log = require('loglevel').getLogger('Api');
 const Config = require('../config/config');
 const Context = require('./context');
-const Device = require('./device');
+const Devices = require('./devices');
 const FileInfo = require('./file-info');
 const Process = require('./process');
 const Request = require('./request');
@@ -124,7 +124,7 @@ class Api {
 
   static async context(force) {
     if (force) {
-      Device.reset();
+      Devices.reset();
       const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
       preview.delete();
     }

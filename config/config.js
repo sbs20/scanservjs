@@ -4,6 +4,10 @@ const Config = {};
 
 // Things to change
 Config.port = 8080;
+
+// scanservjs will attempt to find scanners locally using `scanimage -L` but you
+// will need to manually add network devices here which will be appended. e.g.
+// Config.devices = ['net:192.168.0.10:airscan:e0:Canon TR8500 series'];
 Config.devices = [];
 Config.ocrLanguage = 'eng';
 Config.log = {};
