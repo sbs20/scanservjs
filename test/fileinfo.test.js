@@ -32,7 +32,7 @@ describe('FileInfo', () => {
   it('List directory', async () => {
     const files = await new FileInfo('./test/resource').list();
     assert.strictEqual(files[0].name, 'logo.png');
-    assert.strictEqual(files.length, 5);
+    assert.strictEqual(files.length > 1, true);
     const stem = 'logo';
     const png = files.filter(f => new RegExp(`${stem}.png`).test(f.name));
     assert.strictEqual(png.length, 1);

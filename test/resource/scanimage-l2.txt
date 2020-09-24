@@ -1,0 +1,3 @@
+device `plustek:libusb:001:003' is a Canon CanoScan N670U/N676U/LiDE20 flatbed scanner
+device `airscan:w1:CANON INC. TR8500 series' is a WSD CANON INC. TR8500 series WSD network scanner
+device `airscan:e0:Canon TR8500 series' is a eSCL Canon TR8500 series eSCL network scanner

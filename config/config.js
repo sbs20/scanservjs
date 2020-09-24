@@ -4,6 +4,7 @@ const Config = {};
 
 // Things to change
 Config.port = 8080;
+Config.devices = [];
 Config.ocrLanguage = 'eng';
 Config.log = {};
 Config.log.level = 'DEBUG';

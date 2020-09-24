@@ -11,6 +11,7 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'plustek:libusb:001:008');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.strictEqual(device.features['--source'], undefined);
     assert.deepStrictEqual(device.features['--resolution'].options, [50, 75, 150, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 50);
     assert.strictEqual(device.features['-l'].limits[0], 0);
@@ -42,6 +43,7 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'epson2:libusb:001:029');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Lineart');
+    assert.strictEqual(device.features['--source'], undefined);
     assert.deepStrictEqual(device.features['--resolution'].options, [75, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
@@ -67,6 +69,7 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'magic');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', '24bitColor']);
     assert.strictEqual(device.features['--mode'].default, '24bitColor');
+    assert.strictEqual(device.features['--source'], undefined);
     assert.deepStrictEqual(device.features['--resolution'].options, [75, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
@@ -94,6 +97,8 @@ describe('Device', () => {
     assert.strictEqual(device.id, 'net:192.168.1.4:xerox_mfp:libusb:001:003');
     assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Halftone', 'Gray', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.deepStrictEqual(device.features['--source'].options, ['Flatbed', 'ADF', 'Auto']);
+    assert.strictEqual(device.features['--source'].default, 'Flatbed');
     assert.deepStrictEqual(device.features['--resolution'].options, [75, 100, 150, 200, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 150);
     assert.strictEqual(device.features['-l'].limits[0], 0);

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Config = require('../config/config');
-const Device = require('./device');
+const Devices = require('./devices');
 const Package = require('../package.json');
 
 const diagnostic = (path) => {
@@ -24,7 +24,7 @@ class Context {
   }
 
   static async create() {
-    const devices = [await Device.get()];
+    const devices = await Devices.get();
     return new Context(devices);
   }
 

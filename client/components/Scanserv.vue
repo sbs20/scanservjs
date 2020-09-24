@@ -19,7 +19,7 @@
         <h1>scanserv-js <span class="d-none d-sm-inline">(v{{ context.version }})</span></h1>
 
         <b-form-group v-if="context.devices.length > 0" label="Device">
-          <b-form-select class="form-control" v-model="device">
+          <b-form-select class="form-control" v-model="device" @change="clear">
             <b-form-select-option v-for="item in context.devices" v-bind:key="item.id" v-bind:value="item">{{ item.id }}</b-form-select-option>
           </b-form-select>
         </b-form-group>
@@ -157,7 +157,7 @@ export default {
 
   data() {
     const device = {
-      name: 'Unspecified',
+      id: 'Unspecified',
       features: {
         '--mode': {
           options: [],
@@ -296,6 +296,10 @@ export default {
         }
       }).then(() => {
         window.clearInterval(timer);
+
+        // Some scanners don't create the preview until after the scan has finished.
+        // Run preview one last time
+        window.setTimeout(this.readPreview, 1000);
         this.mask(-1);
       });
     },
@@ -406,7 +410,6 @@ export default {
     },
 
     readRequest() {
-      const device = this.device;
       let request = null;
       if (localStorage.request) {
         request = JSON.parse(localStorage.request);
@@ -415,7 +418,13 @@ export default {
         }
         console.log('load', request);
       }
-      
+
+      if (request !== null) {
+        this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
+          || this.context.devices[0];
+      }
+      const device = this.device;
+
       if (request === null) {
         request = {
           version: this.context.version,
@@ -437,6 +446,9 @@ export default {
         };
       }
 
+      if ('--source' in device.features) {
+        request.params.source = device.features['--source'].default;
+      }
       if ('--brightness' in device.features === false) {
         delete request.params.brightness;
       }
