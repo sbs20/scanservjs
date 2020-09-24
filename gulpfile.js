@@ -67,6 +67,7 @@ gulp.task('server-lint', () => {
 });
 
 gulp.task('server-build', () => {
+  const shellFilter = filter('**/*.sh', {restore: true});
   return gulp.src([
     './install.sh',
     './uninstall.sh',
@@ -76,8 +77,11 @@ gulp.task('server-build', () => {
     './*config/**/*.js',
     './*server/**/*',
     './*data/**/*.md',
-    './*data/**/default.jpg',
-  ]).pipe(gulp.dest('./dist/'));
+    './*data/**/default.jpg'])
+    .pipe(shellFilter)
+    .pipe(chmod(0o755))
+    .pipe(shellFilter.restore)
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('test', () => {
