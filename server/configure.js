@@ -1,3 +1,4 @@
+const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 const Config = require('../config/config');
@@ -41,7 +42,13 @@ const logRequest = (req) => {
   log.debug('request: ', output);
 };
 
+const initialize = () => {
+  fs.mkdirSync(Config.outputDirectory, { recursive: true });
+  fs.mkdirSync(Config.tempDirectory, { recursive: true });
+};
+
 module.exports = app => {
+  initialize();
   app.use(bodyParser.urlencoded({
     extended: true
   }));

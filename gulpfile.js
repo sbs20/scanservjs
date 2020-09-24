@@ -60,7 +60,7 @@ gulp.task('client-build', () => {
 });
 
 gulp.task('server-lint', () => {
-  return gulp.src(['./server/*.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./server/*.js', './config/config.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());

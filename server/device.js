@@ -1,13 +1,5 @@
-const log = require('loglevel').getLogger('Device');
-
 const extend = require('./util').extend;
-const FileInfo = require('./file-info');
 const Package = require('../package.json');
-const Process = require('./process');
-const Scanimage = require('./scanimage');
-
-// Relative to execution path
-const FILEPATH = './config/devices.json';
 
 class Feature {
   static splitNumbers(string, delimiter) {
@@ -57,6 +49,7 @@ class Adapter {
       const feature = device.features[key];
       switch (key) {
         case '--mode':
+        case '--source':
           feature.options = feature.parameters.split('|');
           break;
   
@@ -138,37 +131,6 @@ class Device {
       return Device.from(data);
     } else {
       throw new Error('Unexpected data for Device');
-    }
-  }
-
-  /// Attempts to get a stored configuration of our device and if
-  /// not gets it from the command line.
-  static async get() {
-    const file = new FileInfo(FILEPATH);
-    let isCached = true;
-    if (!file.exists()) {
-      log.debug('device.conf does not exist. Reloading');
-      isCached = false;
-    } else if (Device.from(file.toJson()).version !== Package.version) {
-      log.debug('device.conf version is old. Reloading');
-      isCached = false;
-    }
-
-    if (!isCached) {
-      const data = await Process.execute(Scanimage.all());
-      log.debug(data);
-      const device = Device.from(data);
-      file.save(JSON.stringify(device, null, 2));
-      return device;
-    } else {
-      return Device.from(file.toJson());
-    }
-  }
-
-  static reset() {
-    const file = new FileInfo(FILEPATH);
-    if (file.exists()) {
-      file.delete();
     }
   }
 }

@@ -1,8 +1,9 @@
 # scanservjs
-scanservjs is a simple web-based UI for your scanner. It allows you to share a
-scanner (using SANE) on a network without the need for drivers or complicated
-installation. It can save to TIF, JPG, PNG and PDF with varying compression
-settings, all of which can configured. It supports all
+scanservjs is a simple web-based UI for your scanner. It allows you to share one
+or more scanners (using SANE) on a network without the need for drivers or
+complicated installation. It can save to TIF, JPG, PNG, PDF and TXT (with
+Tesseract OCR) with varying compression settings, all of which can configured.
+It supports multipage scanning and all
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
@@ -12,6 +13,7 @@ Copyright 2016-2020 [Sam Strachan](https://github.com/sbs20)
 ## Requirements
 * SANE
 * ImageMagick
+* Tesseract (optional)
 * nodejs
 
 ## Installation notes
@@ -20,6 +22,10 @@ out-of-the-box on Debian) use the following commands. Please note that by
 default, configuration and scanned images are stored within the container and
 will be lost if you recreate it. If you want to map your scanned images then
 specify the volume mapping option `-v /local/path/:/app/data/output/`
+
+**Please note that the docker image is amd64 only - and will not work on ARM
+devices such as the Raspberry Pi. Please follow the manual installation process
+in these cases**
 
 ```console
 docker pull sbs20/scanservjs:latest

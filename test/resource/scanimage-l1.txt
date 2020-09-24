@@ -1,0 +1,1 @@
+device `plustek:libusb:001:003' is a Canon CanoScan N670U/N676U/LiDE20 flatbed scanner

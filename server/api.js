@@ -1,9 +1,7 @@
-const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
-
 const Config = require('../config/config');
 const Context = require('./context');
-const Device = require('./device');
+const Devices = require('./devices');
 const FileInfo = require('./file-info');
 const Process = require('./process');
 const Request = require('./request');
@@ -12,22 +10,13 @@ const Scanimage = require('./scanimage');
 class Api {
   static async fileList() {
     log.debug('fileList()');
-    return await new Promise((resolve, reject) => {
-      let outdir = Config.outputDirectory;
-      fs.readdir(outdir, (err, list) => {
-        if (err) {
-          reject(err);
-        }
-  
-        let files = list
-          .map(f => new FileInfo(outdir + f))
-          .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
-          .sort((f1, f2) => f2.lastModified - f1.lastModified);
-
-        log.debug(JSON.stringify(files));
-        resolve(files);
-      });
-    });
+    const dir = new FileInfo(Config.outputDirectory);
+    let files = await dir.list();
+    files = files
+      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
+      .sort((f1, f2) => f2.lastModified - f1.lastModified);
+    log.debug(JSON.stringify(files));
+    return files;
   }
 
   static fileDelete(fullpath) {
@@ -65,7 +54,7 @@ class Api {
     const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
-      return await Process.chain(Config.previewPipeline.commands, buffer, true);
+      return await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -84,48 +73,58 @@ class Api {
     const context = await Context.create();
     const request = new Request(context).extend(req);
     const stem = '~tmp-scan-';
+    const dir = FileInfo.create(Config.tempDirectory);
 
-    if (request.batch === undefined || request.batch === false) {
-      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-      if (pipeline === undefined) {
-        throw Error('No matching pipeline');
-      }
-      const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
-      log.debug('Executing cmds:', cmds);
-      const buffer = await Process.chain(cmds);
-      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
-      log.debug(`Written data to: ${filename}`);
-      return {};
+    // Check pipeline here. Better to find out sooner if there's a problem
+    const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+    if (pipeline === undefined) {
+      throw Error('No matching pipeline');
+    }
 
-    } else if (request.batch && request.page > 0) {
+    const clearTemp = async () => {
+      const files = await dir.list();
+      files.map(f => f.delete());
+    };
+
+    if (request.page === 1) {
+      log.debug('Clearing temp directory');
+      await clearTemp();
+    }
+
+    if (request.page > 0) {
+      log.debug(`Scanning page: ${request.page}`);
       const buffer = await Process.spawn(Scanimage.scan(request));
       const number = `000${request.page}`.slice(-4);
-      const filename = `${stem}${number}.tif`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
-      log.debug(`Written data to: ${filename}`);
-      return {
-        page: request.page + 1
-      };
+      const filename = `${Config.tempDirectory}${stem}${number}.tif`;
+      FileInfo.create(filename).save(buffer);
+      log.debug(`Written data to: ${filename}`);  
+    }
 
-    } else {
-      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-      const cmds = [`ls ${stem}*.tif`].concat(pipeline.commands);
-      log.debug('Executing cmds:', cmds);
-      const buffer = await Process.chain(cmds);
+    if (!request.batch || request.page < 1) {
+      log.debug(`Post processing: ${pipeline.description}`);
+      const files = await dir.list();
+      const stdin = files
+        .filter(f => new RegExp(`${stem}[0-9]{4}.tif`).test(f.name))
+        .map(f => f.name)
+        .join('\n');
+      log.debug('Executing cmds:', pipeline.commands);
+      const buffer = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
       const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
+      FileInfo.create(filename).save(buffer);
       log.debug(`Written data to: ${filename}`);
+      await clearTemp();
       return {};
     }
+
+    log.debug(`Scan page: ${request.page + 1}?`);
+    return {
+      page: request.page + 1
+    };
   }
 
   static async context(force) {
     if (force) {
-      Device.reset();
+      Devices.reset();
       const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
       preview.delete();
     }

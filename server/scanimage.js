@@ -4,8 +4,15 @@ const CmdBuilder = require('./command-builder');
 const Config = require('../config/config');
 
 class Scanimage {
-  static all() {
+  static devices() {
     return new CmdBuilder(Config.scanimage)
+      .arg('-L')
+      .build();
+  }
+  
+  static features(deviceId) {
+    return new CmdBuilder(Config.scanimage)
+      .arg('-d', deviceId)
       .arg('-A')
       .build();
   }

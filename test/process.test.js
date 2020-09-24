@@ -27,7 +27,23 @@ describe('Process', () => {
     const ls = await Process.spawn(cmd);
     const result = await Process.spawn('wc -l', ls);
     assert.strictEqual(result.toString(), '3\n');
-    console.log(result);
+  });
+
+  it('error', async () => {
+    assert.rejects(async () => {
+      await Process.spawn('hello');
+    }, Error, '/bin/sh: 1: hello');
+  });
+
+  it('ignore error', async () => {
+    await Process.spawn('hello', null, { ignoreErrors: true });
+  });
+
+  it('cwd', async () => {
+    const cmd = new CmdBuilder('echo').arg('"1\n2\n3"').build();
+    assert.strictEqual(cmd, 'echo "1\n2\n3"');
+    const ls = await Process.spawn('ls -al', null, { cwd: './test/resource' });
+    assert.strictEqual(ls.indexOf('logo.png') > -1, true);
   });
 
   it('cat ./test/resource/logo.png', async () => {

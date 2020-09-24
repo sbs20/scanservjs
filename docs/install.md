@@ -5,13 +5,15 @@ manually.
 
 ## Steps
 * Get [SANE installed and working](./sane.md) and check permissions etc.
-* Get nodejs and npm installed (e.g.  or
+* Get nodejs and npm installed (You will need an up to date version of npm, you
+  may need to run `npm install npm@latest -g`)
 * Download the latest release of scanserv, extract it and run `install.sh`
 
 ## tl;dr; (Debian 10)
 
 ```
 sudo apt install -y nodejs npm sane-utils imagemagick curl
+sudo npm install npm@latest -g
 wget -O ~/scanservjs.tar.gz $(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
 mkdir scanservjs
 tar -xf scanservjs.tar.gz -C ./scanservjs/
