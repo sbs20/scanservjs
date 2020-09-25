@@ -51,8 +51,9 @@
 
         <b-form-group label="Batch">
           <b-form-select class="form-control" v-model="request.batch">
-            <b-form-select-option v-bind:value="false">No</b-form-select-option>
-            <b-form-select-option v-bind:value="true">Yes</b-form-select-option>
+            <b-form-select-option value="none">None</b-form-select-option>
+            <b-form-select-option value="manual">Manual (with prompt)</b-form-select-option>
+            <b-form-select-option value="auto">Automatic (use ADF)</b-form-select-option>
           </b-form-select>
         </b-form-group>
 
@@ -438,7 +439,7 @@ export default {
             mode: device.features['--mode'].default
           },
           pipeline: this.context.pipelines[0].description,
-          batch: false,
+          batch: 'none',
           page: 1
         };
       }
@@ -482,7 +483,7 @@ export default {
         }
       }).then((data) => {
         if (data && 'page' in data) {
-          if (window.confirm('More?')) {
+          if (window.confirm('Scan another page?')) {
             this.request.page = data.page;
             this.scan();
           } else {
