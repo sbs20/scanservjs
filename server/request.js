@@ -1,4 +1,5 @@
 const log = require('loglevel').getLogger('Request');
+const Constants = require('./constants');
 const extend = require('./util').extend;
 
 const bound = (n, min, max, def) => {
@@ -27,24 +28,26 @@ class Request {
         height: bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]),
         resolution: data.params.resolution || features['--resolution'].default,
         mode: data.params.mode || features['--mode'].default,
-        format: 'tiff',
-        brightness: data.params.brightness || 0,
-        contrast: data.params.contrast || 0,
-        dynamicLineart: true  
+        format: 'tiff'
       },
       pipeline: data.pipeline || null,
-      batch: data.batch || false,
+      batch: data.batch || Constants.BATCH_NONE,
       page: data.page || 1
     });
 
-    if ('--brightness' in features === false) {
-      delete this.params.brightness;
+    if ('--source' in features) {
+      this.params.source = data.params.source || features['--source'].default;
     }
-    if ('--contrast' in features === false) {
-      delete this.params.contrast;
+    if ('--brightness' in features) {
+      this.params.brightness = data.params.brightness || 0;
     }
-    if ('--disable-dynamic-lineart' in features === false) {
-      delete this.params.dynamicLineart;
+    if ('--contrast' in features) {
+      this.params.contrast = data.params.contrast || 0;
+    }
+    if ('--disable-dynamic-lineart' in features) {
+      this.params.dynamicLineart = data.params.dynamicLineart !== undefined
+        ? data.params.dynamicLineart
+        : true;
     }
 
     log.debug(JSON.stringify(this));

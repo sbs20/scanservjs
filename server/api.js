@@ -1,5 +1,6 @@
 const log = require('loglevel').getLogger('Api');
 const Config = require('../config/config');
+const Constants = require('./constants');
 const Context = require('./context');
 const Devices = require('./devices');
 const FileInfo = require('./file-info');
@@ -72,7 +73,6 @@ class Api {
   static async scan(req) {
     const context = await Context.create();
     const request = new Request(context).extend(req);
-    const stem = '~tmp-scan-';
     const dir = FileInfo.create(Config.tempDirectory);
 
     // Check pipeline here. Better to find out sooner if there's a problem
@@ -92,19 +92,15 @@ class Api {
     }
 
     if (request.page > 0) {
-      log.debug(`Scanning page: ${request.page}`);
-      const buffer = await Process.spawn(Scanimage.scan(request));
-      const number = `000${request.page}`.slice(-4);
-      const filename = `${Config.tempDirectory}${stem}${number}.tif`;
-      FileInfo.create(filename).save(buffer);
-      log.debug(`Written data to: ${filename}`);  
+      log.debug('Scanning');
+      await Process.spawn(Scanimage.scan(request));
     }
 
-    if (!request.batch || request.page < 1) {
+    if (request.batch !== Constants.BATCH_MANUAL || request.page < 1) {
       log.debug(`Post processing: ${pipeline.description}`);
       const files = await dir.list();
       const stdin = files
-        .filter(f => new RegExp(`${stem}[0-9]{4}.tif`).test(f.name))
+        .filter(f => f.extension === '.tif')
         .map(f => f.name)
         .join('\n');
       log.debug('Executing cmds:', pipeline.commands);
