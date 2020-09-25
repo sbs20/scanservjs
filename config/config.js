@@ -76,21 +76,21 @@ Some useful pointers:
 Config.pipelines = [
   {
     extension: 'jpg',
-    description: 'JPG (High quality)',
+    description: 'JPG | High quality',
     commands: [
       'convert @- -quality 92 jpg:-'
     ]
   },
   {
     extension: 'jpg',
-    description: 'JPG (Medium quality)',
+    description: 'JPG | Medium quality',
     commands: [
       'convert @- -quality 75 jpg:-'
     ]
   },
   {
     extension: 'jpg',
-    description: 'JPG (Low quality)',
+    description: 'JPG | Low quality',
     commands: [
       'convert @- -quality 50 jpg:-'
     ]
@@ -104,28 +104,28 @@ Config.pipelines = [
   },
   {
     extension: 'tif',
-    description: 'TIF (Uncompressed)',
+    description: 'TIF | Uncompressed',
     commands: [
       'convert @- tif:-'
     ]
   },
   {
     extension: 'tif',
-    description: 'TIF (LZW)',
+    description: 'TIF | LZW compression',
     commands: [
       'convert @- -compress lzw tif:-'
     ]
   },
   {
     extension: 'pdf',
-    description: 'PDF (TIF)',
+    description: 'PDF (TIF | Uncompressed)',
     commands: [
       'convert @- pdf:-'
     ]
   },
   {
     extension: 'pdf',
-    description: 'PDF (LZW TIF)',
+    description: 'PDF (TIF | LZW Compression)',
     commands: [
       'convert @- -compress lzw tmp-%d.tif && ls tmp-*.tif',
       'convert @- pdf:-'
@@ -133,9 +133,25 @@ Config.pipelines = [
   },
   {
     extension: 'pdf',
-    description: 'PDF (JPG)',
+    description: 'PDF (JPG | High quality)',
     commands: [
       'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+      'convert @- pdf:-'
+    ]
+  },
+  {
+    extension: 'pdf',
+    description: 'PDF (JPG | Medium quality)',
+    commands: [
+      'convert @- -quality 75 tmp-%d.jpg && ls tmp-*.jpg',
+      'convert @- pdf:-'
+    ]
+  },
+  {
+    extension: 'pdf',
+    description: 'PDF (JPG | Low quality)',
+    commands: [
+      'convert @- -quality 50 tmp-%d.jpg && ls tmp-*.jpg',
       'convert @- pdf:-'
     ]
   }
@@ -145,7 +161,7 @@ if (Config.tesseract) {
   Config.pipelines = Config.pipelines.concat([
     {
       extension: 'pdf',
-      description: 'PDF (JPG) with OCR text',
+      description: 'OCR | PDF (JPG | High quality)',
       commands: [
         'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
         `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf && rm -f tmp-*.jpg`
@@ -153,7 +169,7 @@ if (Config.tesseract) {
     },
     {
       extension: 'txt',
-      description: 'Text file (OCR)',
+      description: 'OCR | Text file',
       commands: [
         `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt && rm -f tmp-*.tif`
       ]
