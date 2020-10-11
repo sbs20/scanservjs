@@ -86,7 +86,8 @@ cp scanservjs.service /etc/systemd/system
 # Reload the deamon info
 systemctl daemon-reload
 
-# Start the new service
+# Enable and start the new service
+systemctl enable scanservjs
 systemctl start scanservjs
 
 echo "scanservjs starting"
