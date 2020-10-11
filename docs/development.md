@@ -66,7 +66,7 @@ Useful commands
 # Build and run
 docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
-docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
+docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
 
 # Debug
 docker run -it --entrypoint=/bin/bash scanservjs-container
