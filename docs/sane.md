@@ -81,6 +81,15 @@ net:192.168.0.10:airscan:e0:Canon TR8500 series'
 For more information on configuring the server and client see
 [SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration).
 
+TL;DR; for configuring server:
+
+```console
+# Allow access from network
+echo "192.168.0.1/24" >> /etc/sane.d/saned.conf
+sudo systemctl enable saned.socket
+sudo systemctl start saned.socket
+```
+
 ## For QNAP NAS
 ### install [Works on QTS 4.2.2]
 
