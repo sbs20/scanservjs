@@ -30,7 +30,7 @@ in these cases**
 ```console
 docker pull sbs20/scanservjs:latest
 docker rm --force scanservjs-container 2> /dev/null
-docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:latest
+docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:latest
 ```
 (`--privileged` is required for the container to access the host's devices, to
 allow it to talk to the scanner)
