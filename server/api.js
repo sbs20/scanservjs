@@ -7,6 +7,7 @@ const FileInfo = require('./file-info');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
+const util = require('./util');
 
 class Api {
   static async fileList() {
@@ -14,7 +15,7 @@ class Api {
     const dir = new FileInfo(Config.outputDirectory);
     let files = await dir.list();
     files = files
-      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
+      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension))
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
     log.debug(JSON.stringify(files));
     return files;
@@ -104,10 +105,25 @@ class Api {
         .map(f => f.name)
         .join('\n');
       log.debug('Executing cmds:', pipeline.commands);
-      const buffer = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
-      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-      FileInfo.create(filename).save(buffer);
-      log.debug(`Written data to: ${filename}`);
+      const stdout = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
+      let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
+
+      let filename = filenames[0];
+      let extension = pipeline.extension;
+      if (filenames.length > 1) {
+        filename = 'archive.zip';
+        extension = 'zip';
+        util.zip(
+          filenames.map(f => `${Config.tempDirectory}${f}`),
+          `${Config.tempDirectory}${filename}`);
+      }
+
+      const destination = `${Config.outputDirectory}${Config.filename()}.${extension}`;
+      await FileInfo
+        .create(`${Config.tempDirectory}${filename}`)
+        .move(destination);
+
+      log.debug(`Written data to: ${destination}`);
       await clearTemp();
       return {};
     }

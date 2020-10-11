@@ -75,49 +75,56 @@ Config.pipelines = [
     extension: 'jpg',
     description: 'JPG | High quality',
     commands: [
-      'convert @- -quality 92 jpg:-'
+      'convert @- -quality 92 scan-%04d.jpg',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'jpg',
     description: 'JPG | Medium quality',
     commands: [
-      'convert @- -quality 75 jpg:-'
+      'convert @- -quality 75 scan-%04d.jpg',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'jpg',
     description: 'JPG | Low quality',
     commands: [
-      'convert @- -quality 50 jpg:-'
+      'convert @- -quality 50 scan-%04d.jpg',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'png',
     description: 'PNG',
     commands: [
-      'convert @- -quality 75 png:-'
+      'convert @- -quality 75 scan-%04d.png',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'tif',
     description: 'TIF | Uncompressed',
     commands: [
-      'convert @- tif:-'
+      'convert @- scan-%04d.tif',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'tif',
     description: 'TIF | LZW compression',
     commands: [
-      'convert @- -compress lzw tif:-'
+      'convert @- -compress lzw scan-%04d.jpg',
+      'ls scan-*.*'
     ]
   },
   {
     extension: 'pdf',
     description: 'PDF (TIF | Uncompressed)',
     commands: [
-      'convert @- pdf:-'
+      'convert @- scan-%04d.pdf',
+      'ls scan-*.*'
     ]
   },
   {
@@ -125,7 +132,8 @@ Config.pipelines = [
     description: 'PDF (TIF | LZW Compression)',
     commands: [
       'convert @- -compress lzw tmp-%d.tif && ls tmp-*.tif',
-      'convert @- pdf:-'
+      'convert @- scan-%04d.pdf',
+      'ls scan-*.*'
     ]
   },
   {
@@ -133,7 +141,8 @@ Config.pipelines = [
     description: 'PDF (JPG | High quality)',
     commands: [
       'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- pdf:-'
+      'convert @- scan-%04d.pdf',
+      'ls scan-*.*'
     ]
   },
   {
@@ -141,7 +150,8 @@ Config.pipelines = [
     description: 'PDF (JPG | Medium quality)',
     commands: [
       'convert @- -quality 75 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- pdf:-'
+      'convert @- scan-%04d.pdf',
+      'ls scan-*.*'
     ]
   },
   {
@@ -149,7 +159,8 @@ Config.pipelines = [
     description: 'PDF (JPG | Low quality)',
     commands: [
       'convert @- -quality 50 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- pdf:-'
+      'convert @- scan-%04d.jpg',
+      'ls scan-*.*'
     ]
   }
 ];
@@ -161,14 +172,16 @@ if (Config.tesseract) {
       description: 'OCR | PDF (JPG | High quality)',
       commands: [
         'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf && rm -f tmp-*.jpg`
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf > scan0001.pdf && rm -f tmp-*.jpg`,
+        'ls scan-*.*'
       ]
     },
     {
       extension: 'txt',
       description: 'OCR | Text file',
       commands: [
-        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt && rm -f tmp-*.tif`
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt > scan0001.txt && rm -f tmp-*.tif`,
+        'ls scan-*.*'
       ]
     }
   ]);
