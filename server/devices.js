@@ -56,14 +56,17 @@ class Devices {
     }
 
     if (devices === null) {
-      let data = await Process.execute(Scanimage.devices());
-      log.debug('Device list: ', data);
-      const localDevices = Devices._parseDevices(data);
-      const deviceIds = localDevices.concat(Config.devices);
+      let deviceIds = Config.devices;
+      if (Config.devicesFind) {
+        const data = await Process.execute(Scanimage.devices());
+        log.debug('Device list: ', data);
+        const localDevices = Devices._parseDevices(data);
+        deviceIds = deviceIds.concat(localDevices);
+      }
 
       devices = [];
       for (let deviceId of deviceIds) {
-        data = await Process.execute(Scanimage.features(deviceId));
+        const data = await Process.execute(Scanimage.features(deviceId));
         log.debug('Device features: ', data);
         devices.push(Device.from(data));
       }

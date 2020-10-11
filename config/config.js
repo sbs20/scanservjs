@@ -5,9 +5,6 @@ const Config = {};
 // Things to change
 Config.port = 8080;
 
-// scanservjs will attempt to find scanners locally using `scanimage -L` but you
-// will need to manually add network devices here which will be appended. e.g.
-// Config.devices = ['net:192.168.0.10:airscan:e0:Canon TR8500 series'];
 Config.devices = [];
 Config.ocrLanguage = 'eng';
 Config.log = {};
@@ -175,6 +172,29 @@ if (Config.tesseract) {
       ]
     }
   ]);
+}
+
+// Process environment variables
+
+// scanservjs will attempt to find scanners locally using `scanimage -L` but
+// sometimes you may need to manually add network devices here if they're not
+// found e.g.
+// Config.devices = ['net:192.168.0.10:airscan:e0:Canon TR8500 series'];
+// This is done with an environment variable. Multiple entries are separated by
+// semicolons
+if (process.env.DEVICES !== undefined && process.env.DEVICES.length > 0) {
+  Config.devices = process.env.DEVICES.split(';');
+}
+
+// scanservjs will attempt to find scanners locally using `scanimage -L` but
+// sometimes it will return nothing. If you are specifying devices manually you
+// may also with to turn off the find.
+Config.devicesFind = process.env.SCANIMAGE_LIST_IGNORE === undefined
+  || process.env.SCANIMAGE_LIST_IGNORE.length === 0;
+
+// Override the OCR language here
+if (process.env.OCR_LANG !== undefined && process.env.OCR_LANG.length > 0) {
+  Config.ocrLanguage = process.env.OCR_LANG;
 }
 
 module.exports = Config;

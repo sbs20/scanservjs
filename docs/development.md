@@ -54,6 +54,10 @@ gulp release
 Install docker
 ```
 sudo apt install docker.io
+sudo systemctl unmask docker
+sudo systemctl start docker
+
+# Hack to make docker accessible.
 sudo chmod 666 /var/run/docker.sock
 ```
 
