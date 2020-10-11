@@ -42,7 +42,7 @@ If you want to install the latest staging branch (this may contain newer code)
 ```console
 docker pull sbs20/scanservjs:staging
 docker rm --force scanservjs-container 2> /dev/null
-docker run -d -p 8080:8080 --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:staging
+docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:staging
 ```
 
 More installation options:
@@ -50,6 +50,51 @@ More installation options:
 * [Manual installation notes](docs/install.md)
 * [Development notes](docs/development.md)
 * [Configuring the scanner and SANE](docs/sane.md)
+
+## Environment variables
+
+* `SANED_NET_HOSTS`: If you want to use a
+  [SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration)
+  scanner then to perform the equivalent of adding hosts to
+  `/etc/sane.d/net.conf` specify a list of ip addresses separated by semicolons
+  in the `SANED_NET_HOSTS` environment variable.
+* `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
+  your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
+  variable (semicolon delimited).
+* `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
+* `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
+
+## Airscan
+[sane-airscan](https://github.com/alexpevzner/sane-airscan) uses Avahi /
+Zeroconf / Bonjour to discover devices on the local network. If you are running
+docker you will want to share dbus to make it work
+(`-v /var/run/dbus:/var/run/dbus`).
+
+## Example docker run
+
+### Use airscan and a locally detected scanner
+This should support most use cases
+
+```console
+docker run -d -p 8080:8080 \
+  -v /var/run/dbus:/var/run/dbus \
+  --name scanservjs-container --privileged scanservjs-image
+```
+
+### Complicated
+Add two net hosts to sane, use airscan to connect to two remote scanners, don't
+use `scanimage -L`, force a list of devices and override the OCR language
+
+```console
+docker run -d -p 8080:8080 \
+  -e SANED_HOSTS="10.0.100.30;10.0.100.31" \
+  -e AIRSCAN_DEVICES='"Canon MFD" = "http://192.168.0.10/eSCL";"EPSON MFD" = "http://192.168.0.11/eSCL"' \
+  -e SCANIMAGE_LIST_IGNORE=true \
+  -e DEVICES="net:10.0.100.30:plustek:libusb:001:003;net:10.0.100.31:plustek:libusb:001:003;airscan:e0:Canon TR8500 series;airscan:e1:EPSON Cool Series" \
+  -e OCR_LANG="fra" \
+  -v /var/run/dbus:/var/run/dbus \
+  --name scanservjs-container --privileged scanservjs-image
+```
 
 ## Why?
 This is yet another scanimage-web-front-end. Why? It originally started as an
