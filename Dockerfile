@@ -11,8 +11,6 @@ RUN npm run server-build && npm run client-build
 FROM node:buster-slim
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
-COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
-
 RUN apt-get update && \
   apt-get install -yq curl gpg && \
   echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list && \
@@ -20,6 +18,8 @@ RUN apt-get update && \
   apt-get update && \
   apt-get install -yq sane sane-utils imagemagick tesseract-ocr sane-airscan && \
   sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
+
+COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
 
 RUN npm install --production
 
