@@ -491,7 +491,7 @@ export default {
         }
       }).then((data) => {
         if (data && 'page' in data) {
-          if (window.confirm('Scan another page?')) {
+          if (window.confirm(`Scan page ${data.page}?`)) {
             this.request.page = data.page;
             this.scan();
           } else {

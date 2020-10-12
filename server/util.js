@@ -1,4 +1,4 @@
-const Zip = require('adm-zip');
+const AdmZip = require('adm-zip');
 
 const Util = {
   extend() {
@@ -13,7 +13,7 @@ const Util = {
   },
 
   zip(filepaths, destination) {
-    const zip = new Zip();
+    const zip = new AdmZip();
     for (let filepath of filepaths) {
       zip.addLocalFile(filepath);
     }

@@ -4,7 +4,6 @@ const Config = {};
 
 // Things to change
 Config.port = 8080;
-
 Config.devices = [];
 Config.ocrLanguage = 'eng';
 Config.log = {};
@@ -43,29 +42,38 @@ Config.previewPipeline = {
   ]
 };
 
-/*
-When all scans are complete, the filenames are all piped into stdin to the
-pipeline commands. It would be nicer to pipe the binary output of scanimage but
-that doesn't work with multipage scans so we have no choice but to write to the
-filesystem.
+/* When all scans are complete, the filenames are all piped into stdin of the
+first pipeline command. It would be nicer to pipe the binary output of scanimage
+but that doesn't work with multipage scans so we have no choice but to write to
+the filesystem.
 
 The stdout of each pipeline feeds into the stdin of the next. Although clumsy in
 some respects (especially where we have to write temporary files and then list
 them) it at least provides a means of user configuration with "just" shell
 scripting.
 
+The overall output of the pipelines (i.e. the last pipeline output) must be a
+list of the files you want kept. The convention is to output files of the form
+`scan-0000.ext` but it's convention only. You can output whatever you want. If
+multiple files are output then the results will be zipped into a single file.
+
 Each command is executed with the CWD set to the temporary location so no
 directory traversal is required. Pipeline commands are always read from this
 file (and never from the browser request, even though it is sent). It would be
 possible to subvert these commands for malicious use, but it doesn't give any
-further privilege than the user account running scanservjs. You obviously should
-not be running as root.
+further privilege than the user account running scanservjs and still requires
+access to this file. You obviously should not be running as root.
 
 Some useful pointers:
 - `convert` can read a list of files from a file with the @ argument. The `-`
-  file is stdin. So `convert @- -argument output` performs the conversion om
+  file is stdin. So `convert @- -argument output` performs the conversion on
   each file piped into stdin
 - `tesseract` has a similar feature using `-c stream_filelist=true`
+- `convert` can also output multiple files if you use an output filename with
+  `%d` in it. C string style formatting is available so you can do things like
+  output to `scan-%04d.jpg`. Formats which do not support multiple pages must
+  use this option. Multi-page formats including PDF and TIF do not use this
+  option.
 - if you just wanted to take a filename from stdin and have its content read out
   you could `xargs cat` provided there were no spaces or commas in the filename
   (which there won't be)
@@ -107,7 +115,7 @@ Config.pipelines = [
     extension: 'tif',
     description: 'TIF | Uncompressed',
     commands: [
-      'convert @- scan-%04d.tif',
+      'convert @- scan-0000.tif',
       'ls scan-*.*'
     ]
   },
@@ -115,7 +123,7 @@ Config.pipelines = [
     extension: 'tif',
     description: 'TIF | LZW compression',
     commands: [
-      'convert @- -compress lzw scan-%04d.jpg',
+      'convert @- -compress lzw scan-0000.tif',
       'ls scan-*.*'
     ]
   },
@@ -123,7 +131,7 @@ Config.pipelines = [
     extension: 'pdf',
     description: 'PDF (TIF | Uncompressed)',
     commands: [
-      'convert @- scan-%04d.pdf',
+      'convert @- scan-0000.pdf',
       'ls scan-*.*'
     ]
   },
@@ -131,8 +139,8 @@ Config.pipelines = [
     extension: 'pdf',
     description: 'PDF (TIF | LZW Compression)',
     commands: [
-      'convert @- -compress lzw tmp-%d.tif && ls tmp-*.tif',
-      'convert @- scan-%04d.pdf',
+      'convert @- -compress lzw tmp-%04d.tif && ls tmp-*.tif',
+      'convert @- scan-0000.pdf',
       'ls scan-*.*'
     ]
   },
@@ -140,8 +148,8 @@ Config.pipelines = [
     extension: 'pdf',
     description: 'PDF (JPG | High quality)',
     commands: [
-      'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- scan-%04d.pdf',
+      'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+      'convert @- scan-0000.pdf',
       'ls scan-*.*'
     ]
   },
@@ -149,8 +157,8 @@ Config.pipelines = [
     extension: 'pdf',
     description: 'PDF (JPG | Medium quality)',
     commands: [
-      'convert @- -quality 75 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- scan-%04d.pdf',
+      'convert @- -quality 75 tmp-%04d.jpg && ls tmp-*.jpg',
+      'convert @- scan-0000.pdf',
       'ls scan-*.*'
     ]
   },
@@ -158,8 +166,8 @@ Config.pipelines = [
     extension: 'pdf',
     description: 'PDF (JPG | Low quality)',
     commands: [
-      'convert @- -quality 50 tmp-%d.jpg && ls tmp-*.jpg',
-      'convert @- scan-%04d.jpg',
+      'convert @- -quality 50 tmp-%04d.jpg && ls tmp-*.jpg',
+      'convert @- scan-0000.pdf',
       'ls scan-*.*'
     ]
   }
@@ -172,7 +180,7 @@ if (Config.tesseract) {
       description: 'OCR | PDF (JPG | High quality)',
       commands: [
         'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf > scan0001.pdf && rm -f tmp-*.jpg`,
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
         'ls scan-*.*'
       ]
     },
@@ -180,7 +188,7 @@ if (Config.tesseract) {
       extension: 'txt',
       description: 'OCR | Text file',
       commands: [
-        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt > scan0001.txt && rm -f tmp-*.tif`,
+        `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt > scan-0001.txt`,
         'ls scan-*.*'
       ]
     }
