@@ -66,6 +66,17 @@ class FileInfo {
     return fs.existsSync(this.fullname);
   }
 
+  async move(destination) {
+    return await new Promise((resolve, reject) => {
+      fs.rename(this.fullname, destination, (err) => {
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
   save(data) {
     fs.writeFileSync(this.fullname, data);
   }

@@ -44,6 +44,7 @@
   "author": "Sam Strachan",
   "license": "GPL-2.0",
   "dependencies": {
+    "adm-zip": "0.4.16",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
     "dayjs": "1.8.35",

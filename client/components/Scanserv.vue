@@ -381,13 +381,21 @@ export default {
 
       return this._fetch(url).then(context => {
         this.context = context;
-        this.device = context.devices[0];
-        this.$refs.toastr.i(`Found device ${this.device.id}`);
-        this.request = this.readRequest();
-        for (let test of context.diagnostics) {
-          const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
-          toast(test.message);
+
+        if (context.devices.length > 0) {
+          for (let device of context.devices) {
+            this.$refs.toastr.i(`Found device ${device.id}`);
+          }
+          this.device = context.devices[0];
+          this.request = this.readRequest();
+          for (let test of context.diagnostics) {
+            const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
+            toast(test.message);
+          }
+        } else {
+          this.$refs.toastr.e('Found no devices');
         }
+
         if (force) {
           this.clear();
           this.readPreview();
@@ -483,7 +491,7 @@ export default {
         }
       }).then((data) => {
         if (data && 'page' in data) {
-          if (window.confirm('Scan another page?')) {
+          if (window.confirm(`Scan page ${data.page}?`)) {
             this.request.page = data.page;
             this.scan();
           } else {
