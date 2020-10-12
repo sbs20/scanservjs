@@ -68,6 +68,10 @@ docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
 docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
 
+# Copy image
+docker save -o scanservjs-image.tar scanservjs-image
+docker load -i scanservjs-image.tar
+
 # Debug
 docker run -it --entrypoint=/bin/bash scanservjs-container
 docker logs scanservjs-container
