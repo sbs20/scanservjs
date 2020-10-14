@@ -48,9 +48,10 @@ jobs:
 
     - name: Retrieve package name
       run: |
-        echo ::set-env name=PACKAGE_NAME::$(ls ./release/)
+        echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
   
     - run: echo ${{ github.ref }}
+    - run: echo $PACKAGE_NAME
     - run: echo ${{ env.PACKAGE_NAME }}
   
     - name: Create Release
