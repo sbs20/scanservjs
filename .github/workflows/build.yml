@@ -51,7 +51,7 @@ jobs:
     # Decide if we're doing a release (not the dev branch and it's node 12)
     - name: Release verdict
       run: |
-        echo "RELEASE=${{ endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development') }}
+        echo "RELEASE=${{ endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development') }}"
         echo $RELEASE
 
     # We may need the package name for a release later
