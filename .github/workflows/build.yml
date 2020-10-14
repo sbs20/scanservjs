@@ -56,7 +56,7 @@ jobs:
 
     # We may need the package name for a release later
     - name: Retrieve package name
-      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development')
+      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'staging')
       run: |
         echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
 
