@@ -35,6 +35,7 @@ jobs:
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
 
+    # This is required for some unit tests
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
     - run: npm install
     - run: npm run server-lint
@@ -42,5 +43,36 @@ jobs:
     - run: npm run client-build
     - run: npm run test
     - run: npm run package
+
+    - name: Retrieve package name
+      run: |
+        echo ::set-env name=PACKAGE_NAME::$(ls ./release/)
+  
+    - run: echo ${{ github.ref }}
+    - run: echo ${{ env.PACKAGE_NAME }}
+  
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: true
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      #if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./release/${{ env.PACKAGE_NAME }}
+        asset_name: ${{ env.PACKAGE_NAME }}
+        asset_content_type: application/gzip
+
       env:
         CI: true
