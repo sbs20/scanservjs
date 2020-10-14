@@ -7,14 +7,14 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [master]
+    branches: [master, staging]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [master]
-#   schedule:
-#     - cron: '0 7 * * 2'
+    branches: [master, staging]
   workflow_dispatch:
-
+  #schedule:
+  #  - cron: '0 7 * * 2'
+  
 jobs:
   analyze:
     name: Analyze
