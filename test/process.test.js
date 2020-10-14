@@ -51,14 +51,16 @@ describe('Process', () => {
     assert.strictEqual(png.length, 3451);
   });
 
-  it('spawn: cat ./test/resource/logo.png | convert - -quality 50 jpg:-', async () => {
+  it('spawn: cat ./test/resource/logo.png | convert - -quality 50 jpg:-', async function () {
+    this.timeout(5000);
     const png = await Process.spawn('cat ./test/resource/logo.png');
     const jpg = await Process.spawn('convert - -quality 50 jpg:-', png);
     // It should be about 4179 but different convert implementations may vary
     assert.strictEqual(jpg.length > 4000, true);
   });
 
-  it('chain: cat ./test/resource/logo.png | convert - -quality 50 jpg:-', async () => {
+  it('chain: cat ./test/resource/logo.png | convert - -quality 50 jpg:-', async function () {
+    this.timeout(5000);
     const cmds = [
       'cat ./test/resource/logo.png',
       'convert - -quality 50 jpg:-'
@@ -68,7 +70,8 @@ describe('Process', () => {
     assert.strictEqual(jpg.length > 4000, true);
   });
 
-  it('chain: cat ./test/resource/logo.png | convert - pdf:-', async () => {
+  it('chain: cat ./test/resource/logo.png | convert - pdf:-', async function () {
+    this.timeout(5000);
     const cmds = [
       'cat ./test/resource/logo.png',
       'convert - pdf:-'
