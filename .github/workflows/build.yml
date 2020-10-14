@@ -51,11 +51,11 @@ jobs:
         echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
   
     - run: echo ${{ github.ref }}
-    - run: echo $PACKAGE_NAME
     - run: echo ${{ env.PACKAGE_NAME }}
   
     - name: Create Release
       id: create_release
+      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'staging')
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
 
     - name: Upload Release Asset
       id: upload-release-asset
-      #if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
+      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
