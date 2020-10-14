@@ -15,10 +15,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
@@ -28,10 +30,13 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
+
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
     - run: npm install
+    - run: npm run server-lint
     - run: npm run server-build
     - run: npm run client-build
     - run: npm run test
+    - run: npm run package
       env:
         CI: true
