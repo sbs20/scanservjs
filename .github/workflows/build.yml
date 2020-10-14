@@ -42,6 +42,8 @@ jobs:
     - run: npm run server-build
     - run: npm run client-build
     - run: npm run test
+      env:
+        CI: true
     - run: npm run package
 
     - name: Retrieve package name
@@ -73,6 +75,3 @@ jobs:
         asset_path: ./release/${{ env.PACKAGE_NAME }}
         asset_name: ${{ env.PACKAGE_NAME }}
         asset_content_type: application/gzip
-
-      env:
-        CI: true
