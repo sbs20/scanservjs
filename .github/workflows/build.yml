@@ -25,6 +25,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    # Use nodejs cache
     - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
@@ -48,35 +49,16 @@ jobs:
         CI: true
     - run: npm run package
 
-    # Decide if we're doing a release (not the dev branch and it's node 12)
-    - name: Release verdict
-      run: |
-        echo "RELEASE=${{ endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development') }}"
-        echo $RELEASE
-
-    # We may need the package name for a release later
+    # We may need the package name for a release later (if not the dev branch and it's node 12)
     - name: Retrieve package name
-      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'staging')
+      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development')
       run: |
         echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
 
-    - name: Do not run
-      if: env.NONONO
-      run: echo "NONONO"
-
-    - name: Run
-      if: env.RELEASE
-      run: echo "RELEASE"
-
-    - name: Package yes
-      if: env.PACKAGE_NAME
-      run: echo $PACKAGE_NAME
-
-
-    # Create a release if this is 
+    # Create a draft release if there's a package
     - name: Create Release
       id: create_release
-      if: contains(env.RELEASE, 'true')
+      if: env.PACKAGE_NAME
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,7 +71,7 @@ jobs:
     # Upload the release package
     - name: Upload Release Asset
       id: upload-release-asset
-      if: contains(env.RELEASE, 'true')
+      if: env.PACKAGE_NAME
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
