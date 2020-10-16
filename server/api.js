@@ -1,33 +1,24 @@
-const fs = require('fs');
 const log = require('loglevel').getLogger('Api');
-
 const Config = require('../config/config');
+const Constants = require('./constants');
 const Context = require('./context');
-const Device = require('./device');
+const Devices = require('./devices');
 const FileInfo = require('./file-info');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
+const util = require('./util');
 
 class Api {
   static async fileList() {
     log.debug('fileList()');
-    return await new Promise((resolve, reject) => {
-      let outdir = Config.outputDirectory;
-      fs.readdir(outdir, (err, list) => {
-        if (err) {
-          reject(err);
-        }
-  
-        let files = list
-          .map(f => new FileInfo(outdir + f))
-          .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt'].includes(f.extension))
-          .sort((f1, f2) => f2.lastModified - f1.lastModified);
-
-        log.debug(JSON.stringify(files));
-        resolve(files);
-      });
-    });
+    const dir = new FileInfo(Config.outputDirectory);
+    let files = await dir.list();
+    files = files
+      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension))
+      .sort((f1, f2) => f2.lastModified - f1.lastModified);
+    log.debug(JSON.stringify(files));
+    return files;
   }
 
   static fileDelete(fullpath) {
@@ -65,7 +56,7 @@ class Api {
     const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
-      return await Process.chain(Config.previewPipeline.commands, buffer, true);
+      return await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -83,49 +74,69 @@ class Api {
   static async scan(req) {
     const context = await Context.create();
     const request = new Request(context).extend(req);
-    const stem = '~tmp-scan-';
+    const dir = FileInfo.create(Config.tempDirectory);
 
-    if (request.batch === undefined || request.batch === false) {
-      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-      if (pipeline === undefined) {
-        throw Error('No matching pipeline');
+    // Check pipeline here. Better to find out sooner if there's a problem
+    const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
+    if (pipeline === undefined) {
+      throw Error('No matching pipeline');
+    }
+
+    const clearTemp = async () => {
+      const files = await dir.list();
+      files.map(f => f.delete());
+    };
+
+    if (request.page === 1) {
+      log.debug('Clearing temp directory');
+      await clearTemp();
+    }
+
+    if (request.page > 0) {
+      log.debug('Scanning');
+      await Process.spawn(Scanimage.scan(request));
+    }
+
+    if (request.batch !== Constants.BATCH_MANUAL || request.page < 1) {
+      log.debug(`Post processing: ${pipeline.description}`);
+      const files = await dir.list();
+      const stdin = files
+        .filter(f => f.extension === '.tif')
+        .map(f => f.name)
+        .join('\n');
+      log.debug('Executing cmds:', pipeline.commands);
+      const stdout = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
+      let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
+
+      let filename = filenames[0];
+      let extension = pipeline.extension;
+      if (filenames.length > 1) {
+        filename = 'archive.zip';
+        extension = 'zip';
+        util.zip(
+          filenames.map(f => `${Config.tempDirectory}${f}`),
+          `${Config.tempDirectory}${filename}`);
       }
-      const cmds = [Scanimage.scan(request)].concat(pipeline.commands);
-      log.debug('Executing cmds:', cmds);
-      const buffer = await Process.chain(cmds);
-      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
-      log.debug(`Written data to: ${filename}`);
-      return {};
 
-    } else if (request.batch && request.page > 0) {
-      const buffer = await Process.spawn(Scanimage.scan(request));
-      const number = `000${request.page}`.slice(-4);
-      const filename = `${stem}${number}.tif`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
-      log.debug(`Written data to: ${filename}`);
-      return {
-        page: request.page + 1
-      };
+      const destination = `${Config.outputDirectory}${Config.filename()}.${extension}`;
+      await FileInfo
+        .create(`${Config.tempDirectory}${filename}`)
+        .move(destination);
 
-    } else {
-      const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-      const cmds = [`ls ${stem}*.tif`].concat(pipeline.commands);
-      log.debug('Executing cmds:', cmds);
-      const buffer = await Process.chain(cmds);
-      const filename = `${Config.outputDirectory}${Config.filename()}.${pipeline.extension}`;
-      const file = new FileInfo(filename);
-      file.save(buffer);
-      log.debug(`Written data to: ${filename}`);
+      log.debug(`Written data to: ${destination}`);
+      await clearTemp();
       return {};
     }
+
+    log.debug(`Scan page: ${request.page + 1}?`);
+    return {
+      page: request.page + 1
+    };
   }
 
   static async context(force) {
     if (force) {
-      Device.reset();
+      Devices.reset();
       const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
       preview.delete();
     }

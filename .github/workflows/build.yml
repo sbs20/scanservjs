@@ -1,25 +1,82 @@
 name: Node.js CI
 
-#on: [push]
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - development
+      - staging
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 6
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    # Use nodejs cache
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm 
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+
+    # Enable conversion to PDF
+    - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
+
+    # Install packages and build
     - run: npm install
+    - run: npm run server-lint
     - run: npm run server-build
     - run: npm run client-build
     - run: npm run test
       env:
         CI: true
+    - run: npm run package
+
+    # We may need the package name for a release later (if not the dev branch and it's node 12)
+    - name: Retrieve package name
+      if: endsWith(matrix.node-version, '12.x') && !endsWith(github.ref, 'development')
+      run: |
+        echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
+
+    # Create a draft release if there's a package
+    - name: Create Release
+      id: create_release
+      if: env.PACKAGE_NAME
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: true
+
+    # Upload the release package
+    - name: Upload Release Asset
+      id: upload-release-asset
+      if: env.PACKAGE_NAME
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release/${{ env.PACKAGE_NAME }}
+        asset_name: ${{ env.PACKAGE_NAME }}
+        asset_content_type: application/gzip

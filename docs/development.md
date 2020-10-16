@@ -54,6 +54,10 @@ gulp release
 Install docker
 ```
 sudo apt install docker.io
+sudo systemctl unmask docker
+sudo systemctl start docker
+
+# Hack to make docker accessible.
 sudo chmod 666 /var/run/docker.sock
 ```
 
@@ -62,7 +66,11 @@ Useful commands
 # Build and run
 docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
-docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
+docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
+
+# Copy image
+docker save -o scanservjs-image.tar scanservjs-image
+docker load -i scanservjs-image.tar
 
 # Debug
 docker run -it --entrypoint=/bin/bash scanservjs-container

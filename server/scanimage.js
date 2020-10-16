@@ -2,10 +2,18 @@ const log = require('loglevel').getLogger('Scanimage');
 
 const CmdBuilder = require('./command-builder');
 const Config = require('../config/config');
+const Constants = require('./constants');
 
 class Scanimage {
-  static all() {
+  static devices() {
     return new CmdBuilder(Config.scanimage)
+      .arg('-L')
+      .build();
+  }
+  
+  static features(deviceId) {
+    return new CmdBuilder(Config.scanimage)
+      .arg('-d', deviceId)
       .arg('-A')
       .build();
   }
@@ -23,6 +31,9 @@ class Scanimage {
       .arg('-y', params.height)
       .arg('--format', params.format);
   
+    if ('source' in params) {
+      cmdBuilder.arg('--source', params.source);
+    }
     if ('depth' in params) {
       cmdBuilder.arg('--depth', params.depth);
     }
@@ -35,7 +46,12 @@ class Scanimage {
     if (params.mode === 'Lineart' && params.dynamicLineart === false) {
       cmdBuilder.arg('--disable-dynamic-lineart=yes');
     }
-  
+    if (request.batch === Constants.BATCH_AUTO) {
+      cmdBuilder.arg(`--batch=${Config.tempDirectory}${Constants.TEMP_FILESTEM}%04d.tif`);
+    } else {
+      const number = `000${request.page}`.slice(-4);
+      cmdBuilder.arg(`> ${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}.tif`);
+    }
     return cmdBuilder.build();
   }
 }

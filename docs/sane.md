@@ -35,6 +35,60 @@ underlying problem is. In order of likelihood:
     Unplug / replug the scanner.
   * Add current user to the `scanner` group
 
+## SANE Airscan
+
+You may find [sane-airscan](https://github.com/alexpevzner/sane-airscan) useful
+for supporting newer eSCL and WSD devices as the standard sane-escl package
+doesn't seem to be widely available in most package managers yet. Once installed
+you should just find that it works with a simple `scanimage -L`. You can also
+specify a specific name for the device in `/etc/sane.d/airscan.conf`
+
+```console
+[devices]
+"My scanner" = "http://10.0.111.4/eSCL"
+```
+Your URI may be different
+
+Airscan relies on bonjour to make it work. If you are running on a different
+subnet, you can use saned to share it in the normal way and add the IP address
+of the saned server to `/etc/sane.d/net.conf` on the client (which will be the
+scanservjs server).
+
+## Defining network scanners
+
+From the scanimage manpage:
+
+> The -L or --list-devices option requests a (partial) list of devices that are
+> available. The list is not complete since some devices may be available, but
+> are not listed in any of the configuration files (which are typically stored
+> in directory /etc/sane.d). This is particularly the case when accessing
+> scanners through the network. If a device is not listed in a configuration
+> file, the only way to access it is by its full device name. You may need to
+> consult your system administrator to find out the names of such devices.
+
+Find the name of the scanner on the remote system using `scanimage -L` e.g:
+
+```
+device `airscan:e0:Canon TR8500 series' is a eSCL Canon TR8500 series eSCL network scanner
+```
+
+Then on the client, prefix it with `net:<ip-address>:` so it becomes:
+
+```
+net:192.168.0.10:airscan:e0:Canon TR8500 series'
+```
+
+For more information on configuring the server and client see
+[SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration).
+
+TL;DR; for configuring server:
+
+```console
+# Allow access from network
+echo "192.168.0.1/24" >> /etc/sane.d/saned.conf
+sudo systemctl enable saned.socket
+sudo systemctl start saned.socket
+```
 
 ## For QNAP NAS
 ### install [Works on QTS 4.2.2]

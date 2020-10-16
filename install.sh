@@ -22,6 +22,13 @@ if ! [ -x "$(command -v npm)" ]; then
     exit 1
 fi
 
+# You may wish to install additional components such as airscan and tesseract.
+# apt-get install -yq curl gpg
+# echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list
+# curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null
+# apt-get update
+# apt-get install -yq sane sane-utils imagemagick tesseract-ocr sane-airscan
+
 # Set correct src dir
 srcdir="$( cd "$( dirname "$0" )" && pwd )"
 
@@ -79,7 +86,8 @@ cp scanservjs.service /etc/systemd/system
 # Reload the deamon info
 systemctl daemon-reload
 
-# Start the new service
+# Enable and start the new service
+systemctl enable scanservjs
 systemctl start scanservjs
 
 echo "scanservjs starting"

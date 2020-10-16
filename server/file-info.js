@@ -39,7 +39,12 @@ class FileInfo {
       this.lastModified = stat.mtime;
       this.size = stat.size;
       this.sizeString = sizeString(this.size);
+      this.isDirectory = stat.isDirectory();
     }
+  }
+
+  static create(fullpath) {
+    return new FileInfo(fullpath);
   }
 
   delete() {
@@ -61,6 +66,17 @@ class FileInfo {
     return fs.existsSync(this.fullname);
   }
 
+  async move(destination) {
+    return await new Promise((resolve, reject) => {
+      fs.rename(this.fullname, destination, (err) => {
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
   save(data) {
     fs.writeFileSync(this.fullname, data);
   }
@@ -80,6 +96,22 @@ class FileInfo {
 
   toJson() {
     return JSON.parse(this.toText());
+  }
+
+  async list() {
+    return await new Promise((resolve, reject) => {
+      if (!this.isDirectory) {
+        reject(`${this.fullname} is not a directory`);
+      }
+      fs.readdir(this.fullname, (err, list) => {
+        if (err) {
+          reject(err);
+        }
+
+        const files = list.map(f => new FileInfo(`${this.fullname}/${f}`));
+        resolve(files);
+      });
+    });
   }
 }
 

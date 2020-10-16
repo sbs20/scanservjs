@@ -55,18 +55,15 @@ gulp.task('clean', () => {
   return del(['./dist/*']);
 });
 
-gulp.task('client-build', () => {
-  return run('npm run client-build').exec();
-});
-
 gulp.task('server-lint', () => {
-  return gulp.src(['./server/*.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./server/*.js', './config/config.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
 gulp.task('server-build', () => {
+  const shellFilter = filter('**/*.sh', {restore: true});
   return gulp.src([
     './install.sh',
     './uninstall.sh',
@@ -76,19 +73,14 @@ gulp.task('server-build', () => {
     './*config/**/*.js',
     './*server/**/*',
     './*data/**/*.md',
-    './*data/**/default.jpg',
-  ]).pipe(gulp.dest('./dist/'));
+    './*data/**/default.jpg'])
+    .pipe(shellFilter)
+    .pipe(chmod(0o755))
+    .pipe(shellFilter.restore)
+    .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('test', () => {
-  return run('npm run test').exec();
-});
-
-gulp.task('build', gulp.series(['clean', 'server-lint', 'client-build', 'server-build', 'test'], (done) => {
-  done();
-}));
-
-gulp.task('release', gulp.series(['build'], () => {
+gulp.task('package', () => {
   const filename = `scanservjs_v${version}_${dayjs().format('YYYYMMDD.HHmmss')}.tar`;
   const shellFilter = filter('**/*.sh', {restore: true});
   return gulp.src('./dist/**/*')
@@ -101,6 +93,27 @@ gulp.task('release', gulp.series(['build'], () => {
     .pipe(tar(filename))
     .pipe(gzip())
     .pipe(gulp.dest('./release'));
+});
+
+/*
+Development helpers below. These tasks rely on running a command line which is
+not available in all circumstances.
+*/
+
+gulp.task('client-build', () => {
+  return run('npm run client-build').exec();
+});
+
+gulp.task('test', () => {
+  return run('npm run test').exec();
+});
+
+gulp.task('build', gulp.series(['clean', 'server-lint', 'client-build', 'server-build', 'test'], (done) => {
+  done();
+}));
+
+gulp.task('release', gulp.series(['build', 'package'], (done) => {
+  done();
 }));
 
 gulp.task('default', gulp.series(['build'], (done) => {

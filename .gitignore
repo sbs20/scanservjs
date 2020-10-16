@@ -96,7 +96,8 @@ dist/**/*
 *.tif
 *.pdf
 *.png
-data/output/*.txt
+data/output/*
+data/temp/*
 scan*.jpg
 config/devices.json
 var

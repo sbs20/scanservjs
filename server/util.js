@@ -1,3 +1,5 @@
+const AdmZip = require('adm-zip');
+
 const Util = {
   extend() {
     const t = arguments[0];
@@ -8,6 +10,14 @@ const Util = {
       }
     }
     return t;
+  },
+
+  zip(filepaths, destination) {
+    const zip = new AdmZip();
+    for (let filepath of filepaths) {
+      zip.addLocalFile(filepath);
+    }
+    zip.writeZip(destination);
   }
 };
 
