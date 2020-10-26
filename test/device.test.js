@@ -112,4 +112,29 @@ describe('Device', () => {
     assert.strictEqual(device.features['--brightness'], undefined);
     assert.strictEqual(device.features['--contrast'], undefined);
   });
+
+  it('scanimage-a5.txt', () =>{
+    const file = new FileInfo('test/resource/scanimage-a5.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'pixma:04A91766_004AE4');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Color', 'Gray', 'Lineart']);
+    assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.deepStrictEqual(device.features['--source'].options, ['Flatbed', 'Automatic Document Feeder']);
+    assert.strictEqual(device.features['--source'].default, 'Flatbed');
+    assert.deepStrictEqual(device.features['--resolution'].options, [0, 75, 150, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 216);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 355);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 216);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 355);
+    assert.strictEqual(device.features['--brightness'], undefined);
+    assert.strictEqual(device.features['--contrast'], undefined);
+    
+
+  });
 });
