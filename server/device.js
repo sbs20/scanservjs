@@ -97,7 +97,7 @@ class Adapter {
       if (match[3] !== 'inactive') {
         device.features[match[1]] = {
           'default': match[3],
-          'parameters': match[2]
+          'parameters': match[2].replace("auto|","")
         };  
       }
     }
