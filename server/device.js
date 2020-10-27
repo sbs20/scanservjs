@@ -5,6 +5,7 @@ class Feature {
   static splitNumbers(string, delimiter) {
     return string.replace(/[a-z%]/ig, '')
       .split(delimiter)
+      .filter(s => s.length > 0)
       .map(s => Number(s));
   }
 
@@ -47,6 +48,7 @@ class Adapter {
   static decorate(device) {
     for (const key in device.features) {
       const feature = device.features[key];
+      feature.parameters = feature.parameters.replace(/^auto\|/, '');
       switch (key) {
         case '--mode':
         case '--source':
@@ -97,7 +99,7 @@ class Adapter {
       if (match[3] !== 'inactive') {
         device.features[match[1]] = {
           'default': match[3],
-          'parameters': match[2].replace("auto|","")
+          'parameters': match[2]
         };  
       }
     }

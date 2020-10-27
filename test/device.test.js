@@ -122,7 +122,7 @@ describe('Device', () => {
     assert.strictEqual(device.features['--mode'].default, 'Color');
     assert.deepStrictEqual(device.features['--source'].options, ['Flatbed', 'Automatic Document Feeder']);
     assert.strictEqual(device.features['--source'].default, 'Flatbed');
-    assert.deepStrictEqual(device.features['--resolution'].options, [0, 75, 150, 300, 600, 1200]);
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 150, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 216);
@@ -134,7 +134,5 @@ describe('Device', () => {
     assert.strictEqual(device.features['-y'].limits[1], 355);
     assert.strictEqual(device.features['--brightness'], undefined);
     assert.strictEqual(device.features['--contrast'], undefined);
-    
-
   });
 });
