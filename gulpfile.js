@@ -65,11 +65,11 @@ gulp.task('server-lint', () => {
 gulp.task('server-build', () => {
   const shellFilter = filter('**/*.sh', {restore: true});
   return gulp.src([
-    './install.sh',
-    './uninstall.sh',
+    './bin/install.sh',
+    './bin/uninstall.sh',
+    './bin/scanservjs.service',
     './package.json',
     './package-lock.json',
-    './scanservjs.service',
     './*config/**/*.js',
     './*server/**/*',
     './*data/**/*.md',

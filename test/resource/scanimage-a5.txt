@@ -1,0 +1,53 @@
+
+All options specific to device `pixma:04A91766_004AE4':
+  Scan mode:
+    --resolution auto||75|150|300|600|1200dpi [75]
+        Sets the resolution of the scanned image.
+    --mode auto|Color|Gray|Lineart [Color]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --source Flatbed|Automatic Document Feeder [Flatbed]
+        Selects the scan source (such as a document-feeder). Set source before
+        mode and resolution. Resets mode and resolution to auto values.
+    --button-controlled[=(yes|no)] [no]
+        When enabled, scan process will not start immediately. To proceed,
+        press "SCAN" button (for MP150) or "COLOR" button (for other models).
+        To cancel, press "GRAY" button.
+  Gamma:
+    --custom-gamma[=(auto|yes|no)] [yes]
+        Determines whether a builtin or a custom gamma-table should be used.
+    --gamma-table auto|0..255,...
+        Gamma-correction table.  In color mode this option equally affects the
+        red, green, and blue channels simultaneously (i.e., it is an intensity
+        gamma table).
+    --gamma auto|0.299988..5 [2.2]
+        Changes intensity of midtones
+  Geometry:
+    -l auto|0..216.069mm [0]
+        Top-left x position of scan area.
+    -t auto|0..355.6mm [0]
+        Top-left y position of scan area.
+    -x auto|0..216.069mm [216.069]
+        Width of scan-area.
+    -y auto|0..355.6mm [355.6]
+        Height of scan-area.
+  Buttons:
+    --button-update
+        Update button state
+    --button-1 <int> [0] [read-only]
+        Button 1
+    --button-2 <int> [0] [read-only]
+        Button 2
+    --original <int> [0] [read-only]
+        Type of original to scan
+    --target <int> [0] [read-only]
+        Target operation type
+    --scan-resolution <int> [0] [read-only]
+        Scan resolution
+  Extras:
+    --threshold auto|0..100% (in steps of 1) [inactive]
+        Select minimum-brightness to get a white point
+    --threshold-curve auto|0..127 (in steps of 1) [inactive]
+        Dynamic threshold curve, from light to dark, normally 50-65
+    --adf-wait auto|0..3600 (in steps of 1) [inactive]
+        When set, the scanner searches the waiting time in seconds for a new
+        document inserted into the automatic document feeder.
