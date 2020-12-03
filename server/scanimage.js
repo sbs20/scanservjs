@@ -23,17 +23,20 @@ class Scanimage {
     const params = request.params;
     const cmdBuilder = new CmdBuilder(Config.scanimage);
     cmdBuilder.arg('-d', params.deviceId)
-      .arg('--mode', params.mode)
-      .arg('--resolution', params.resolution)
+      .arg('--mode', params.mode);
+
+    // Source needs to go before resolution
+    if ('source' in params) {
+      cmdBuilder.arg('--source', params.source);
+    }
+      
+    cmdBuilder.arg('--resolution', params.resolution)
       .arg('-l', params.left)
       .arg('-t', params.top)
       .arg('-x', params.width)
       .arg('-y', params.height)
       .arg('--format', params.format);
   
-    if ('source' in params) {
-      cmdBuilder.arg('--source', params.source);
-    }
     if ('depth' in params) {
       cmdBuilder.arg('--depth', params.depth);
     }
