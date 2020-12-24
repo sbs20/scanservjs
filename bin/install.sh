@@ -54,6 +54,9 @@ if [ -z "$scanservjs_user_exists" ]; then
 
     # Add the new user to the scanner group too (created by SANE)
     usermod -aG scanner scanservjs
+
+    # Add the new user to the lp group too (for Ubuntu)
+    usermod -aG lp scanservjs
 fi
 
 # Create a target directory for the website

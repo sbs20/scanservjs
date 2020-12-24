@@ -1,4 +1,5 @@
 const fs = require('fs');
+const mv = require('mv');
 const path = require('path');
 
 const checkPath = (fullpath) => {
@@ -68,7 +69,7 @@ class FileInfo {
 
   async move(destination) {
     return await new Promise((resolve, reject) => {
-      fs.rename(this.fullname, destination, (err) => {
+      mv(this.fullname, destination, (err) => {
         if (err) {
           reject(err);
         }
