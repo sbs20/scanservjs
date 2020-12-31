@@ -197,6 +197,13 @@ if (Config.tesseract) {
 
 // Process environment variables
 
+// It's possible that devlice strings contain semi colons, which is the default
+// delimiter. This environment variables allows overriding
+let DELIMITER = ';';
+if (process.env.DELIMITER !== undefined && process.env.DELIMITER.length > 0) {
+  DELIMITER = process.env.DELIMITER;
+}
+
 // scanservjs will attempt to find scanners locally using `scanimage -L` but
 // sometimes you may need to manually add network devices here if they're not
 // found e.g.
@@ -204,7 +211,7 @@ if (Config.tesseract) {
 // This is done with an environment variable. Multiple entries are separated by
 // semicolons
 if (process.env.DEVICES !== undefined && process.env.DEVICES.length > 0) {
-  Config.devices = process.env.DEVICES.split(';');
+  Config.devices = process.env.DEVICES.split(DELIMITER);
 }
 
 // scanservjs will attempt to find scanners locally using `scanimage -L` but
