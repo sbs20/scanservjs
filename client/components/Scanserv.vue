@@ -253,11 +253,13 @@ export default {
 
   methods: {
     _updatePreview() {
-      const isoPaperRatio = 215 / 297;
+      const paperRatio = this.device.features['-x'].limits[1] / 
+        this.device.features['-y'].limits[1];
+
       if (window.innerWidth < 576) {
         this.preview.width = window.innerWidth - (window.scrollbars.visible ? 25 : 0) - 30;
       } else {
-        this.preview.width = (window.innerHeight - 120) * isoPaperRatio;
+        this.preview.width = (window.innerHeight - 120) * paperRatio;
       }
       this.preview.key += 1;
     },
