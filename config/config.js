@@ -197,14 +197,21 @@ if (Config.tesseract) {
 
 // Process environment variables
 
+// It's possible that device strings contain semi colons, which is the default
+// delimiter. This environment variable enables overriding
+let DELIMITER = ';';
+if (process.env.DELIMITER !== undefined && process.env.DELIMITER.length > 0) {
+  DELIMITER = process.env.DELIMITER;
+}
+
 // scanservjs will attempt to find scanners locally using `scanimage -L` but
 // sometimes you may need to manually add network devices here if they're not
 // found e.g.
 // Config.devices = ['net:192.168.0.10:airscan:e0:Canon TR8500 series'];
 // This is done with an environment variable. Multiple entries are separated by
-// semicolons
+// semicolons or $DELIMITER
 if (process.env.DEVICES !== undefined && process.env.DEVICES.length > 0) {
-  Config.devices = process.env.DEVICES.split(';');
+  Config.devices = process.env.DEVICES.split(DELIMITER);
 }
 
 // scanservjs will attempt to find scanners locally using `scanimage -L` but
