@@ -197,8 +197,8 @@ if (Config.tesseract) {
 
 // Process environment variables
 
-// It's possible that devlice strings contain semi colons, which is the default
-// delimiter. This environment variables allows overriding
+// It's possible that device strings contain semi colons, which is the default
+// delimiter. This environment variable enables overriding
 let DELIMITER = ';';
 if (process.env.DELIMITER !== undefined && process.env.DELIMITER.length > 0) {
   DELIMITER = process.env.DELIMITER;
