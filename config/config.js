@@ -209,7 +209,7 @@ if (process.env.DELIMITER !== undefined && process.env.DELIMITER.length > 0) {
 // found e.g.
 // Config.devices = ['net:192.168.0.10:airscan:e0:Canon TR8500 series'];
 // This is done with an environment variable. Multiple entries are separated by
-// semicolons
+// semicolons or $DELIMITER
 if (process.env.DEVICES !== undefined && process.env.DEVICES.length > 0) {
   Config.devices = process.env.DEVICES.split(DELIMITER);
 }
