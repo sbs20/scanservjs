@@ -61,6 +61,8 @@ More installation options:
 * `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
   your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
   variable (semicolon delimited).
+* `DELIMITER`: if you need to inlcude semi-colons (`;`) in your environment
+  variables, this allows you to choose an alternative delimiter.
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
 * `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
 

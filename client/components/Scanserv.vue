@@ -253,11 +253,13 @@ export default {
 
   methods: {
     _updatePreview() {
-      const isoPaperRatio = 215 / 297;
+      const paperRatio = this.device.features['-x'].limits[1] / 
+        this.device.features['-y'].limits[1];
+
       if (window.innerWidth < 576) {
         this.preview.width = window.innerWidth - (window.scrollbars.visible ? 25 : 0) - 30;
       } else {
-        this.preview.width = (window.innerHeight - 120) * isoPaperRatio;
+        this.preview.width = (window.innerHeight - 120) * paperRatio;
       }
       this.preview.key += 1;
     },
@@ -453,16 +455,18 @@ export default {
       }
 
       if ('--source' in device.features) {
-        request.params.source = device.features['--source'].default;
+        request.params.source = request.params.source || device.features['--source'].default;
       }
       if ('--brightness' in device.features) {
-        request.params.brightness = 0;
+        request.params.brightness = request.params.brightness || 0;
       }
       if ('--contrast' in device.features) {
-        request.params.contrast = 0;
+        request.params.contrast = request.params.contrast || 0;
       }
       if ('--disable-dynamic-lineart' in device.features) {
-        request.params.dynamicLineart = true;
+        request.params.dynamicLineart = request.params.dynamicLineart !== undefined
+          ? request.params.dynamicLineart
+          : true;
       }
 
       return request;

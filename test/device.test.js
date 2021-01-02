@@ -113,7 +113,7 @@ describe('Device', () => {
     assert.strictEqual(device.features['--contrast'], undefined);
   });
 
-  it('scanimage-a5.txt', () =>{
+  it('scanimage-a5.txt', () => {
     const file = new FileInfo('test/resource/scanimage-a5.txt');
     const device = Device.from(file.toText());
 
@@ -130,6 +130,29 @@ describe('Device', () => {
     assert.strictEqual(device.features['-t'].limits[1], 355);
     assert.strictEqual(device.features['-x'].limits[0], 0);
     assert.strictEqual(device.features['-x'].limits[1], 216);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 355);
+    assert.strictEqual(device.features['--brightness'], undefined);
+    assert.strictEqual(device.features['--contrast'], undefined);
+  });
+
+  it('scanimage-a6.txt', () => {
+    const file = new FileInfo('test/resource/scanimage-a6.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'brother4:bus9;dev1');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Black & White', 'Gray[Error Diffusion]', 'True Gray', '24bit Color[Fast]']);
+    assert.strictEqual(device.features['--mode'].default, '24bit Color[Fast]');
+    assert.deepStrictEqual(device.features['--source'].options, ['FlatBed', 'Automatic Document Feeder(left aligned)', 'Automatic Document Feeder(left aligned,Duplex)', 'Automatic Document Feeder(centrally aligned)', 'Automatic Document Feeder(centrally aligned,Duplex)']);
+    assert.strictEqual(device.features['--source'].default, 'Automatic Document Feeder(left aligned)');
+    assert.deepStrictEqual(device.features['--resolution'].options, [100, 150, 200, 300, 400, 600, 1200, 2400, 4800, 9600]);
+    assert.strictEqual(device.features['--resolution'].default, 200);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 215);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 355);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 215);
     assert.strictEqual(device.features['-y'].limits[0], 0);
     assert.strictEqual(device.features['-y'].limits[1], 355);
     assert.strictEqual(device.features['--brightness'], undefined);

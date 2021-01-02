@@ -57,6 +57,7 @@ class Devices {
 
     if (devices === null) {
       let deviceIds = Config.devices;
+      log.debug('Config.devices: ', deviceIds);
       if (Config.devicesFind) {
         const data = await Process.execute(Scanimage.devices());
         log.debug('Device list: ', data);
