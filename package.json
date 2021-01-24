@@ -1,6 +1,6 @@
 {
   "name": "scanservjs",
-  "version": "2.1.2",
+  "version": "2.5.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "scripts": {
     "serve": "nodemon --exec 'vue-cli-service serve'",
@@ -23,6 +23,7 @@
     "babel-eslint": "^10.1.0",
     "bootstrap": "4.5.2",
     "bootstrap-vue": "2.17.0",
+    "deepmerge": "^4.2.2",
     "del": "5.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
@@ -36,16 +37,19 @@
     "gulp-tar": "^2.1.0",
     "mocha": "8.1.3",
     "nodemon": "^2.0.4",
-    "node-sass": "4.14.1",
+    "sass": "^1.30.0",
     "sass-loader": "10.0.2",
     "vue-advanced-cropper": "0.16.10",
+    "vue-cli-plugin-vuetify": "~2.0.8",
     "vue-slider-component": "3.2.5",
     "vue-template-compiler": "^2.6.11",
-    "vue-toastr": "2.1.2"
+    "vue-toastr": "2.1.2",
+    "vuetify-loader": "^1.3.0"
   },
   "author": "Sam Strachan",
   "license": "GPL-2.0",
   "dependencies": {
+    "@mdi/font": "^5.8.55",
     "adm-zip": "0.4.16",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
@@ -54,55 +58,12 @@
     "loglevel": "1.7.0",
     "loglevel-plugin-prefix": "0.8.4",
     "mv": "2.1.1",
-    "vue": "^2.6.11"
+    "node-sass": "4.14.1",
+    "vue": "^2.6.11",
+    "vue-router": "3.4.5",
+    "vuetify": "2.3.18"
   },
   "optionalDependencies": {},
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {
-      "array-bracket-spacing": 1,
-      "brace-style": 1,
-      "comma-spacing": 1,
-      "eqeqeq": 1,
-      "indent": [
-        "error",
-        2,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "keyword-spacing": 1,
-      "no-mixed-spaces-and-tabs": 1,
-      "no-undef": 1,
-      "no-unused-vars": 1,
-      "no-var": 1,
-      "object-shorthand": [
-        1,
-        "methods"
-      ],
-      "prefer-arrow-callback": 1,
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "space-before-blocks": 1,
-      "space-infix-ops": 1
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

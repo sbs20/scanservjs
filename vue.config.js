@@ -1,7 +1,15 @@
+process.env.VUE_APP_VERSION = require('./package.json').version;
 const configure = require('./server/configure')
 const path = require("path");
 
 module.exports = {
+  css: {
+    loaderOptions: {
+      sass: {
+        additionalData: `@import "./client/styles/variables.scss"`
+      },      
+    }
+  },
   devServer: {
     before: configure
   },
