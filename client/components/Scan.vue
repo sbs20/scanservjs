@@ -172,13 +172,13 @@ export default {
   mounted() {
     this.$refs.toastr.defaultPosition = 'toast-bottom-right';
     this.$refs.toastr.defaultTimeout = 5000;
-    this._updatePreview();
+    this._resizePreview();
     this.readContext().then(() => {
       this.readPreview();
     });
     window.addEventListener('resize', () => {
       clearTimeout(this.preview.timer);
-      this.preview.timer = setTimeout(this._updatePreview, 100);
+      this.preview.timer = setTimeout(this._resizePreview, 100);
     });
   },
 
@@ -194,14 +194,18 @@ export default {
   },
 
   methods: {
-    _updatePreview() {
+    _resizePreview() {
       const paperRatio = this.device.features['-x'].limits[1] / 
         this.device.features['-y'].limits[1];
 
-      if (window.innerWidth < 576) {
-        this.preview.width = window.innerWidth - (window.scrollbars.visible ? 25 : 0) - 30;
+      const smallBreakpoint = 576;
+      const scrollbarWidth = 25;
+      const appbarHeight = 120;
+
+      if (window.innerWidth < smallBreakpoint) {
+        this.preview.width = window.innerWidth - (window.scrollbars.visible ? scrollbarWidth : 0) - 30;
       } else {
-        this.preview.width = (window.innerHeight - 120) * paperRatio;
+        this.preview.width = (window.innerHeight - appbarHeight) * paperRatio;
       }
       this.preview.key += 1;
     },
