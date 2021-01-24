@@ -33,12 +33,28 @@ If applicable, add screenshots to help explain your problem.
  - NPM version [e.g. 6]
  - Docker version [e.g. 19]
 
+**Logs**
+ - Please include application logs (see commands below)
+ 
 This may be useful
-```console
+```sh
+# Node version
 echo "node: $(node -v)"
+
+# NPM version
 echo "npm: $(npm -v)"
+
+# Docker version
 echo "docker: $(docker -v)"
+
+# OS version
 cat /etc/*release | sed ':a;N;$!ba;s/\n/; /g'
+
+# Logs if installed manually
+sudo journalctl | grep server.js > scanservjs.log.installed.txt
+
+# Logs if in docker
+docker logs scanservjs-container > scanservjs.log.docker.txt
 ```
 
 **Additional context**
