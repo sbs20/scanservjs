@@ -89,7 +89,6 @@
 
 <script>
 import { Cropper } from 'vue-advanced-cropper';
-import 'vue-slider-component/theme/antd.css';
 import Toastr from 'vue-toastr';
 import Common from '../classes/common';
 
