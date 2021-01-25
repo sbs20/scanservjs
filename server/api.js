@@ -128,9 +128,15 @@ class Api {
       return {};
     }
 
+    // Manual batch scan
+    const filepath = Scanimage.filename(request.page);
+    let buffer = FileInfo.create(filepath).toBuffer();
+    buffer = await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
+
     log.debug(`Scan page: ${request.page + 1}?`);
     return {
-      page: request.page + 1
+      page: request.page + 1,
+      image: buffer.toString('base64')
     };
   }
 

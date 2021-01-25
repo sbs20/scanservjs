@@ -10,5 +10,9 @@ export default {
 
   clone(obj) {
     return JSON.parse(JSON.stringify(obj));
+  },
+
+  version() {
+    return process.env.VUE_APP_VERSION;
   }
 };

@@ -41,9 +41,9 @@
           item-text="description"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
-          <v-btn color="green" @click="createPreview">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
-          <v-btn color="primary" @click="scan">scan <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
-          <v-btn color="secondary" @click="reset">reset <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+          <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">scan <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
+          <v-btn color="secondary" @click="reset" class="ml-1 mb-1">reset <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
         </div>
       </v-col>
 
@@ -84,69 +84,34 @@
         </div>
       </v-col>
     </v-row>
+
+    <batch-dialog ref="batchDialog" />
   </div>
 </template>
 
 <script>
 import { Cropper } from 'vue-advanced-cropper';
 import Toastr from 'vue-toastr';
+import BatchDialog from './BatchDialog';
+
 import Common from '../classes/common';
+import Device from '../classes/device';
+import Request from '../classes/request';
+import Storage from '../classes/storage';
+
+const storage = Storage.instance();
 
 export default {
-  name: 'Scanserv',
+  name: 'Scan',
   components: {
     Cropper,
-    Toastr
+    Toastr,
+    BatchDialog
   },
 
   data() {
-    const device = {
-      id: 'Unspecified',
-      features: {
-        '--mode': {
-          options: [],
-        },
-        '--resolution': {
-          options: [],
-        },
-        '-l': {
-          limits: [0, 215],
-        },
-        '-t': {
-          limits: [0, 297],
-        },
-        '-x': {
-          limits: [0, 215],
-        },
-        '-y': {
-          limits: [0, 297],
-        },
-        '--brightness': {
-          limits: [-100, 100],
-        },
-        '--contrast': {
-          limits: [-100, 100],
-        },
-        '--disable-dynamic-lineart': {}
-      }
-    };
-    
-    const request = {
-      params: {
-        deviceId: device.id,
-        top: 0,
-        left: 0,
-        width: device.features['-x'].limits[1],
-        height: device.features['-y'].limits[1],
-        resolution: device.features['--resolution'].default,
-        mode: device.features['--mode'].default,
-        brightness: 0,
-        contrast: 0,
-        dynamicLineart: true
-      },
-      pipeline: '',
-      batch: false
-    };
+    const device = Device.default();
+    const request = Request.create(null, device, '');
 
     return {
       context: {
@@ -185,8 +150,8 @@ export default {
   watch: {
     request: {
       handler(request) {
-        localStorage.request = JSON.stringify(request);
-        console.log('save:', localStorage.request);
+        storage.request = request;
+        console.log('save:', storage.request);
         this.onCoordinatesChange();
       },
       deep: true
@@ -305,7 +270,7 @@ export default {
             this.$refs.toastr.i(`Found device ${device.id}`);
           }
           this.device = context.devices[0];
-          this.request = this.readRequest();
+          this.request = this.buildRequest();
           for (let test of context.diagnostics) {
             const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
             toast(test.message);
@@ -336,55 +301,14 @@ export default {
       });
     },
 
-    readRequest() {
-      let request = null;
-      if (localStorage.request) {
-        request = JSON.parse(localStorage.request);
-        if (request.version !== this.context.version) {
-          request = null;
-        }
-        console.log('load', request);
-      }
-
+    buildRequest() {
+      let request = storage.request;
       if (request !== null) {
         this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
           || this.context.devices[0];
       }
-      const device = this.device;
 
-      if (request === null) {
-        request = {
-          version: this.context.version,
-          params: {
-            deviceId: device.id,
-            top: 0,
-            left: 0,
-            width: device.features['-x'].limits[1],
-            height: device.features['-y'].limits[1],
-            resolution: device.features['--resolution'].default,
-            mode: device.features['--mode'].default
-          },
-          pipeline: this.context.pipelines[0].description,
-          batch: 'none',
-          page: 1
-        };
-      }
-
-      if ('--source' in device.features) {
-        request.params.source = request.params.source || device.features['--source'].default;
-      }
-      if ('--brightness' in device.features) {
-        request.params.brightness = request.params.brightness || 0;
-      }
-      if ('--contrast' in device.features) {
-        request.params.contrast = request.params.contrast || 0;
-      }
-      if ('--disable-dynamic-lineart' in device.features) {
-        request.params.dynamicLineart = request.params.dynamicLineart !== undefined
-          ? request.params.dynamicLineart
-          : true;
-      }
-
+      request = Request.create(request, this.device, this.context.pipelines[0].description);
       return request;
     },
 
@@ -393,13 +317,15 @@ export default {
     },
 
     clear() {
-      localStorage.removeItem('request');
-      this.request = this.readRequest();
+      storage.request = null;
+      this.request = this.buildRequest();
     },
 
-    scan() {
+    scan(page) {
       this.mask(1);
-
+      if (page !== undefined) {
+        this.request.page = page;
+      }
       let data = Common.clone(this.request);
       
       this._fetch('scan', {
@@ -409,18 +335,26 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }).then((data) => {
-        if (data && 'page' in data) {
-          if (window.confirm(`Scan page ${data.page}?`)) {
-            this.request.page = data.page;
-            this.scan();
-          } else {
-            this.request.page = -1;
-            this.scan();
-          }
+      }).then((response) => {
+        if (response && 'page' in response) {
+          this.$refs.batchDialog.open({
+            message: `Do you want to scan page ${response.page}?`,
+            image: response.image,
+            onFinish: () => {
+              this.request.page = -1;
+              this.scan();
+            },
+            onNext: () => {
+              this.request.page = response.page;
+              this.scan();
+            },
+            onRescan: () => {
+              this.request.page = response.page - 1;
+              this.scan();
+            }
+          });
         } else {
           // Finish
-          this.request.page = 1;
           this.$router.push('/files');
         }
         this.mask(-1);

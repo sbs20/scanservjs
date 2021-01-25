@@ -59,13 +59,15 @@
 </template>
 
 <script>
+import Common from '../classes/common';
+
 export default {
   name: 'Navigation',
 
   data() {
     return {
       drawer: false,
-      version: process.env.VUE_APP_VERSION
+      version: Common.version()
     };
   },
 };

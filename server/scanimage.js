@@ -18,6 +18,11 @@ class Scanimage {
       .build();
   }
 
+  static filename(page) {
+    const number = `000${page}`.slice(-4);
+    return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}.tif`;
+  }
+
   static scan(request) {
     log.debug(JSON.stringify(request));
     const params = request.params;
@@ -52,8 +57,7 @@ class Scanimage {
     if (request.batch === Constants.BATCH_AUTO) {
       cmdBuilder.arg(`--batch=${Config.tempDirectory}${Constants.TEMP_FILESTEM}%04d.tif`);
     } else {
-      const number = `000${request.page}`.slice(-4);
-      cmdBuilder.arg(`> ${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}.tif`);
+      cmdBuilder.arg(`> ${Scanimage.filename(request.page)}`);
     }
     return cmdBuilder.build();
   }
