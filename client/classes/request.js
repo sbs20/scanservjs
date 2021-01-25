@@ -1,10 +1,10 @@
-import Common from './common';
+import Constants from './constants';
 
 export default {
   create(request, device, pipeline) {
     if (request === null) {
       request = {
-        version: Common.version(),
+        version: Constants.Version,
         params: {
           deviceId: device.id,
           top: 0,

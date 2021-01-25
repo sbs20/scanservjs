@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-app-bar color="accent-4 elevation-0" app>
+    <v-app-bar class="elevation-0" color="accent-4" app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="unselectable">scanservjs</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="d-none d-md-block">
-        <v-btn @click="$router.push('/scan')"><v-icon class="mr-2">mdi-camera</v-icon>Scan</v-btn>
-        <v-btn @click="$router.push('/files')"><v-icon class="mr-2">mdi-file-document-multiple</v-icon>Files</v-btn>
-        <v-btn @click="$router.push('/settings')"><v-icon class="mr-2">mdi-cog</v-icon>Settings</v-btn>
-        <v-btn @click="$router.push('/about')"><v-icon class="mr-2">mdi-information</v-icon>About</v-btn>
+        <v-btn elevation="0" @click="$router.push('/scan')"><v-icon class="mr-2">mdi-camera</v-icon>Scan</v-btn>
+        <v-btn elevation="0" @click="$router.push('/files')"><v-icon class="mr-2">mdi-file-document-multiple</v-icon>Files</v-btn>
+        <v-btn elevation="0" @click="$router.push('/settings')"><v-icon class="mr-2">mdi-cog</v-icon>Settings</v-btn>
+        <v-btn elevation="0" @click="$router.push('/about')"><v-icon class="mr-2">mdi-information</v-icon>About</v-btn>
       </v-toolbar-items>
     </v-app-bar>
 
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import Common from '../classes/common';
+import Constants from '../classes/constants';
 
 export default {
   name: 'Navigation',
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       drawer: false,
-      version: Common.version()
+      version: Constants.Version
     };
   },
 };

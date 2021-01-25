@@ -1,4 +1,4 @@
-import Common from './common';
+import Constants from './constants';
 import Settings from './settings';
 
 let storage = null;
@@ -9,7 +9,7 @@ export default class Storage {
     let request = null;
     if (localStorage.request) {
       request = JSON.parse(localStorage.request);
-      if (request.version !== Common.version()) {
+      if (request.version !== Constants.Version) {
         request = null;
       }
       console.log('load', request);
@@ -30,7 +30,7 @@ export default class Storage {
    */
   get settings() {
     const data = localStorage.settings ? JSON.parse(localStorage.settings) : null;
-    return new Settings(data);
+    return Settings.create(data);
   }
 
   /**

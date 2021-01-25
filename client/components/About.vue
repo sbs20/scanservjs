@@ -18,14 +18,14 @@
 </template>
 
 <script>
-import Common from '../classes/common';
+import Constants from '../classes/constants';
 
 export default {
   name: 'About',
 
   data() {
     return {
-      version: Common.version()
+      version: Constants.Version
     };
   }
 };

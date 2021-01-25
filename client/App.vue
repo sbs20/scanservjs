@@ -21,7 +21,11 @@
 </template>
 
 <script>
+import Constants from './classes/constants';
+import Storage from './classes/storage';
 import Navigation from './components/Navigation';
+
+const storage = Storage.instance();
 
 export default {
   name: 'App',
@@ -36,12 +40,18 @@ export default {
   },
 
   mounted() {
+    let theme = storage.settings.theme;
+    if (theme === Constants.Themes.System) {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? Constants.Themes.Dark
+        : Constants.Themes.Light;
+    }
+    this.$vuetify.theme.dark = theme === Constants.Themes.Dark;
+
     // Default route if connected
     if (this.$route.matched.length === 0) {
       this.$router.replace('/scan');
     }
-
-    this.$vuetify.theme.dark = true;
   },
 
   methods: {

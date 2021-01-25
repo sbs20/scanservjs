@@ -1,14 +1,14 @@
-import Common from './common';
+import Constants from './constants';
 
 export default class Settings {
-  constructor(obj) {
-    obj = obj || Settings.default();
-    Object.apply(this, obj);
+  static create(obj) {
+    obj = Object.assign(Settings.default(), obj);
+    return obj;
   }
 
   static default() {
     return {
-      version: Common.version(),
+      version: Constants.Version,
       theme: 'system'
     };
   }
