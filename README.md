@@ -2,7 +2,7 @@
 scanservjs is a simple web-based UI for your scanner. It allows you to share one
 or more scanners (using SANE) on a network without the need for drivers or
 complicated installation. It can save to TIF, JPG, PNG, PDF and TXT (with
-Tesseract OCR) with varying compression settings, all of which can configured.
+Tesseract OCR) with varying compression settings, all of which can be configured.
 It supports multipage scanning and all
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
 
