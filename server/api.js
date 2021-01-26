@@ -1,4 +1,5 @@
 const log = require('loglevel').getLogger('Api');
+const CmdBuilder = require('./command-builder');
 const Config = require('../config/config');
 const Constants = require('./constants');
 const Context = require('./context');
@@ -10,6 +11,10 @@ const Scanimage = require('./scanimage');
 const util = require('./util');
 
 class Api {
+
+  /**
+   * @returns {Promise.<Array.<FileInfo>>}
+   */
   static async fileList() {
     log.debug('fileList()');
     const dir = new FileInfo(Config.outputDirectory);
@@ -71,6 +76,35 @@ class Api {
     return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
   }
 
+  /**
+   * Creates a preview image from a scan. This is less trivial because we need
+   * to accommodate the possibility of cropping
+   * @param {Context} context 
+   * @param {Request} request 
+   * @param {string} filename 
+   * @returns {Promise.<void>}
+   */
+  static async updatePreview(context, request, filename) {
+    const dpmm = request.params.resolution / 25.4;
+    const device = context.getDevice(request.params.deviceId);
+    const geometry = {
+      width: device.features['-x'].limits[1] * dpmm,
+      height: device.features['-y'].limits[1] * dpmm,
+      left: request.params.left * dpmm,
+      top: request.params.top * dpmm
+    };
+
+    const cmd = new CmdBuilder(Config.convert)
+      .arg(`'${Config.tempDirectory}${filename}'`)
+      .arg('-background', '#808080')
+      .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`)
+      .arg('-resize', 868)
+      .arg(`'${Config.previewDirectory}preview.tif'`)
+      .build();
+
+    await Process.spawn(cmd);
+  }
+
   static async scan(req) {
     const context = await Context.create();
     const request = new Request(context).extend(req);
@@ -107,6 +141,9 @@ class Api {
       log.debug('Executing cmds:', pipeline.commands);
       const stdout = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
       let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
+
+      // Update preview with the last image
+      await Api.updatePreview(context, request, filenames[filenames.length - 1]);
 
       let filename = filenames[0];
       let extension = pipeline.extension;
