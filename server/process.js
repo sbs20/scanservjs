@@ -5,11 +5,21 @@ const spawn = require('child_process').spawn;
 const extend = require('./util').extend;
 
 const Process = {
+  /**
+   * @param {string} cmd 
+   * @returns {Promise.<string>}
+   */
   async execute(cmd) {
     const { stdout } = await exec(cmd);
     return stdout;
   },
 
+  /**
+   * @param {string} cmd 
+   * @param {Buffer|null} [stdin] 
+   * @param {ProcessOptions} [options] 
+   * @return {Promise<Buffer>}
+   */
   async spawn(cmd, stdin, options) {
     const MAX_BUFFER = 16 * 1024;
     options = extend({
@@ -54,9 +64,15 @@ const Process = {
     });
   },
 
-  async chain(cmdArray, stdin, options) {
+  /**
+   * @param {string[]} cmds 
+   * @param {Buffer|null} [stdin] 
+   * @param {ProcessOptions} [options] 
+   * @return {Promise<Buffer>}
+   */
+  async chain(cmds, stdin, options) {
     let stdout = null;
-    for (let cmd of cmdArray) {
+    for (let cmd of cmds) {
       stdout = await Process.spawn(cmd, stdin, options);
       stdin = stdout;
     }

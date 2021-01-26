@@ -1,11 +1,20 @@
 const log = require('loglevel').getLogger('CmdBuilder');
 
 class CmdBuilder {
+
+  /**
+   * @param {string} cmd 
+   */
   constructor(cmd) {
     this.cmd = cmd;
     this.args = [];
   }
 
+  /**
+   * @param {string} key 
+   * @param {string|number} [value]
+   * @returns {CmdBuilder}
+   */
   arg(key, value) {
     this.args.push(key);
     if (value !== undefined) {
@@ -21,6 +30,10 @@ class CmdBuilder {
     return this;
   }
 
+  /**
+   * @param {boolean} [ignoreStderr]
+   * @returns {string}
+   */
   build(ignoreStderr) {
     log.trace('build()', this);
     let cmd = this.cmd;

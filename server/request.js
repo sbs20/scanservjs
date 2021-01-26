@@ -15,6 +15,10 @@ class Request {
     });
   }
 
+  /**
+   * @param {ScanRequest} data 
+   * @returns {ScanRequest}
+   */
   extend(data) {
     const device = this.context.getDevice(data.params.deviceId);
 

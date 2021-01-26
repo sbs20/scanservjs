@@ -13,7 +13,7 @@ const util = require('./util');
 class Api {
 
   /**
-   * @returns {Promise.<Array.<FileInfo>>}
+   * @returns {Promise.<FileInfo[]>}
    */
   static async fileList() {
     log.debug('fileList()');
@@ -26,6 +26,10 @@ class Api {
     return files;
   }
 
+  /**
+   * @param {string} fullpath 
+   * @returns {FileInfo}
+   */
   static fileDelete(fullpath) {
     const file = new FileInfo(fullpath);
     const parent = new FileInfo(file.path);
@@ -36,6 +40,10 @@ class Api {
     return file.delete();
   }
 
+  /**
+   * @param {ScanRequest} req 
+   * @returns {Promise<any>}
+   */
   static async createPreview(req) {
     const context = await Context.create();
     const request = new Request(context).extend({
@@ -55,6 +63,9 @@ class Api {
     return {};
   }
 
+  /**
+   * @returns {Promise.<Buffer>}
+   */
   static async readPreview() {
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it. 
@@ -80,7 +91,7 @@ class Api {
    * Creates a preview image from a scan. This is less trivial because we need
    * to accommodate the possibility of cropping
    * @param {Context} context 
-   * @param {Request} request 
+   * @param {ScanRequest} request 
    * @param {string} filename 
    * @returns {Promise.<void>}
    */
@@ -105,6 +116,10 @@ class Api {
     await Process.spawn(cmd);
   }
 
+  /**
+   * @param {ScanRequest} req 
+   * @returns {ScanResponse}
+   */
   static async scan(req) {
     const context = await Context.create();
     const request = new Request(context).extend(req);
@@ -177,10 +192,14 @@ class Api {
     };
   }
 
+  /**
+   * @param {boolean} [force] 
+   * @returns {Promise.<Context>}
+   */
   static async context(force) {
     if (force) {
       Devices.reset();
-      const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
+      const preview = FileInfo.create(`${Config.previewDirectory}preview.tif`);
       preview.delete();
     }
     return await Context.create();

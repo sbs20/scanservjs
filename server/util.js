@@ -12,6 +12,11 @@ const Util = {
     return t;
   },
 
+  /**
+   * @param {string[]} filepaths
+   * @param {string} destination
+   * @returns {void}
+   */
   zip(filepaths, destination) {
     const zip = new AdmZip();
     for (let filepath of filepaths) {

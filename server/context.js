@@ -13,6 +13,9 @@ const diagnostic = (path) => {
 };
 
 class Context {
+  /**
+   * @param {ScanDevice[]} devices 
+   */
   constructor(devices) {
     this.devices = devices;
     this.version = Package.version;
@@ -20,14 +23,22 @@ class Context {
       diagnostic(Config.scanimage),
       diagnostic(Config.convert)
     ];
+    /** @type {Pipeline[]} */
     this.pipelines = Config.pipelines;
   }
 
+  /**
+   * @returns {Promise.<Context>}
+   */
   static async create() {
     const devices = await Devices.get();
     return new Context(devices);
   }
 
+  /**
+   * @param {string} id 
+   * @returns {ScanDevice}
+   */
   getDevice(id) {
     return id
       ? this.devices.filter(device => device.id === id)[0]

@@ -20,6 +20,10 @@ class Devices {
     return deviceIds;
   }
 
+  /**
+   * @param {ScanDevice[]} o 
+   * @returns {ScanDevice[]}
+   */
   static from(o) {
     if (typeof o === 'object') {
       const devices = [];
@@ -34,8 +38,11 @@ class Devices {
     }
   }
 
-  /// Attempts to get a stored configuration of our devices and if
-  /// not gets it from the command line.
+  /**
+   * Attempts to get a stored configuration of our devices and if
+   * not gets it from the command line.
+   * @returns {Promise.<ScanDevice[]>}
+   */
   static async get() {
     const file = new FileInfo(FILEPATH);
     let devices = null;
@@ -77,6 +84,9 @@ class Devices {
     return devices;
   }
 
+  /**
+   * @returns {void}
+   */
   static reset() {
     const file = new FileInfo(FILEPATH);
     if (file.exists()) {

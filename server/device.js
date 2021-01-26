@@ -122,6 +122,10 @@ class Device {
   constructor() {
   }
 
+  /**
+   * @param {any|string} o
+   * @returns {ScanDevice}
+   */
   static from(o) {
     const device = new Device();
     if (typeof o === 'object') {

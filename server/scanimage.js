@@ -5,12 +5,19 @@ const Config = require('../config/config');
 const Constants = require('./constants');
 
 class Scanimage {
+  /**
+   * @returns {string}
+   */
   static devices() {
     return new CmdBuilder(Config.scanimage)
       .arg('-L')
       .build();
   }
   
+  /**
+   * @param {string} deviceId
+   * @returns {string}
+   */
   static features(deviceId) {
     return new CmdBuilder(Config.scanimage)
       .arg('-d', deviceId)
@@ -18,11 +25,19 @@ class Scanimage {
       .build();
   }
 
+  /**
+   * @param {number} page 
+   * @returns {string}
+   */
   static filename(page) {
     const number = `000${page}`.slice(-4);
     return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}.tif`;
   }
 
+  /**
+   * @param {Request} request 
+   * @returns {string}
+   */
   static scan(request) {
     log.debug(JSON.stringify(request));
     const params = request.params;

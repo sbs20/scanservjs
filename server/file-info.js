@@ -29,6 +29,9 @@ const sizeString = (size) => {
 };
 
 class FileInfo {
+  /**
+   * @param {string} fullpath 
+   */
   constructor(fullpath) {
     checkPath(fullpath);
     this.fullname = fullpath;
@@ -44,10 +47,16 @@ class FileInfo {
     }
   }
 
+  /**
+   * @param {string} fullpath 
+   */
   static create(fullpath) {
     return new FileInfo(fullpath);
   }
 
+  /**
+   * @returns {FileInfo}
+   */
   delete() {
     try {
       fs.unlinkSync(this.fullname);
@@ -59,14 +68,24 @@ class FileInfo {
     return this;
   }
 
+  /**
+   * @param {FileInfo} fileinfo 
+   * @returns {boolean}
+   */
   equals(fileinfo) {
     return path.resolve(this.fullname) === path.resolve(fileinfo.fullname);
   }
 
+  /**
+   * @returns {boolean}
+   */
   exists() {
     return fs.existsSync(this.fullname);
   }
 
+  /**
+   * @returns {Promise.<void>}
+   */
   async move(destination) {
     return await new Promise((resolve, reject) => {
       mv(this.fullname, destination, (err) => {
@@ -78,27 +97,46 @@ class FileInfo {
     });
   }
 
+  /**
+   * @param {BufferLike}
+   * @returns {void}
+   */
   save(data) {
     fs.writeFileSync(this.fullname, data);
   }
 
+  /**
+   * @returns {string}
+   */
   toBase64() {
     return this.toBuffer().toString('base64');
   }
 
+  /**
+   * @returns {Buffer}
+   */
   toBuffer() {
     const bits = fs.readFileSync(this.fullname);
     return Buffer.from(bits);
   }
 
+  /**
+   * @returns {string}
+   */
   toText() {
     return this.toBuffer().toString();
   }
 
+  /**
+   * @returns {any}
+   */
   toJson() {
     return JSON.parse(this.toText());
   }
 
+  /**
+   * @returns {Promise.<FileInfo[]>}
+   */
   async list() {
     return await new Promise((resolve, reject) => {
       if (!this.isDirectory) {
