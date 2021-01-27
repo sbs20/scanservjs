@@ -42,8 +42,6 @@ class FileInfo {
   constructor(fullpath) {
     checkPath(fullpath);
     this.fullname = fullpath;
-    this.name = path.basename(this.fullname);
-    this.path = path.dirname(this.fullname);
     if (this.exists()) {
       const stat = fs.statSync(this.fullname);
       this.extension = path.extname(this.fullname);
@@ -51,7 +49,12 @@ class FileInfo {
       this.size = stat.size;
       this.sizeString = sizeString(this.size);
       this.isDirectory = stat.isDirectory();
+      if (this.isDirectory && this.fullname.endsWith('/')) {
+        this.fullname = this.fullname.substr(0, this.fullname.length - 1);
+      }
     }
+    this.name = path.basename(this.fullname);
+    this.path = path.dirname(this.fullname);
   }
 
   /**
@@ -154,7 +157,7 @@ class FileInfo {
           reject(err);
         }
 
-        const files = list.map(f => new FileInfo(`${this.fullname}${f}`));
+        const files = list.map(f => new FileInfo(`${this.fullname}/${f}`));
         resolve(files);
       });
     });

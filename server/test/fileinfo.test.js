@@ -29,6 +29,16 @@ describe('FileInfo', () => {
     assert.rejects(async () => new FileInfo('../package.json').list(), Error, 'Not a directory');
   });
 
+  it('Directory trailing slash', () => {
+    const dir1 = new FileInfo('./test/resource');
+    const dir2 = new FileInfo('./test/resource/');
+    
+    assert.strictEqual(dir1.name, dir2.name);
+    assert.strictEqual(dir1.fullname, dir2.fullname);
+    assert.strictEqual(dir1.name.endsWith('/'), false);
+    assert.strictEqual(dir1.fullname.endsWith('/'), false);
+  });
+
   it('List directory', async () => {
     const files = await new FileInfo('./test/resource').list();
     assert.strictEqual(files[0].name, 'logo.png');
