@@ -93,11 +93,9 @@ dist
 
 
 # Project specific
-*.tif
-*.pdf
-*.png
-data/output/*
-data/temp/*
+server/config/devices.json
+server/data/output/*
+server/data/temp/*
+server/data/preview/*.tif
 scan*.jpg
-config/devices.json
 var

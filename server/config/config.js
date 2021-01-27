@@ -30,6 +30,8 @@ Config.log.prefix = {
 };
 
 // No need to change
+Config.allowUnsafePaths = false;
+Config.devicesPath = './config/devices.json';
 Config.outputDirectory = './data/output/';
 Config.previewDirectory = './data/preview/';
 Config.tempDirectory = './data/temp/';

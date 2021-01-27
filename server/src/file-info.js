@@ -1,18 +1,25 @@
+const Config = require('../config/config');
 const fs = require('fs');
 const mv = require('mv');
 const path = require('path');
 
 const checkPath = (fullpath) => {
-  if (fullpath.indexOf('../') !== -1) {
-    throw new Error('Parent paths disallowed');
-  }
-
-  if (fullpath.indexOf('/') === 0) {
-    throw new Error('Root paths disallowed');
+  if (!Config.allowUnsafePaths) {
+    if (fullpath.indexOf('../') !== -1) {
+      throw new Error('Parent paths disallowed');
+    }
+  
+    if (fullpath.indexOf('/') === 0) {
+      throw new Error('Root paths disallowed');
+    }  
   }
 };
 
-const sizeString = (size) => {
+/**
+ * @param {number} size
+ * @returns {string}
+ */
+function sizeString(size) {
   const kb = 1 << 10;
   const mb = kb << 10;
   if (size < 0) {
@@ -147,7 +154,7 @@ class FileInfo {
           reject(err);
         }
 
-        const files = list.map(f => new FileInfo(`${this.fullname}/${f}`));
+        const files = list.map(f => new FileInfo(`${this.fullname}${f}`));
         resolve(files);
       });
     });

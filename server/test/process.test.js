@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const CmdBuilder = require('../server/command-builder');
-const Process = require('../server/process');
+const CmdBuilder = require('../src/command-builder');
+const Process = require('../src/process');
 
 describe('Process', () => {
   it('echo', async () => {

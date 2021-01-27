@@ -6,9 +6,6 @@ const Package = require('../package.json');
 const Process = require('./process');
 const Scanimage = require('./scanimage');
 
-// Relative to execution path
-const FILEPATH = './config/devices.json';
-
 class Devices {
   static _parseDevices(s) {
     const deviceIds = [];
@@ -44,7 +41,7 @@ class Devices {
    * @returns {Promise.<ScanDevice[]>}
    */
   static async get() {
-    const file = new FileInfo(FILEPATH);
+    const file = new FileInfo(Config.devicesPath);
     let devices = null;
 
     if (file.exists()) {
@@ -88,7 +85,7 @@ class Devices {
    * @returns {void}
    */
   static reset() {
-    const file = new FileInfo(FILEPATH);
+    const file = new FileInfo(Config.devicesPath);
     if (file.exists()) {
       file.delete();
     }

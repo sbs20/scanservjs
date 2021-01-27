@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Context = require('../server/context');
-const Device = require('../server/device');
-const FileInfo = require('../server/file-info');
-const Request = require('../server/request');
+const Context = require('../src/context');
+const Device = require('../src/device');
+const FileInfo = require('../src/file-info');
+const Request = require('../src/request');
 
 describe('Request', () => {
   it('scanimage-a1.txt', () => {

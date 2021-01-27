@@ -10,7 +10,7 @@
     </thead>
     <tbody>
       <tr v-for="file in files" v-bind:key="file.name">
-        <td><a :href="`files/${file.fullname}`">{{ file.name }}</a></td>
+        <td><a @click="open(file)">{{ file.name }}</a></td>
         <td class="file-date">{{ file.lastModified }}</td>
         <td>{{ file.sizeString }}</td>
         <td><v-btn color="secondary" v-on:click="fileRemove(file)" icon><v-icon>mdi-delete</v-icon></v-btn></td>
@@ -46,13 +46,17 @@ export default {
 
     fileRemove(file) {
       this.$emit('mask', 1);
-      Common.fetch('files/' + file.fullname, {
+      Common.fetch('files/' + encodeURIComponent(file.fullname), {
         method: 'DELETE'
       }).then(data => {
         console.log('fileRemove', data);
         this.fileList();
         this.$emit('mask', -1);
       });
+    },
+
+    open(file) {
+      window.location.href = 'files/' + encodeURIComponent(file.fullname);
     }
   }
 };

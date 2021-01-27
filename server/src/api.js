@@ -148,17 +148,18 @@ class Api {
 
     if (request.batch !== Constants.BATCH_MANUAL || request.page < 1) {
       log.debug(`Post processing: ${pipeline.description}`);
-      const files = await dir.list();
+      const files = (await dir.list())
+        .filter(f => f.extension === '.tif');
+
+      // Update preview with the first image
+      await Api.updatePreview(context, request, files[0].name);
+
       const stdin = files
-        .filter(f => f.extension === '.tif')
         .map(f => f.name)
         .join('\n');
       log.debug('Executing cmds:', pipeline.commands);
       const stdout = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
       let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
-
-      // Update preview with the last image
-      await Api.updatePreview(context, request, filenames[filenames.length - 1]);
 
       let filename = filenames[0];
       let extension = pipeline.extension;

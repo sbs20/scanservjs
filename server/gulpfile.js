@@ -8,6 +8,10 @@ const gzip = require('gulp-gzip');
 const filter = require('gulp-filter');
 const run = require('gulp-run');
 const tar = require('gulp-tar');
+const merge = require('merge-stream');
+
+const DIST = '../dist/';
+const RELEASE = '../release/';
 
 const linter = () => {
   return eslint({
@@ -52,11 +56,11 @@ const linter = () => {
 //  * https://github.com/gulpjs/gulp/tree/master/docs/recipes
 
 gulp.task('clean', () => {
-  return del(['./dist/*']);
+  return del([`${DIST}*`], { force: true });
 });
 
 gulp.task('server-lint', () => {
-  return gulp.src(['./server/*.js', './config/config.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./src/*.js', './config/config.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -64,26 +68,30 @@ gulp.task('server-lint', () => {
 
 gulp.task('server-build', () => {
   const shellFilter = filter('**/*.sh', {restore: true});
-  return gulp.src([
+
+  const common = gulp.src([
     './bin/install.sh',
     './bin/uninstall.sh',
     './bin/scanservjs.service',
     './package.json',
     './package-lock.json',
     './*config/**/*.js',
-    './*server/**/*',
-    './*data/**/*.md',
     './*data/**/default.jpg'])
     .pipe(shellFilter)
     .pipe(chmod(0o755))
     .pipe(shellFilter.restore)
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest(DIST));
+
+  const src = gulp.src(['./src/**/*'])
+    .pipe(gulp.dest(`${DIST}/server/`));
+
+  return merge(common, src);
 });
 
 gulp.task('package', () => {
   const filename = `scanservjs_v${version}_${dayjs().format('YYYYMMDD.HHmmss')}.tar`;
   const shellFilter = filter('**/*.sh', {restore: true});
-  return gulp.src('./dist/**/*')
+  return gulp.src(`${DIST}**/*`)
     // Filter to shell scripts and chmod +x
     .pipe(shellFilter)
     .pipe(chmod(0o755))
@@ -92,7 +100,7 @@ gulp.task('package', () => {
     .pipe(chmod(null, 0o755))
     .pipe(tar(filename))
     .pipe(gzip())
-    .pipe(gulp.dest('./release'));
+    .pipe(gulp.dest(RELEASE));
 });
 
 /*
@@ -101,7 +109,7 @@ not available in all circumstances.
 */
 
 gulp.task('client-build', () => {
-  return run('npm run client-build').exec();
+  return run('npm run build', { cwd: '../webui'}).exec();
 });
 
 gulp.task('test', () => {

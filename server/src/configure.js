@@ -42,13 +42,22 @@ const logRequest = (req) => {
   log.debug('request: ', output);
 };
 
-const initialize = () => {
+const initialize = (rootPath) => {
+  if (rootPath) {
+    // Only required for running in development
+    Config.devicesPath = rootPath + Config.devicesPath;
+    Config.outputDirectory = rootPath + Config.outputDirectory;
+    Config.previewDirectory = rootPath + Config.previewDirectory;
+    Config.tempDirectory = rootPath + Config.tempDirectory;
+    Config.allowUnsafePaths = true;
+  }
+  
   fs.mkdirSync(Config.outputDirectory, { recursive: true });
   fs.mkdirSync(Config.tempDirectory, { recursive: true });
 };
 
-module.exports = app => {
-  initialize();
+module.exports = (app, rootPath) => {
+  initialize(rootPath);
   app.use(bodyParser.urlencoded({
     extended: true
   }));

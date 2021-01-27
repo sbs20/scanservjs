@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Devices = require('../server/devices');
-const FileInfo = require('../server/file-info');
+const Devices = require('../src/devices');
+const FileInfo = require('../src/file-info');
 
 describe('Devices', () => {
   it('scanimage-l1.txt', () => {

@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const CmdBuilder = require('../server/command-builder');
+const CmdBuilder = require('../src/command-builder');
 
 describe('CommandBuilder', () => {
   it('command-only', async () => {

@@ -1,11 +1,17 @@
-# builder image
+# Builder image. Alpine doesn't have python which is required by node-sass
 FROM node:buster AS builder
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
-COPY package*.json "$APP_DIR/"
-RUN npm install
-COPY . "$APP_DIR"
-RUN npm run server-build && npm run client-build
+
+COPY server/package*.json "$APP_DIR/server/"
+COPY webui/package*.json "$APP_DIR/webui/"
+
+RUN cd server && npm i --loglevel=error && cd ../webui && npm i --loglevel=error
+
+COPY webui/ "$APP_DIR/webui/"
+COPY server/ "$APP_DIR/server/"
+
+RUN cd webui && npm run build && cd ../server && npm run server-build
 
 # production image
 FROM node:buster-slim

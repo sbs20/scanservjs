@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const FileInfo = require('../server/file-info');
+const FileInfo = require('../src/file-info');
 
 describe('FileInfo', () => {
   it('Basic file details', () => {
