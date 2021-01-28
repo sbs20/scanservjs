@@ -8,7 +8,7 @@ It supports multipage scanning and all
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
 
-Copyright 2016-2020 [Sam Strachan](https://github.com/sbs20)
+Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 ## Requirements
 * SANE
