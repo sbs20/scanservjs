@@ -2,6 +2,11 @@ const extend = require('./util').extend;
 const Package = require('../package.json');
 
 class Feature {
+  /**
+   * @param {string} string 
+   * @param {string} delimiter
+   * @returns {number[]} 
+   */
   static splitNumbers(string, delimiter) {
     return string.replace(/[a-z%]/ig, '')
       .split(delimiter)
@@ -9,6 +14,9 @@ class Feature {
       .map(s => Number(s));
   }
 
+  /**
+   * @param {ScanDeviceFeature} feature 
+   */
   static resolution(feature) {
     feature.options = [50, 75, 100, 150, 200, 300, 600, 1200];
     if (feature.parameters.indexOf('|') > -1) {
@@ -25,6 +33,9 @@ class Feature {
     feature.default = Number(feature.default);
   }
 
+  /**
+   * @param {ScanDeviceFeature} feature 
+   */
   static range(feature) {
     feature.default = Math.floor(Number(feature.default));
     const range = /(.*?)(?:\s|$)/g.exec(feature.parameters);
@@ -33,18 +44,28 @@ class Feature {
     feature.interval = steps ? Number(steps[1]) : 1;
   }
 
+  /**
+   * @param {ScanDeviceFeature} feature 
+   */
   static geometry(feature) {
     Feature.range(feature);
     feature.limits[0] = Math.floor(feature.limits[0]);
     feature.limits[1] = Math.floor(feature.limits[1]);
   }
 
+  /**
+   * @param {ScanDeviceFeature} feature 
+   */
   static lighting(feature) {
     Feature.range(feature);
   }
 }
 
 class Adapter {
+  /**
+   * @param {ScanDevice} device 
+   * @returns {ScanDevice}
+   */
   static decorate(device) {
     for (const key in device.features) {
       const feature = device.features[key];
@@ -76,12 +97,17 @@ class Adapter {
     return device;
   }
   
-  // Parses the response of scanimage -A into a dictionary
+  /**
+   * Parses the response of scanimage -A into a dictionary
+   * @param {string} response 
+   * @returns {ScanDevice}
+   */
   static parse(response) {
     if (response === null || response === '') {
       throw new Error('No device found');
     }
   
+    /** @type {ScanDevice} */
     let device = {
       'id': '',
       'version': Package.version,
