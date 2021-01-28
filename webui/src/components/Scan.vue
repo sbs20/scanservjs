@@ -3,6 +3,8 @@
     <toastr ref="toastr"></toastr>
 
     <v-row>
+      <v-spacer/>
+
       <v-col cols="12" md="3" lg="auto" class="mb-10">
         <v-select v-if="context.devices.length > 0"
           label="Device" v-model="device"
@@ -83,6 +85,8 @@
           </v-slider>
         </div>
       </v-col>
+      
+      <v-spacer/>
     </v-row>
 
     <batch-dialog ref="batchDialog" />
@@ -122,9 +126,7 @@ export default {
         version: '0'
       },
       device: device,
-      files: [],
       img: null,
-      maskRef: 0,
       request: request,
       preview: {
         timer: 0,

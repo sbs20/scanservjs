@@ -11,7 +11,7 @@
     <navigation></navigation>
 
     <v-main>
-      <v-container>
+      <v-container fluid>
         <transition name="fade" mode="out-in" :duration="150">
           <router-view @mask="mask"></router-view>
         </transition>
