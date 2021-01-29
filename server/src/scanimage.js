@@ -72,7 +72,7 @@ class Scanimage {
     if (request.batch === Constants.BATCH_AUTO) {
       cmdBuilder.arg(`--batch=${Config.tempDirectory}${Constants.TEMP_FILESTEM}%04d.tif`);
     } else {
-      cmdBuilder.arg(`> ${Scanimage.filename(request.page)}`);
+      cmdBuilder.arg(`> ${Scanimage.filename(request.index)}`);
     }
     return cmdBuilder.build();
   }

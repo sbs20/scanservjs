@@ -55,11 +55,11 @@
  * @property {ScanRequestParameters} params
  * @property {string} pipeline
  * @property {string} batch
- * @property {number} page
+ * @property {number} index
  */
 
 /**
  * @typedef {Object} ScanResponse
  * @property {string} [image]
- * @property {number} [page]
+ * @property {number} [index]
  */

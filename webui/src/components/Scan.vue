@@ -332,10 +332,10 @@ export default {
       this.request = this.buildRequest();
     },
 
-    scan(page) {
+    scan(index) {
       this.mask(1);
-      if (page !== undefined) {
-        this.request.page = page;
+      if (index !== undefined) {
+        this.request.index = index;
       }
       let data = Common.clone(this.request);
       
@@ -347,20 +347,20 @@ export default {
           'Content-Type': 'application/json'
         }
       }).then((response) => {
-        if (response && 'page' in response) {
+        if (response && 'index' in response) {
           this.$refs.batchDialog.open({
-            message: `Do you want to scan page ${response.page}?`,
+            message: `Preview of page ${response.index}`,
             image: response.image,
             onFinish: () => {
-              this.request.page = -1;
+              this.request.index = -1;
               this.scan();
             },
             onNext: () => {
-              this.request.page = response.page;
+              this.request.index = response.index + 1;
               this.scan();
             },
             onRescan: () => {
-              this.request.page = response.page - 1;
+              this.request.index = response.index;
               this.scan();
             }
           });

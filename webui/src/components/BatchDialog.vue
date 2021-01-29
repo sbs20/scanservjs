@@ -1,17 +1,17 @@
 <template>
-  <v-dialog v-model="show" aria-role="dialog" max-width="600" v-on:keydown.stop="_onKeys" persistent aria-modal>
+  <v-dialog v-model="show" aria-role="dialog" max-width="480" v-on:keydown.stop="_onKeys" persistent aria-modal>
     <v-card>
       <v-card-title>
         {{ message }}
       </v-card-title>
       <v-card-text>
+        <v-spacer></v-spacer>
+        <v-btn color="green" text @click.prevent="finish">Finish</v-btn>
+        <v-btn color="warning" text @click.prevent="rescan">Rescan page</v-btn>
+        <v-btn color="primary" text @click.prevent="next">Next</v-btn>
         <v-img v-if="image" :src="'data:image/jpeg;base64,' + image" contain />
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="green" text @click.prevent="finish">Finish</v-btn>
-        <v-btn color="warning" text @click.prevent="rescan">Rescan</v-btn>
-        <v-btn color="primary" text @click.prevent="next">Next</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

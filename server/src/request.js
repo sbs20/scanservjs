@@ -36,7 +36,7 @@ class Request {
       },
       pipeline: data.pipeline || null,
       batch: data.batch || Constants.BATCH_NONE,
-      page: data.page || 1
+      index: data.index || 1
     });
 
     if ('--source' in features) {

@@ -16,7 +16,7 @@ export default {
         },
         pipeline: pipeline,
         batch: 'none',
-        page: 1
+        index: 1
       };
     }
 

@@ -136,17 +136,17 @@ class Api {
       files.map(f => f.delete());
     };
 
-    if (request.page === 1) {
+    if (request.index === 1) {
       log.debug('Clearing temp directory');
       await clearTemp();
     }
 
-    if (request.page > 0) {
+    if (request.index > 0) {
       log.debug('Scanning');
       await Process.spawn(Scanimage.scan(request));
     }
 
-    if (request.batch !== Constants.BATCH_MANUAL || request.page < 1) {
+    if (request.batch !== Constants.BATCH_MANUAL || request.index < 1) {
       log.debug(`Post processing: ${pipeline.description}`);
       const files = (await dir.list())
         .filter(f => f.extension === '.tif');
@@ -182,13 +182,13 @@ class Api {
     }
 
     // Manual batch scan
-    const filepath = Scanimage.filename(request.page);
+    const filepath = Scanimage.filename(request.index);
     let buffer = FileInfo.create(filepath).toBuffer();
     buffer = await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
 
-    log.debug(`Scan page: ${request.page + 1}?`);
+    log.debug(`Finished page: ${request.index}`);
     return {
-      page: request.page + 1,
+      index: request.index,
       image: buffer.toString('base64')
     };
   }
