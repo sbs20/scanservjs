@@ -10,10 +10,5 @@ export default {
 
   clone(obj) {
     return JSON.parse(JSON.stringify(obj));
-  },
-
-  round(n, dp) {
-    const f = Math.pow(10, dp || 0);
-    return Math.round(n * f) / f;
   }
 };

@@ -105,6 +105,14 @@ import Storage from '../classes/storage';
 
 const storage = Storage.instance();
 
+/**
+ * @param {number} n 
+ * @returns {number}
+ */
+function round(n) {
+  return Math.round(n);
+}
+
 export default {
   name: 'Scan',
   components: {
@@ -210,7 +218,7 @@ export default {
     },
 
     cropperDefaultPosition() {
-      const adjust = (n) => Math.round(n * this.pixelsPerMm());
+      const adjust = (n) => round(n * this.pixelsPerMm());
       return {
         left: adjust(this.request.params.left),
         top: adjust(this.request.params.top)
@@ -218,7 +226,7 @@ export default {
     },
 
     cropperDefaultSize() {
-      const adjust = (n) => Math.round(n * this.pixelsPerMm());
+      const adjust = (n) => round(n * this.pixelsPerMm());
       return {
         width: adjust(this.request.params.width),
         height: adjust(this.request.params.height)
@@ -230,18 +238,19 @@ export default {
     },
 
     onCoordinatesChange() {
-      const adjust = (n) => Math.round(n * this.pixelsPerMm());
+      const adjust = (n) => round(n * this.pixelsPerMm());
       const params = this.request.params;
-      this.$refs.cropper.setCoordinates({
+      const adjusted = {
         width: adjust(params.width),
         height: adjust(params.height),
         left: adjust(params.left),
         top: adjust(params.top)
-      });
+      };
+      this.$refs.cropper.setCoordinates(adjusted);
     },
 
     onCrop({coordinates}) {
-      const adjust = (n) => Math.round(n / this.pixelsPerMm());
+      const adjust = (n) => round(n / this.pixelsPerMm());
       const params = this.request.params;
       params.width = adjust(coordinates.width);
       params.height = adjust(coordinates.height);

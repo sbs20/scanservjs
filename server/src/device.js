@@ -1,6 +1,14 @@
 const extend = require('./util').extend;
 const Package = require('../package.json');
 
+/**
+ * @param {number} n 
+ * @returns {number}
+ */
+function round(n) {
+  return Math.floor(n);
+}
+
 class Feature {
   /**
    * @param {string} string 
@@ -37,7 +45,7 @@ class Feature {
    * @param {ScanDeviceFeature} feature 
    */
   static range(feature) {
-    feature.default = Math.floor(Number(feature.default));
+    feature.default = round(Number(feature.default));
     const range = /(.*?)(?:\s|$)/g.exec(feature.parameters);
     feature.limits = Feature.splitNumbers(range[1], '..');
     const steps = /\(in steps of ([0-9]{1,2})\)/g.exec(feature.parameters);
@@ -49,8 +57,8 @@ class Feature {
    */
   static geometry(feature) {
     Feature.range(feature);
-    feature.limits[0] = Math.floor(feature.limits[0]);
-    feature.limits[1] = Math.floor(feature.limits[1]);
+    feature.limits[0] = round(feature.limits[0]);
+    feature.limits[1] = round(feature.limits[1]);
   }
 
   /**
