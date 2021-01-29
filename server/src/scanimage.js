@@ -35,7 +35,7 @@ class Scanimage {
   }
 
   /**
-   * @param {Request} request 
+   * @param {ScanRequest} request 
    * @returns {string}
    */
   static scan(request) {

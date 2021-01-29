@@ -9,32 +9,111 @@ const Request = require('./request');
 const Scanimage = require('./scanimage');
 const Util = require('./util');
 
-class Scan {
-
+class ScanController {
   constructor() {
     /** @type {Context} */
     this.context = null;
 
     /** @type {Request} */
     this.request = null;
+
+    this.dir = FileInfo.create(Config.tempDirectory);
+  }
+
+  /**
+   * @param {ScanRequest} req 
+   */
+  async init(req) {
+    this.context = await Context.create();
+    this.request = new Request(this.context).extend(req);
+    // Check pipeline here. Better to find out sooner if there's a problem
+    this.pipeline = this.context.pipelines.filter(
+      p => p.description === this.request.pipeline)[0];
+    if (this.pipeline === undefined) {
+      throw Error('No matching pipeline');
+    }
+  }
+
+  /**
+   * @returns {Promise.<FileInfo[]>}
+   */
+  async listFiles() {
+    return await this.dir.list();
+  }
+
+  /**
+   * @returns {Promise.<void>}
+   */
+  async deleteFiles() {
+    (await this.listFiles()).map(f => f.delete());
+  }
+
+  /**
+   * @returns {Promise.<void>}
+   */
+  async scan() {
+    log.debug('Scanning');
+    await Process.spawn(Scanimage.scan(this.request));
+  }
+
+  /**
+   * @returns {Promise.<void>}
+   */
+  async finish() {
+    log.debug(`Post processing: ${this.pipeline.description}`);
+    const files = (await this.listFiles()).filter(f => f.extension === '.tif');
+
+    // Update preview with the first image
+    await this.updatePreview(files[0].name);
+
+    const stdin = files.map(f => f.name).join('\n');
+    log.debug('Executing cmds:', this.pipeline.commands);
+    const stdout = await Process.chain(this.pipeline.commands, stdin, { cwd: Config.tempDirectory });
+    let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
+
+    let filename = filenames[0];
+    let extension = this.pipeline.extension;
+    if (filenames.length > 1) {
+      filename = 'archive.zip';
+      extension = 'zip';
+      Util.zip(
+        filenames.map(f => `${Config.tempDirectory}${f}`),
+        `${Config.tempDirectory}${filename}`);
+    }
+
+    const destination = `${Config.outputDirectory}${Config.filename()}.${extension}`;
+    await FileInfo
+      .create(`${Config.tempDirectory}${filename}`)
+      .move(destination);
+
+    log.debug(`Written data to: ${destination}`);
+    await this.deleteFiles();
+  }
+
+  /**
+   * @returns {Promise.<Buffer>}
+   */
+  async imageAsBuffer() {
+    const filepath = Scanimage.filename(this.request.index);
+    let buffer = FileInfo.create(filepath).toBuffer();
+    buffer = await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
+    return buffer;
   }
 
   /**
    * Creates a preview image from a scan. This is less trivial because we need
    * to accommodate the possibility of cropping
-   * @param {Context} context 
-   * @param {ScanRequest} request 
    * @param {string} filename 
    * @returns {Promise.<void>}
    */
-  static async updatePreview(context, request, filename) {
-    const dpmm = request.params.resolution / 25.4;
-    const device = context.getDevice(request.params.deviceId);
+  async updatePreview(filename) {
+    const dpmm = this.request.params.resolution / 25.4;
+    const device = this.context.getDevice(this.request.params.deviceId);
     const geometry = {
       width: device.features['-x'].limits[1] * dpmm,
       height: device.features['-y'].limits[1] * dpmm,
-      left: request.params.left * dpmm,
-      top: request.params.top * dpmm
+      left: this.request.params.left * dpmm,
+      top: this.request.params.top * dpmm
     };
 
     const cmd = new CmdBuilder(Config.convert)
@@ -49,81 +128,38 @@ class Scan {
   }
 
   /**
-   * @param {ScanRequest} req 
    * @returns {Promise.<ScanResponse>}
    */
-  static async run(req) {
-    const context = await Context.create();
-    const request = new Request(context).extend(req);
-    const dir = FileInfo.create(Config.tempDirectory);
-
-    // Check pipeline here. Better to find out sooner if there's a problem
-    const pipeline = context.pipelines.filter(p => p.description === request.pipeline)[0];
-    if (pipeline === undefined) {
-      throw Error('No matching pipeline');
+  async execute() {
+    if (this.request.index === 1) {
+      await this.deleteFiles();
     }
 
-    const clearTemp = async () => {
-      const files = await dir.list();
-      files.map(f => f.delete());
-    };
-
-    if (request.index === 1) {
-      log.debug('Clearing temp directory');
-      await clearTemp();
+    if (this.request.index > 0) {
+      await this.scan();
     }
 
-    if (request.index > 0) {
-      log.debug('Scanning');
-      await Process.spawn(Scanimage.scan(request));
-    }
-
-    if (request.batch !== Constants.BATCH_MANUAL || request.index < 1) {
-      log.debug(`Post processing: ${pipeline.description}`);
-      const files = (await dir.list())
-        .filter(f => f.extension === '.tif');
-
-      // Update preview with the first image
-      await Scan.updatePreview(context, request, files[0].name);
-
-      const stdin = files
-        .map(f => f.name)
-        .join('\n');
-      log.debug('Executing cmds:', pipeline.commands);
-      const stdout = await Process.chain(pipeline.commands, stdin, { cwd: Config.tempDirectory });
-      let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
-
-      let filename = filenames[0];
-      let extension = pipeline.extension;
-      if (filenames.length > 1) {
-        filename = 'archive.zip';
-        extension = 'zip';
-        Util.zip(
-          filenames.map(f => `${Config.tempDirectory}${f}`),
-          `${Config.tempDirectory}${filename}`);
-      }
-
-      const destination = `${Config.outputDirectory}${Config.filename()}.${extension}`;
-      await FileInfo
-        .create(`${Config.tempDirectory}${filename}`)
-        .move(destination);
-
-      log.debug(`Written data to: ${destination}`);
-      await clearTemp();
+    if (this.request.batch !== Constants.BATCH_MANUAL || this.request.index < 1) {
+      await this.finish();
       return {};
     }
 
-    // Manual batch scan
-    const filepath = Scanimage.filename(request.index);
-    let buffer = FileInfo.create(filepath).toBuffer();
-    buffer = await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
-
-    log.debug(`Finished page: ${request.index}`);
+    log.debug(`Finished page: ${this.request.index}`);
     return {
-      index: request.index,
-      image: buffer.toString('base64')
+      index: this.request.index,
+      image: (await this.imageAsBuffer()).toString('base64')
     };
   }
 }
 
-module.exports = Scan;
+module.exports = {
+  /**
+   * @param {ScanRequest} req 
+   * @returns {Promise.<ScanResponse>}
+   */
+  async run(req) {
+    const scan = new ScanController();
+    await scan.init(req);
+    return await scan.execute();
+  }
+};
