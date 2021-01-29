@@ -1,0 +1,46 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "rules": {
+    "array-bracket-spacing": 1,
+    "brace-style": 1,
+    "comma-spacing": 1,
+    "eqeqeq": 1,
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "keyword-spacing": 1,
+    "no-mixed-spaces-and-tabs": 1,
+    "no-undef": 1,
+    "no-unused-vars": 1,
+    "no-var": 1,
+    "object-shorthand": [
+      1,
+      "methods"
+    ],
+    "prefer-arrow-callback": 1,
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "space-before-blocks": 1,
+    "space-infix-ops": 1
+  }
+}

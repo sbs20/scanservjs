@@ -14,41 +14,7 @@ const DIST = '../dist/';
 const RELEASE = '../release/';
 
 const linter = () => {
-  return eslint({
-    'parserOptions': {
-      'ecmaVersion': 2017
-    },
-    'env': {
-      'es6': true,
-      'browser': true
-    },
-    'globals': [
-      'console',
-      'document',
-      'module',
-      'require',
-      'window',
-      'Buffer'
-    ],
-    'rules': {
-      'array-bracket-spacing': 1,
-      'brace-style': 1,
-      'comma-spacing': 1,
-      'eqeqeq': 1,
-      'indent': ['error', 2, { 'SwitchCase': 1 }],
-      'keyword-spacing': 1,
-      'no-mixed-spaces-and-tabs': 1,
-      'no-undef': 1,
-      'no-unused-vars': 1,
-      'no-var': 1,
-      'object-shorthand': [1, 'methods'],
-      'prefer-arrow-callback': 1,
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'space-before-blocks': 1,
-      'space-infix-ops': 1
-    }
-  });
+  return eslint();
 };
 
 // Useful resources
