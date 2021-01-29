@@ -128,9 +128,12 @@ class ScanController {
   }
 
   /**
+   * @param {ScanRequest} req 
    * @returns {Promise.<ScanResponse>}
    */
-  async execute() {
+  async execute(req) {
+    await this.init(req);
+
     if (this.request.index === 1) {
       await this.deleteFiles();
     }
@@ -159,7 +162,6 @@ module.exports = {
    */
   async run(req) {
     const scan = new ScanController();
-    await scan.init(req);
-    return await scan.execute();
+    return await scan.execute(req);
   }
 };
