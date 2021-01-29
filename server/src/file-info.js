@@ -33,7 +33,7 @@ function sizeString(size) {
   } else {
     return `${Math.round(100.0 * size / mb) / 100.0} MB`;
   }
-};
+}
 
 class FileInfo {
   /**
