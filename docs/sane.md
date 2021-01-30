@@ -85,16 +85,30 @@ specify a specific name for the device in `/etc/sane.d/airscan.conf`
 [devices]
 "My scanner" = "http://10.0.111.4/eSCL"
 ```
-Your URI will be different
+
+Your URI will be different. You shouldn't need to do that though.
 
 Airscan relies on bonjour to make it work - which means broadcasting to the
 local subnet to autodiscover the device. If you are running on a different
-subnet, the autodiscovery won't work. If have servers galore then you can create
-a saned host in the same subnet as the scanner which uses airscan to reach the
-scanner, but re-shares the scanner as a SANED network scanner (see above) -
-we'll call this `The bridge`. Then have your `scanimage` client reference
-`The bridge` as a remote scanner host and add the IP address of `The bridge` to
-`/etc/sane.d/net.conf` on the client (which will be the scanservjs server).
+subnet, the autodiscovery won't work. You have two options:
+
+1. Use avahi reflector which "just" reflects broadcasts across the subnets
+   ```
+   apt-get install avahi-daemon -y sed -i "s/#enable-reflector=no/enable-reflector=yes/g" /etc/avahi/avahi-daemon.conf
+   systemctl restart avahi-daemon
+   ```
+2. If have servers galore then you can create a saned host in the same subnet as
+   the scanner which uses airscan to reach the scanner, but re-shares the
+   scanner as a SANED network scanner (see above) - we'll call this
+   `The bridge`. Then have your `scanimage` client reference `The bridge` as a
+   remote scanner host and add the IP address of `The bridge` to
+   `/etc/sane.d/net.conf` on the client (which will be the scanservjs server).
+   You may also need to add the full device name to the devices list in the
+   config e.g.
+   ```javascript
+   //config.devices.push('net:${bridge}:${device});
+   config.devices.push('net:10.0.100.171:airscan:e0:Canon TR8500 series-5);
+   ```
 
 ## For QNAP NAS
 
