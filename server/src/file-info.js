@@ -41,7 +41,7 @@ class FileInfo {
    */
   constructor(fullpath) {
     checkPath(fullpath);
-    this.fullname = fullpath;
+    this.fullname = path.normalize(fullpath);
     if (this.exists()) {
       const stat = fs.statSync(this.fullname);
       this.extension = path.extname(this.fullname);

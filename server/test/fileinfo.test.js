@@ -25,6 +25,12 @@ describe('FileInfo', () => {
     assert.strictEqual(file1.equals(file2), true);
   });
 
+  it('Check file path joins', () => {
+    const dir1 = new FileInfo('././test/resource');
+    const dir2 = new FileInfo('test/resource');
+    assert.strictEqual(dir1.fullname, dir2.fullname);
+  });
+
   it('List file', () => {
     assert.rejects(async () => new FileInfo('../package.json').list(), Error, 'Not a directory');
   });
