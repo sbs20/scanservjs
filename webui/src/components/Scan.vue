@@ -8,7 +8,7 @@
       <v-col cols="12" md="3" lg="auto" class="mb-10">
         <v-select v-if="context.devices.length > 0"
           label="Device" v-model="device"
-          :items="context.devices" item-text="id" @change="clear"></v-select>
+          :items="context.devices" return-object item-text="id" @change="clear"></v-select>
 
         <v-select v-if="'--source' in device.features"
           label="Source" v-model="request.params.source"

@@ -37,7 +37,7 @@ class ScanController {
     this.performScan = this.request.index > 0;
     this.finishUp = [Constants.BATCH_AUTO, Constants.BATCH_NONE].includes(this.request.batch)
       || (this.request.batch === Constants.BATCH_MANUAL && this.request.index < 0)
-      || (this.request.batch === Constants.BATCH_AUTO_COLLATE && this.request.index === 1);
+      || (this.request.batch === Constants.BATCH_AUTO_COLLATE && this.request.index === 2);
   }
 
   /**
@@ -66,8 +66,8 @@ class ScanController {
    * @param {FileInfo[]} files 
    */
   static collate(files) {
-    const odd = files.filter(f => f.name.match(/-0-/));
-    const even = files.filter(f => f.name.match(/-1-/));
+    const odd = files.filter(f => f.name.match(/-1-/));
+    const even = files.filter(f => f.name.match(/-2-/));
     const list = [].concat(odd, even);
     return list;
   }
