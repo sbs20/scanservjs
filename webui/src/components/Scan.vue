@@ -33,7 +33,8 @@
           :items="[
             { key: 'none', value: 'None' },
             { key: 'manual', value: 'Manual (with prompt)' },
-            { key: 'auto', value: 'Automatic (use ADF)' }
+            { key: 'auto', value: 'Auto (Document feeder)' },
+            { key: 'auto-collate', value: 'Auto (Duplex 1, 3... 2, 4)' }
           ]"
           item-value="key" item-text="value"></v-select>
 
@@ -348,9 +349,8 @@ export default {
         }
       }).then((response) => {
         if (response && 'index' in response) {
-          this.$refs.batchDialog.open({
-            message: `Preview of page ${response.index}`,
-            image: response.image,
+          const options = {
+            message: 'Turn documents over',
             onFinish: () => {
               this.request.index = -1;
               this.scan();
@@ -358,12 +358,17 @@ export default {
             onNext: () => {
               this.request.index = response.index + 1;
               this.scan();
-            },
-            onRescan: () => {
+            }
+          };
+          if (response.image) {
+            options.message = `Preview of page ${response.index}`;
+            options.image = response.image;
+            options.onRescan = () => {
               this.request.index = response.index;
               this.scan();
-            }
-          });
+            };
+          }
+          this.$refs.batchDialog.open(options);
         } else {
           // Finish
           this.$router.push('/files');

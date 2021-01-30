@@ -32,6 +32,12 @@ class ScanController {
     if (this.pipeline === undefined) {
       throw Error('No matching pipeline');
     }
+
+    this.firstPass = this.request.index === 1;
+    this.performScan = this.request.index > 0;
+    this.finishUp = [Constants.BATCH_AUTO, Constants.BATCH_NONE].includes(this.request.batch)
+      || (this.request.batch === Constants.BATCH_MANUAL && this.request.index < 0)
+      || (this.request.batch === Constants.BATCH_AUTO_COLLATE && this.request.index === 1);
   }
 
   /**
@@ -57,14 +63,28 @@ class ScanController {
   }
 
   /**
+   * @param {FileInfo[]} files 
+   */
+  static collate(files) {
+    const odd = files.filter(f => f.name.match(/-0-/));
+    const even = files.filter(f => f.name.match(/-1-/));
+    const list = [].concat(odd, even);
+    return list;
+  }
+
+  /**
    * @returns {Promise.<void>}
    */
   async finish() {
     log.debug(`Post processing: ${this.pipeline.description}`);
-    const files = (await this.listFiles()).filter(f => f.extension === '.tif');
+    let files = (await this.listFiles()).filter(f => f.extension === '.tif');
 
     // Update preview with the first image
     await this.updatePreview(files[0].name);
+
+    if (this.request.batch === Constants.BATCH_AUTO_COLLATE) {
+      files = ScanController.collate(files);
+    }
 
     const stdin = files.map(f => f.name).join('\n');
     log.debug('Executing cmds:', this.pipeline.commands);
@@ -134,24 +154,27 @@ class ScanController {
   async execute(req) {
     await this.init(req);
 
-    if (this.request.index === 1) {
+    if (this.firstPass) {
       await this.deleteFiles();
     }
 
-    if (this.request.index > 0) {
+    if (this.performScan) {
       await this.scan();
     }
 
-    if (this.request.batch !== Constants.BATCH_MANUAL || this.request.index < 1) {
+    if (this.finishUp) {
       await this.finish();
       return {};
-    }
 
-    log.debug(`Finished page: ${this.request.index}`);
-    return {
-      index: this.request.index,
-      image: (await this.imageAsBuffer()).toString('base64')
-    };
+    } else {
+      log.debug(`Finished pass: ${this.request.index}`);
+      /** @type {ScanResponse} */
+      const response = { index: this.request.index };
+      if (this.request.batch === Constants.BATCH_MANUAL) {
+        response.image = (await this.imageAsBuffer()).toString('base64');
+      }
+      return response;
+    }
   }
 }
 
