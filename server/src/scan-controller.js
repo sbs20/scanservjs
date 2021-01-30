@@ -44,7 +44,8 @@ class ScanController {
    * @returns {Promise.<FileInfo[]>}
    */
   async listFiles() {
-    return await this.dir.list();
+    const files = await this.dir.list();
+    return files.sort((f1, f2) => f1.name.localeCompare(f2.name));
   }
 
   /**
@@ -63,16 +64,6 @@ class ScanController {
   }
 
   /**
-   * @param {FileInfo[]} files 
-   */
-  static collate(files) {
-    const odd = files.filter(f => f.name.match(/-1-/));
-    const even = files.filter(f => f.name.match(/-2-/));
-    const list = [].concat(odd, even);
-    return list;
-  }
-
-  /**
    * @returns {Promise.<void>}
    */
   async finish() {
@@ -81,10 +72,6 @@ class ScanController {
 
     // Update preview with the first image
     await this.updatePreview(files[0].name);
-
-    if (this.request.batch === Constants.BATCH_AUTO_COLLATE) {
-      files = ScanController.collate(files);
-    }
 
     const stdin = files.map(f => f.name).join('\n');
     log.debug('Executing cmds:', this.pipeline.commands);

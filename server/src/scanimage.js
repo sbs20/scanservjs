@@ -70,7 +70,7 @@ class Scanimage {
       cmdBuilder.arg('--disable-dynamic-lineart=yes');
     }
     if ([Constants.BATCH_AUTO, Constants.BATCH_AUTO_COLLATE].includes(request.batch)) {
-      const pattern = `${Config.tempDirectory}${Constants.TEMP_FILESTEM}${request.index}-%04d.tif`;
+      const pattern = `${Config.tempDirectory}${Constants.TEMP_FILESTEM}%04d-${request.index}.tif`;
       cmdBuilder.arg(`--batch=${pattern}`);
     } else {
       cmdBuilder.arg(`> ${Scanimage.filename(request.index)}`);
