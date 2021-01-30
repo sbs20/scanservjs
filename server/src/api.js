@@ -6,7 +6,7 @@ const FileInfo = require('./file-info');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
-const Scan = require('./scan');
+const ScanController = require('./scan-controller');
 
 class Api {
 
@@ -20,7 +20,7 @@ class Api {
     files = files
       .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension))
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
-    log.debug(JSON.stringify(files));
+    log.trace(JSON.stringify(files));
     return files;
   }
 
@@ -90,7 +90,7 @@ class Api {
    * @returns {ScanResponse}
    */
   static async scan(req) {
-    return await Scan.run(req);
+    return await ScanController.run(req);
   }
 
   /**
