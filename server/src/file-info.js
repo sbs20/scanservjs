@@ -1,4 +1,4 @@
-const Config = require('../config/config');
+const Config = require('./config');
 const fs = require('fs');
 const mv = require('mv');
 const path = require('path');

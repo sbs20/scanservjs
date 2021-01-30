@@ -1,6 +1,6 @@
 const log = require('loglevel').getLogger('Scan');
 const CmdBuilder = require('./command-builder');
-const Config = require('../config/config');
+const Config = require('./config');
 const Constants = require('./constants');
 const Context = require('./context');
 const FileInfo = require('./file-info');

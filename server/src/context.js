@@ -1,7 +1,6 @@
 const fs = require('fs');
-const Config = require('../config/config');
+const Config = require('./config');
 const Devices = require('./devices');
-const Package = require('../package.json');
 
 const diagnostic = (path) => {
   const success = fs.existsSync(path);
@@ -18,7 +17,7 @@ class Context {
    */
   constructor(devices) {
     this.devices = devices;
-    this.version = Package.version;
+    this.version = Config.version;
     this.diagnostics = [
       diagnostic(Config.scanimage),
       diagnostic(Config.convert)

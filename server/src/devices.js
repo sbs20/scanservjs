@@ -1,8 +1,7 @@
 const log = require('loglevel').getLogger('Devices');
-const Config = require('../config/config');
+const Config = require('./config');
 const Device = require('./device');
 const FileInfo = require('./file-info');
-const Package = require('../package.json');
 const Process = require('./process');
 const Scanimage = require('./scanimage');
 
@@ -47,7 +46,7 @@ class Devices {
     if (file.exists()) {
       devices = Devices.from(file.toJson());
       if (devices.length > 0) {
-        if (devices[0].version !== Package.version) {
+        if (devices[0].version !== Config.version) {
           log.debug('devices.json version is old. Reloading');
           devices = null;
         }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const express = require('express');
-const Config = require('../config/config');
+const Config = require('./config');
 const configure = require('./configure');
 const log = require('loglevel').getLogger('server');
 

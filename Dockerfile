@@ -38,7 +38,7 @@ ENV AIRSCAN_DEVICES=""
 # This directs scanserv not to bother querying `scanimage -L`
 ENV SCANIMAGE_LIST_IGNORE=""
 
-# This gets added to scanservjs/config/config.js:devices
+# This gets added to scanservjs/server/config.js:devices
 ENV DEVICES=""
 
 # Override OCR language

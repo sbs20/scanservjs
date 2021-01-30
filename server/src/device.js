@@ -1,5 +1,5 @@
 const extend = require('./util').extend;
-const Package = require('../package.json');
+const Config = require('./config');
 
 /**
  * @param {number} n 
@@ -118,7 +118,7 @@ class Adapter {
     /** @type {ScanDevice} */
     let device = {
       'id': '',
-      'version': Package.version,
+      'version': Config.version,
       'features': {}
     };
   

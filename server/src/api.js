@@ -1,5 +1,5 @@
 const log = require('loglevel').getLogger('Api');
-const Config = require('../config/config');
+const Config = require('./config');
 const Context = require('./context');
 const Devices = require('./devices');
 const FileInfo = require('./file-info');
@@ -103,7 +103,8 @@ class Api {
       const preview = FileInfo.create(`${Config.previewDirectory}preview.tif`);
       preview.delete();
     }
-    return await Context.create();
+    const context = await Context.create();
+    return context;
   }
 }
 

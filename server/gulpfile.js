@@ -26,7 +26,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('server-lint', () => {
-  return gulp.src(['./src/*.js', './config/config.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./src/*.js', './config/config.local.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());

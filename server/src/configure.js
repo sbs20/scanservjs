@@ -1,7 +1,7 @@
 const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
-const Config = require('../config/config');
+const Config = require('./config');
 
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
@@ -45,11 +45,13 @@ const logRequest = (req) => {
 const initialize = (rootPath) => {
   if (rootPath) {
     // Only required for running in development
-    Config.devicesPath = rootPath + Config.devicesPath;
-    Config.outputDirectory = rootPath + Config.outputDirectory;
-    Config.previewDirectory = rootPath + Config.previewDirectory;
-    Config.tempDirectory = rootPath + Config.tempDirectory;
-    Config.allowUnsafePaths = true;
+    Object.assign(Config, {
+      devicesPath: rootPath + Config.devicesPath,
+      outputDirectory: rootPath + Config.outputDirectory,
+      previewDirectory: rootPath + Config.previewDirectory,
+      tempDirectory: rootPath + Config.tempDirectory,
+      allowUnsafePaths: true
+    });
   }
   
   fs.mkdirSync(Config.outputDirectory, { recursive: true });
