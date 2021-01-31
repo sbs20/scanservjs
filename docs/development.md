@@ -69,8 +69,12 @@ docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-cont
 docker save -o scanservjs-image.tar scanservjs-image
 docker load -i scanservjs-image.tar
 
-# Debug
-docker run -it --entrypoint=/bin/bash scanservjs-container
+# Shell inside image
+docker run -it --entrypoint=/bin/bash scanservjs-image
+
+# Shell inside running container
+docker exec -it scanservjs-container /bin/bash
+
 docker logs scanservjs-container
 
 # Start and stop

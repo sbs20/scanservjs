@@ -206,10 +206,9 @@ class Config {
 
   applyLocal() {
     // Apply user config
-    let applyLocalConfig = require('../config/config.local');
     const localPath = path.join(__dirname, '../config/config.local.js');
     if (fs.existsSync(localPath)) {
-      applyLocalConfig = require(localPath);
+      const applyLocalConfig = require(localPath);
       applyLocalConfig(this);
     }
   }

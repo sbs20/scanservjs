@@ -106,7 +106,7 @@ use `scanimage -L`, force a list of devices and override the OCR language
 
 ```console
 docker run -d -p 8080:8080 \
-  -e SANED_HOSTS="10.0.100.30;10.0.100.31" \
+  -e SANED_NET_HOSTS="10.0.100.30;10.0.100.31" \
   -e AIRSCAN_DEVICES='"Canon MFD" = "http://192.168.0.10/eSCL";"EPSON MFD" = "http://192.168.0.11/eSCL"' \
   -e SCANIMAGE_LIST_IGNORE=true \
   -e DEVICES="net:10.0.100.30:plustek:libusb:001:003;net:10.0.100.31:plustek:libusb:001:003;airscan:e0:Canon TR8500 series;airscan:e1:EPSON Cool Series" \
