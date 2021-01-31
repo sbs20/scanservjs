@@ -7,18 +7,21 @@
 * Navigate to the repo directory
 * Windows:
   ```
-  npm install -g @vue/cli @vue/cli-service-global gulp-cli
-  npm install .
+  npm i -g @vue/cli @vue/cli-service-global gulp-cli
+  cd server
+  npm i .
+  cd ..\webui
+  npm i .
   ```
 * Linux:
   ```
   sudo npm install -g @vue/cli @vue/cli-service-global gulp-cli
-  npm install .
+  cd server && npm i . && cd ../webui && npm i .
   ```
 
-## Run
+## Run for development
 ```
-npm run serve
+cd webui && npm run serve
 ```
 
 This will hook the server component into webpack (see vue.config.js) and
@@ -28,18 +31,12 @@ references below.
 
 Convenience method which performs linting and builds the client and server
 ```
-gulp
-```
-
-When docker builds it runs the following
-```
-npm run server-build
-npm run client-build
+cd server && gulp
 ```
 
 or do a release:
 ```
-gulp release
+cd server && gulp release
 ```
 
 ## Updating node dependencies
@@ -72,8 +69,12 @@ docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-cont
 docker save -o scanservjs-image.tar scanservjs-image
 docker load -i scanservjs-image.tar
 
-# Debug
-docker run -it --entrypoint=/bin/bash scanservjs-container
+# Shell inside image
+docker run -it --entrypoint=/bin/bash scanservjs-image
+
+# Shell inside running container
+docker exec -it scanservjs-container /bin/bash
+
 docker logs scanservjs-container
 
 # Start and stop

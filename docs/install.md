@@ -3,7 +3,7 @@
 The easiest way to run is with Docker. But it's still possible to setup
 manually.
 
-## Steps
+## Manual Steps
 * Get [SANE installed and working](./sane.md) and check permissions etc.
 * Get nodejs and npm installed (You will need an up to date version of npm, you
   may need to run `npm install npm@latest -g`)
