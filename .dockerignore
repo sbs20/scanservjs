@@ -1,1 +1,2 @@
-node_modules
+server/node_modules
+webui/node_modules

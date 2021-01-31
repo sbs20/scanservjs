@@ -1,4 +1,4 @@
-name: Node.js CI
+name: NodeCI
 
 on:
   workflow_dispatch:
@@ -40,14 +40,13 @@ jobs:
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
     # Install packages and build
-    - run: npm install
-    - run: npm run server-lint
-    - run: npm run server-build
-    - run: npm run client-build
-    - run: npm run test
+    - run: cd server && npm i --loglevel=error && cd ../webui && npm i --loglevel=error
+    - run: cd server && npm run server-lint
+    - run: cd server && npm run test
+    - run: cd webui && npm run build && cd ../server && npm run server-build
       env:
         CI: true
-    - run: npm run package
+    - run: cd server && npm run package
 
     # We may need the package name for a release later (if not the dev branch and it's node 12)
     - name: Retrieve package name
