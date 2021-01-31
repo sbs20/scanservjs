@@ -41,6 +41,9 @@ export default {
       Common.fetch('files').then(files => {
         this.files = files;
         this.$emit('mask', -1);
+      }).catch(error => {
+        this.$emit('notify', { type: 'e', message: error });
+        this.$emit('mask', -1);
       });
     },
 
@@ -51,6 +54,9 @@ export default {
       }).then(data => {
         console.log('fileRemove', data);
         this.fileList();
+        this.$emit('mask', -1);
+      }).catch(error => {
+        this.$emit('notify', { type: 'e', message: error });
         this.$emit('mask', -1);
       });
     },

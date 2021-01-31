@@ -1,7 +1,5 @@
 <template>
   <div>
-    <toastr ref="toastr"></toastr>
-
     <v-row>
       <v-spacer/>
 
@@ -96,7 +94,6 @@
 
 <script>
 import { Cropper } from 'vue-advanced-cropper';
-import Toastr from 'vue-toastr';
 import BatchDialog from './BatchDialog';
 
 import Common from '../classes/common';
@@ -118,7 +115,6 @@ export default {
   name: 'Scan',
   components: {
     Cropper,
-    Toastr,
     BatchDialog
   },
 
@@ -146,8 +142,6 @@ export default {
   },
 
   mounted() {
-    this.$refs.toastr.defaultPosition = 'toast-bottom-right';
-    this.$refs.toastr.defaultTimeout = 5000;
     this._resizePreview();
     this.readContext().then(() => {
       this.readPreview();
@@ -189,7 +183,8 @@ export default {
     _fetch(url, options) {
       return Common.fetch(url, options)
         .catch(error => {
-          this.$refs.toastr.e(error);
+          this.notify({ type: 'e', message: error });
+          this.mask(-1);
         });
     },
 
@@ -238,6 +233,10 @@ export default {
       this.$emit('mask', add);
     },
 
+    notify(notification) {
+      this.$emit('notify', notification);
+    },
+
     onCoordinatesChange() {
       const adjust = (n) => round(n * this.pixelsPerMm());
       const params = this.request.params;
@@ -272,23 +271,22 @@ export default {
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
-      this.$refs.toastr.i('Finding devices...');
+      this.notify({ type: 'i', message: 'Finding devices...' });
 
       return this._fetch(url).then(context => {
         this.context = context;
 
         if (context.devices.length > 0) {
           for (let device of context.devices) {
-            this.$refs.toastr.i(`Found device ${device.id}`);
+            this.notify({ type: 'i', message: `Found device ${device.id}`});
           }
           this.device = context.devices[0];
           this.request = this.buildRequest();
           for (let test of context.diagnostics) {
-            const toast = test.success ? this.$refs.toastr.s : this.$refs.toastr.e;
-            toast(test.message);
+            this.notify({ type: test.success ? 's' : 'e', message: test.message });
           }
         } else {
-          this.$refs.toastr.e('Found no devices');
+          this.notify({ type: 'e', message: 'Found no devices' });
         }
 
         if (force) {

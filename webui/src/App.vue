@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <toastr ref="toastr"></toastr>
+
     <transition name="fade">
       <div v-if="maskRef" id="mask">
         <div style="position: absolute; top: 49%; left: 49%">
@@ -13,7 +15,7 @@
     <v-main>
       <v-container fluid>
         <transition name="fade" mode="out-in" :duration="150">
-          <router-view @mask="mask"></router-view>
+          <router-view @mask="mask" @notify="notify"></router-view>
         </transition>
       </v-container>
     </v-main>
@@ -21,6 +23,8 @@
 </template>
 
 <script>
+import Toastr from 'vue-toastr';
+
 import Constants from './classes/constants';
 import Storage from './classes/storage';
 import Navigation from './components/Navigation';
@@ -30,7 +34,8 @@ const storage = Storage.instance();
 export default {
   name: 'App',
   components: {
-    Navigation
+    Navigation,
+    Toastr
   },
 
   data() {
@@ -57,6 +62,20 @@ export default {
   methods: {
     mask(add) {
       this.maskRef += add;
+    },
+
+    notify(notification) {
+      const types = {
+        's': 'success',
+        'i': 'info',
+        'e': 'error'
+      };
+      this.$refs.toastr.Add({
+        type: types[notification.type],
+        position: 'toast-bottom-right',
+        msg: notification.message,
+        timeout: 5000
+      });
     }
   }
 };
