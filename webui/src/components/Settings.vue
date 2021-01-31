@@ -10,7 +10,7 @@
           </template>
           <template v-slot:action>
             <div style="max-width: 9rem;">
-              <v-select label="Theme" :items="themes" v-model="settings.theme"></v-select>
+              <v-select label="Theme" :items="themes" v-model="settings.theme" @change="reload"></v-select>
             </div>
           </template>
         </settings-item>
@@ -63,6 +63,12 @@ export default {
         storage.settings = settings;
       },
       deep: true
+    }
+  },
+
+  methods: {
+    reload() {
+      location.href = `/?anticache=${Date.now()}${location.hash}`;
     }
   }
 };
