@@ -83,6 +83,34 @@ More installation options:
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
 * `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
 
+## Configuration override
+If you want to override some specific configuration setting then you can do so
+within `./config/config.local.js`. Using docker you will need to map the volume
+using `-v /my/local/path/:/app/config/` then create a file in your directory
+called `config.local.js`. See [example source](./server/config/config.local.js)
+for more options.
+
+```javascript
+module.exports = {
+  afterConfig(config) {
+    // Set default preview resolution
+    config.previewResolution = 300;
+
+    // Add a custom print pipeline
+    config.pipelines.push({
+      extension: 'pdf',
+      description: 'Print PDF',
+      commands: [
+        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+        'convert @- scan-0000.pdf',
+        'lp -d MY_PRINTER scan-0000.pdf',
+        'ls scan-*.*'
+      ]
+    });
+  }
+};
+```
+
 ## Airscan
 [sane-airscan](https://github.com/alexpevzner/sane-airscan) uses Avahi /
 Zeroconf / Bonjour to discover devices on the local network. If you are running
