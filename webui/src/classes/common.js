@@ -5,7 +5,7 @@ export default {
     if (response.ok) {
       return json;
     }
-    throw json;
+    throw JSON.stringify(json);
   },
 
   clone(obj) {
