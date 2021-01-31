@@ -208,8 +208,8 @@ class Config {
     // Apply user config
     const localPath = path.join(__dirname, '../config/config.local.js');
     if (fs.existsSync(localPath)) {
-      const applyLocalConfig = require(localPath);
-      applyLocalConfig(this);
+      const localConfig = require(localPath);
+      localConfig.afterConfig(this);
     }
   }
 
