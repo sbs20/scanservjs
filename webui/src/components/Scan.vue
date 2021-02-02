@@ -156,7 +156,6 @@ export default {
     request: {
       handler(request) {
         storage.request = request;
-        console.log('save:', storage.request);
         this.onCoordinatesChange();
       },
       deep: true
