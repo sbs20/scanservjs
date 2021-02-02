@@ -269,19 +269,23 @@ export default {
     readContext(force) {
       this.mask(1);
       const url = 'context' + (force ? '/force' : '');
-      this.notify({ type: 'i', message: 'Finding devices...' });
+
+      // Only show notification if things are slow (first time / force)
+      const timer = window.setTimeout(() => {
+        this.notify({ type: 'i', message: 'Loading devices...' });
+      }, 250);
 
       return this._fetch(url).then(context => {
+        window.clearTimeout(timer);
         this.context = context;
 
         if (context.devices.length > 0) {
-          for (let device of context.devices) {
-            this.notify({ type: 'i', message: `Found device ${device.id}`});
-          }
           this.device = context.devices[0];
           this.request = this.buildRequest();
           for (let test of context.diagnostics) {
-            this.notify({ type: test.success ? 's' : 'e', message: test.message });
+            if (!test.success) {
+              this.notify({ type: 'e', message: test.message });
+            }
           }
         } else {
           this.notify({ type: 'e', message: 'Found no devices' });

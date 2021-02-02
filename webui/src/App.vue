@@ -70,11 +70,14 @@ export default {
         'i': 'info',
         'e': 'error'
       };
+
+      const timeout = notification.type === 'e' ? 10000 : 2000;
       this.$refs.toastr.Add({
         type: types[notification.type],
         position: 'toast-bottom-right',
         msg: notification.message,
-        timeout: 5000
+        timeout: timeout,
+        progressbar: false
       });
     }
   }
