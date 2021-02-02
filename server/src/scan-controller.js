@@ -4,6 +4,7 @@ const Config = require('./config');
 const Constants = require('./constants');
 const Context = require('./context');
 const FileInfo = require('./file-info');
+const Filters = require('./filters');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
@@ -14,7 +15,7 @@ class ScanController {
     /** @type {Context} */
     this.context = null;
 
-    /** @type {Request} */
+    /** @type {ScanRequest} */
     this.request = null;
 
     this.dir = FileInfo.create(Config.tempDirectory);
@@ -70,8 +71,16 @@ class ScanController {
     log.debug(`Post processing: ${this.pipeline.description}`);
     let files = (await this.listFiles()).filter(f => f.extension === '.tif');
 
-    // Update preview with the first image
+    // Update preview with the first image (pre filter)
     await this.updatePreview(files[0].name);
+
+    // Apply filters
+    if (this.request.filters.length > 0) {
+      const stdin = files.map(f => f.name).join('\n');
+      const cmd = `convert @- ${Filters.build(this.request.filters)} f-%04d.tif`;
+      await Process.spawn(cmd, stdin, { cwd: Config.tempDirectory });
+      files = (await this.listFiles()).filter(f => f.name.match(/f-\d{4}\.tif/));
+    }
 
     const stdin = files.map(f => f.name).join('\n');
     log.debug('Executing cmds:', this.pipeline.commands);

@@ -31,7 +31,7 @@ class Scanimage {
    */
   static filename(page) {
     const number = `000${page}`.slice(-4);
-    return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}0-${number}.tif`;
+    return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}-0.tif`;
   }
 
   /**
