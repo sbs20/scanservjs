@@ -104,6 +104,7 @@ class Api {
       preview.delete();
     }
     const context = await Context.create();
+    context.pipelines = context.pipelines.map(p => p.description);
     return context;
   }
 }

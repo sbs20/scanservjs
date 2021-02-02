@@ -38,8 +38,7 @@
 
         <v-select
           label="Format" v-model="request.pipeline"
-          :items="context.pipelines"
-          item-text="description"></v-select>
+          :items="context.pipelines"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
@@ -320,7 +319,7 @@ export default {
           || this.context.devices[0];
       }
 
-      request = Request.create(request, this.device, this.context.pipelines[0].description);
+      request = Request.create(request, this.device, this.context.pipelines[0]);
       return request;
     },
 
