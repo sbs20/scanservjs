@@ -27,7 +27,7 @@
  * @property {Object.<string, ScanDeviceFeature>} features
  */
 
- /**
+/**
  * @typedef {Object} Filter
  * @property {string} description
  * @property {string} params
