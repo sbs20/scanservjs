@@ -27,11 +27,37 @@
  * @property {Object.<string, ScanDeviceFeature>} features
  */
 
+ /**
+ * @typedef {Object} Filter
+ * @property {string} description
+ * @property {string} params
+ */
+
 /**
  * @typedef {Object} Pipeline
  * @property {string} extension
  * @property {string} description
  * @property {string[]} commands
+ */
+
+/**
+ * @typedef {Object} Configuration
+ * @property {string} version
+ * @property {number} port
+ * @property {ScanDevice} devices
+ * @property {string} ocrLanguage
+ * @property {string} scanimage
+ * @property {string} convert
+ * @property {string} tesseract
+ * @property {boolean} allowUnsafePaths
+ * @property {string} devicesPath
+ * @property {string} outputDirectory
+ * @property {string} previewDirectory
+ * @property {string} tempDirectory
+ * @property {number} previewResolution
+ * @property {Pipeline} previewPipeline
+ * @property {Filter[]} filters
+ * @property {Pipeline[]} pipelines
  */
 
 /**
@@ -53,6 +79,7 @@
 /**
  * @typedef {Object} ScanRequest
  * @property {ScanRequestParameters} params
+ * @property {string[]} filters
  * @property {string} pipeline
  * @property {string} batch
  * @property {number} index

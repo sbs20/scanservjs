@@ -37,6 +37,13 @@
           item-value="key" item-text="value"></v-select>
 
         <v-select
+          v-model="request.filters"
+          :items="context.filters"
+          label="Filters"
+          @change="readPreview"
+          multiple />
+
+        <v-select
           label="Format" v-model="request.pipeline"
           :items="context.pipelines"></v-select>
 
@@ -126,6 +133,7 @@ export default {
         devices: [
           device
         ],
+        filters: [],
         pipelines: [],
         version: '0'
       },
@@ -178,10 +186,16 @@ export default {
     },
 
     _fetch(url, options) {
+      this.mask(1);
       return Common.fetch(url, options)
+        .then(data => {
+          this.mask(-1);
+          return data;
+        })
         .catch(error => {
           this.notify({ type: 'e', message: error });
           this.mask(-1);
+          return error;
         });
     },
 
@@ -193,7 +207,7 @@ export default {
 
       let data = Common.clone(this.request);
 
-      this._fetch('preview', {
+      this._fetch('scanner/preview', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -206,6 +220,8 @@ export default {
         // Some scanners don't create the preview until after the scan has finished.
         // Run preview one last time
         window.setTimeout(this.readPreview, 1000);
+        this.mask(-1);
+      }).catch(() => {
         this.mask(-1);
       });
     },
@@ -266,7 +282,6 @@ export default {
     },
 
     readContext(force) {
-      this.mask(1);
       const url = 'context' + (force ? '/force' : '');
 
       // Only show notification if things are slow (first time / force)
@@ -294,7 +309,6 @@ export default {
           this.clear();
           this.readPreview();
         }
-        this.mask(-1);
       });
     },
 
@@ -302,7 +316,8 @@ export default {
       // Gets the preview image as a base64 encoded jpg and updates the UI
       this._fetch('preview', {
         cache: 'no-store',
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(this.request.filters),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -333,13 +348,12 @@ export default {
     },
 
     scan(index) {
-      this.mask(1);
       if (index !== undefined) {
         this.request.index = index;
       }
-      let data = Common.clone(this.request);
-      
-      this._fetch('scan', {
+
+      const data = Common.clone(this.request);
+      this._fetch('scanner/scan', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -372,7 +386,6 @@ export default {
           // Finish
           this.$router.push('/files');
         }
-        this.mask(-1);
       });
     }
   }

@@ -24,6 +24,9 @@ class Context {
     ];
     /** @type {Pipeline[]} */
     this.pipelines = Config.pipelines;
+
+    /** @type {Filter[]} */
+    this.filters = Config.filters;
   }
 
   /**

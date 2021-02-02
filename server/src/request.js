@@ -34,6 +34,7 @@ class Request {
         mode: data.params.mode || features['--mode'].default,
         format: 'tiff'
       },
+      filters: data.filters || [],
       pipeline: data.pipeline || null,
       batch: data.batch || Constants.BATCH_NONE,
       index: data.index || 1
@@ -54,7 +55,7 @@ class Request {
         : true;
     }
 
-    log.debug(JSON.stringify(this));
+    log.trace(JSON.stringify(this));
     return this;
   }
 }

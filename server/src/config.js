@@ -54,6 +54,21 @@ class Config {
           'convert - -quality 75 jpg:-'
         ]
       },
+
+      filters: [
+        {
+          description: 'Auto level',
+          params: '-auto-level'
+        },
+        {
+          description: 'Black/white',
+          params: '-channel RGB -threshold 80%'
+        },
+        {
+          description: 'Blur',
+          params: '-blur 1'
+        }
+      ],
     
       pipelines: [
         {
@@ -213,6 +228,9 @@ class Config {
     }
   }
 
+  /**
+   * @returns {Configuration}
+   */
   static instance() {
     if (instance === null) {
       instance = new Config();
