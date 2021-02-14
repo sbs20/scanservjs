@@ -32,7 +32,8 @@
             { key: 'none', value: 'None' },
             { key: 'manual', value: 'Manual (with prompt)' },
             { key: 'auto', value: 'Auto (Document feeder)' },
-            { key: 'auto-collate', value: 'Auto (Duplex 1, 3... 2, 4)' }
+            { key: 'auto-collate', value: 'Auto (Duplex 1, 3... 2, 4)' },
+            { key: 'auto-collate-reverse', value: 'Auto (Duplex reverse 1, 3... 4, 2)' }
           ]"
           item-value="key" item-text="value"></v-select>
 
@@ -365,8 +366,6 @@ export default {
           const options = {
             message: 'Turn documents over',
             onFinish: () => {
-              this.request.index = -1;
-              this.scan();
             },
             onNext: () => {
               this.request.index = response.index + 1;
@@ -376,6 +375,10 @@ export default {
           if (response.image) {
             options.message = `Preview of page ${response.index}`;
             options.image = response.image;
+            options.onFinish = () => {
+              this.request.index = -1;
+              this.scan();
+            };
             options.onRescan = () => {
               this.request.index = response.index;
               this.scan();

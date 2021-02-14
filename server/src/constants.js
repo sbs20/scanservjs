@@ -3,5 +3,6 @@ module.exports = {
   BATCH_MANUAL: 'manual',
   BATCH_AUTO: 'auto',
   BATCH_AUTO_COLLATE: 'auto-collate',
+  BATCH_AUTO_COLLATE_REVERSE: 'auto-collate-reverse',
   TEMP_FILESTEM: '~tmp-scan-'
 };
