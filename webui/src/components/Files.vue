@@ -52,7 +52,7 @@ export default {
       Common.fetch('files/' + encodeURIComponent(file.fullname), {
         method: 'DELETE'
       }).then(data => {
-        console.log('fileRemove', data);
+        this.$emit('notify', { type: 'i', message: `Deleted ${data.name}` });
         this.fileList();
         this.$emit('mask', -1);
       }).catch(error => {

@@ -14,6 +14,7 @@ export default {
           resolution: device.features['--resolution'].default,
           mode: device.features['--mode'].default
         },
+        filters: [],
         pipeline: pipeline,
         batch: 'none',
         index: 1

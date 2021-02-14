@@ -54,6 +54,21 @@ class Config {
           'convert - -quality 75 jpg:-'
         ]
       },
+
+      filters: [
+        {
+          description: 'Auto level',
+          params: '-auto-level'
+        },
+        {
+          description: 'Threshold',
+          params: '-channel RGB -threshold 80%'
+        },
+        {
+          description: 'Blur',
+          params: '-blur 1'
+        }
+      ],
     
       pipelines: [
         {
@@ -157,7 +172,7 @@ class Config {
         description: 'OCR | PDF (JPG | High quality)',
         commands: [
           'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-          `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
+          `${this.tesseract} -l ${this.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
           'ls scan-*.*'
         ]
       },
@@ -165,7 +180,7 @@ class Config {
         extension: 'txt',
         description: 'OCR | Text file',
         commands: [
-          `${Config.tesseract} -l ${Config.ocrLanguage} -c stream_filelist=true - - txt > scan-0001.txt`,
+          `${this.tesseract} -l ${this.ocrLanguage} -c stream_filelist=true - - txt > scan-0001.txt`,
           'ls scan-*.*'
         ]
       }
@@ -213,6 +228,9 @@ class Config {
     }
   }
 
+  /**
+   * @returns {Configuration}
+   */
   static instance() {
     if (instance === null) {
       instance = new Config();

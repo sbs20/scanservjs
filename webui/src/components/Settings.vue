@@ -36,8 +36,6 @@ export default {
   },
 
   data() {
-    const x = storage.settings;
-    console.log(x);
     return {
       settings: storage.settings,
       themes: [
