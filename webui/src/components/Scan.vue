@@ -3,7 +3,7 @@
     <v-row>
       <v-spacer/>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10">
+      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
         <v-select v-if="context.devices.length > 0"
           label="Device" v-model="device"
           :items="context.devices" return-object item-text="id" @change="clear"></v-select>
@@ -32,14 +32,21 @@
             { key: 'none', value: 'None' },
             { key: 'manual', value: 'Manual (with prompt)' },
             { key: 'auto', value: 'Auto (Document feeder)' },
-            { key: 'auto-collate', value: 'Auto (Duplex 1, 3... 2, 4)' }
+            { key: 'auto-collate-standard', value: 'Auto (Collate 1, 3... 4, 2)' },
+            { key: 'auto-collate-reverse', value: 'Auto (Reverse 1, 3... 2, 4)' }
           ]"
           item-value="key" item-text="value"></v-select>
 
         <v-select
+          v-model="request.filters"
+          :items="context.filters"
+          label="Filters"
+          @change="readPreview"
+          multiple />
+
+        <v-select
           label="Format" v-model="request.pipeline"
-          :items="context.pipelines"
-          item-text="description"></v-select>
+          :items="context.pipelines"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
@@ -48,13 +55,13 @@
         </div>
       </v-col>
 
-      <v-col cols="12" md="6" lg="auto" class="mb-10" :style="{width: `${preview.width}px`}">
+      <v-col cols="12" md="auto" lg="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
         <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCrop"></cropper>
       </v-col>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10">
+      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
         <v-text-field label="Top" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
         <v-text-field label="Left" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
         <v-text-field label="Width" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
@@ -127,6 +134,7 @@ export default {
         devices: [
           device
         ],
+        filters: [],
         pipelines: [],
         version: '0'
       },
@@ -156,7 +164,6 @@ export default {
     request: {
       handler(request) {
         storage.request = request;
-        console.log('save:', storage.request);
         this.onCoordinatesChange();
       },
       deep: true
@@ -168,23 +175,28 @@ export default {
       const paperRatio = this.device.features['-x'].limits[1] / 
         this.device.features['-y'].limits[1];
 
-      const smallBreakpoint = 576;
-      const scrollbarWidth = 25;
-      const appbarHeight = 120;
-
-      if (window.innerWidth < smallBreakpoint) {
-        this.preview.width = window.innerWidth - (window.scrollbars.visible ? scrollbarWidth : 0) - 30;
-      } else {
-        this.preview.width = (window.innerHeight - appbarHeight) * paperRatio;
+      // This only makes a difference when the col-width="auto" - so md+
+      const mdBreakpoint = 960;
+      if (window.innerWidth >= mdBreakpoint) {
+        const appbarHeight = 80;
+        const availableHeight = window.innerHeight - appbarHeight;
+        const desiredWidth = availableHeight * paperRatio;
+        this.preview.width = desiredWidth;
+        this.preview.key += 1;
       }
-      this.preview.key += 1;
     },
 
     _fetch(url, options) {
+      this.mask(1);
       return Common.fetch(url, options)
+        .then(data => {
+          this.mask(-1);
+          return data;
+        })
         .catch(error => {
           this.notify({ type: 'e', message: error });
           this.mask(-1);
+          return error;
         });
     },
 
@@ -196,7 +208,7 @@ export default {
 
       let data = Common.clone(this.request);
 
-      this._fetch('preview', {
+      this._fetch('scanner/preview', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -209,6 +221,8 @@ export default {
         // Some scanners don't create the preview until after the scan has finished.
         // Run preview one last time
         window.setTimeout(this.readPreview, 1000);
+        this.mask(-1);
+      }).catch(() => {
         this.mask(-1);
       });
     },
@@ -269,21 +283,24 @@ export default {
     },
 
     readContext(force) {
-      this.mask(1);
       const url = 'context' + (force ? '/force' : '');
-      this.notify({ type: 'i', message: 'Finding devices...' });
+
+      // Only show notification if things are slow (first time / force)
+      const timer = window.setTimeout(() => {
+        this.notify({ type: 'i', message: 'Loading devices...' });
+      }, 250);
 
       return this._fetch(url).then(context => {
+        window.clearTimeout(timer);
         this.context = context;
 
         if (context.devices.length > 0) {
-          for (let device of context.devices) {
-            this.notify({ type: 'i', message: `Found device ${device.id}`});
-          }
           this.device = context.devices[0];
           this.request = this.buildRequest();
           for (let test of context.diagnostics) {
-            this.notify({ type: test.success ? 's' : 'e', message: test.message });
+            if (!test.success) {
+              this.notify({ type: 'e', message: test.message });
+            }
           }
         } else {
           this.notify({ type: 'e', message: 'Found no devices' });
@@ -293,7 +310,6 @@ export default {
           this.clear();
           this.readPreview();
         }
-        this.mask(-1);
       });
     },
 
@@ -301,7 +317,8 @@ export default {
       // Gets the preview image as a base64 encoded jpg and updates the UI
       this._fetch('preview', {
         cache: 'no-store',
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(this.request.filters),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -318,7 +335,7 @@ export default {
           || this.context.devices[0];
       }
 
-      request = Request.create(request, this.device, this.context.pipelines[0].description);
+      request = Request.create(request, this.device, this.context.pipelines[0]);
       return request;
     },
 
@@ -332,13 +349,12 @@ export default {
     },
 
     scan(index) {
-      this.mask(1);
       if (index !== undefined) {
         this.request.index = index;
       }
-      let data = Common.clone(this.request);
-      
-      this._fetch('scan', {
+
+      const data = Common.clone(this.request);
+      this._fetch('scanner/scan', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -350,8 +366,6 @@ export default {
           const options = {
             message: 'Turn documents over',
             onFinish: () => {
-              this.request.index = -1;
-              this.scan();
             },
             onNext: () => {
               this.request.index = response.index + 1;
@@ -361,6 +375,10 @@ export default {
           if (response.image) {
             options.message = `Preview of page ${response.index}`;
             options.image = response.image;
+            options.onFinish = () => {
+              this.request.index = -1;
+              this.scan();
+            };
             options.onRescan = () => {
               this.request.index = response.index;
               this.scan();
@@ -371,7 +389,6 @@ export default {
           // Finish
           this.$router.push('/files');
         }
-        this.mask(-1);
       });
     }
   }

@@ -3,6 +3,7 @@ const Config = require('./config');
 const Context = require('./context');
 const Devices = require('./devices');
 const FileInfo = require('./file-info');
+const Filters = require('./filters');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
@@ -62,15 +63,22 @@ class Api {
   }
 
   /**
+   * @param {string[]} filters
    * @returns {Promise.<Buffer>}
    */
-  static async readPreview() {
+  static async readPreview(filters) {
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it. 
     const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
-      return await Process.chain(Config.previewPipeline.commands, buffer, { ignoreErrors: true });
+      const cmds = [...Config.previewPipeline.commands];
+      if (filters) {
+        const params = Filters.build(filters, true);
+        cmds.splice(0, 0, `convert - ${params} tif:-`);
+      }
+    
+      return await Process.chain(cmds, buffer, { ignoreErrors: true });
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -104,6 +112,8 @@ class Api {
       preview.delete();
     }
     const context = await Context.create();
+    context.filters = context.filters.map(f => f.description);
+    context.pipelines = context.pipelines.map(p => p.description);
     return context;
   }
 }

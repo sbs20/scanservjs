@@ -12,7 +12,6 @@ export default class Storage {
       if (request.version !== Constants.Version) {
         request = null;
       }
-      console.log('load', request);
     }
     return request;
   }

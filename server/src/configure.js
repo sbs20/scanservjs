@@ -66,6 +66,16 @@ module.exports = (app, rootPath) => {
 
   app.use(bodyParser.json());
 
+  app.get(['/context', '/context/:force'], async (req, res) => {
+    logRequest(req);
+    const force = req.params.force && req.params.force === 'force';
+    try {
+      res.send(await Api.context(force));
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
   app.get('/files', async (req, res) => {
     logRequest(req);
     try {
@@ -93,19 +103,10 @@ module.exports = (app, rootPath) => {
     }
   });
 
-  app.post('/scan', async (req, res) => {
+  app.post('/preview', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.scan(req.body));
-    } catch (error) {
-      sendError(res, 500, error);
-    }
-  });
-
-  app.get('/preview', async (req, res) => {
-    logRequest(req);
-    try {
-      const buffer = await Api.readPreview();
+      const buffer = await Api.readPreview(req.body);
       res.send({
         content: buffer.toString('base64')
       });
@@ -114,7 +115,7 @@ module.exports = (app, rootPath) => {
     }
   });
 
-  app.post('/preview', async (req, res) => {
+  app.post('/scanner/preview', async (req, res) => {
     logRequest(req);
     try {
       res.send(await Api.createPreview(req.body));
@@ -123,11 +124,10 @@ module.exports = (app, rootPath) => {
     }
   });
 
-  app.get(['/context', '/context/:force'], async (req, res) => {
+  app.post('/scanner/scan', async (req, res) => {
     logRequest(req);
-    const force = req.params.force && req.params.force === 'force';
     try {
-      res.send(await Api.context(force));
+      res.send(await Api.scan(req.body));
     } catch (error) {
       sendError(res, 500, error);
     }
