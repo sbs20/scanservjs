@@ -1,5 +1,4 @@
 const AdmZip = require('adm-zip');
-const FileInfo = require('./file-info');
 
 const Util = {
   extend() {
