@@ -38,8 +38,8 @@ class ScanController {
     this.performScan = this.request.index > 0;
     this.finishUp = [Constants.BATCH_AUTO, Constants.BATCH_NONE].includes(this.request.batch)
       || (this.request.batch === Constants.BATCH_MANUAL && this.request.index < 0)
-      || (this.request.batch === Constants.BATCH_AUTO_COLLATE && this.request.index === 2)
-      || (this.request.batch === Constants.BATCH_AUTO_COLLATE_REVERSE && this.request.index === 2);
+      || (this.request.batch === Constants.BATCH_COLLATE_STANDARD && this.request.index === 2)
+      || (this.request.batch === Constants.BATCH_COLLATE_REVERSE && this.request.index === 2);
   }
 
   /**
@@ -75,9 +75,9 @@ class ScanController {
     // Update preview with the first image (pre filter)
     await this.updatePreview(files[0].name);
 
-    // Collation for reverse
-    if (this.request.batch === Constants.BATCH_AUTO_COLLATE_REVERSE) {
-      files = Util.collateReverse(files);
+    // Collation
+    if ([Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE].includes(this.request.batch)) {
+      files = Util.collate(files, this.request.batch === Constants.BATCH_COLLATE_STANDARD);
     }
 
     // Apply filters

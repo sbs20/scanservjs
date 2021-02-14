@@ -32,8 +32,8 @@
             { key: 'none', value: 'None' },
             { key: 'manual', value: 'Manual (with prompt)' },
             { key: 'auto', value: 'Auto (Document feeder)' },
-            { key: 'auto-collate', value: 'Auto (Duplex 1, 3... 2, 4)' },
-            { key: 'auto-collate-reverse', value: 'Auto (Duplex reverse 1, 3... 4, 2)' }
+            { key: 'auto-collate-standard', value: 'Auto (Collate 1, 3... 4, 2)' },
+            { key: 'auto-collate-reverse', value: 'Auto (Reverse 1, 3... 2, 4)' }
           ]"
           item-value="key" item-text="value"></v-select>
 

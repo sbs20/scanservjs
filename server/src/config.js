@@ -61,7 +61,7 @@ class Config {
           params: '-auto-level'
         },
         {
-          description: 'Black/white',
+          description: 'Threshold',
           params: '-channel RGB -threshold 80%'
         },
         {

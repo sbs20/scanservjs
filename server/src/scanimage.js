@@ -31,7 +31,7 @@ class Scanimage {
    */
   static filename(page) {
     const number = `000${page}`.slice(-4);
-    return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}${number}-0.tif`;
+    return `${Config.tempDirectory}${Constants.TEMP_FILESTEM}-0-${number}.tif`;
   }
 
   /**
@@ -69,9 +69,9 @@ class Scanimage {
     if (params.mode === 'Lineart' && params.dynamicLineart === false) {
       cmdBuilder.arg('--disable-dynamic-lineart=yes');
     }
-    if ([Constants.BATCH_AUTO, Constants.BATCH_AUTO_COLLATE, Constants.BATCH_AUTO_COLLATE_REVERSE]
+    if ([Constants.BATCH_AUTO, Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE]
       .includes(request.batch)) {
-      const pattern = `${Config.tempDirectory}${Constants.TEMP_FILESTEM}%04d-${request.index}.tif`;
+      const pattern = `${Config.tempDirectory}${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
       cmdBuilder.arg(`--batch=${pattern}`);
     } else {
       cmdBuilder.arg(`> ${Scanimage.filename(request.index)}`);

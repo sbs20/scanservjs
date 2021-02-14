@@ -4,45 +4,65 @@ const FileInfo = require('../src/file-info');
 const Util = require('../src/util');
 
 describe('Util', () => {
-  it('collateReverse.1', () => {
-    const files = Util.collateReverse([
-      {name: 'scan-0001-1.tif'}
+  it('collate.1', () => {
+    const files = Util.collate([
+      {name: 'scan-1-0001.tif'}
     ]);
 
     assert.deepStrictEqual(files, [
-      {name: 'scan-0001-1.tif'}
+      {name: 'scan-1-0001.tif'}
     ]);
   });
 
-  it('collateReverse.2', () => {
-    const files = Util.collateReverse([
-      {name: 'scan-0001-1.tif'},
-      {name: 'scan-0001-2.tif'}
+  it('collate.2', () => {
+    const files = Util.collate([
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-2-0001.tif'}
     ]);
 
     assert.deepStrictEqual(files, [
-      {name: 'scan-0001-1.tif'},
-      {name: 'scan-0001-2.tif'}
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-2-0001.tif'}
     ]);
   });
 
-  it('collateReverse.3', () => {
-    const files = Util.collateReverse([
-      {name: 'scan-0001-1.tif'},
-      {name: 'scan-0001-2.tif'},
-      {name: 'scan-0002-1.tif'},
-      {name: 'scan-0002-2.tif'},
-      {name: 'scan-0003-1.tif'},
-      {name: 'scan-0003-2.tif'}
-    ]);
+  it('collate.3.standard', () => {
+    const files = Util.collate([
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-1-0002.tif'},
+      {name: 'scan-1-0003.tif'},
+      {name: 'scan-2-0001.tif'},
+      {name: 'scan-2-0002.tif'},
+      {name: 'scan-2-0003.tif'}
+    ], true);
 
     assert.deepStrictEqual(files, [
-      {name: 'scan-0001-1.tif'},
-      {name: 'scan-0003-2.tif'},
-      {name: 'scan-0002-1.tif'},
-      {name: 'scan-0002-2.tif'},
-      {name: 'scan-0003-1.tif'},
-      {name: 'scan-0001-2.tif'}
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-2-0003.tif'},
+      {name: 'scan-1-0002.tif'},
+      {name: 'scan-2-0002.tif'},
+      {name: 'scan-1-0003.tif'},
+      {name: 'scan-2-0001.tif'}
+    ]);
+  });
+
+  it('collate.3.reverse', () => {
+    const files = Util.collate([
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-1-0002.tif'},
+      {name: 'scan-1-0003.tif'},
+      {name: 'scan-2-0001.tif'},
+      {name: 'scan-2-0002.tif'},
+      {name: 'scan-2-0003.tif'}
+    ], false);
+
+    assert.deepStrictEqual(files, [
+      {name: 'scan-1-0001.tif'},
+      {name: 'scan-2-0001.tif'},
+      {name: 'scan-1-0002.tif'},
+      {name: 'scan-2-0002.tif'},
+      {name: 'scan-1-0003.tif'},
+      {name: 'scan-2-0003.tif'}
     ]);
   });
 });
