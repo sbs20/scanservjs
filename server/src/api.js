@@ -63,6 +63,14 @@ class Api {
   }
 
   /**
+   * @returns {FileInfo}
+   */
+  static deletePreview() {
+    const file = new FileInfo(`${Config.previewDirectory}preview.tif`);
+    return file.delete();
+  }
+
+  /**
    * @param {string[]} filters
    * @returns {Promise.<Buffer>}
    */
@@ -108,8 +116,7 @@ class Api {
   static async context(force) {
     if (force) {
       Devices.reset();
-      const preview = FileInfo.create(`${Config.previewDirectory}preview.tif`);
-      preview.delete();
+      this.deletePreview();
     }
     const context = await Context.create();
     context.filters = context.filters.map(f => f.description);
