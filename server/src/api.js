@@ -98,6 +98,12 @@ class Api {
    * @returns {ScanResponse}
    */
   static async scan(req) {
+    if (Config.clearPreviewOnScan) {
+      const preview = new FileInfo(`${Config.previewDirectory}preview.tif`);
+      if (preview.exists()) {
+        preview.delete();
+      }
+    }
     return await ScanController.run(req);
   }
 

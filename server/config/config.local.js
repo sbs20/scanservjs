@@ -12,6 +12,7 @@ module.exports = {
     // config.convert = '/usr/bin/convert';
     // config.tesseract = '/usr/bin/tesseract';
     // config.previewResolution = 100;
+    // config.clearPreviewOnScan = false;
 
     /* When all scans are complete, the filenames are all piped into stdin of the
     first pipeline command. It would be nicer to pipe the binary output of scanimage

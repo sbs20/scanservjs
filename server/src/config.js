@@ -17,6 +17,7 @@ class Config {
       port: 8080,
       devices: [],
       ocrLanguage: 'eng',
+      clearPreviewOnScan: false,
       log: {
         level: 'DEBUG',
         prefix: {
