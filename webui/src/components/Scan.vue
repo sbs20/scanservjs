@@ -50,6 +50,7 @@
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn color="secondary" @click="deletePreview" class="ml-1 mb-1">delete preview <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">scan <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
           <v-btn color="secondary" @click="reset" class="ml-1 mb-1">reset <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
         </div>
@@ -223,6 +224,20 @@ export default {
         window.setTimeout(this.readPreview, 1000);
         this.mask(-1);
       }).catch(() => {
+        this.mask(-1);
+      });
+    },
+
+    deletePreview() {
+      this.mask(1);
+      Common.fetch('preview', {
+        method: 'DELETE'
+      }).then(data => {
+        this.notify({ type: 'i', message: `Deleted preview` });
+        this.readPreview();
+        this.mask(-1);
+      }).catch(error => {
+        this.notify({ type: 'e', message: error });
         this.mask(-1);
       });
     },

@@ -115,6 +115,15 @@ module.exports = (app, rootPath) => {
     }
   });
 
+  app.delete('/preview', async (req, res) => {
+    logRequest(req);
+    try {
+      res.send(await Api.deletePreview());
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
   app.post('/scanner/preview', async (req, res) => {
     logRequest(req);
     try {
