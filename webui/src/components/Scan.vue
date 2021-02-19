@@ -232,8 +232,8 @@ export default {
       this.mask(1);
       Common.fetch('preview', {
         method: 'DELETE'
-      }).then(data => {
-        this.notify({ type: 'i', message: `Deleted preview` });
+      }).then(() => {
+        this.notify({ type: 'i', message: 'Deleted preview' });
         this.readPreview();
         this.mask(-1);
       }).catch(error => {
