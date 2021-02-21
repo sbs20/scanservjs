@@ -42,9 +42,20 @@ class Context {
    * @returns {ScanDevice}
    */
   getDevice(id) {
-    return id
-      ? this.devices.filter(device => device.id === id)[0]
-      : this.devices[0];
+    if (this.devices === undefined || this.devices.length === 0) {
+      throw 'No devices found';
+    }
+
+    if (id === undefined) {
+      return this.devices[0];
+    }
+
+    const device = this.devices.filter(device => device.id === id)[0];
+    if (device === undefined) {
+      throw `Device ${id} not found`;
+    }
+
+    return device;
   }
 }
 
