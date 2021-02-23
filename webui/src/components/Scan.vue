@@ -322,7 +322,6 @@ export default {
         }
 
         if (force) {
-          this.clear();
           this.readPreview();
         }
       });
@@ -355,6 +354,7 @@ export default {
     },
 
     reset() {
+      this.clear();
       this.readContext(true);
     },
 

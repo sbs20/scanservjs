@@ -1,5 +1,13 @@
+/* eslint-disable no-unused-vars */
+
+/**
+ * This file is ignored. If you want to apply overrides, make a copy in this
+ * location and name it `config.local.js`. Then make the necessary changes.
+ */
 module.exports = {
-  // eslint-disable-next-line no-unused-vars
+  /**
+   * @param {Configuration} config 
+   */
   afterConfig(config) {
     /**
      * Override any of the following values
@@ -73,5 +81,31 @@ module.exports = {
      * Append to existing pipelines
      */
     // config.pipelines.push(myPipelines[0]);
+  },
+
+  /**
+   * This method is called after devices have been read (from the scanner or
+   * disk) but before beign returned to anything else. You can use this to
+   * override default settings from the scanner, or resolution options or
+   * anything else for that matter.
+   * 
+   * Note that the devices parameter is an array. Most systems will likely just
+   * have one scanner, but that's not always true. Therefore you will need to
+   * identify the scanner by id. It's also possible that the list will be empty
+   * if there's an upstream error.
+   * @param {ScanDevice[]} devices 
+   */
+  afterDevices(devices) {
+    /**
+     * Example code below
+     */
+    // const device = devices.filter(d => d.id.startsWith('plustek'))[0];
+    // if (device) {
+    //   device.features['--resolution'].default = 75;
+    //   device.features['--brightness'].default = 10;
+    //   device.features['--contrast'].default = 20;
+    //   device.features['-w'].default = 215;
+    //   device.features['-h'].default = 297;
+    // }
   }
 };
