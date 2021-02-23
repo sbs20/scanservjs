@@ -9,6 +9,8 @@
 [![Docker Stars](https://img.shields.io/docker/stars/sbs20/scanservjs)](https://hub.docker.com/r/sbs20/scanservjs)
 [![GitHub](https://img.shields.io/github/license/sbs20/scanservjs)](https://github.com/sbs20/scanservjs/blob/master/LICENSE.md)
 
+> I've decided to switch to using only this, I find using this in a browser is
+> just perfect and way better than bloated software from printer manufacturers
 
 scanservjs is a web-based UI for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or

@@ -5,15 +5,6 @@
 * Install Node
 * Clone the repo
 * Navigate to the repo directory
-* Windows:
-  ```
-  npm i -g @vue/cli @vue/cli-service-global gulp-cli
-  cd server
-  npm i .
-  cd ..\webui
-  npm i .
-  ```
-* Linux:
   ```
   sudo npm install -g @vue/cli @vue/cli-service-global gulp-cli
   cd server && npm i . && cd ../webui && npm i .
@@ -64,6 +55,7 @@ Useful commands
 docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
 docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
+docker run -d -p 8080:8080 -v $HOME/scan-data:/app/data/output --name scanservjs-container --privileged scanservjs-image
 
 # Copy image
 docker save -o scanservjs-image.tar scanservjs-image
