@@ -4,9 +4,11 @@ export default {
       id: 'Unspecified',
       features: {
         '--mode': {
+          default: '',
           options: [],
         },
         '--resolution': {
+          default: 0,
           options: [],
         },
         '-l': {

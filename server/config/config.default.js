@@ -101,11 +101,13 @@ module.exports = {
      */
     // const device = devices.filter(d => d.id.startsWith('plustek'))[0];
     // if (device) {
-    //   device.features['--resolution'].default = 75;
+    //   device.features['--mode'].default = 'Gray';
+    //   device.features['--resolution'].default = 150;
+    //   device.features['--resolution'].options = [150, 300, 600];
     //   device.features['--brightness'].default = 10;
     //   device.features['--contrast'].default = 20;
-    //   device.features['-w'].default = 215;
-    //   device.features['-h'].default = 297;
+    //   device.features['-x'].default = 215;
+    //   device.features['-y'].default = 297;
     // }
   }
 };
