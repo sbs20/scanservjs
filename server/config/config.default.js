@@ -85,14 +85,14 @@ module.exports = {
 
   /**
    * This method is called after devices have been read (from the scanner or
-   * disk) but before beign returned to anything else. You can use this to
+   * disk) but before being returned to anything else. You can use this to
    * override default settings from the scanner, or resolution options or
    * anything else for that matter.
    * 
    * Note that the devices parameter is an array. Most systems will likely just
    * have one scanner, but that's not always true. Therefore you will need to
-   * identify the scanner by id. It's also possible that the list will be empty
-   * if there's an upstream error.
+   * identify the scanner by id or index. It's also possible that the list will
+   * be empty if there's an upstream error.
    * @param {ScanDevice[]} devices 
    */
   afterDevices(devices) {

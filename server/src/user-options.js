@@ -13,7 +13,7 @@ class UserOptions {
    * Applies user overrides from config.local.js to the configuration
    * @param {Configuration} config 
    */
-  aoplyToConfig(config) {
+  applyToConfig(config) {
     if (this.local && this.local.afterConfig) {
       this.local.afterConfig(config);
     }
