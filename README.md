@@ -1,16 +1,17 @@
 # scanservjs
 
-[![Build Status](https://github.com/sbs20/scanservjs/workflows/NodeCI/badge.svg)](https://github.com/sbs20/scanservjs/actions)
-[![Code QL Status](https://github.com/sbs20/scanservjs/workflows/CodeQL/badge.svg)](https://github.com/sbs20/scanservjs/actions)
-[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/sbs20/scanservjs)](https://hub.docker.com/r/sbs20/scanservjs)
-[![Docker Pulls](https://img.shields.io/docker/pulls/sbs20/scanservjs)](https://hub.docker.com/r/sbs20/scanservjs)
-[![GitHub stars](https://img.shields.io/github/stars/sbs20/scanservjs?label=Github%20stars)](https://github.com/sbs20/scanservjs)
-[![GitHub watchers](https://img.shields.io/github/watchers/sbs20/scanservjs?label=Github%20Watchers)](https://github.com/sbs20/scanservjs)
-[![Docker Stars](https://img.shields.io/docker/stars/sbs20/scanservjs)](https://hub.docker.com/r/sbs20/scanservjs)
-[![GitHub](https://img.shields.io/github/license/sbs20/scanservjs)](https://github.com/sbs20/scanservjs/blob/master/LICENSE.md)
+[![Build Status](https://img.shields.io/github/workflow/status/sbs20/scanservjs/NodeCI?style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
+[![Code QL Status](https://img.shields.io/github/workflow/status/sbs20/scanservjs/CodeQL?label=CodeQL&style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
+[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/sbs20/scanservjs?style=for-the-badge)](https://hub.docker.com/r/sbs20/scanservjs)
+[![Docker Pulls](https://img.shields.io/docker/pulls/sbs20/scanservjs?style=for-the-badge)](https://hub.docker.com/r/sbs20/scanservjs)
+[![GitHub stars](https://img.shields.io/github/stars/sbs20/scanservjs?label=Github%20stars&style=for-the-badge)](https://github.com/sbs20/scanservjs)
+[![GitHub watchers](https://img.shields.io/github/watchers/sbs20/scanservjs?label=Github%20Watchers&style=for-the-badge)](https://github.com/sbs20/scanservjs)
+[![GitHub](https://img.shields.io/github/license/sbs20/scanservjs?style=for-the-badge)](https://github.com/sbs20/scanservjs/blob/master/LICENSE.md)
 
 > I've decided to switch to using only this, I find using this in a browser is
 > just perfect and way better than bloated software from printer manufacturers
+
+-- *A satisfied user*
 
 scanservjs is a web-based UI for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or
