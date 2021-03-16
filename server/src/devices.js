@@ -2,6 +2,7 @@ const log = require('loglevel').getLogger('Devices');
 const Config = require('./config');
 const Device = require('./device');
 const FileInfo = require('./file-info');
+const userOptions = require('./user-options');
 const Process = require('./process');
 const Scanimage = require('./scanimage');
 
@@ -77,6 +78,7 @@ class Devices {
       file.save(JSON.stringify(devices, null, 2));
     }
 
+    userOptions.applyToDevices(devices);
     return devices;
   }
 
