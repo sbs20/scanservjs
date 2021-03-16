@@ -41,7 +41,7 @@ gulp.task('server-build', () => {
     './bin/scanservjs.service',
     './package.json',
     './package-lock.json',
-    './*config/**/*.js',
+    './*config/**/config.default.js',
     './*data/**/default.jpg'])
     .pipe(shellFilter)
     .pipe(chmod(0o755))
