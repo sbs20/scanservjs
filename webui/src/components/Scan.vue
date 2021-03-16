@@ -55,7 +55,7 @@
         </div>
       </v-col>
 
-      <v-col cols="12" md="auto" lg="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+      <v-col cols="12" md="6" lg="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
         <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCrop"></cropper>
