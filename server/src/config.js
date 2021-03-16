@@ -1,6 +1,5 @@
 const dayjs = require('dayjs');
-const fs = require('fs');
-const path = require('path');
+const userOptions = require('./user-options');
 const Package = require('../package.json');
 let instance = null;
 
@@ -8,7 +7,7 @@ class Config {
   constructor() {
     this.init();
     this.addEnvironment();
-    this.applyLocal();
+    userOptions.applyToConfig(this);
   }
 
   init() {
@@ -216,15 +215,6 @@ class Config {
     // Override the OCR language here
     if (process.env.OCR_LANG !== undefined && process.env.OCR_LANG.length > 0) {
       this.ocrLanguage = process.env.OCR_LANG;
-    }
-  }
-
-  applyLocal() {
-    // Apply user config
-    const localPath = path.join(__dirname, '../config/config.local.js');
-    if (fs.existsSync(localPath)) {
-      const localConfig = require(localPath);
-      localConfig.afterConfig(this);
     }
   }
 

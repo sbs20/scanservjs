@@ -26,7 +26,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('server-lint', () => {
-  return gulp.src(['./src/*.js', './config/config.local.js', './test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['./src/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(linter())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -41,7 +41,7 @@ gulp.task('server-build', () => {
     './bin/scanservjs.service',
     './package.json',
     './package-lock.json',
-    './*config/**/*.js',
+    './*config/**/config.default.js',
     './*data/**/default.jpg'])
     .pipe(shellFilter)
     .pipe(chmod(0o755))

@@ -99,3 +99,4 @@ server/data/temp/*
 server/data/preview/*.tif
 scan*.jpg
 var
+**/config.local.js

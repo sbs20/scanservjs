@@ -3,7 +3,7 @@
     <v-row>
       <v-spacer/>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
+      <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-select v-if="context.devices.length > 0"
           label="Device" v-model="device"
           :items="context.devices" return-object item-text="id" @change="clear"></v-select>
@@ -50,18 +50,19 @@
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">clear <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">scan <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
           <v-btn color="secondary" @click="reset" class="ml-1 mb-1">reset <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
         </div>
       </v-col>
 
-      <v-col cols="12" md="auto" lg="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+      <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
         <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCrop"></cropper>
       </v-col>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
+      <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-text-field label="Top" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
         <v-text-field label="Left" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
         <v-text-field label="Width" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
@@ -179,9 +180,10 @@ export default {
       const mdBreakpoint = 960;
       if (window.innerWidth >= mdBreakpoint) {
         const appbarHeight = 80;
+        const availableWidth = window.innerWidth - 30;
         const availableHeight = window.innerHeight - appbarHeight;
         const desiredWidth = availableHeight * paperRatio;
-        this.preview.width = desiredWidth;
+        this.preview.width = Math.min(availableWidth / 2, desiredWidth);
         this.preview.key += 1;
       }
     },
@@ -223,6 +225,20 @@ export default {
         window.setTimeout(this.readPreview, 1000);
         this.mask(-1);
       }).catch(() => {
+        this.mask(-1);
+      });
+    },
+
+    deletePreview() {
+      this.mask(1);
+      Common.fetch('preview', {
+        method: 'DELETE'
+      }).then(() => {
+        this.notify({ type: 'i', message: 'Deleted preview' });
+        this.readPreview();
+        this.mask(-1);
+      }).catch(error => {
+        this.notify({ type: 'e', message: error });
         this.mask(-1);
       });
     },
@@ -307,7 +323,6 @@ export default {
         }
 
         if (force) {
-          this.clear();
           this.readPreview();
         }
       });
@@ -340,6 +355,7 @@ export default {
     },
 
     reset() {
+      this.clear();
       this.readContext(true);
     },
 
