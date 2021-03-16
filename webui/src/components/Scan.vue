@@ -3,7 +3,7 @@
     <v-row>
       <v-spacer/>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
+      <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-select v-if="context.devices.length > 0"
           label="Device" v-model="device"
           :items="context.devices" return-object item-text="id" @change="clear"></v-select>
@@ -56,13 +56,13 @@
         </div>
       </v-col>
 
-      <v-col cols="12" md="auto" lg="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+      <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
         <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCrop"></cropper>
       </v-col>
 
-      <v-col cols="12" md="3" lg="auto" class="mb-10 mb-md-0">
+      <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-text-field label="Top" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
         <v-text-field label="Left" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
         <v-text-field label="Width" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
@@ -180,9 +180,10 @@ export default {
       const mdBreakpoint = 960;
       if (window.innerWidth >= mdBreakpoint) {
         const appbarHeight = 80;
+        const availableWidth = window.innerWidth - 30;
         const availableHeight = window.innerHeight - appbarHeight;
         const desiredWidth = availableHeight * paperRatio;
-        this.preview.width = desiredWidth;
+        this.preview.width = Math.min(availableWidth / 2, desiredWidth);
         this.preview.key += 1;
       }
     },
