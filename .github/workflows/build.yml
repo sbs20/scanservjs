@@ -3,10 +3,14 @@ name: NodeCI
 on:
   workflow_dispatch:
   push:
+    paths-ignore:
+    - '.github/**'
+    - 'docs/**'
+    - 'README.md'
     branches:
-      - development
-      - staging
-      - master
+    - development
+    - staging
+    - master
 
 jobs:
   build:
