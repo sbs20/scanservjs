@@ -56,6 +56,12 @@ scanservjs will now be accessible from `http://$host:8080/`
   be `--device=/dev/bus/usb/001/003:/dev/bus/usb/001/003`. However, oftentimes,
   there are [reports](#66) that devices change address across reboots which
   complicates matters.
+* ⚠ Driverless-mode scanning (using airscan over IPP-USB) seems to result in
+  problems. If anyone has ideas why (perhaps something additional needs sharing
+  from host to guest) then suggestions are welcome. What seems to work well as
+  an alternative is
+  [network-sharing the scanner](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
+  on the host and referencing that within the guest.
 
 If you want to install the latest staging branch (this may contain newer code)
 
