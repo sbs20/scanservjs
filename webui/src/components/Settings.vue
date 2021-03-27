@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="text-h2 mb-4">Settings</div>
+    <div class="text-h2 mb-4">{{ $t('settings.title') }}</div>
     <settings-section>
-      <template v-slot:title>Behaviour and UI</template>
+      <template v-slot:title>{{ $t('settings.behaviour-ui') }}</template>
       <template v-slot:items>
         <settings-item>
           <template v-slot:description>
-            Theme. If you use system theme and change it, you will need to reload the app.
+            {{ $t('settings.theme:description') }}
           </template>
           <template v-slot:action>
             <div style="max-width: 9rem;">
@@ -40,15 +40,15 @@ export default {
       settings: storage.settings,
       themes: [
         {
-          text: 'System',
+          text: this.$t('settings.theme:system'),
           value: Constants.Themes.System
         },
         {
-          text: 'Light',
+          text: this.$t('settings.theme:light'),
           value: Constants.Themes.Light
         },
         {
-          text: 'Dark',
+          text: this.$t('settings.theme:dark'),
           value: Constants.Themes.Dark
         }
       ]

@@ -56,15 +56,15 @@ class Config {
 
       filters: [
         {
-          description: 'Auto level',
+          description: 'filters:auto-level',
           params: '-auto-level'
         },
         {
-          description: 'Threshold',
+          description: 'filters:threshold',
           params: '-channel RGB -threshold 80%'
         },
         {
-          description: 'Blur',
+          description: 'filters:blur',
           params: '-blur 1'
         }
       ],

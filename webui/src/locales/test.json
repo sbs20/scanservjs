@@ -1,0 +1,78 @@
+{
+  "global": {
+    "application-name": "##APPNAME"
+  },
+
+  "about": {
+    "main": "##ABOUT.MAIN",
+    "issue": "##ABOUT.ISSUE"
+  },
+
+  "batch-dialog": {
+    "btn-finish": "##FINISH",
+    "btn-rescan": "##RESCAN",
+    "btn-next": "##NEXT"
+  },
+
+  "files": {
+    "filename": "##FILENAME",
+    "date": "##DATE",
+    "size": "##SIZE",
+    "message:deleted": "##MESSAGE:DELETED"
+  },
+
+  "navigation": {
+    "appname": "##APPNAME",
+    "scan": "##SCAN",
+    "files": "##FILES",
+    "settings": "##SETTINGS",
+    "about": "##ABOUT",
+    "version": "##VERSION"  
+  },
+
+  "scan": {
+    "device": "##SCAN.DEVICE",
+    "source": "##SCAN.SOURCE",
+    "resolution": "##SCAN.RESOLUTION",
+    "mode": "##SCAN.MODE",
+    "dynamic-lineart": "##SCAN.DYNAMIC-LINEART",
+    "dynamic-lineart:enabled": "##ENABLED",
+    "dynamic-lineart:disabled": "##DISABLED",
+    "batch": "##SCAN.BATCH",
+    "batch:none": "##NONE",
+    "batch:manual": "##MANUAL",
+    "batch:auto": "##AUTO",
+    "batch:auto-collate-standard": "##COLLATE-STANDARD",
+    "batch:auto-collate-reverse": "##COLLATE-REVERSE",
+    "filters": "##SCAN.FILTERS",
+    "filters:auto-level": "##SCAN.FILTERS:AUTO-LEVEL",
+    "filters:threshold": "##SCAN.FILTERS:THRESHOLD",
+    "filters:blur": "##SCAN.FILTERS:BLUR",
+    "format": "##SCAN.FORMAT",
+    "btn-preview": "##PREVIEW",
+    "btn-clear": "##CLEAR",
+    "btn-scan": "##SCAN",
+    "btn-reset": "##RESET",
+    "top": "##SCAN.TOP",
+    "left": "##SCAN.LEFT",
+    "width": "##SCAN.WIDTH",
+    "height": "##SCAN.HEIGHT",
+    "brightness": "##SCAN.BRIGHTNESS",
+    "contrast": "##SCAN.CONSTRAST",
+    "message:loading-devices": "##SCAN.LOADING",
+    "message:no-devices": "##SCAN.NO-DEVICES",
+    "message:deleted-preview": "##SCAN.DELETED-PREVIEW",
+    "message:turn-documents": "##SCAN.TURN",
+    "message:preview-of-page": "##SCAN.PREVIEW-OF"  
+  },
+
+  "settings": {
+    "title": "##SETTINGS.TITLE",
+    "behaviour-ui": "##SETTINGS.BEHAVIOUR-UI",
+    "theme": "##SETTINGS.THEME",
+    "theme:description": "##SETTINGS.THEME:DESCRIPTION",
+    "theme:system": "##SETTINGS.THEME:SYSTEM",
+    "theme:light": "##SETTINGS.THEME:LIGHT",
+    "theme:dark": "##SETTINGS.THEME:DARK"  
+  }
+}

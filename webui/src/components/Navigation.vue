@@ -2,47 +2,47 @@
   <div>
     <v-app-bar class="elevation-0" color="accent-4" app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="unselectable">scanservjs</v-toolbar-title>
+      <v-toolbar-title class="unselectable">{{ $t('global.application-name') }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="d-none d-md-block">
-        <v-btn elevation="0" @click="$router.push('/scan')"><v-icon class="mr-2">mdi-camera</v-icon>Scan</v-btn>
-        <v-btn elevation="0" @click="$router.push('/files')"><v-icon class="mr-2">mdi-file-document-multiple</v-icon>Files</v-btn>
-        <v-btn elevation="0" @click="$router.push('/settings')"><v-icon class="mr-2">mdi-cog</v-icon>Settings</v-btn>
-        <v-btn elevation="0" @click="$router.push('/about')"><v-icon class="mr-2">mdi-information</v-icon>About</v-btn>
+        <v-btn elevation="0" @click="$router.push('/scan')"><v-icon class="mr-2">mdi-camera</v-icon>{{ $t('navigation.scan') }}</v-btn>
+        <v-btn elevation="0" @click="$router.push('/files')"><v-icon class="mr-2">mdi-file-document-multiple</v-icon>{{ $t('navigation.files') }}</v-btn>
+        <v-btn elevation="0" @click="$router.push('/settings')"><v-icon class="mr-2">mdi-cog</v-icon>{{ $t('navigation.settings') }}</v-btn>
+        <v-btn elevation="0" @click="$router.push('/about')"><v-icon class="mr-2">mdi-information</v-icon>{{ $t('navigation.about') }}</v-btn>
       </v-toolbar-items>
     </v-app-bar>
 
     <v-navigation-drawer class="elevation-0" v-model="drawer" app temporary>
       <v-app-bar color="accent-4 elevation-0">
-        <v-toolbar-title class="unselectable">scanservjs</v-toolbar-title>
+        <v-toolbar-title class="unselectable">{{ $t('navigation.appname') }}</v-toolbar-title>
       </v-app-bar>
 
       <v-list nav>
         <v-list-item @click="$router.push('/scan')">
           <v-list-item-icon><v-icon>mdi-camera</v-icon></v-list-item-icon>
-          <v-list-item-title>Scan</v-list-item-title>
+          <v-list-item-title>{{ $t('navigation.scan') }}</v-list-item-title>
         </v-list-item>
     
         <v-list-item @click="$router.push('/files')">
           <v-list-item-icon><v-icon>mdi-file-document-multiple</v-icon></v-list-item-icon>
-          <v-list-item-title>Files</v-list-item-title>
+          <v-list-item-title>{{ $t('navigation.files') }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item @click="$router.push('/settings')">
           <v-list-item-icon><v-icon>mdi-cog</v-icon></v-list-item-icon>
-          <v-list-item-title>Settings</v-list-item-title>
+          <v-list-item-title>{{ $t('navigation.settings') }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item @click="$router.push('/about')">
           <v-list-item-icon><v-icon>mdi-information</v-icon></v-list-item-icon>
-          <v-list-item-title>About</v-list-item-title>
+          <v-list-item-title>{{ $t('navigation.about') }}</v-list-item-title>
         </v-list-item>
 
         <v-divider></v-divider>
 
         <v-list-item>
           <v-list-item-icon><v-icon>mdi-tools</v-icon></v-list-item-icon>
-          <v-list-item-title class="unselectable">Version {{version}}</v-list-item-title>
+          <v-list-item-title class="unselectable">{{ $t('navigation.version') }} {{version}}</v-list-item-title>
         </v-list-item>
       </v-list>
 
