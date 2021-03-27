@@ -10,6 +10,7 @@ import About from './components/About.vue';
 import vuetify from './plugins/vuetify';
 
 import '@mdi/font/css/materialdesignicons.css';
+import i18n from './i18n';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -26,5 +27,6 @@ const router = new VueRouter({
 new Vue({
   vuetify,
   router,
+  i18n,
   render: h => h(App)
 }).$mount('#app');
