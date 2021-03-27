@@ -78,6 +78,8 @@
   "settings": {
     "title": "##SETTINGS.TITLE",
     "behaviour-ui": "##SETTINGS.BEHAVIOUR-UI",
+    "locale": "##SETTINGS.LOCALE",
+    "locale:description": "##SETTINGS.LOCALE-DESCRIPTION",
     "theme": "##SETTINGS.THEME",
     "theme:description": "##SETTINGS.THEME:DESCRIPTION",
     "theme:system": "##SETTINGS.THEME:SYSTEM",

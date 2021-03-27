@@ -53,7 +53,7 @@ export default {
     }
     this.$vuetify.theme.dark = theme === Constants.Themes.Dark;
 
-    // this.$i18n.locale = 'test';
+    this.$i18n.locale = storage.settings.locale;
 
     // Default route if connected
     if (this.$route.matched.length === 0) {

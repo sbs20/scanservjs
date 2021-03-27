@@ -10,10 +10,21 @@
           </template>
           <template v-slot:action>
             <div style="max-width: 9rem;">
-              <v-select label="Theme" :items="themes" v-model="settings.theme" @change="reload"></v-select>
+              <v-select :label="$t('settings.theme')" :items="themes" v-model="settings.theme" @change="reload"></v-select>
             </div>
           </template>
         </settings-item>
+        <settings-item>
+          <template v-slot:description>
+            {{ $t('settings.locale:description') }}
+          </template>
+          <template v-slot:action>
+            <div style="max-width: 9rem;">
+              <v-select :label="$t('settings.locale')" :items="locales" v-model="settings.locale" @change="reload"></v-select>
+            </div>
+          </template>
+        </settings-item>
+
       </template>
     </settings-section>
   </div>
@@ -38,6 +49,7 @@ export default {
   data() {
     return {
       settings: storage.settings,
+      locales: Constants.Locales,
       themes: [
         {
           text: this.$t('settings.theme:system'),
