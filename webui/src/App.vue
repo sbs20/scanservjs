@@ -53,6 +53,8 @@ export default {
     }
     this.$vuetify.theme.dark = theme === Constants.Themes.Dark;
 
+    // this.$i18n.locale = 'test';
+
     // Default route if connected
     if (this.$route.matched.length === 0) {
       this.$router.replace('/scan');
@@ -95,27 +97,6 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance:textfield; /* Firefox */
 }
-
-/* .navbar-brand, .navbar-text {
-  font-size: xx-large;
-}
-
-.container, .container-fluid {
-  margin-top: 1em;
-}
-
-.form-group {
-  height: 4em;
-} */
-
-/* .table th, .table td, .table thead th {
-  border: 0;
-  padding: 0.25rem 2rem 0.25rem 0.5rem;
-} */
-
-/* .preview-fields {
-  width: 100%;
-} */
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
