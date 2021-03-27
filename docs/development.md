@@ -36,6 +36,7 @@ cd server && gulp release
 
 ## References
 * [Run server with webpack](https://dennisreimann.de/articles/vue-cli-serve-express.html)
+* [i18n](https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n)
 
 ## Docker
 

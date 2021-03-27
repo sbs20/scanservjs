@@ -30,6 +30,15 @@
     "version": "##VERSION"  
   },
 
+  "pipeline": {
+    "high-quality": "##HIGH-QUALITY",
+    "medium-quality": "##MEDIUM-QUALITY",
+    "low-quality": "##LOW-QUALITY",
+    "uncompressed": "##UNCOMPRESSED",
+    "lzw-compressed": "##LZW-COMPRESSED",
+    "text-file": "##TEXT-FILE"
+  },  
+
   "scan": {
     "device": "##SCAN.DEVICE",
     "source": "##SCAN.SOURCE",

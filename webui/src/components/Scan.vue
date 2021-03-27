@@ -47,8 +47,11 @@
           multiple />
 
         <v-select
-          :label="$t('scan.format')" v-model="request.pipeline"
-          :items="context.pipelines"></v-select>
+          :label="$t('scan.format')"
+          v-model="request.pipeline"
+          :items="context.pipelines"
+          item-text="text"
+          item-value="value"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
@@ -316,6 +319,20 @@ export default {
             value: f
           };
         });
+
+        context.pipelines = context.pipelines.map(p => {
+          const variables = (p.match(/\$\$[a-z-]+/ig) || []).map(s => s.substr(2));
+          let text = p;
+          variables.forEach(v => {
+            text = text.replaceAll(`$$${v}`, this.$t(`pipeline.${v}`));
+          });
+
+          return {
+            text: text,
+            value: p
+          };
+        });
+
         this.context = context;
 
         if (context.devices.length > 0) {
