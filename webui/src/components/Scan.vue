@@ -321,10 +321,10 @@ export default {
         });
 
         context.pipelines = context.pipelines.map(p => {
-          const variables = (p.match(/\$\$[a-z-]+/ig) || []).map(s => s.substr(2));
+          const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
           let text = p;
           variables.forEach(v => {
-            text = text.replaceAll(`$$${v}`, this.$t(`pipeline.${v}`));
+            text = text.replaceAll(`@:${v}`, this.$t(v));
           });
 
           return {

@@ -35,6 +35,7 @@
     "low-quality": "Low quality",
     "uncompressed": "Uncompressed",
     "lzw-compressed": "LZW Compressed",
+    "ocr": "OCR",
     "text-file": "Text file"
   },  
 
@@ -75,7 +76,7 @@
   },
 
   "settings": {
-    "title": "Settings",
+    "title": "@:navigation.settings",
     "behaviour-ui": "Behaviour and UI",
     "locale": "Locale",
     "locale:description": "Choose your locale",

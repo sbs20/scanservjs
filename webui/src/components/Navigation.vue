@@ -14,7 +14,7 @@
 
     <v-navigation-drawer class="elevation-0" v-model="drawer" app temporary>
       <v-app-bar color="accent-4 elevation-0">
-        <v-toolbar-title class="unselectable">{{ $t('navigation.appname') }}</v-toolbar-title>
+        <v-toolbar-title class="unselectable">{{ $t('global.application-name') }}</v-toolbar-title>
       </v-app-bar>
 
       <v-list nav>
