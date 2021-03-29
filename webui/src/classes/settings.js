@@ -9,7 +9,8 @@ export default class Settings {
   static default() {
     return {
       version: Constants.Version,
-      theme: 'system'
+      theme: 'system',
+      locale: 'en'
     };
   }
 }

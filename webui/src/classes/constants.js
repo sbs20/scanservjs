@@ -1,6 +1,11 @@
 const Constants = {
   Version: process.env.VUE_APP_VERSION,
   
+  Locales: [
+    'en',
+    'test'
+  ],
+
   Keys: {
     enter: 13,
     escape: 27

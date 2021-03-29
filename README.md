@@ -14,9 +14,20 @@
 
 scanservjs is a web-based UI for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or
-complicated installation. It enables easy cropping, sources, resolution, output
-formats (TIF, JPG, PNG, PDF and TXT with Tesseract OCR) with varying compression
-settings, all of which can be configured. It supports multipage scanning and all
+complicated installation.
+
+### Features
+* Cropping
+* Source selection (Flatbed / ADF)
+* Resolution
+* Output formats (TIF, JPG, PNG, PDF and TXT with Tesseract OCR) with varying
+  compression settings
+* Configurable overrides for all defaults as well as filters and formats
+* Multipage scanning (with collation for double sided scans)
+* Light and dark mode
+* **NEW**: International translations (**help requested**)
+
+It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
