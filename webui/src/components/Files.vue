@@ -2,9 +2,9 @@
   <v-simple-table>
     <thead>
       <tr>
-        <th>Filename</th>
-        <th class="file-date">Date</th>
-        <th>Size</th>
+        <th>{{ $t('files.filename') }}</th>
+        <th class="file-date">{{ $t('files.date') }}</th>
+        <th>{{ $t('files.size') }}</th>
         <th></th>
       </tr>
     </thead>
@@ -52,7 +52,7 @@ export default {
       Common.fetch('files/' + encodeURIComponent(file.fullname), {
         method: 'DELETE'
       }).then(data => {
-        this.$emit('notify', { type: 'i', message: `Deleted ${data.name}` });
+        this.$emit('notify', { type: 'i', message: `${this.$t('files.message:deleted')} ${data.name}` });
         this.fileList();
         this.$emit('mask', -1);
       }).catch(error => {

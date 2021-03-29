@@ -5,54 +5,59 @@
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-select v-if="context.devices.length > 0"
-          label="Device" v-model="device"
+          :label="$t('scan.device')" v-model="device"
           :items="context.devices" return-object item-text="id" @change="clear"></v-select>
 
         <v-select v-if="'--source' in device.features"
-          label="Source" v-model="request.params.source"
+          :label="$t('scan.source')" v-model="request.params.source"
           :items="device.features['--source']['options']"></v-select>
 
         <v-select
-          label="Resolution" v-model="request.params.resolution"
+          :label="$t('scan.resolution')" v-model="request.params.resolution"
           :items="device.features['--resolution']['options']"></v-select>
 
         <v-select
-          label="Mode" v-model="request.params.mode"
+          :label="$t('scan.mode')" v-model="request.params.mode"
           :items="device.features['--mode']['options']"></v-select>
 
         <v-select v-if="'--disable-dynamic-lineart' in device.features"
-          label="Dynamic Lineart" v-model="request.params.mode"
+          :label="$t('scan.dynamic-lineart')" v-model="request.params.mode"
           :items="[
-            { key: false, value: 'Disabled' },
-            { key: true, value: 'Enabled' }]"
+            { key: false, value: $t('scan.dynamic-lineart:disabled') },
+            { key: true, value: $t('scan.dynamic-lineart:enabled') }]"
           item-value="key" item-text="value"></v-select>
 
-        <v-select label="Batch" v-model="request.batch"
+        <v-select :label="$t('scan.batch')" v-model="request.batch"
           :items="[
-            { key: 'none', value: 'None' },
-            { key: 'manual', value: 'Manual (with prompt)' },
-            { key: 'auto', value: 'Auto (Document feeder)' },
-            { key: 'auto-collate-standard', value: 'Auto (Collate 1, 3... 4, 2)' },
-            { key: 'auto-collate-reverse', value: 'Auto (Reverse 1, 3... 2, 4)' }
+            { key: 'none', value: $t('scan.batch:none') },
+            { key: 'manual', value: $t('scan.batch:manual') },
+            { key: 'auto', value: $t('scan.batch:auto') },
+            { key: 'auto-collate-standard', value: $t('scan.batch:auto-collate-standard') },
+            { key: 'auto-collate-reverse', value: $t('scan.batch:auto-collate-reverse') }
           ]"
           item-value="key" item-text="value"></v-select>
 
         <v-select
           v-model="request.filters"
           :items="context.filters"
-          label="Filters"
+          item-text="text"
+          item-value="value"
+          :label="$t('scan.filters')"
           @change="readPreview"
           multiple />
 
         <v-select
-          label="Format" v-model="request.pipeline"
-          :items="context.pipelines"></v-select>
+          :label="$t('scan.format')"
+          v-model="request.pipeline"
+          :items="context.pipelines"
+          item-text="text"
+          item-value="value"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
-          <v-btn color="green" @click="createPreview" class="ml-1 mb-1">preview <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
-          <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">clear <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
-          <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">scan <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
-          <v-btn color="secondary" @click="reset" class="ml-1 mb-1">reset <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+          <v-btn color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+          <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
+          <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('scan.btn-reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
         </div>
       </v-col>
 
@@ -63,10 +68,10 @@
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
-        <v-text-field label="Top" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
-        <v-text-field label="Left" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
-        <v-text-field label="Width" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
-        <v-text-field label="Height" type="number" v-model="request.params.height"  @change="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.top')" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.left')" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height"  @change="onCoordinatesChange" />
 
         <div v-if="'--brightness' in device.features">
           <v-slider class="align-center" v-model="request.params.brightness"
@@ -74,7 +79,7 @@
             :min="device.features['--brightness']['limits'][0]"
             :max="device.features['--brightness']['limits'][1]">
             <template v-slot:prepend>
-              <v-text-field label="Brightness" 
+              <v-text-field :label="$t('scan.brightness')" 
                 style="width: 60px" type="number" v-model="request.params.brightness" />
             </template>
           </v-slider>
@@ -86,7 +91,7 @@
             :min="device.features['--contrast']['limits'][0]"
             :max="device.features['--contrast']['limits'][1]">
             <template v-slot:prepend>
-              <v-text-field label="Contrast" 
+              <v-text-field :label="$t('scan.contrast')" 
                 style="width: 60px" type="number" v-model="request.params.contrast" />
             </template>
           </v-slider>
@@ -234,7 +239,7 @@ export default {
       Common.fetch('preview', {
         method: 'DELETE'
       }).then(() => {
-        this.notify({ type: 'i', message: 'Deleted preview' });
+        this.notify({ type: 'i', message: this.$t('scan.message:deleted-preview') });
         this.readPreview();
         this.mask(-1);
       }).catch(error => {
@@ -303,11 +308,31 @@ export default {
 
       // Only show notification if things are slow (first time / force)
       const timer = window.setTimeout(() => {
-        this.notify({ type: 'i', message: 'Loading devices...' });
+        this.notify({ type: 'i', message: this.$t('scan.message:loading-devices') });
       }, 250);
 
       return this._fetch(url).then(context => {
         window.clearTimeout(timer);
+        context.filters = context.filters.map(f => {
+          return {
+            text: this.$t(`scan.${f}`),
+            value: f
+          };
+        });
+
+        context.pipelines = context.pipelines.map(p => {
+          const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
+          let text = p;
+          variables.forEach(v => {
+            text = text.replaceAll(`@:${v}`, this.$t(v));
+          });
+
+          return {
+            text: text,
+            value: p
+          };
+        });
+
         this.context = context;
 
         if (context.devices.length > 0) {
@@ -319,7 +344,7 @@ export default {
             }
           }
         } else {
-          this.notify({ type: 'e', message: 'Found no devices' });
+          this.notify({ type: 'e', message: this.$t('scan.message:no-devices') });
         }
 
         if (force) {
@@ -380,7 +405,7 @@ export default {
       }).then((response) => {
         if (response && 'index' in response) {
           const options = {
-            message: 'Turn documents over',
+            message: this.$t('scan.message:turn-documents'),
             onFinish: () => {
             },
             onNext: () => {
@@ -389,7 +414,7 @@ export default {
             }
           };
           if (response.image) {
-            options.message = `Preview of page ${response.index}`;
+            options.message = `${this.$t('scan.message:preview-of-page')} ${response.index}`;
             options.image = response.image;
             options.onFinish = () => {
               this.request.index = -1;

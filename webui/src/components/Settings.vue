@@ -1,19 +1,30 @@
 <template>
   <div>
-    <div class="text-h2 mb-4">Settings</div>
+    <div class="text-h2 mb-4">{{ $t('settings.title') }}</div>
     <settings-section>
-      <template v-slot:title>Behaviour and UI</template>
+      <template v-slot:title>{{ $t('settings.behaviour-ui') }}</template>
       <template v-slot:items>
         <settings-item>
           <template v-slot:description>
-            Theme. If you use system theme and change it, you will need to reload the app.
+            {{ $t('settings.theme:description') }}
           </template>
           <template v-slot:action>
             <div style="max-width: 9rem;">
-              <v-select label="Theme" :items="themes" v-model="settings.theme" @change="reload"></v-select>
+              <v-select :label="$t('settings.theme')" :items="themes" v-model="settings.theme" @change="reload"></v-select>
             </div>
           </template>
         </settings-item>
+        <settings-item>
+          <template v-slot:description>
+            {{ $t('settings.locale:description') }}
+          </template>
+          <template v-slot:action>
+            <div style="max-width: 9rem;">
+              <v-select :label="$t('settings.locale')" :items="locales" v-model="settings.locale" @change="reload"></v-select>
+            </div>
+          </template>
+        </settings-item>
+
       </template>
     </settings-section>
   </div>
@@ -38,17 +49,18 @@ export default {
   data() {
     return {
       settings: storage.settings,
+      locales: Constants.Locales,
       themes: [
         {
-          text: 'System',
+          text: this.$t('settings.theme:system'),
           value: Constants.Themes.System
         },
         {
-          text: 'Light',
+          text: this.$t('settings.theme:light'),
           value: Constants.Themes.Light
         },
         {
-          text: 'Dark',
+          text: this.$t('settings.theme:dark'),
           value: Constants.Themes.Dark
         }
       ]
