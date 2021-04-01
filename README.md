@@ -22,15 +22,18 @@ complicated installation.
 * Resolution
 * Output formats (TIF, JPG, PNG, PDF and TXT with Tesseract OCR) with varying
   compression settings
+* Filters: Autolevels, Threshold, Blur
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
 * Light and dark mode
-* **NEW**: International translations (**help requested**)
+* **NEW**: International translations: German; Spanish (**help requested**)
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
+
+![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen1.png)
 
 Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
