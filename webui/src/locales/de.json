@@ -1,0 +1,89 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs ist ein einfaches, web-basiertes UI für Scanner. Es erlaubt es, einen oder mehrere Scanner (mittels SANE) über das Netzwerk ohne Treiber oder komplizierte Installation freizugeben. Eingescannte Dokumente können als TIF, JPG, PNG, PDF und TXT (mit Tesseract OCR) in verschiedenen, konfigurierbaren Kompressionseinstellungen gespeichert werden. Neben allen SANE-kompatiblen Geräten, wird außerdem mehrseitiges Scannen unterstützt.",
+    "issue": "Melde Fehler oder wirf einen Blick auf den Quelltext:"
+  },
+
+  "batch-dialog": {
+    "btn-finish": "Fertig",
+    "btn-rescan": "Seite erneut scannen",
+    "btn-next": "Nächste Seite scannen"
+  },
+
+  "files": {
+    "filename": "Dateiname",
+    "date": "Datum",
+    "size": "Größe",
+    "message:deleted": "Gelöscht"
+  },
+
+  "navigation": {
+    "scan": "Scannen",
+    "files": "Dateien",
+    "settings": "Einstellungen",
+    "about": "Über",
+    "version": "Version"  
+  },
+
+  "pipeline": {
+    "high-quality": "Hohe Qualität",
+    "medium-quality": "Mittlere Qualität",
+    "low-quality": "Geringe Qualität",
+    "uncompressed": "Unkomprimiert",
+    "lzw-compressed": "LZW komprimiert",
+    "ocr": "OCR (Texterkennung)",
+    "text-file": "Text-Datei"
+  },  
+
+  "scan": {
+    "device": "Gerät",
+    "source": "Quelle",
+    "resolution": "Auflösung",
+    "mode": "Modus",
+    "dynamic-lineart": "Dynamic Lineart",
+    "dynamic-lineart:enabled": "Aktiviert",
+    "dynamic-lineart:disabled": "Deaktiviert",
+    "batch": "Mehrseitiges Scannen",
+    "batch:none": "Aus",
+    "batch:manual": "Manuell (mit Nachfrage)",
+    "batch:auto": "Automatisch (Dokumenteneinzug)",
+    "batch:auto-collate-standard": "Automatisch (Sortiert 1, 3... 4, 2)",
+    "batch:auto-collate-reverse": "Automatisch (umgekehrte Reihenfolge 1, 3... 2, 4)",
+    "filters": "Filter",
+    "filters:auto-level": "Automatische Farbjustierung",
+    "filters:threshold": "Schwellwert",
+    "filters:blur": "Weichzeichner",
+    "format": "Format",
+    "btn-preview": "Vorschau",
+    "btn-clear": "Leeren",
+    "btn-scan": "Scannen",
+    "btn-reset": "Zurücksetzen",
+    "top": "Oben",
+    "left": "Links",
+    "width": "Breite",
+    "height": "Höhe",
+    "brightness": "Helligkeit",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Suche nach Geräten...",
+    "message:no-devices": "Keine Geräte gefunden",
+    "message:deleted-preview": "Vorschau gelöscht",
+    "message:turn-documents": "Dokumente umdrehen",
+    "message:preview-of-page": "Vorschau der Seite"  
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Verhalten und Erscheinungsbild",
+    "locale": "Sprache",
+    "locale:description": "Sprache auswählen",
+    "theme": "Design",
+    "theme:description": "Design. Wenn das Systemdesign geändert wurde, so muss die App neu geladen werden, damit die Änderung wirksam wird.",
+    "theme:system": "Systemdesign",
+    "theme:light": "Helles Design",
+    "theme:dark": "Dunkles Design"  
+  }
+}
