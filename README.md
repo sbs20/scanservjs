@@ -32,6 +32,8 @@ It supports any
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
 
+![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen1.png)
+
 Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 ## Requirements
