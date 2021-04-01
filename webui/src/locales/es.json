@@ -1,0 +1,89 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs es una interfaz gráfica simple y basada en web. Permite compartir uno o mas escáneres (utilizando SANE) en una red sin la necesidad de controladores adicionales o una instalación complicada. Permite guardar en formato TIF, JPG, PNG, PDF, y TXT (con Tesseract OCR) con varias configuraciones de compresión, todas ellas configurables. Soporta el escaneo multipágina y todos los dispositivos SANE compatibles.",
+    "issue": "Indicar una incidencia o ver el código fuente:"
+  },
+
+  "batch-dialog": {
+    "btn-finish": "Terminar",
+    "btn-rescan": "Reescanear página",
+    "btn-next": "Siguiente"
+  },
+
+  "files": {
+    "filename": "Nombre de fichero",
+    "date": "Fecha",
+    "size": "Tamaño",
+    "message:deleted": "Borrado"
+  },
+
+  "navigation": {
+    "scan": "Escanear",
+    "files": "Ficheros",
+    "settings": "Configuración",
+    "about": "Acerca de",
+    "version": "Versión"  
+  },
+
+  "pipeline": {
+    "high-quality": "Calidad alta",
+    "medium-quality": "Calidad media",
+    "low-quality": "Calidad baja",
+    "uncompressed": "Sin compresión",
+    "lzw-compressed": "Compresión LZW",
+    "ocr": "OCR",
+    "text-file": "Fichero de texto"
+  },  
+
+  "scan": {
+    "device": "Dispositivo",
+    "source": "Origen",
+    "resolution": "Resolución",
+    "mode": "Modo",
+    "dynamic-lineart": "Arte lineal dinámico",
+    "dynamic-lineart:enabled": "Activado",
+    "dynamic-lineart:disabled": "Desactivado",
+    "batch": "Lote",
+    "batch:none": "Nada",
+    "batch:manual": "Manual (con aviso)",
+    "batch:auto": "Auto (alimentador automático)",
+    "batch:auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
+    "batch:auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)",
+    "filters": "Filtros",
+    "filters:auto-level": "Autonivelar",
+    "filters:threshold": "Umbral",
+    "filters:blur": "Difuminar",
+    "format": "Formato",
+    "btn-preview": "Vista previa",
+    "btn-clear": "Limpiar",
+    "btn-scan": "Escanear",
+    "btn-reset": "Reestablecer",
+    "top": "Arriba",
+    "left": "Izquierda",
+    "width": "Anchura",
+    "height": "Altura",
+    "brightness": "Brillo",
+    "contrast": "Contraste",
+    "message:loading-devices": "Cargando dispositivos...",
+    "message:no-devices": "No se encuentran dispositivos",
+    "message:deleted-preview": "Vista previa eliminada",
+    "message:turn-documents": "Girar documentos",
+    "message:preview-of-page": "Vista previa de página"  
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Comportamiento e interfaz gráfica",
+    "locale": "Idioma",
+    "locale:description": "Elige tu idioma",
+    "theme": "Aspecto",
+    "theme:description": "Aspecto. Si utilizas el tema System y lo cambias, será necesario que recargues la aplicación.",
+    "theme:system": "System",
+    "theme:light": "Light",
+    "theme:dark": "Dark"  
+  }
+}
