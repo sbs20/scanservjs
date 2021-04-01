@@ -49,8 +49,13 @@ export default {
   data() {
     return {
       settings: storage.settings,
-      locales: Constants.Locales,
-      themes: [
+      locales: Constants.Locales
+    };
+  },
+
+  computed: {
+    themes() {
+      return [
         {
           text: this.$t('settings.theme:system'),
           value: Constants.Themes.System
@@ -63,8 +68,8 @@ export default {
           text: this.$t('settings.theme:dark'),
           value: Constants.Themes.Dark
         }
-      ]
-    };
+      ];
+    }
   },
 
   watch: {
