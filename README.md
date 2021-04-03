@@ -12,7 +12,7 @@
 
 -- *A satisfied user*
 
-scanservjs is a web-based UI for your scanner. It allows you to share one or
+scanservjs is a web UI frontend for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or
 complicated installation.
 
@@ -26,7 +26,8 @@ complicated installation.
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
 * Light and dark mode
-* **NEW**: International translations: Czech, German, Italian, Spanish (**help requested**)
+* **NEW**: International translations: Czech, German, Italian, Spanish (**help
+  requested**)
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).

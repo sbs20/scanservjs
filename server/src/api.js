@@ -15,7 +15,7 @@ class Api {
    * @returns {Promise.<FileInfo[]>}
    */
   static async fileList() {
-    log.debug('fileList()');
+    log.trace('fileList()');
     const dir = new FileInfo(Config.outputDirectory);
     let files = await dir.list();
     files = files
@@ -30,6 +30,7 @@ class Api {
    * @returns {FileInfo}
    */
   static fileDelete(fullpath) {
+    log.trace('fileDelete()');
     const file = new FileInfo(fullpath);
     const parent = new FileInfo(file.path);
     const data = new FileInfo(Config.outputDirectory);
@@ -57,7 +58,7 @@ class Api {
     });
 
     const cmd = `${Scanimage.scan(request)} > ${Config.previewDirectory}preview.tif`;
-    log.debug('Executing cmd:', cmd);
+    log.trace('Executing cmd:', cmd);
     await Process.spawn(cmd);
     return {};
   }
@@ -66,6 +67,7 @@ class Api {
    * @returns {FileInfo}
    */
   static deletePreview() {
+    log.trace('deletePreview()');
     const file = new FileInfo(`${Config.previewDirectory}preview.tif`);
     return file.delete();
   }
@@ -75,6 +77,7 @@ class Api {
    * @returns {Promise.<Buffer>}
    */
   static async readPreview(filters) {
+    log.trace('readPreview()', filters);
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it. 
     const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
