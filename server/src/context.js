@@ -4,7 +4,7 @@ const Devices = require('./devices');
 
 const diagnostic = (path) => {
   const exists = fs.existsSync(path);
-  const isDirectory = fs.statSync(path).isDirectory();
+  const isDirectory = exists && fs.statSync(path).isDirectory();
   const success = exists && !isDirectory;
   const message = success ? `Found ${path}` : `Unable to find file ${path}`;
   return {
