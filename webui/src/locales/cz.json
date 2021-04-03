@@ -1,0 +1,89 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs je jednoduché webové uživatelské rozhraní pro váš skener. Umožňuje vám sdílet jeden nebo více skenerů (s využitím SANE) bez ovladačů nebo komplikované instalace. Umí ukládat do TIF, JPG, PNG, PDF a TXT (využívá Tesseract OCR) s různými nastaveními komprese, vše je možné konfigurovat. Podporuje vícestránkové skenování a všechna zařízení kompatibilní se SANE.",
+    "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:"
+  },
+
+  "batch-dialog": {
+    "btn-finish": "Dokončit",
+    "btn-rescan": "Znovu oskenovat stránku",
+    "btn-next": "Další"
+  },
+
+  "files": {
+    "filename": "Název souboru",
+    "date": "Datum",
+    "size": "Velikost",
+    "message:deleted": "Odstraněno"
+  },
+
+  "navigation": {
+    "scan": "Skenování",
+    "files": "Soubory",
+    "settings": "Nastavení",
+    "about": "Informace",
+    "version": "Verze"
+  },
+
+  "pipeline": {
+    "high-quality": "Vysoká kvalita",
+    "medium-quality": "Střední kvalita",
+    "low-quality": "Nízká kvalita",
+    "uncompressed": "Bez komprese",
+    "lzw-compressed": "S kompresí LZW",
+    "ocr": "OCR",
+    "text-file": "Textový soubor"
+  },  
+
+  "scan": {
+    "device": "Zařízení",
+    "source": "Zdroj",
+    "resolution": "Rozlišení",
+    "mode": "Mód",
+    "dynamic-lineart": "Dynamická perokresba",
+    "dynamic-lineart:enabled": "Zapnuto",
+    "dynamic-lineart:disabled": "Vypnuto",
+    "batch": "Vícestránkový sken",
+    "batch:none": "Vypnuto",
+    "batch:manual": "Manuální (s výzvou)",
+    "batch:auto": "Automatický (Podavač dokumentů)",
+    "batch:auto-collate-standard": "Automatický (Kompletovat 1, 3... 4, 2)",
+    "batch:auto-collate-reverse": "Automatický (Obrátit 1, 3... 2, 4)",
+    "filters": "Filtry",
+    "filters:auto-level": "Automatické zarovnání",
+    "filters:threshold": "Prahová hodnota barev",
+    "filters:blur": "Rozmazané",
+    "format": "Formát",
+    "btn-preview": "Načíst náhled",
+    "btn-clear": "Vymazat",
+    "btn-scan": "Skenovat",
+    "btn-reset": "Resetovat",
+    "top": "Nahoře",
+    "left": "Vlevo",
+    "width": "Šířka",
+    "height": "Výška",
+    "brightness": "Jas",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Načítání zařízení...",
+    "message:no-devices": "Nebyla nalezena žádná zařízení",
+    "message:deleted-preview": "Odstranit náhled",
+    "message:turn-documents": "Obrátit dokumenty",
+    "message:preview-of-page": "Náhled stránky"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Chování a uživatelské rozhraní",
+    "locale": "Lokalizace",
+    "locale:description": "Vyberte vaši lokalizaci",
+    "theme": "Motiv",
+    "theme:description": "Motiv. Pokud použijete systémový motiv a ten se změní, budete potřebovat přenačíst aplikaci.",
+    "theme:system": "Podle systému",
+    "theme:light": "Světlý",
+    "theme:dark": "Tmavý"
+  }
+}

@@ -6,9 +6,9 @@
       </v-card-title>
       <v-card-text>
         <v-spacer></v-spacer>
-        <v-btn v-if="onFinish" color="green" text @click.prevent="finish">Finish</v-btn>
-        <v-btn v-if="onRescan" color="warning" text @click.prevent="rescan">Rescan page</v-btn>
-        <v-btn color="primary" text @click.prevent="next">Next</v-btn>
+        <v-btn v-if="onFinish" color="green" text @click.prevent="finish">{{ $t('batch-dialog.btn-finish') }}</v-btn>
+        <v-btn v-if="onRescan" color="warning" text @click.prevent="rescan">{{ $t('batch-dialog.btn-rescan') }}</v-btn>
+        <v-btn color="primary" text @click.prevent="next">{{ $t('batch-dialog.btn-next') }}</v-btn>
         <v-img v-if="image" :src="'data:image/jpeg;base64,' + image" contain />
       </v-card-text>
       <v-card-actions>
