@@ -39,7 +39,7 @@
 
         <v-select
           v-model="request.filters"
-          :items="context.filters"
+          :items="filters"
           item-text="text"
           item-value="value"
           :label="$t('scan.filters')"
@@ -49,7 +49,7 @@
         <v-select
           :label="$t('scan.format')"
           v-model="request.pipeline"
-          :items="context.pipelines"
+          :items="pipelines"
           item-text="text"
           item-value="value"></v-select>
 
@@ -164,6 +164,32 @@ export default {
       clearTimeout(this.preview.timer);
       this.preview.timer = setTimeout(this._resizePreview, 100);
     });
+  },
+
+  computed: {
+    filters() {
+      return this.context.filters.map(f => {
+        return {
+          text: this.$t(`scan.${f}`),
+          value: f
+        };
+      });
+    },
+
+    pipelines() {
+      return this.context.pipelines.map(p => {
+        const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
+        let text = p;
+        variables.forEach(v => {
+          text = text.replaceAll(`@:${v}`, this.$t(v));
+        });
+
+        return {
+          text: text,
+          value: p
+        };
+      });
+    }
   },
 
   watch: {
@@ -313,26 +339,6 @@ export default {
 
       return this._fetch(url).then(context => {
         window.clearTimeout(timer);
-        context.filters = context.filters.map(f => {
-          return {
-            text: this.$t(`scan.${f}`),
-            value: f
-          };
-        });
-
-        context.pipelines = context.pipelines.map(p => {
-          const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
-          let text = p;
-          variables.forEach(v => {
-            text = text.replaceAll(`@:${v}`, this.$t(v));
-          });
-
-          return {
-            text: text,
-            value: p
-          };
-        });
-
         this.context = context;
 
         if (context.devices.length > 0) {
