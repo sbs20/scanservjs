@@ -43,7 +43,7 @@ class CmdBuilder {
     if (ignoreStderr) {
       cmd += ' 2>/dev/null';
     }
-    log.debug('build()', cmd);
+    log.trace('build()', cmd);
     return cmd;
   }
 }
