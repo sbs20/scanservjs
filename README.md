@@ -26,7 +26,7 @@ complicated installation.
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
 * Light and dark mode
-* **NEW**: International translations: German; Spanish (**help requested**)
+* **NEW**: International translations: Czech, German, Italian, Spanish (**help requested**)
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
