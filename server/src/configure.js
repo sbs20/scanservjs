@@ -68,7 +68,7 @@ function initialize(rootPath) {
   try {
     fs.mkdirSync(Config.outputDirectory, { recursive: true });
     fs.mkdirSync(Config.tempDirectory, { recursive: true });
-  } catch(exception) {
+  } catch (exception) {
     log.warn(`Error ensuring output and temp directories exist: ${exception}`);
     log.warn(`Currently running node version ${process.version}.`);
   }
