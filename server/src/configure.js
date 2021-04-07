@@ -1,3 +1,4 @@
+const express = require('express');
 const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
@@ -10,10 +11,14 @@ rootLog.setLevel(Config.log.level);
 prefix.apply(rootLog, Config.log.prefix);
 
 const log = rootLog.getLogger('Http');
-const bodyParser = require('body-parser');
 const Api = require('./api');
 
-const sendError = (res, code, data) => {
+/**
+ * @param {import('express').Response} res 
+ * @param {number} code 
+ * @param {any} data 
+ */
+function sendError(res, code, data) {
   let content = {
     message: ''
   };
@@ -25,9 +30,12 @@ const sendError = (res, code, data) => {
     content.message = data;
   }
   res.status(code).send(content);
-};
+}
 
-const logRequest = (req) => {
+/**
+ * @param {import('express').Request} req 
+ */
+function logRequest(req) {
   const properties = ['method', 'path', 'params', 'query', 'body'];
   const output = {};
   for (const property of properties) {
@@ -40,9 +48,12 @@ const logRequest = (req) => {
     }
   }
   log.debug('request: ', output);
-};
+}
 
-const initialize = (rootPath) => {
+/**
+ * @param {string} rootPath 
+ */
+function initialize(rootPath) {
   if (rootPath) {
     // Only required for running in development
     Object.assign(Config, {
@@ -54,17 +65,24 @@ const initialize = (rootPath) => {
     });
   }
   
-  fs.mkdirSync(Config.outputDirectory, { recursive: true });
-  fs.mkdirSync(Config.tempDirectory, { recursive: true });
-};
+  try {
+    fs.mkdirSync(Config.outputDirectory, { recursive: true });
+    fs.mkdirSync(Config.tempDirectory, { recursive: true });
+  } catch (exception) {
+    log.warn(`Error ensuring output and temp directories exist: ${exception}`);
+    log.warn(`Currently running node version ${process.version}.`);
+  }
+}
 
-module.exports = (app, rootPath) => {
+/**
+ * Configures express
+ * @param {import('express').Express} app 
+ * @param {string} rootPath 
+ */
+function configure(app, rootPath) {
   initialize(rootPath);
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
-
-  app.use(bodyParser.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
   app.get(['/context', '/context/:force'], async (req, res) => {
     logRequest(req);
@@ -141,6 +159,6 @@ module.exports = (app, rootPath) => {
       sendError(res, 500, error);
     }
   });
+}
 
-  app.use(bodyParser.json());
-};
+module.exports = configure;
