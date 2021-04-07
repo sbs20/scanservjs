@@ -22,6 +22,26 @@ rm scanservjs.tar.gz
 rm -r scanservjs
 ```
 
+## Troubleshooting
+
+Scanservjs works by wrapping CLI calls to `scanimage` as the user `scanservjs`
+which is a member of the `scanner` group. If connected by USB then we ultimately
+need access to some hardware and that access may not be granted by default. To
+debug where the problem is:
+
+* First, check that you've followed the instructions [here](./sane.md).
+* Try running `sudo scanimage -L` (for diagnostic purposes) - this really should
+  work. If it doesn't, then it's most likely a SANE / driver related issue.
+* Now try running as a normal user without sudo: `scanimage -L`. If you've
+  installed scanservjs then there should be a `scanservjs` user. Try the same
+  command as that user: `sudo su - scanservjs -c 'scanimage -L'`. If this
+  doesn't show your scanner then most likely you need a udev rule (see
+  [here](./sane.md)) to allow certain groups access to the hardware - but it's
+  also worth verifying that the `scanservjs` user is a member of the `scanner`
+  group (or the group specified in your udev rule): `groups scanservjs`.
+* Getting logs: use `journalctl`. See the journalctl manpage for details but
+  `sudo journalctl -e -u scanservjs` should be enough to get you started.
+
 ## Old Debian
 For more on problems installing an up to date nodejs on Debian which includes
 `npm`. See

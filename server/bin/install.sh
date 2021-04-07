@@ -96,4 +96,4 @@ systemctl start scanservjs
 echo "scanservjs starting"
 echo "http://127.0.0.1:8080"
 echo
-echo "If you have problems, try 'journalctl -xe'"
+echo "If you have problems, try 'sudo journalctl -e -u scanservjs'"
