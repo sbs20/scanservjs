@@ -65,8 +65,13 @@ function initialize(rootPath) {
     });
   }
   
-  fs.mkdirSync(Config.outputDirectory, { recursive: true });
-  fs.mkdirSync(Config.tempDirectory, { recursive: true });
+  try {
+    fs.mkdirSync(Config.outputDirectory, { recursive: true });
+    fs.mkdirSync(Config.tempDirectory, { recursive: true });
+  } catch(exception) {
+    log.warn(`Error ensuring output and temp directories exist: ${exception}`);
+    log.warn(`Currently running node version ${process.version}.`);
+  }
 }
 
 /**
@@ -76,7 +81,7 @@ function initialize(rootPath) {
  */
 function configure(app, rootPath) {
   initialize(rootPath);
-  app.use(express.urlencoded());
+  app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   app.get(['/context', '/context/:force'], async (req, res) => {
