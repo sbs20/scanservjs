@@ -55,8 +55,9 @@ Depending on your setup you have a number of options.
   (`-v /var/run/dbus:/var/run/dbus`).
 
 * If your container is running inside a VM you may find that the USB device id
-  is [unstable](#66) and changes between boots. In these cases, you will
-  probably find it easier to share the scanner over the network on the host.
+  is [unstable](https://github.com/sbs20/scanservjs/issues/66) and changes
+  between boots. In these cases, you will probably find it easier to share the
+  scanner over the network on the host.
 
 * Driverless-mode scanning (using airscan over IPP-USB) also seems to result in
   problems. If anyone has ideas why (perhaps something additional needs sharing
@@ -69,8 +70,8 @@ Depending on your setup you have a number of options.
   and share it over the network.
   
 * The best fallback position for many cases is simply to
-  [share the host scanner over the network](#129#issuecomment-800226184) and
-  referencing that within the guest. This means that the docker container is
+  [share the host scanner over the network](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
+  and referencing that within the guest. This means that the docker container is
   just running the app.
 
 ## Mapping volumes
