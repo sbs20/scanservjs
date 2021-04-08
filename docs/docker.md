@@ -4,13 +4,13 @@
 
 Get the image
 
-```console
+```sh
 docker pull sbs20/scanservjs:latest
 ```
 
 Run it
 
-```console
+```sh
 docker rm --force scanservjs-container 2> /dev/null
 docker run -d \
   -p 8080:8080 \
@@ -117,7 +117,7 @@ The solution in most cases is either to
 
 ### Mapped USB device with mapped volumes
 
-```console
+```sh
 docker run -d \
   -p 8080:8080 \
   -v $HOME/scan-data:/app/data/output \
@@ -129,7 +129,7 @@ docker run -d \
 ### Use airscan and a locally detected scanner
 This should support most use cases
 
-```console
+```sh
 docker run -d -p 8080:8080 \
   -v /var/run/dbus:/var/run/dbus \
   --name scanservjs-container scanservjs-image
@@ -140,7 +140,7 @@ Add two net hosts to sane, use airscan to connect to two remote scanners, don't
 use `scanimage -L`, force a list of devices, override the OCR language and run
 in privileged mode
 
-```console
+```sh
 docker run -d -p 8080:8080 \
   -e SANED_NET_HOSTS="10.0.100.30;10.0.100.31" \
   -e AIRSCAN_DEVICES='"Canon MFD" = "http://192.168.0.10/eSCL";"EPSON MFD" = "http://192.168.0.11/eSCL"' \
@@ -157,7 +157,7 @@ These may be less stable, but also have upcoming features.
 
 If you want to install the latest staging branch (this may contain newer code)
 
-```console
+```sh
 docker pull sbs20/scanservjs:staging
 docker rm --force scanservjs-container 2> /dev/null
 docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --restart unless-stopped --name scanservjs-container --privileged sbs20/scanservjs:staging
