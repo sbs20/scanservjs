@@ -40,20 +40,17 @@ COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
 
 RUN npm install --production
 
-# This goes into /etc/sane.d/net.conf
-ENV SANED_NET_HOSTS=""
-
-# This gets added to /etc/sane.d/airscan.conf
-ENV AIRSCAN_DEVICES=""
-
-# This directs scanserv not to bother querying `scanimage -L`
-ENV SCANIMAGE_LIST_IGNORE=""
-
-# This gets added to scanservjs/server/config.js:devices
-ENV DEVICES=""
-
-# Override OCR language
-ENV OCR_LANG=""
+ENV \
+  # This goes into /etc/sane.d/net.conf
+  SANED_NET_HOSTS="" \
+  # This gets added to /etc/sane.d/airscan.conf
+  AIRSCAN_DEVICES="" \
+  # This directs scanserv not to bother querying `scanimage -L`
+  SCANIMAGE_LIST_IGNORE="" \
+  # This gets added to scanservjs/server/config.js:devices
+  DEVICES="" \
+  # Override OCR language
+  OCR_LANG=""
 
 # Copy entry point
 COPY run.sh /run.sh
