@@ -36,9 +36,8 @@ RUN apt-get update \
     tesseract-ocr \
   && sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
-COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
-
-RUN npm install --production
+# Create a known user
+RUN useradd -u 2001 -ms /bin/bash scanservjs
 
 ENV \
   # This goes into /etc/sane.d/net.conf
@@ -56,4 +55,13 @@ ENV \
 COPY run.sh /run.sh
 RUN ["chmod", "+x", "/run.sh"]
 ENTRYPOINT [ "/run.sh" ]
+
+# Copy the code and install
+COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
+RUN npm install --production
+
+# Change the ownership of config and data since we need to write there
+RUN chown -R scanservjs:scanservjs config data
+USER scanservjs
+
 EXPOSE 8080
