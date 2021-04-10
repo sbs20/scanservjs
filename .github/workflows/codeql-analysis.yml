@@ -12,6 +12,7 @@ on:
     - '.github/**'
     - 'docs/**'
     - 'README.md'
+    - 'install.sh'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [staging]
@@ -19,6 +20,7 @@ on:
     - '.github/**'
     - 'docs/**'
     - 'README.md'
+    - 'install.sh'
   workflow_dispatch:
   
 jobs:
