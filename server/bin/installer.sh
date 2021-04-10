@@ -1,26 +1,8 @@
 #!/bin/bash
 
-# scanservjs installation script for Debian and Ubuntu
-
+# scanservjs installer script for Debian and Ubuntu
 # Usage:
-
-#   curl -s https://github.com/sbs20/scanservjs/blob/master/install.sh | sudo bash -s -i
-
-# This script will install the bare minimum for scanservjs to work. It will
-# install sane-utils but not sane - you may have your sane backend running on
-# another server. It will not install sane-airscan either.
-
-# To do this then run
-
-# ```
-# apt-get update
-# apt-get install -yq curl gpg tee
-# echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list
-# curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null
-# apt-get install -yq \
-#     sane \
-#     sane-airscan
-# ```
+#   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s --
 
 tmp="/tmp/scanservjs"
 location="/var/www/scanservjs"
@@ -33,30 +15,6 @@ assert_root() {
 }
 
 install() {
-
-  cat << EOF
-This script will install scanservjs from https://github.com/sbs20/scanservjs
-with the bare minimum for it to work. It will install sane-utils but not sane,
-as you may have your sane backend running on another server. It will not install
-sane-airscan either. For more information see the source of this script on
-github.
-
-It will:
-
-* run apt-get update
-* install SANE, node and imagemagick dependencies
-* create the web application in /var/www/scanservjs
-* create a user and systemd service which is enabled and started
-
-Do you want to continue? [y/N]: 
-EOF
-  read do_install
-
-  if [ "y" != "$do_install" ]; then
-    echo "Abort."
-    exit 0
-  fi
-
   # minimum dependencies
   apt-get update
   apt-get install -yq \
@@ -170,6 +128,53 @@ hard_uninstall() {
     tesseract-ocr
 }
 
+print_help() {
+  cat << EOF
+
+scanservjs: https://github.com/sbs20/scanservjs
+
+# Overview
+==========
+This script will install or remove scanservjs with the bare minimum for it to
+work. If you are installing then it will add sane-utils but not sane, as you may
+have your sane backend running on another server. It will not install
+sane-airscan either.
+
+If you want to install sane and airscan then run the following:
+
+  apt-get update
+  apt-get install -yq curl gpg tee
+  echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list
+  curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null
+  apt-get install -yq \
+      sane \
+      sane-airscan
+
+# Install
+=========
+  * run apt-get update
+  * install SANE, node and imagemagick dependencies
+  * create the web application in /var/www/scanservjs
+  * create a user and systemd service which is enabled and started
+
+# Uninstall
+===========
+  * Remove the user and systemd service
+
+# Arguments
+===========
+  usage:
+    -i | --install    : install scanservjs
+    -u | --uninstall  : uninstall scanservjs (leaves web and data files)
+    --force-uninstall : uninstall scanservjs (removes all dependencies - dragons here)
+
+# Running via curl
+
+If you just ran this from curl and want to install, then just append '-i' to
+your previous command
+EOF
+}
+
 # main
 assert_root
 
@@ -184,13 +189,10 @@ case "$1" in
     uninstall
     hard_uninstall
     ;;
+  -h|--help)
+    print_help
+    ;;
   *)
-    cat << EOF
-Unknown argument
-usage:
-  -i | --install    : install scanservjs
-  -u | --uninstall  : uninstall scanservjs (leaves web and data files)
-  --force-uninstall : uninstall scanservjs (removes all dependencies - dragons here)
-EOF
+    print_help
     ;;
 esac

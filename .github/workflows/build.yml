@@ -7,7 +7,6 @@ on:
     - '.github/**'
     - 'docs/**'
     - 'README.md'
-    - 'install.sh'
     branches:
     - development
     - staging
