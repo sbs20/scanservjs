@@ -171,7 +171,10 @@ If you want to install sane and airscan then run the following:
 # Running via curl
 
 If you just ran this from curl and want to install, then just append '-i' to
-your previous command
+your previous command so it looks like:
+
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -i
+
 EOF
 }
 
