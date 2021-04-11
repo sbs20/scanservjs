@@ -59,15 +59,15 @@ Depending on your setup you have a number of options.
   between boots. In these cases, you will probably find it easier to share the
   scanner over the network on the host.
 
-* Driverless-mode scanning (using airscan over IPP-USB) also seems to result in
+* Driverless-mode scanning (using airscan over IPP-USB) seems to result in
   problems. If anyone has ideas why (perhaps something additional needs sharing
   from host to guest) then suggestions are welcome.
 
-* You need proprietary drivers for your scanner. Adding more backends to the
-  docker container feels wrong and will add bloat for many users who don't need
-  it. The best solution is either to create your own docker image based on the
-  scanservjs one and add it in that way, or to install the drivers on the host
-  and share it over the network.
+* If you need proprietary drivers for your scanner then the best solution is
+  either to create your own docker image based on the scanservjs one and add it
+  in that way, or to install the drivers on the host and share it over the
+  network. Adding more backends to the docker container feels wrong and will add
+  cruft for many users who don't need it.
   
 * The best fallback position for many cases is simply to
   [share the host scanner over the network](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
@@ -87,8 +87,8 @@ The docker image which is created now runs under a non-privileged user account
 with a UID of `2001`. If you attempt to run as a user other than `2001` or `0`
 (e.g. `-u 1000`) then the process inside the container will no longer have
 access to some of the things it needs to and it will fail. Most of the time you
-won't care about this, but if you're mapping volumes for either config or data,
-then it may matter.
+won't care about the user, but if you're mapping volumes for either config or
+data, then it may matter.
 
 The solution in most cases is either to
 * change the group of the container to a known group on the host e.g.

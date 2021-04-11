@@ -5,20 +5,28 @@ manually.
 
 ## Manual Steps
 
-* Get [SANE installed and working](./sane.md) and check permissions etc.
-* Get nodejs and npm installed (You will need an up to date version of npm, you
-  may need to run `npm install npm@latest -g`)
-* Download the latest release of scanserv, extract it and run `install.sh`
+* If you don't already have your scanner working, then you need to get
+  [SANE installed and working](./sane.md) and check permissions etc. Your
+  scanner can be attached to a different server / device if you're using saned.
+* If you're using a debian based distro then you can just use the installer
+  script. But please note that this will install dependecies and needs to run as
+  root:
+  ```sh
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -a
+  ```
+* If you're using another distro, then for the time being you either need to
+  manually run the steps in the install script or use docker.
 
-## tl;dr; (Debian 10)
+## Download and install
+
+If you don't fancy running a script directly from `curl` then you can manually
+download the package and then run the installer inside.
 
 ```
-sudo apt install -y nodejs npm sane-utils imagemagick curl
-sudo npm install npm@latest -g
 wget -O ~/scanservjs.tar.gz $(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
 mkdir scanservjs
 tar -xf scanservjs.tar.gz -C ./scanservjs/
-sudo ./scanservjs/install.sh
+sudo ./scanservjs/installer.sh -i
 rm scanservjs.tar.gz
 rm -r scanservjs
 ```
