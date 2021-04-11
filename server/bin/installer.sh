@@ -4,7 +4,7 @@
 # Usage:
 #   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s --
 
-tmp="/tmp/scanservjs"
+tmp="/tmp/scanservjs.bkp"
 location="/var/www/scanservjs"
 
 assert_root() {
@@ -54,10 +54,21 @@ install() {
   fi
 
   mkdir -p $location
-  url=$(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
-  curl -L $url | tar -zxf - -C $location/
 
-  # Copy the files back
+  if [ "1" = "$auto" ]; then
+    url=$(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+    curl -L $url | tar -zxf - -C $location/
+
+  else
+    srcdir="$(cd "$(dirname "$0")" && pwd)"
+    if [ ! -e $srcdir/scanservjs.service ]; then
+      echo "Cannot find other package files. Did you mean to run --auto-install?"
+      exit 1;
+    fi
+    cp -rf $srcdir/* $location
+  fi
+
+  # Restore files
   if [ -d "$tmp" ]; then
     cp -a -v $tmp/config $location/
     cp -a -v $tmp/data $location/
@@ -135,27 +146,33 @@ scanservjs: https://github.com/sbs20/scanservjs
 
 # Overview
 ==========
-This script will install or remove scanservjs with the bare minimum for it to
-work. If you are installing then it will add sane-utils but not sane, as you may
-have your sane backend running on another server. It will not install
-sane-airscan either.
+  This script will install or remove scanservjs with the bare minimum for it to
+  work. If you are installing then it will add sane-utils but not sane, as you
+  may have your sane backend running on another server. It will not install
+  sane-airscan either.
 
-If you want to install sane and airscan then run the following:
+  If you want to install sane and airscan then run the following:
 
-  apt-get update
-  apt-get install -yq curl gpg tee
-  echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list
-  curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null
-  apt-get install -yq \
-      sane \
-      sane-airscan
+    apt-get update
+    apt-get install -yq curl gpg tee
+    echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list
+    curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null
+    apt-get install -yq \
+        sane \
+        sane-airscan
+
+# Auto-install
+==============
+  Runs install but downloads the latest stable release from GitHub
 
 # Install
 =========
-  * run apt-get update
-  * install SANE, node and imagemagick dependencies
-  * create the web application in /var/www/scanservjs
-  * create a user and systemd service which is enabled and started
+  Install runs through the following steps
+
+    * run apt-get update
+    * install SANE, node and imagemagick dependencies
+    * create the web application in /var/www/scanservjs
+    * create a user and systemd service which is enabled and started
 
 # Uninstall
 ===========
@@ -164,16 +181,17 @@ If you want to install sane and airscan then run the following:
 # Arguments
 ===========
   usage:
-    -i | --install    : install scanservjs
-    -u | --uninstall  : uninstall scanservjs (leaves web and data files)
-    --force-uninstall : uninstall scanservjs (removes all dependencies - dragons here)
+    -a | --auto-install : install scanservjs from GitHub
+    -i | --install      : install scanservjs from local package
+    -u | --uninstall    : uninstall scanservjs (leaves web and data files)
+    --force-uninstall   : uninstall scanservjs (removes all dependencies - dragons here)
 
 # Running via curl
+==================
+  If you just ran this from curl and want to install, then just append '-a' to
+  your previous command so it looks like:
 
-If you just ran this from curl and want to install, then just append '-i' to
-your previous command so it looks like:
-
-  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -i
+    curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -a
 
 EOF
 }
@@ -182,7 +200,12 @@ EOF
 assert_root
 
 case "$1" in
+  -a|--auto-install)
+    auto=1
+    install
+    ;;
   -i|--install)
+    auto=0
     install
     ;;
   -u|--uninstall)
