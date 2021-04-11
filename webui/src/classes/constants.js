@@ -7,6 +7,7 @@ const Constants = {
     'de',
     'en',
     'es',
+    'fr',
     'it',
     'test'
   ],
