@@ -61,7 +61,7 @@ COPY --from=builder "$APP_DIR/dist" "$APP_DIR/"
 RUN npm install --production
 
 # Change the ownership of config and data since we need to write there
-RUN chown -R scanservjs:scanservjs config data
+RUN chown -R scanservjs:scanservjs config data /etc/sane.d/net.conf /etc/sane.d/airscan.conf
 USER scanservjs
 
 EXPOSE 8080
