@@ -17,6 +17,7 @@ more scanners (using SANE) on a network without the need for drivers or
 complicated installation.
 
 ### Features
+
 * Cropping
 * Source selection (Flatbed / ADF)
 * Resolution
@@ -39,6 +40,7 @@ It supports any
 Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 ## Requirements
+
 * SANE Scanner
 * Linux host (or VM with necessary pass-through e.g. USB)
 * Software sane-utils, ImageMagick, Tesseract (optional) and nodejs
@@ -51,6 +53,7 @@ Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 * [Configuring the scanner and SANE](docs/sane.md)
 
 ## Configuration and device override
+
 If you want to override some specific configuration setting then you can do so
 within `./config/config.local.js`. Take a copy of `./config/config.default.js`
 and override the sections you want. Using docker you will need to map the volume
@@ -100,6 +103,7 @@ module.exports = {
 ```
 
 ## Why?
+
 This is yet another scanimage-web-front-end. Why? It originally started as an
 adaptation of phpsane - just to make everything a bit newer, give it a refresh
 and make it work on minimal installations without imagemagick - that version is
@@ -108,6 +112,7 @@ maintained. Since then, I just wanted to write it in node and enhance it a bit,
 and it's been a labour of love ever since.
 
 ## Acknowledgements
+
  * This project owes its genesis to
    [phpsane](http://sourceforge.net/projects/phpsane/)
  * [Everyone](https://github.com/sbs20/scanservjs/graphs/contributors) who has
@@ -115,4 +120,5 @@ and it's been a labour of love ever since.
    years. Thank you!
 
 ## More about SANE
+
  * http://www.sane-project.org/

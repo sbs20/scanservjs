@@ -129,6 +129,7 @@ then feel free to raise and issues or PR.
     * `scanimage -L`
 
 ### Get permissions working
+
 Pretend to be httpduser
 ```
 sudo -i -u httpdusr
@@ -172,6 +173,7 @@ chgrp scanner /proc/usb/003/003
 ```
 
 ## Raspberry Pi
+
 USB-only scanners draw a lot of current relative to the Pi's available power.
 This can manifest itself in unusual scans - technically valid images but with
 odd colours and block transforms. Consider using a powered USB hub (e.g. for a
