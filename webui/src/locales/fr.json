@@ -29,6 +29,12 @@
     "version": "Version"  
   },
 
+  "filter": {
+    "auto-level": "Automatique",
+    "threshold": "Seuil",
+    "blur": "Flou"
+  },
+
   "pipeline": {
     "high-quality": "Qualité élevée",
     "medium-quality": "Qualité moyenne",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "Assemblage auto (Standard 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "Assemblage auto (Inversé 1, 3... 2, 4)",
     "filters": "Filtres",
-    "filters:auto-level": "Automatique",
-    "filters:threshold": "Seuil",
-    "filters:blur": "Flou",
     "format": "Format",
     "btn-preview": "Pré-visualiser",
     "btn-clear": "Effacer",

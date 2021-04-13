@@ -29,6 +29,12 @@
     "version": "Version"  
   },
 
+  "filter": {
+    "auto-level": "Automatische Farbjustierung",
+    "threshold": "Schwellwert",
+    "blur": "Weichzeichner"
+  },
+
   "pipeline": {
     "high-quality": "Hohe Qualität",
     "medium-quality": "Mittlere Qualität",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "Automatisch (Sortiert 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "Automatisch (umgekehrte Reihenfolge 1, 3... 2, 4)",
     "filters": "Filter",
-    "filters:auto-level": "Automatische Farbjustierung",
-    "filters:threshold": "Schwellwert",
-    "filters:blur": "Weichzeichner",
     "format": "Format",
     "btn-preview": "Vorschau",
     "btn-clear": "Leeren",
