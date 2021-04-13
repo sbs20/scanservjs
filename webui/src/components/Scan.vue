@@ -162,7 +162,7 @@ export default {
     filters() {
       return this.context.filters.map(f => {
         return {
-          text: this.$t(`scan.${f}`),
+          text: this.$t(f),
           value: f
         };
       });

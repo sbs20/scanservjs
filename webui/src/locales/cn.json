@@ -29,6 +29,12 @@
     "version": "版本"  
   },
 
+  "filter": {
+    "auto-level": "自动调整",
+    "threshold": "阈值",
+    "blur": "模糊"
+  },
+
   "pipeline": {
     "high-quality": "高画质",
     "medium-quality": "中画质",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)",
     "filters": "滤镜",
-    "filters:auto-level": "自动调整",
-    "filters:threshold": "阈值",
-    "filters:blur": "模糊",
     "format": "格式",
     "btn-preview": "预览",
     "btn-clear": "清除",

@@ -29,6 +29,12 @@
     "version": "Versione"
   },
 
+  "filter": {
+    "auto-level": "Livello automatico",
+    "threshold": "Soglia",
+    "blur": "Sfocatura"
+  },
+
   "pipeline": {
     "high-quality": "Qualità alta",
     "medium-quality": "Qualità media",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "Automatico (Fascicola 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "Automatico (Inverso 1, 3... 2, 4)",
     "filters": "Filtri",
-    "filters:auto-level": "Livello automatico",
-    "filters:threshold": "Soglia",
-    "filters:blur": "Sfocatura",
     "format": "Formato",
     "btn-preview": "Anteprima",
     "btn-clear": "Cancella",

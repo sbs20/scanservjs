@@ -29,6 +29,12 @@
     "version": "Versión"  
   },
 
+  "filter": {
+    "auto-level": "Autonivelar",
+    "threshold": "Umbral",
+    "blur": "Difuminar"
+  },
+
   "pipeline": {
     "high-quality": "Calidad alta",
     "medium-quality": "Calidad media",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)",
     "filters": "Filtros",
-    "filters:auto-level": "Autonivelar",
-    "filters:threshold": "Umbral",
-    "filters:blur": "Difuminar",
     "format": "Formato",
     "btn-preview": "Vista previa",
     "btn-clear": "Limpiar",
