@@ -11,6 +11,7 @@
   ```
 
 ## Run for development
+
 ```
 cd webui && npm run serve
 ```
@@ -31,10 +32,12 @@ cd server && gulp release
 ```
 
 ## Updating node dependencies
+
 * `npm audit fix` or `npm update`. This won't remove old packages; to do so,
   delete node_modules and reinstall
 
 ## References
+
 * [Run server with webpack](https://dennisreimann.de/articles/vue-cli-serve-express.html)
 * [i18n](https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n)
 
@@ -82,6 +85,7 @@ docker image prune
 ```
 
 ## Mount map configuration files
+
 ```
 docker run -d \
   -p 8080:8080 \

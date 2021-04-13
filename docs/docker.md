@@ -127,6 +127,7 @@ docker run -d \
 ```
 
 ### Use airscan and a locally detected scanner
+
 This should support most use cases
 
 ```sh
@@ -136,6 +137,7 @@ docker run -d -p 8080:8080 \
 ```
 
 ### A bit of everything
+
 Add two net hosts to sane, use airscan to connect to two remote scanners, don't
 use `scanimage -L`, force a list of devices, override the OCR language and run
 in privileged mode

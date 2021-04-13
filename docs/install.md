@@ -1,9 +1,6 @@
-# installation
+# Standard installation
 
-The easiest way to run is with Docker. But it's still possible to setup
-manually.
-
-## Manual Steps
+## One line install
 
 * If you don't already have your scanner working, then you need to get
   [SANE installed and working](./sane.md) and check permissions etc. Your
@@ -17,7 +14,7 @@ manually.
 * If you're using another distro, then for the time being you either need to
   manually run the steps in the install script or use docker.
 
-## Download and install
+## Manual download and install
 
 If you don't fancy running a script directly from `curl` then you can manually
 download the package and then run the installer inside.
@@ -52,6 +49,7 @@ debug where the problem is:
   `sudo journalctl -e -u scanservjs` should be enough to get you started.
 
 ## Old Debian
+
 For more on problems installing an up to date nodejs on Debian which includes
 `npm`. See
 [here](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
@@ -72,5 +70,6 @@ See
 for more details.
 
 ## Arch
+
 If you're using Arch, you probably don't need help but this worked a few years
 ago `sudo pacman -S nodejs npm sane-utils imagemagick curl`

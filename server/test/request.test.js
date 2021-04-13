@@ -63,8 +63,8 @@ describe('Request', () => {
     assert.strictEqual(request.params.resolution, '150');
     assert.strictEqual(request.params.left, 0);
     assert.strictEqual(request.params.top, 0);
-    assert.strictEqual(request.params.width, 215);
-    assert.strictEqual(request.params.height, 297);
+    assert.strictEqual(request.params.width, 215.9);
+    assert.strictEqual(request.params.height, 297.1);
     assert.strictEqual(request.params.brightness, undefined);
     assert.strictEqual(request.params.contrast, undefined);
     assert.strictEqual(request.params.dynamicLineart, undefined);

@@ -30,8 +30,10 @@ install() {
   if [ -d "$location" ]; then
     # keep config and data
     mkdir -p $tmp
-    cp -a -v $location/config $tmp
-    cp -a -v $location/data $tmp
+
+    echo "Backing up existing files"
+    cp -a $location/config $tmp
+    cp -a $location/data $tmp
 
     # stop the service
     if [ "$(systemctl is-active scanservjs 2>&1 | tr -s \\n)" = "active" ]; then
@@ -70,6 +72,7 @@ install() {
 
   # Restore files
   if [ -d "$tmp" ]; then
+    echo "Restoring files"
     cp -a -v $tmp/config $location/
     cp -a -v $tmp/data $location/
   fi
