@@ -36,8 +36,7 @@ gulp.task('server-build', () => {
   const shellFilter = filter('**/*.sh', {restore: true});
 
   const common = gulp.src([
-    './bin/install.sh',
-    './bin/uninstall.sh',
+    './bin/installer.sh',
     './bin/scanservjs.service',
     './package.json',
     './package-lock.json',

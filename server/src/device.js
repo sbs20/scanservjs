@@ -6,7 +6,7 @@ const Config = require('./config');
  * @returns {number}
  */
 function round(n) {
-  return Math.floor(n);
+  return Math.floor(n * 10) / 10;
 }
 
 class Feature {

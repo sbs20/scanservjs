@@ -49,7 +49,7 @@ const Process = {
       }
 
       proc.on('close', (code) => {
-        log.debug(`close(${code}): ${cmd}`);
+        log.trace(`close(${code}): ${cmd}`);
         if (code !== 0 && !options.ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {

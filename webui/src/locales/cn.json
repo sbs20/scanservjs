@@ -1,0 +1,92 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs 是一个基于网页的扫描仪UI。 它可以实现在局域网内共享一个或多个扫描仪（用SANE实现）而免去繁复的驱动安装。 扫描的文件可保存为 TIF, JPG, PNG, PDF 和 TXT (使用Tesseract OCR) 等格式，并可配置多种压缩率。 它亦支持多页扫描以及所有与SANE兼容的设备",
+    "issue": "反馈问题或查看源码"
+  },
+
+  "batch-dialog": {
+    "btn-finish": "完成",
+    "btn-rescan": "重新扫描",
+    "btn-next": "下一张"
+  },
+
+  "files": {
+    "filename": "文件名",
+    "date": "日期",
+    "size": "大小",
+    "message:deleted": "已删除"
+  },
+
+  "navigation": {
+    "scan": "扫描",
+    "files": "文件",
+    "settings": "设置",
+    "about": "关于",
+    "version": "版本"  
+  },
+
+  "filter": {
+    "auto-level": "自动调整",
+    "threshold": "阈值",
+    "blur": "模糊"
+  },
+
+  "pipeline": {
+    "high-quality": "高画质",
+    "medium-quality": "中画质",
+    "low-quality": "低画质",
+    "uncompressed": "无压缩",
+    "lzw-compressed": "LZW 压缩",
+    "ocr": "OCR",
+    "text-file": "文本文件"
+  },  
+
+  "scan": {
+    "device": "设备",
+    "source": "来源",
+    "resolution": "分辨率",
+    "mode": "模式",
+    "dynamic-lineart": "动态线性",
+    "dynamic-lineart:enabled": "开启",
+    "dynamic-lineart:disabled": "关闭",
+    "batch": "批量",
+    "batch:none": "无",
+    "batch:manual": "手动 (有提示)",
+    "batch:auto": "自动 (进纸器)",
+    "batch:auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
+    "batch:auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)",
+    "filters": "滤镜",
+    "format": "格式",
+    "btn-preview": "预览",
+    "btn-clear": "清除",
+    "btn-scan": "扫描",
+    "btn-reset": "重置",
+    "top": "上边距",
+    "left": "左边距",
+    "width": "宽度",
+    "height": "高度",
+    "brightness": "亮度",
+    "contrast": "对比度",
+    "message:loading-devices": "加载设备 ...",
+    "message:no-devices": "未找到设备",
+    "message:deleted-preview": "删除预览",
+    "message:turn-documents": "旋转",
+    "message:preview-of-page": "预览"  
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "用户界面",
+    "locale": "语言",
+    "locale:description": "选择语言",
+    "theme": "主题",
+    "theme:description": "界面主题。 若切换主题，请重新加载页面。",
+    "theme:system": "系统默认",
+    "theme:light": "浅色",
+    "theme:dark": "深色"  
+  }
+}

@@ -29,6 +29,12 @@
     "version": "Version"  
   },
 
+  "filter": {
+    "auto-level": "Auto level",
+    "threshold": "Threshold",
+    "blur": "Blur"
+  },
+
   "pipeline": {
     "high-quality": "High quality",
     "medium-quality": "Medium quality",
@@ -54,9 +60,6 @@
     "batch:auto-collate-standard": "Auto (Collate 1, 3... 4, 2)",
     "batch:auto-collate-reverse": "Auto (Reverse 1, 3... 2, 4)",
     "filters": "Filters",
-    "filters:auto-level": "Auto level",
-    "filters:threshold": "Threshold",
-    "filters:blur": "Blur",
     "format": "Format",
     "btn-preview": "Preview",
     "btn-clear": "Clear",

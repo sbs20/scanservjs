@@ -3,8 +3,8 @@ const Config = require('./config');
 const Devices = require('./devices');
 
 const diagnostic = (path) => {
-  const success = fs.existsSync(path);
-  const message = success ? `Found ${path}` : `Unable to find ${path}`;
+  const success = fs.existsSync(path) && !fs.statSync(path).isDirectory();
+  const message = success ? `Found ${path}` : `Unable to find file ${path}`;
   return {
     success,
     message

@@ -39,7 +39,7 @@
 
         <v-select
           v-model="request.filters"
-          :items="context.filters"
+          :items="filters"
           item-text="text"
           item-value="value"
           :label="$t('scan.filters')"
@@ -49,7 +49,7 @@
         <v-select
           :label="$t('scan.format')"
           v-model="request.pipeline"
-          :items="context.pipelines"
+          :items="pipelines"
           item-text="text"
           item-value="value"></v-select>
 
@@ -116,14 +116,6 @@ import Storage from '../classes/storage';
 
 const storage = Storage.instance();
 
-/**
- * @param {number} n 
- * @returns {number}
- */
-function round(n) {
-  return Math.round(n);
-}
-
 export default {
   name: 'Scan',
   components: {
@@ -164,6 +156,32 @@ export default {
       clearTimeout(this.preview.timer);
       this.preview.timer = setTimeout(this._resizePreview, 100);
     });
+  },
+
+  computed: {
+    filters() {
+      return this.context.filters.map(f => {
+        return {
+          text: this.$t(f),
+          value: f
+        };
+      });
+    },
+
+    pipelines() {
+      return this.context.pipelines.map(p => {
+        const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
+        let text = p;
+        variables.forEach(v => {
+          text = text.replaceAll(`@:${v}`, this.$t(v));
+        });
+
+        return {
+          text: text,
+          value: p
+        };
+      });
+    }
   },
 
   watch: {
@@ -248,19 +266,53 @@ export default {
       });
     },
 
-    cropperDefaultPosition() {
-      const adjust = (n) => round(n * this.pixelsPerMm());
+    pixelsPerMm() {
+      const scanner = {
+        width: this.device.features['-x'].limits[1],
+        height: this.device.features['-y'].limits[1]
+      };
+
+      // The preview image may not have perfectly scaled dimensions
+      // because pixel counts are integers. So we report a horizontal
+      // and vertical resolution
+      const image = this.$refs.cropper.imageSize;
       return {
-        left: adjust(this.request.params.left),
-        top: adjust(this.request.params.top)
+        x: image.width / scanner.width,
+        y: image.height / scanner.height
+      };
+    },
+
+    scaleCoordinates(coordinates, xScale, yScale) {
+      const round = (n) => Math.round(n * 10) / 10;
+      return {
+        width: round(coordinates.width * xScale),
+        height: round(coordinates.height * yScale),
+        left: round(coordinates.left * xScale),
+        top: round(coordinates.top * yScale)
+      };
+    },
+
+    cropperDefaultPosition() {
+      const adjusted = this.scaleCoordinates(
+        this.request.params,
+        this.pixelsPerMm().x,
+        this.pixelsPerMm().y);
+
+      return {
+        left: adjusted.left,
+        top: adjusted.top
       };
     },
 
     cropperDefaultSize() {
-      const adjust = (n) => round(n * this.pixelsPerMm());
+      const adjusted = this.scaleCoordinates(
+        this.request.params,
+        this.pixelsPerMm().x,
+        this.pixelsPerMm().y);
+
       return {
-        width: adjust(this.request.params.width),
-        height: adjust(this.request.params.height)
+        width: adjusted.width,
+        height: adjusted.height
       };
     },
 
@@ -273,34 +325,25 @@ export default {
     },
 
     onCoordinatesChange() {
-      const adjust = (n) => round(n * this.pixelsPerMm());
-      const params = this.request.params;
-      const adjusted = {
-        width: adjust(params.width),
-        height: adjust(params.height),
-        left: adjust(params.left),
-        top: adjust(params.top)
-      };
+      const adjusted = this.scaleCoordinates(
+        this.request.params,
+        this.pixelsPerMm().x,
+        this.pixelsPerMm().y);
+
       this.$refs.cropper.setCoordinates(adjusted);
     },
 
     onCrop({coordinates}) {
-      const adjust = (n) => round(n / this.pixelsPerMm());
+      const adjusted = this.scaleCoordinates(
+        coordinates,
+        1 / this.pixelsPerMm().x,
+        1 / this.pixelsPerMm().y);
+
       const params = this.request.params;
-      params.width = adjust(coordinates.width);
-      params.height = adjust(coordinates.height);
-      params.left = adjust(coordinates.left);
-      params.top = adjust(coordinates.top);
-    },
-
-    pixelsPerMm() {
-      const scanner = {
-        width: this.device.features['-x'].limits[1],
-        height: this.device.features['-y'].limits[1]
-      };
-
-      const image = this.$refs.cropper.imageSize;
-      return image.height / scanner.height;
+      params.width = adjusted.width;
+      params.height = adjusted.height;
+      params.left = adjusted.left;
+      params.top = adjusted.top;
     },
 
     readContext(force) {
@@ -313,26 +356,6 @@ export default {
 
       return this._fetch(url).then(context => {
         window.clearTimeout(timer);
-        context.filters = context.filters.map(f => {
-          return {
-            text: this.$t(`scan.${f}`),
-            value: f
-          };
-        });
-
-        context.pipelines = context.pipelines.map(p => {
-          const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
-          let text = p;
-          variables.forEach(v => {
-            text = text.replaceAll(`@:${v}`, this.$t(v));
-          });
-
-          return {
-            text: text,
-            value: p
-          };
-        });
-
         this.context = context;
 
         if (context.devices.length > 0) {
