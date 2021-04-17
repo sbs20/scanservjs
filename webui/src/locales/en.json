@@ -69,6 +69,7 @@
     "left": "Left",
     "width": "Width",
     "height": "Height",
+    "paperSize": "Paper size",
     "brightness": "Brightness",
     "contrast": "Contrast",
     "message:loading-devices": "Loading devices...",

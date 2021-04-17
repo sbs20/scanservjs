@@ -69,6 +69,7 @@
     "left": "Links",
     "width": "Breite",
     "height": "Höhe",
+    "paperSize": "Paper size",
     "brightness": "Helligkeit",
     "contrast": "Kontrast",
     "message:loading-devices": "Suche nach Geräten...",

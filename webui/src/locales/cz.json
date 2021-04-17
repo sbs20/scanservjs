@@ -69,6 +69,7 @@
     "left": "Vlevo",
     "width": "Šířka",
     "height": "Výška",
+    "paperSize": "Paper size",
     "brightness": "Jas",
     "contrast": "Kontrast",
     "message:loading-devices": "Načítání zařízení...",

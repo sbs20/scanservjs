@@ -69,6 +69,7 @@
     "left": "Gauche",
     "width": "Largeur",
     "height": "Hauteur",
+    "paperSize": "Paper size",
     "brightness": "Luminosité",
     "contrast": "Contraste",
     "message:loading-devices": "Chargement des scanners...",
