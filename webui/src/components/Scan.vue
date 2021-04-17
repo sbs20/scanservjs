@@ -64,14 +64,14 @@
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
         <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-            :src="img" @change="onCrop"></cropper>
+            :src="img" @change="onCropperChange"></cropper>
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
-        <v-text-field :label="$t('scan.top')" type="number" v-model="request.params.top"  @change="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.left')" type="number" v-model="request.params.left"  @change="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height"  @change="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.top')" type="number" v-model="request.params.top" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.left')" type="number" v-model="request.params.left" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height" @blur="onCoordinatesChange" />
 
         <v-select
           :label="$t('scan.paperSize')"
@@ -123,6 +123,11 @@ import Storage from '../classes/storage';
 
 const storage = Storage.instance();
 
+function round(n, dp) {
+  const f = Math.pow(10, dp || 0);
+  return Math.round(n * f) / f;
+}
+
 export default {
   name: 'Scan',
   components: {
@@ -167,6 +172,13 @@ export default {
   },
 
   computed: {
+    deviceSize() {
+      return {
+        width: this.device.features['-x'].limits[1],
+        height: this.device.features['-y'].limits[1]
+      };
+    },
+
     filters() {
       return this.context.filters.map(f => {
         return {
@@ -208,7 +220,6 @@ export default {
     request: {
       handler(request) {
         storage.request = request;
-        this.onCoordinatesChange();
       },
       deep: true
     }
@@ -287,10 +298,7 @@ export default {
     },
 
     pixelsPerMm() {
-      const scanner = {
-        width: this.device.features['-x'].limits[1],
-        height: this.device.features['-y'].limits[1]
-      };
+      const scanner = this.deviceSize;
 
       // The preview image may not have perfectly scaled dimensions
       // because pixel counts are integers. So we report a horizontal
@@ -303,12 +311,11 @@ export default {
     },
 
     scaleCoordinates(coordinates, xScale, yScale) {
-      const round = (n) => Math.round(n * 10) / 10;
       return {
-        width: round(coordinates.width * xScale),
-        height: round(coordinates.height * yScale),
-        left: round(coordinates.left * xScale),
-        top: round(coordinates.top * yScale)
+        width: round(coordinates.width * xScale, 1),
+        height: round(coordinates.height * yScale, 1),
+        left: round(coordinates.left * xScale, 1),
+        top: round(coordinates.top * yScale, 1)
       };
     },
 
@@ -353,17 +360,29 @@ export default {
       this.$refs.cropper.setCoordinates(adjusted);
     },
 
-    onCrop({coordinates}) {
+    onCropperChange({coordinates}) {
       const adjusted = this.scaleCoordinates(
         coordinates,
         1 / this.pixelsPerMm().x,
         1 / this.pixelsPerMm().y);
 
+      // The cropper changes even when coordinates are set manually. This will
+      // result in manually set values being overwritten because of rounding.
+      // If someone is taking the trouble to set values manually then they
+      // should be preserved. We should only update the values if they breaach
+      // a threshold or the scanner dimensions
+      const scanner = this.deviceSize;
       const params = this.request.params;
-      params.width = adjusted.width;
-      params.height = adjusted.height;
-      params.left = adjusted.left;
-      params.top = adjusted.top;
+      const threshold = 0.4;
+      const boundAndRound = (n, min, max) => round(Math.min(Math.max(min, n), max), 1);
+      const bestValue = (current, crop, min, max) => Math.abs(current - crop) < threshold
+        ? boundAndRound(current, min, max)
+        : boundAndRound(crop, min, max);
+
+      params.width = bestValue(params.width, adjusted.width, 0, scanner.width);
+      params.height = bestValue(params.height, adjusted.height, 0, scanner.height);
+      params.left = bestValue(params.left, adjusted.left, 0, scanner.width);
+      params.top = bestValue(params.top, adjusted.top, 0, scanner.height);
     },
 
     readContext(force) {
