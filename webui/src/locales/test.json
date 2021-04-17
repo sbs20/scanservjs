@@ -70,6 +70,7 @@
     "left": "##SCAN.LEFT",
     "width": "##SCAN.WIDTH",
     "height": "##SCAN.HEIGHT",
+    "paperSize": "##SCAN.PAPERSIZE",
     "brightness": "##SCAN.BRIGHTNESS",
     "contrast": "##SCAN.CONSTRAST",
     "message:loading-devices": "##SCAN.LOADING",

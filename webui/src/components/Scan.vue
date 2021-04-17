@@ -73,12 +73,19 @@
         <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width" @blur="onCoordinatesChange" />
         <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height" @blur="onCoordinatesChange" />
 
-        <v-select
-          :label="$t('scan.paperSize')"
-          :items="paperSizes"
-          item-text="name"
-          return-object
-          @change="updatePaperSize"></v-select>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in paperSizes"
+              @click="updatePaperSize(item)"
+              :key="index">
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
         <div v-if="'--brightness' in device.features">
           <v-slider class="align-center" v-model="request.params.brightness"
@@ -196,7 +203,6 @@ export default {
 
       const paperSizes = this.context.paperSizes
         .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y);
-      paperSizes.splice(0, 0, { name: '' });
       return paperSizes;
     },
 
