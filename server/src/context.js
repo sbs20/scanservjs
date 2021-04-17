@@ -27,6 +27,9 @@ class Context {
 
     /** @type {Filter[]} */
     this.filters = Config.filters;
+
+    /** @type {PaperSize[]} */
+    this.paperSizes = Config.paperSizes;
   }
 
   /**

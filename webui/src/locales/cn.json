@@ -69,6 +69,7 @@
     "left": "左边距",
     "width": "宽度",
     "height": "高度",
+    "paperSize": "Paper size",
     "brightness": "亮度",
     "contrast": "对比度",
     "message:loading-devices": "加载设备 ...",
