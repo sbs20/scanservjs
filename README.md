@@ -26,9 +26,10 @@ complicated installation.
 * Filters: Autolevels, Threshold, Blur
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
+* International translations: Czech, French, German, Italian, Mandarin, Spanish
+  (**help requested**)
 * Light and dark mode
-* **NEW**: International translations: Czech, French, German, Italian, Mandarin,
-  Spanish (**help requested**)
+* Responsive design
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
