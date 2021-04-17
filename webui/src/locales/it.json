@@ -69,6 +69,7 @@
     "left": "Sinistra",
     "width": "Larghezza",
     "height": "Altezza",
+    "paperSize": "Formato carta",
     "brightness": "Luminosità",
     "contrast": "Contrasto",
     "message:loading-devices": "Caricamento dispositivi...",

@@ -69,6 +69,7 @@
     "left": "Izquierda",
     "width": "Anchura",
     "height": "Altura",
+    "paperSize": "Paper size",
     "brightness": "Brillo",
     "contrast": "Contraste",
     "message:loading-devices": "Cargando dispositivos...",

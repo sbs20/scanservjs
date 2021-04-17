@@ -41,6 +41,18 @@
  */
 
 /**
+ * @typedef {Object} Dimensions
+ * @property {number} x
+ * @property {number} y
+ */
+
+/**
+ * @typedef {Object} PaperSize
+ * @property {string} name
+ * @property {Dimensions} dimensions
+ */
+
+/**
  * @typedef {Object} Configuration
  * @property {string} version
  * @property {number} port
@@ -58,6 +70,7 @@
  * @property {Pipeline} previewPipeline
  * @property {Filter[]} filters
  * @property {Pipeline[]} pipelines
+ * @property {PaperSize[]} paperSizes
  */
 
 /**
