@@ -73,6 +73,13 @@
         <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width"  @change="onCoordinatesChange" />
         <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height"  @change="onCoordinatesChange" />
 
+        <v-select
+          :label="$t('scan.paperSize')"
+          :items="paperSizes"
+          item-text="name"
+          return-object
+          @change="updatePaperSize"></v-select>
+
         <div v-if="'--brightness' in device.features">
           <v-slider class="align-center" v-model="request.params.brightness"
             :step="device.features['--brightness']['interval']"
@@ -134,6 +141,7 @@ export default {
         ],
         filters: [],
         pipelines: [],
+        paperSizes: [],
         version: '0'
       },
       device: device,
@@ -166,6 +174,18 @@ export default {
           value: f
         };
       });
+    },
+
+    paperSizes() {
+      const deviceSize = {
+        x: this.device.features['-x'].limits[1],
+        y: this.device.features['-y'].limits[1]
+      };
+
+      const paperSizes = this.context.paperSizes
+        .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y);
+      paperSizes.splice(0, 0, { name: '' });
+      return paperSizes;
     },
 
     pipelines() {
@@ -454,6 +474,13 @@ export default {
           this.$router.push('/files');
         }
       });
+    },
+
+    updatePaperSize(value) {
+      if (value.dimensions) {
+        this.request.params.width = value.dimensions.x;
+        this.request.params.height = value.dimensions.y;
+      }
     }
   }
 };

@@ -69,6 +69,30 @@ class Config {
         }
       ],
     
+      paperSizes: [
+        {
+          name: 'A3',
+          dimensions: {
+            x: 297,
+            y: 420
+          }
+        },
+        {
+          name: 'A4',
+          dimensions: {
+            x: 215,
+            y: 297
+          }
+        },
+        {
+          name: 'A5',
+          dimensions: {
+            x: 148,
+            y: 215
+          }
+        }
+      ],
+
       pipelines: [
         {
           extension: 'jpg',
