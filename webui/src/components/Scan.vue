@@ -499,6 +499,7 @@ export default {
       if (value.dimensions) {
         this.request.params.width = value.dimensions.x;
         this.request.params.height = value.dimensions.y;
+        this.onCoordinatesChange();
       }
     }
   }
