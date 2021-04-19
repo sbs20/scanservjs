@@ -103,7 +103,7 @@ class Api {
       const width = 868;
       const height = Math.round(width * heightByWidth);
       return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);  
-    } catch {
+    } catch (e) {
       return Promise.resolve(buffer);
     }
   }
