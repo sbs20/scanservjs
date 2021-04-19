@@ -50,6 +50,7 @@ class Api {
       params: {
         deviceId: req.params.deviceId,
         mode: req.params.mode,
+        source: req.params.source,
         resolution: Config.previewResolution,
         brightness: req.params.brightness,
         contrast: req.params.contrast,
