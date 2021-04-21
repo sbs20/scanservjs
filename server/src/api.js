@@ -50,6 +50,7 @@ class Api {
       params: {
         deviceId: req.params.deviceId,
         mode: req.params.mode,
+        source: req.params.source,
         resolution: Config.previewResolution,
         brightness: req.params.brightness,
         contrast: req.params.contrast,
@@ -95,13 +96,17 @@ class Api {
     // If not then it's possible the default image is not quite the correct aspect ratio
     const buffer = new FileInfo(`${Config.previewDirectory}default.jpg`).toBuffer();
 
-    // We need to know the correct AR from the device
-    const context = await Context.create();
-    const device = context.getDevice();
-    const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
-    const width = 868;
-    const height = Math.round(width * heightByWidth);
-    return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+    try {
+      // We need to know the correct aspect ratio from the device
+      const context = await Context.create();
+      const device = context.getDevice();
+      const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
+      const width = 868;
+      const height = Math.round(width * heightByWidth);
+      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);  
+    } catch (e) {
+      return Promise.resolve(buffer);
+    }
   }
 
   /**

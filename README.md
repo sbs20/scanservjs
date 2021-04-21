@@ -26,9 +26,10 @@ complicated installation.
 * Filters: Autolevels, Threshold, Blur
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
+* International translations: Czech, French, German, Italian, Mandarin, Spanish;
+  [Help requested](https://github.com/sbs20/scanservjs/issues/154)
 * Light and dark mode
-* **NEW**: International translations: Czech, French, German, Italian, Mandarin,
-  Spanish (**help requested**)
+* Responsive design
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
@@ -68,7 +69,7 @@ module.exports = {
    */
   afterConfig(config) {
     // Set default preview resolution
-    config.previewResolution = 300;
+    config.previewResolution = 150;
 
     // Add a custom print pipeline
     config.pipelines.push({

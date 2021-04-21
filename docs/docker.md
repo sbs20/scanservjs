@@ -1,5 +1,9 @@
 # Running scanservjs under docker
 
+If you're already running Debian, Ubuntu or similar, and haven't used docker
+before then it's probably easier just to install directly. For what it's worth,
+that is my preferred installation method.
+
 ## Quickstart
 
 Get the image
@@ -38,8 +42,9 @@ you're putting a lot of trust in the container. In short, best not.
 
 Depending on your setup you have a number of options.
 
-* If your scanner is connected by USB to the host then you can map the device.
-  The best way to do this is to map the actual USB ports.
+* If your scanner is connected by USB to the host, and there are standard SANE
+  drivers, then you can map the device. The best way to do this is to map the
+  actual USB ports.
   * Run `sudo sane-find-scanner -q` and you will get a result like
     `found USB scanner (vendor=0x04a9 [Canon], product=0x220d [CanoScan], chip=LM9832/3) at libusb:001:003`.
   * Or run `lsusb` which gives you
@@ -69,10 +74,14 @@ Depending on your setup you have a number of options.
   network. Adding more backends to the docker container feels wrong and will add
   cruft for many users who don't need it.
   
-* The best fallback position for many cases is simply to
-  [share the host scanner over the network](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
-  and referencing that within the guest. This means that the docker container is
-  just running the app.
+* The best fallback position for most cases is simply to
+  [share the host scanner over the network](https://github.com/sbs20/scanservjs/blob/master/docs/sane.md#configuring-the-server)
+  on the host (where the scanner is connected) and then set the
+  `SANED_NET_HOSTS`
+  [environment variable](https://github.com/sbs20/scanservjs/blob/master/docs/docker.md#environment-variables)
+  on the docker container.
+  [This](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
+  user uses docker compose instead. See examples below.
 
 ## Mapping volumes
 
@@ -108,22 +117,28 @@ The solution in most cases is either to
 * `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
   your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
   variable (semicolon delimited).
-* `DELIMITER`: if you need to inlcude semi-colons (`;`) in your environment
+* `DELIMITER`: if you need to include semi-colons (`;`) in your environment
   variables, this allows you to choose an alternative delimiter.
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
 * `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
 
 ## Examples
 
+### Connect to the scanner over the network (recommended)
+```sh
+docker run -d -p 8080:8080 \
+  -e SANED_NET_HOSTS="10.0.100.30" \
+  --name scanservjs-container sbs20/scanservjs:latest
+```
+
 ### Mapped USB device with mapped volumes
 
 ```sh
-docker run -d \
-  -p 8080:8080 \
+docker run -d -p 8080:8080 \
   -v $HOME/scan-data:/app/data/output \
   -v $HOME/scan-cfg:/app/config \
   --device /dev/bus/usb/001/003:/dev/bus/usb/001/003 \
-  --name scanservjs-container scanservjs-image
+  --name scanservjs-container sbs20/scanservjs:latest
 ```
 
 ### Use airscan and a locally detected scanner
@@ -133,7 +148,7 @@ This should support most use cases
 ```sh
 docker run -d -p 8080:8080 \
   -v /var/run/dbus:/var/run/dbus \
-  --name scanservjs-container scanservjs-image
+  --name scanservjs-container sbs20/scanservjs:latest
 ```
 
 ### A bit of everything
@@ -150,7 +165,7 @@ docker run -d -p 8080:8080 \
   -e DEVICES="net:10.0.100.30:plustek:libusb:001:003;net:10.0.100.31:plustek:libusb:001:003;airscan:e0:Canon TR8500 series;airscan:e1:EPSON Cool Series" \
   -e OCR_LANG="fra" \
   -v /var/run/dbus:/var/run/dbus \
-  --name scanservjs-container --privileged scanservjs-image
+  --name scanservjs-container --privileged sbs20/scanservjs:latest
 ```
 
 ## Staging builds

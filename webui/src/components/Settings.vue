@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-h2 mb-4">{{ $t('settings.title') }}</div>
+    <div class="text-h5 mb-4">{{ $t('settings.title') }}</div>
     <settings-section>
       <template v-slot:title>{{ $t('settings.behaviour-ui') }}</template>
       <template v-slot:items>

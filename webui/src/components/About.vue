@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="text-h2">{{ $t('global.application-name') }} v{{ version }}</div>
+    <div class="text-h5">{{ $t('global.application-name') }}</div>
+    <div class="text-h6">v{{ version }}</div>
     <div class="caption mb-4">&copy; 2016 - {{ new Date().getFullYear() }} Sam Strachan</div>
     <div class="body-1 mb-4">
       {{ $t('about.main') }}
