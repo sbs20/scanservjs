@@ -10,7 +10,7 @@
 
   "batch-dialog": {
     "btn-finish": "Dokončit",
-    "btn-rescan": "Znovu oskenovat stránku",
+    "btn-rescan": "Znovu oskenovat",
     "btn-next": "Další"
   },
 
@@ -31,7 +31,7 @@
 
   "filter": {
     "auto-level": "Automatické zarovnání",
-    "threshold": "Prahová hodnota barev",
+    "threshold": "Práh",
     "blur": "Rozmazané"
   },
 
@@ -61,8 +61,8 @@
     "batch:auto-collate-reverse": "Automatický (Obrátit 1, 3... 2, 4)",
     "filters": "Filtry",
     "format": "Formát",
-    "btn-preview": "Načíst náhled",
-    "btn-clear": "Vymazat",
+    "btn-preview": "Náhled",
+    "btn-clear": "Smazat",
     "btn-scan": "Skenovat",
     "btn-reset": "Resetovat",
     "top": "Nahoře",
@@ -85,7 +85,7 @@
     "locale": "Lokalizace",
     "locale:description": "Vyberte vaši lokalizaci",
     "theme": "Motiv",
-    "theme:description": "Motiv. Pokud použijete systémový motiv a ten se změní, budete potřebovat přenačíst aplikaci.",
+    "theme:description": "Motiv. Pokud použijete systémový motiv a ten se změní, budete potřebovat aktualizovat stránku s aplikací.",
     "theme:system": "Podle systému",
     "theme:light": "Světlý",
     "theme:dark": "Tmavý"
