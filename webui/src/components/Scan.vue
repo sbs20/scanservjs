@@ -233,8 +233,7 @@ export default {
 
   methods: {
     _resizePreview() {
-      const paperRatio = this.device.features['-x'].limits[1] / 
-        this.device.features['-y'].limits[1];
+      const paperRatio = this.deviceSize.width / this.deviceSize.height;
 
       // This only makes a difference when the col-width="auto" - so md+
       const mdBreakpoint = 960;
@@ -433,6 +432,7 @@ export default {
         }
       }).then(data => {
         this.img = 'data:image/jpeg;base64,' + data.content;
+        this._resizePreview();
       });
     },
 

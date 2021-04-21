@@ -96,14 +96,42 @@ install() {
   # Reload the deamon info
   systemctl daemon-reload
 
-  # Enable and start the new service
+  if [ -z "$(netstat -tulpn | grep '\:8080\s')" ]; then
+    # Enable and start the new service
+    systemctl enable scanservjs
+    systemctl start scanservjs
+
+    cat << EOF
+
+scanservjs installed and running
+  http://127.0.0.1:8080
+EOF
+
+  else
+    cat << EOF
+
+scanservjs installed but it looks as if something might be running on port 8080.
+
+$ netstat -tulpn | grep :8080 --->
+  $(netstat -tulpn | grep ":8080\s")
+
+Either
+* update the port in $location/config/config.local.js or 
+* Stop the other program
+
+After that you can just enable and start:
   systemctl enable scanservjs
   systemctl start scanservjs
+EOF
+  fi
 
-  echo "scanservjs installed and running"
-  echo "http://127.0.0.1:8080"
-  echo
-  echo "If you have problems, try 'sudo journalctl -e -u scanservjs'"
+  cat << EOF
+
+If you encounter problems when running, try
+  sudo journalctl -e -u scanservjs
+
+EOF
+
 }
 
 uninstall() {

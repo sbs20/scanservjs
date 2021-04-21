@@ -11,13 +11,14 @@ Just use your package manager.
 
 Either try:
 
-```
+```sh
 $ scanimage -L
 device `net:localhost:plustek:libusb:001:004' is a Canon CanoScan N1240U/LiDE30 flatbed scanner
 ```
 
 or
-```
+
+```sh
 $ sane-find-scanner -q
 found USB scanner (vendor=0x04a9 [Canon], product=0x220d [CanoScan]) at libusb:003:005
 ```
@@ -37,7 +38,38 @@ underlying problem is. In order of likelihood:
 
 ## Defining network scanners
 
-From the scanimage manpage:
+### Configuring the server
+
+Assume the host (the device the scanner is connected to) has an IP of
+`192.168.0.10`
+
+```sh
+# Allow access from the following networks
+## Local network
+echo "192.168.0.0/24" >> /etc/sane.d/saned.conf
+## Default docker network
+echo "172.17.0.0/16" >> /etc/sane.d/saned.conf
+sudo systemctl enable saned.socket
+sudo systemctl start saned.socket
+```
+
+### Configuring the client
+
+Add the host (`192.168.0.10`) to the client.
+
+```sh
+echo "192.168.0.10" >> /etc/sane.d/net.conf
+```
+
+Now if you run `scanimage -L` on the client you should see the scanner on the
+host (prefixed with `net:192.168.0.10:`)
+
+For more information on configuring the server and client see
+[SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration).
+
+It's worth noting that network scanners do not always show up on the client. In
+such cases you will need to get the device name from the host, prefix it with
+`net:$ip:` and use the `-d` switch. From the scanimage manpage:
 
 > The -L or --list-devices option requests a (partial) list of devices that are
 > available. The list is not complete since some devices may be available, but
@@ -47,31 +79,6 @@ From the scanimage manpage:
 > file, the only way to access it is by its full device name. You may need to
 > consult your system administrator to find out the names of such devices.
 
-Find the name of the scanner on the remote server by running `scanimage -L` (on
-the remote server) e.g:
-
-```
-device `airscan:e0:Canon TR8500 series' is a eSCL Canon TR8500 series eSCL network scanner
-```
-
-Then on the client, prefix it with `net:<ip-address>:` The result is the device
-to use with scanimage. Using the value above we get:
-
-```
-net:192.168.0.10:airscan:e0:Canon TR8500 series
-```
-
-For more information on configuring the server and client see
-[SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration).
-
-### TL;DR; configuring server:
-
-```console
-# Allow access from network
-echo "192.168.0.1/24" >> /etc/sane.d/saned.conf
-sudo systemctl enable saned.socket
-sudo systemctl start saned.socket
-```
 
 ## SANE Airscan
 
