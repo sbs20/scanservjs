@@ -2,13 +2,13 @@ const Constants = {
   Version: process.env.VUE_APP_VERSION,
   
   Locales: [
-    'cn',
-    'cz',
+    'cs',
     'de',
     'en',
     'es',
     'fr',
     'it',
+    'zh',
     'test'
   ],
 
