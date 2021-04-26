@@ -136,7 +136,7 @@ function round(n, dp) {
 }
 
 function sanitiseLocaleKey(s) {
-  return s.toLowerCase().replace('[', '(').replace(']', ')');
+  return s.toLowerCase().replace(/\[/g, '(').replace(/\]/g, ')');
 }
 
 export default {
