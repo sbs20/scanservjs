@@ -9,6 +9,7 @@
   },
 
   "batch-dialog": {
+    "btn-cancel": "取消",
     "btn-finish": "完成",
     "btn-rescan": "重新扫描",
     "btn-next": "下一张"
@@ -33,6 +34,34 @@
     "auto-level": "自动调整",
     "threshold": "阈值",
     "blur": "模糊"
+  },
+
+  "mode": {
+    "color": "Colour",
+    "halftone": "Halftone",
+    "gray": "Grey",
+    "lineart": "Lineart",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Flatbed",
+    "adf": "Automatic Document Feeder",
+    "auto": "Auto",
+    "left-aligned": "Left Aligned",
+    "centrally-aligned": "Centrally Aligned",
+    "duplex": "Duplex",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
 
   "pipeline": {
