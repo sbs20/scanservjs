@@ -8,6 +8,7 @@ const Constants = {
     'es',
     'fr',
     'it',
+    'ru',
     'zh',
     'test'
   ],
