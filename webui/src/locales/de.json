@@ -9,6 +9,7 @@
   },
 
   "batch-dialog": {
+    "btn-cancel": "Stornieren",
     "btn-finish": "Fertig",
     "btn-rescan": "Seite erneut scannen",
     "btn-next": "Nächste Seite scannen"
@@ -33,6 +34,34 @@
     "auto-level": "Automatische Farbjustierung",
     "threshold": "Schwellwert",
     "blur": "Weichzeichner"
+  },
+
+  "mode": {
+    "color": "Colour",
+    "halftone": "Halftone",
+    "gray": "Grey",
+    "lineart": "Lineart",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Flatbed",
+    "adf": "Automatic Document Feeder",
+    "auto": "Auto",
+    "left-aligned": "Left Aligned",
+    "centrally-aligned": "Centrally Aligned",
+    "duplex": "Duplex",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
 
   "pipeline": {
