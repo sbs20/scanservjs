@@ -38,7 +38,7 @@
 
   "mode": {
     "color": "Barevný",
-    "halftone": "Halftone",
+    "halftone": "Polotón",
     "gray": "Černobílý",
     "lineart": "Perokresba",
 
@@ -51,11 +51,11 @@
 
   "source": {
     "flatbed": "Skenovací deska",
-    "adf": "ADF",
-    "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
-    "duplex": "Duplex",
+    "adf": "Automatický podavač",
+    "auto": "Automaticky",
+    "left-aligned": "zarovnáno vlevo",
+    "centrally-aligned": "zarovnáno na střed",
+    "duplex": "oboustranně",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
