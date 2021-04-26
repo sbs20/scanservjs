@@ -37,9 +37,9 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
+    "color": "A colori",
+    "halftone": "Mezzitoni",
+    "gray": "Scala di grigi",
     "lineart": "Lineart",
 
     "24bitcolor":"@:mode.color",
@@ -50,12 +50,12 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
-    "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
-    "duplex": "Duplex",
+    "flatbed": "Piano fisso",
+    "adf": "Alimentatore automatico di documenti",
+    "auto": "Automatico",
+    "left-aligned": "Allineato a sinistra",
+    "centrally-aligned": "Allineato al centro",
+    "duplex": "Fronte/retro",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
