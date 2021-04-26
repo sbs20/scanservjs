@@ -9,6 +9,7 @@
   },
 
   "batch-dialog": {
+    "btn-cancel": "Zrušení",
     "btn-finish": "Dokončit",
     "btn-rescan": "Znovu oskenovat",
     "btn-next": "Další"
@@ -33,6 +34,34 @@
     "auto-level": "Automatické zarovnání",
     "threshold": "Práh",
     "blur": "Rozmazané"
+  },
+
+  "mode": {
+    "color": "Barevný",
+    "halftone": "Halftone",
+    "gray": "Černobílý",
+    "lineart": "Perokresba",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Skenovací deska",
+    "adf": "ADF",
+    "auto": "Auto",
+    "left-aligned": "Left Aligned",
+    "centrally-aligned": "Centrally Aligned",
+    "duplex": "Duplex",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
 
   "pipeline": {

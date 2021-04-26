@@ -11,7 +11,7 @@
     <tbody>
       <tr v-for="file in files" v-bind:key="file.name">
         <td><a @click="open(file)">{{ file.name }}</a></td>
-        <td class="file-date">{{ file.lastModified }}</td>
+        <td class="file-date">{{ $d(new Date(file.lastModified), 'long', $i18n.locale) }}</td>
         <td>{{ file.sizeString }}</td>
         <td><v-btn color="secondary" v-on:click="fileRemove(file)" icon><v-icon>mdi-delete</v-icon></v-btn></td>
       </tr>

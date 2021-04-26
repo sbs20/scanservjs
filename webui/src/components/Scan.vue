@@ -10,7 +10,7 @@
 
         <v-select v-if="'--source' in device.features"
           :label="$t('scan.source')" v-model="request.params.source"
-          :items="device.features['--source']['options']"></v-select>
+          :items="sources" item-value="value" item-text="text"></v-select>
 
         <v-select
           :label="$t('scan.resolution')" v-model="request.params.resolution"
@@ -18,7 +18,7 @@
 
         <v-select
           :label="$t('scan.mode')" v-model="request.params.mode"
-          :items="device.features['--mode']['options']"></v-select>
+          :items="modes" item-value="value" item-text="text"></v-select>
 
         <v-select v-if="'--disable-dynamic-lineart' in device.features"
           :label="$t('scan.dynamic-lineart')" v-model="request.params.mode"
@@ -135,6 +135,10 @@ function round(n, dp) {
   return Math.round(n * f) / f;
 }
 
+function sanitiseLocaleKey(s) {
+  return s.toLowerCase().replace(/\[/g, '(').replace(/\]/g, ')');
+}
+
 export default {
   name: 'Scan',
   components: {
@@ -195,6 +199,17 @@ export default {
       });
     },
 
+    modes() {
+      return this.device.features['--mode'].options.map(mode => {
+        const key = `mode.${sanitiseLocaleKey(mode)}`;
+        let translation = this.$t(key);
+        return {
+          text: translation === key ? mode : translation,
+          value: mode
+        };
+      });
+    },
+
     paperSizes() {
       const deviceSize = {
         x: this.device.features['-x'].limits[1],
@@ -217,6 +232,17 @@ export default {
         return {
           text: text,
           value: p
+        };
+      });
+    },
+
+    sources() {
+      return this.device.features['--source'].options.map(source => {
+        const key = `source.${sanitiseLocaleKey(source)}`;
+        let translation = this.$t(key);
+        return {
+          text: translation === key ? source : translation,
+          value: source
         };
       });
     }
@@ -400,9 +426,9 @@ export default {
 
       return this._fetch(url).then(context => {
         window.clearTimeout(timer);
-        this.context = context;
 
-        if (context.devices.length > 0) {
+        if (context.devices && context.devices.length > 0) {
+          this.context = context;
           this.device = context.devices[0];
           this.request = this.buildRequest();
           for (let test of context.diagnostics) {

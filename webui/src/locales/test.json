@@ -9,6 +9,7 @@
   },
 
   "batch-dialog": {
+    "btn-cancel": "##CANCEL",
     "btn-finish": "##FINISH",
     "btn-rescan": "##RESCAN",
     "btn-next": "##NEXT"
@@ -34,6 +35,34 @@
     "auto-level": "##SCAN.FILTERS:AUTO-LEVEL",
     "threshold": "##SCAN.FILTERS:THRESHOLD",
     "blur": "##SCAN.FILTERS:BLUR"
+  },
+
+  "mode": {
+    "color": "##COLOUR",
+    "halftone": "##HALFTONE",
+    "gray": "##GREY",
+    "lineart": "##LINEART",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "##FLATBED",
+    "adf": "##ADF",
+    "auto": "##AUTO",
+    "left-aligned": "##LEFT",
+    "centrally-aligned": "##CENTRAL",
+    "duplex": "##DUPLEX",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
 
   "pipeline": {
