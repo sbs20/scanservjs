@@ -30,6 +30,14 @@
     "version": "Versión"  
   },
 
+  "batch-mode": {
+    "none": "Nada",
+    "manual": "Manual (con aviso)",
+    "auto": "Auto (alimentador automático)",
+    "auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
+    "auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)"
+  },
+  
   "filter": {
     "auto-level": "Autonivelar",
     "threshold": "Umbral",
@@ -83,11 +91,6 @@
     "dynamic-lineart:enabled": "Activado",
     "dynamic-lineart:disabled": "Desactivado",
     "batch": "Lote",
-    "batch:none": "Nada",
-    "batch:manual": "Manual (con aviso)",
-    "batch:auto": "Auto (alimentador automático)",
-    "batch:auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
-    "batch:auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)",
     "filters": "Filtros",
     "format": "Formato",
     "btn-preview": "Vista previa",

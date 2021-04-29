@@ -30,6 +30,14 @@
     "version": "Версия"
   },
 
+  "batch-mode": {
+    "none": "Не выбрано",
+    "manual": "Вручную (с предпросмотром)",
+    "auto": "Авто (в порядке сканирование)",
+    "auto-collate-standard": "Авто (Сопоставить 1, 3... 4, 2)",
+    "auto-collate-reverse": "Авто (В обратном порядке 1, 3... 2, 4)"
+  },
+  
   "filter": {
     "auto-level": "Автоматическое выравнивание",
     "threshold": "Порог",
@@ -83,11 +91,6 @@
     "dynamic-lineart:enabled": "Включено",
     "dynamic-lineart:disabled": "Выключено",
     "batch": "Пакетный режим",
-    "batch:none": "Не выбрано",
-    "batch:manual": "Вручную (с предпросмотром)",
-    "batch:auto": "Авто (в порядке сканирование)",
-    "batch:auto-collate-standard": "Авто (Сопоставить 1, 3... 4, 2)",
-    "batch:auto-collate-reverse": "Авто (В обратном порядке 1, 3... 2, 4)",
     "filters": "Фильтры",
     "format": "Формат",
     "btn-preview": "Предпросмотр",
