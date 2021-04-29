@@ -405,7 +405,7 @@ export default {
       // The cropper changes even when coordinates are set manually. This will
       // result in manually set values being overwritten because of rounding.
       // If someone is taking the trouble to set values manually then they
-      // should be preserved. We should only update the values if they breaach
+      // should be preserved. We should only update the values if they breach
       // a threshold or the scanner dimensions
       const scanner = this.deviceSize;
       const params = this.request.params;
