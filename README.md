@@ -50,8 +50,8 @@ Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 * [Manual installation](docs/install.md)
 * [Docker installation](docs/docker.md)
+* [Scanner and SANE setup](docs/sane.md)
 * [Development notes](docs/development.md)
-* [Configuring the scanner and SANE](docs/sane.md)
 
 ## Configuration and device override
 
