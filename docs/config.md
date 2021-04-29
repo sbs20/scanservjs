@@ -1,8 +1,8 @@
 # Configuration overrides
 
-Sometimes scanners don't return everything you want them to. Likewise, perhaps
-scanservjs doesn't provide the defaults you want. It's possible to override most
-things you might want to.
+Sometimes scanners don't return quite what you want them to. Likewise, perhaps
+scanservjs doesn't provide the defaults you want. Furtunately it's possible to
+override most things you might want to.
 
 The two things you can modify are:
 * `config`: These are the global settings which include things like:
@@ -28,7 +28,7 @@ two functions at different stages in the processing:
   function before being either used or sent down tot he browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
-* See [example source](./server/config/config.default.js) for more options.
+* See [example source](../server/config/config.default.js) for more options.
 
 ## Example file
 
@@ -121,7 +121,7 @@ the cropping logic because scanservjs incorrectly trusts the SANE output.
 
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans. To learn more read the
-[example source](./server/config/config.default.js). This will insert your own
+[example source](../server/config/config.default.js). This will insert your own
 pipelines at the top of the list.
 
 ```javascript
