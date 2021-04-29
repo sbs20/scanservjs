@@ -55,53 +55,9 @@ Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 ## Configuration and device override
 
-If you want to override some specific configuration setting then you can do so
-within `./config/config.local.js`. Take a copy of `./config/config.default.js`
-and override the sections you want. Using docker you will need to map the volume
-using `-v /my/local/path:/app/config` then create a file in your directory
-called `config.local.js`. See [example source](./server/config/config.local.js)
-for more options.
-
-```javascript
-module.exports = {
-  /**
-   * @param {Configuration} config 
-   */
-  afterConfig(config) {
-    // Set default preview resolution
-    config.previewResolution = 150;
-
-    // Add a custom print pipeline
-    config.pipelines.push({
-      extension: 'pdf',
-      description: 'Print PDF',
-      commands: [
-        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-        'convert @- scan-0000.pdf',
-        'lp -d MY_PRINTER scan-0000.pdf',
-        'ls scan-*.*'
-      ]
-    });
-  },
-
-  /**
-   * @param {ScanDevice[]} devices 
-   */
-  afterDevices(devices) {
-    // Override the defaults for plustek scanners
-    const device = devices.filter(d => d.id.startsWith('plustek'))[0];
-    if (device) {
-      device.features['--mode'].default = 'Color';
-      device.features['--resolution'].default = 150;
-      device.features['--resolution'].options = [75, 150, 300, 600];
-      device.features['--brightness'].default = 0;
-      device.features['--contrast'].default = 5;
-      device.features['-x'].default = 215;
-      device.features['-y'].default = 297;
-    }
-  }
-};
-```
+If you want to override some specific configuration settings then you can do so
+within `./config/config.local.js`. See [Configuration](docs/config.md) for more
+detail.
 
 ## Why?
 
