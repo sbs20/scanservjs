@@ -30,6 +30,14 @@
     "version": "版本"  
   },
 
+  "batch-mode": {
+    "none": "无",
+    "manual": "手动 (有提示)",
+    "auto": "自动 (进纸器)",
+    "auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
+    "auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)"
+  },
+  
   "filter": {
     "auto-level": "自动调整",
     "threshold": "阈值",
@@ -83,11 +91,6 @@
     "dynamic-lineart:enabled": "开启",
     "dynamic-lineart:disabled": "关闭",
     "batch": "批量",
-    "batch:none": "无",
-    "batch:manual": "手动 (有提示)",
-    "batch:auto": "自动 (进纸器)",
-    "batch:auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
-    "batch:auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)",
     "filters": "滤镜",
     "format": "格式",
     "btn-preview": "预览",

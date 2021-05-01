@@ -23,19 +23,12 @@
         <v-select v-if="'--disable-dynamic-lineart' in device.features"
           :label="$t('scan.dynamic-lineart')" v-model="request.params.mode"
           :items="[
-            { key: false, value: $t('scan.dynamic-lineart:disabled') },
-            { key: true, value: $t('scan.dynamic-lineart:enabled') }]"
-          item-value="key" item-text="value"></v-select>
+            { value: false, text: $t('scan.dynamic-lineart:disabled') },
+            { value: true, text: $t('scan.dynamic-lineart:enabled') }]"
+          item-value="value" item-text="text"></v-select>
 
         <v-select :label="$t('scan.batch')" v-model="request.batch"
-          :items="[
-            { key: 'none', value: $t('scan.batch:none') },
-            { key: 'manual', value: $t('scan.batch:manual') },
-            { key: 'auto', value: $t('scan.batch:auto') },
-            { key: 'auto-collate-standard', value: $t('scan.batch:auto-collate-standard') },
-            { key: 'auto-collate-reverse', value: $t('scan.batch:auto-collate-reverse') }
-          ]"
-          item-value="key" item-text="value"></v-select>
+          :items="batchModes" item-value="value" item-text="text"></v-select>
 
         <v-select
           v-model="request.filters"
@@ -155,6 +148,7 @@ export default {
         devices: [
           device
         ],
+        batchModes: [],
         filters: [],
         pipelines: [],
         paperSizes: [],
@@ -188,6 +182,17 @@ export default {
         width: this.device.features['-x'].limits[1],
         height: this.device.features['-y'].limits[1]
       };
+    },
+
+    batchModes() {
+      return this.context.batchModes.map(mode => {
+        const key = `batch-mode.${sanitiseLocaleKey(mode)}`;
+        let translation = this.$t(key);
+        return {
+          text: translation === key ? mode : translation,
+          value: mode
+        };
+      });
     },
 
     filters() {
@@ -400,7 +405,7 @@ export default {
       // The cropper changes even when coordinates are set manually. This will
       // result in manually set values being overwritten because of rounding.
       // If someone is taking the trouble to set values manually then they
-      // should be preserved. We should only update the values if they breaach
+      // should be preserved. We should only update the values if they breach
       // a threshold or the scanner dimensions
       const scanner = this.deviceSize;
       const params = this.request.params;
