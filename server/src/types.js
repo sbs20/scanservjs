@@ -71,6 +71,7 @@
  * @property {Filter[]} filters
  * @property {Pipeline[]} pipelines
  * @property {PaperSize[]} paperSizes
+ * @property {string[]} batchModes
  */
 
 /**

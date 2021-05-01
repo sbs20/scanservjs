@@ -1,5 +1,6 @@
 const dayjs = require('dayjs');
 const userOptions = require('./user-options');
+const Constants = require('./constants');
 const Package = require('../package.json');
 let instance = null;
 
@@ -53,6 +54,13 @@ class Config {
           'convert - -quality 75 jpg:-'
         ]
       },
+
+      batchModes: [
+        Constants.BATCH_NONE,
+        Constants.BATCH_MANUAL,
+        Constants.BATCH_AUTO,
+        Constants.BATCH_COLLATE_STANDARD
+      ],
 
       filters: [
         {

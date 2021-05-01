@@ -52,6 +52,10 @@ Depending on your setup you have a number of options.
   * Both translate to `/dev/bus/usb/001/003`.
   * The docker argument would be
     `--device=/dev/bus/usb/001/003:/dev/bus/usb/001/003`
+  * You may also need to adjust permissions on the USB port of the host e.g.
+    `chmod a+rw dev/bus/usb/001/003` - see
+    [this](https://github.com/sbs20/scanservjs/issues/221#issuecomment-828757430)
+    helpful answer for more.
 
 * If your scanner is driverless over the network, then
   [sane-airscan](https://github.com/alexpevzner/sane-airscan) should be able to

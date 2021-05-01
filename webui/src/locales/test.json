@@ -31,6 +31,14 @@
     "version": "##VERSION"  
   },
 
+  "batch-mode": {
+    "none": "##NONE",
+    "manual": "##MANUAL",
+    "auto": "##AUTO",
+    "auto-collate-standard": "##COLLATE-STANDARD",
+    "auto-collate-reverse": "##COLLATE-REVERSE"
+  },
+  
   "filter": {
     "auto-level": "##SCAN.FILTERS:AUTO-LEVEL",
     "threshold": "##SCAN.FILTERS:THRESHOLD",
@@ -84,11 +92,6 @@
     "dynamic-lineart:enabled": "##ENABLED",
     "dynamic-lineart:disabled": "##DISABLED",
     "batch": "##SCAN.BATCH",
-    "batch:none": "##NONE",
-    "batch:manual": "##MANUAL",
-    "batch:auto": "##AUTO",
-    "batch:auto-collate-standard": "##COLLATE-STANDARD",
-    "batch:auto-collate-reverse": "##COLLATE-REVERSE",
     "filters": "##SCAN.FILTERS",
     "format": "##SCAN.FORMAT",
     "btn-preview": "##PREVIEW",

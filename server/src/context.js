@@ -30,6 +30,9 @@ class Context {
 
     /** @type {PaperSize[]} */
     this.paperSizes = Config.paperSizes;
+
+    /** @type {string[]} */
+    this.batchModes = Config.batchModes;
   }
 
   /**

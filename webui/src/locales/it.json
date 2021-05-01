@@ -30,6 +30,14 @@
     "version": "Versione"
   },
 
+  "batch-mode": {
+    "none": "No",
+    "manual": "Manuale (Con finestra guidata)",
+    "auto": "Automatico (Cassetto dei documenti)",
+    "auto-collate-standard": "Automatico (Fascicola 1, 3... 4, 2)",
+    "auto-collate-reverse": "Automatico (Inverso 1, 3... 2, 4)"
+  },
+  
   "filter": {
     "auto-level": "Livello automatico",
     "threshold": "Soglia",
@@ -83,11 +91,6 @@
     "dynamic-lineart:enabled": "Abilitato",
     "dynamic-lineart:disabled": "Disabilitato",
     "batch": "Raggruppa",
-    "batch:none": "No",
-    "batch:manual": "Manuale (Con finestra guidata)",
-    "batch:auto": "Automatico (Cassetto dei documenti)",
-    "batch:auto-collate-standard": "Automatico (Fascicola 1, 3... 4, 2)",
-    "batch:auto-collate-reverse": "Automatico (Inverso 1, 3... 2, 4)",
     "filters": "Filtri",
     "format": "Formato",
     "btn-preview": "Anteprima",
