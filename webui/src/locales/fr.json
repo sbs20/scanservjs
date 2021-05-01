@@ -10,8 +10,8 @@
 
   "batch-dialog": {
     "btn-cancel": "Annuler",
-    "btn-finish": "Finish",
-    "btn-rescan": "Rescan page",
+    "btn-finish": "Terminer",
+    "btn-rescan": "Re-numériser page",
     "btn-next": "Suivant"
   },
 
@@ -93,9 +93,9 @@
     "batch": "Scan groupé",
     "filters": "Filtres",
     "format": "Format",
-    "btn-preview": "Pré-visualiser",
+    "btn-preview": "Aperçu",
     "btn-clear": "Effacer",
-    "btn-scan": "Scanner",
+    "btn-scan": "Numériser",
     "btn-reset": "Réinitialiser",
     "top": "Haut",
     "left": "Gauche",
