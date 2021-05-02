@@ -1,5 +1,5 @@
 # Builder image. Alpine doesn't have python which is required by node-sass
-FROM node:buster AS builder
+FROM node:14-buster AS builder
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
@@ -20,7 +20,7 @@ RUN cd webui \
   && npm run server-build
 
 # production image
-FROM node:buster-slim
+FROM node:14-buster-slim
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 RUN apt-get update \
