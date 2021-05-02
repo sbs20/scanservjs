@@ -54,7 +54,7 @@ sudo chmod 666 /var/run/docker.sock
 ```
 
 Useful commands
-```console
+```sh
 # Build and run
 docker build -t scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
@@ -82,11 +82,15 @@ docker container restart scanservjs-container
 # Maintenance
 docker ps -a
 docker image prune
+docker image rm -f $(docker image ls --filter dangling=true -q)
+
+# Danger
+docker image rm -f $(docker image ls -a -q)
 ```
 
 ## Mount map configuration files
 
-```
+```sh
 docker run -d \
   -p 8080:8080 \
   -v `pwd`/var/:/app/config/ \

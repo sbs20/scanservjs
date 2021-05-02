@@ -85,7 +85,7 @@ class Api {
     if (source.exists()) {
       const buffer = source.toBuffer();
       const cmds = [...Config.previewPipeline.commands];
-      if (filters) {
+      if (filters && filters.length) {
         const params = Filters.build(filters, true);
         cmds.splice(0, 0, `convert - ${params} tif:-`);
       }
