@@ -25,8 +25,12 @@ ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 RUN apt-get update \
   && apt-get install -yq curl gpg \
-  && echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' | tee /etc/apt/sources.list.d/home:pzz.list \
-  && curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home:pzz.gpg > /dev/null \
+  && echo 'deb http://download.opensuse.org/repositories/home:/pzz/Debian_10/ /' \
+    | tee /etc/apt/sources.list.d/home:pzz.list \
+  && curl -fsSL https://download.opensuse.org/repositories/home:pzz/Debian_10/Release.key \
+    | gpg --dearmor \
+    | tee /etc/apt/trusted.gpg.d/home:pzz.gpg \
+    > /dev/null \
   && apt-get update \
   && apt-get install -yq \
     imagemagick \
@@ -34,7 +38,10 @@ RUN apt-get update \
     sane-utils \
     sane-airscan \
     tesseract-ocr \
-  && sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
+  && sed -i \
+    's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
+    /etc/ImageMagick-6/policy.xml \
+  && npm install -g npm@7.11.2
 
 # Create a known user
 RUN useradd -u 2001 -ms /bin/bash scanservjs
