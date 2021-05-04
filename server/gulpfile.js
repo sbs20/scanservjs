@@ -62,7 +62,7 @@ gulp.task('package', () => {
     .pipe(chmod(0o755))
     .pipe(shellFilter.restore)
     // Now chmod all dirs +x
-    .pipe(chmod(null, 0o755))
+    .pipe(chmod(undefined, 0o755))
     .pipe(tar(filename))
     .pipe(gzip())
     .pipe(gulp.dest(RELEASE));
