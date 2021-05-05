@@ -10,7 +10,8 @@ export default class Settings {
     return {
       version: Constants.Version,
       theme: 'system',
-      locale: 'en'
+      locale: 'en',
+      appColor: 'accent-4'
     };
   }
 }

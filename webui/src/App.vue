@@ -10,7 +10,7 @@
       </div>
     </transition>
 
-    <navigation></navigation>
+    <navigation :appColor="appColor"></navigation>
 
     <v-main>
       <v-container fluid>
@@ -40,7 +40,8 @@ export default {
 
   data() {
     return {
-      maskRef: 0
+      maskRef: 0,
+      appColor: storage.settings.appColor
     };
   },
 

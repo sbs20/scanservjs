@@ -4,8 +4,8 @@
   },
 
   "about": {
-    "main": "scanservjs es una interfaz gráfica simple y basada en web. Permite compartir uno o mas escáneres (utilizando SANE) en una red sin la necesidad de controladores adicionales o una instalación complicada. Permite guardar en formato TIF, JPG, PNG, PDF, y TXT (con Tesseract OCR) con varias configuraciones de compresión, todas ellas configurables. Soporta el escaneo multipágina y todos los dispositivos SANE compatibles.",
-    "issue": "Indicar una incidencia o ver el código fuente:"
+    "main": "scanservjs é uma interface via web simplea. Permite compartilhar via rede um ou mais scanners (pelo SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF, y TXT (com Tesseract OCR) com diversas configurações de compressão, configuráveis. Suporta digitalizar multipágina e todos dispositivos SANE compatíveis.",
+    "issue": "Relatar uma questão ou ver código fonte:"
   },
 
   "colors": {
@@ -35,43 +35,43 @@
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
     "btn-rescan": "Reescanear página",
-    "btn-next": "Siguiente"
+    "btn-next": "Próxima"
   },
 
   "files": {
-    "filename": "Nombre de fichero",
-    "date": "Fecha",
-    "size": "Tamaño",
-    "message:deleted": "Borrado"
+    "filename": "Nome do arquivo",
+    "date": "Data",
+    "size": "Tamanho",
+    "message:deleted": "Excluído"
   },
 
   "navigation": {
     "scan": "Escanear",
     "files": "Ficheros",
-    "settings": "Configuración",
-    "about": "Acerca de",
-    "version": "Versión"  
+    "settings": "Configuração",
+    "about": "Sobre",
+    "version": "Versão"  
   },
 
   "batch-mode": {
-    "none": "Nada",
-    "manual": "Manual (con aviso)",
+    "none": "Nenhum",
+    "manual": "Manual (com aviso)",
     "auto": "Auto (alimentador automático)",
-    "auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
+    "auto-collate-standard": "Auto (ordenação 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)"
   },
   
   "filter": {
     "auto-level": "Autonivelar",
-    "threshold": "Umbral",
-    "blur": "Difuminar"
+    "threshold": "Nível",
+    "blur": "Borrar"
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
-    "lineart": "Lineart",
+    "color": "Cor",
+    "halftone": "Meioton",
+    "gray": "Cinza",
+    "lineart": "Artedelinha",
 
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
@@ -96,51 +96,51 @@
   },
 
   "pipeline": {
-    "high-quality": "Calidad alta",
-    "medium-quality": "Calidad media",
-    "low-quality": "Calidad baja",
-    "uncompressed": "Sin compresión",
-    "lzw-compressed": "Compresión LZW",
+    "high-quality": "Alta qualidade",
+    "medium-quality": "Qualidade média",
+    "low-quality": "Baixa qualidade",
+    "uncompressed": "Sem compressão",
+    "lzw-compressed": "Compressão LZW",
     "ocr": "OCR",
-    "text-file": "Fichero de texto"
+    "text-file": "Arquivo de texto"
   },  
 
   "scan": {
     "device": "Dispositivo",
-    "source": "Origen",
-    "resolution": "Resolución",
+    "source": "Origem",
+    "resolution": "Resolução",
     "mode": "Modo",
-    "dynamic-lineart": "Arte lineal dinámico",
-    "dynamic-lineart:enabled": "Activado",
-    "dynamic-lineart:disabled": "Desactivado",
+    "dynamic-lineart": "Arte linear dinâmico",
+    "dynamic-lineart:enabled": "Ativado",
+    "dynamic-lineart:disabled": "Desativado",
     "batch": "Lote",
     "filters": "Filtros",
     "format": "Formato",
-    "btn-preview": "Vista previa",
-    "btn-clear": "Limpiar",
+    "btn-preview": "Visualização",
+    "btn-clear": "Limpar",
     "btn-scan": "Escanear",
     "btn-reset": "Reestablecer",
-    "top": "Arriba",
-    "left": "Izquierda",
-    "width": "Anchura",
+    "top": "Acima",
+    "left": "Esquerda",
+    "width": "Largura",
     "height": "Altura",
-    "paperSize": "Paper size",
-    "brightness": "Brillo",
+    "paperSize": "Tam. papel",
+    "brightness": "Brilho",
     "contrast": "Contraste",
-    "message:loading-devices": "Cargando dispositivos...",
-    "message:no-devices": "No se encuentran dispositivos",
-    "message:deleted-preview": "Vista previa eliminada",
+    "message:loading-devices": "Carregando dispositivos...",
+    "message:no-devices": "Nenhum dispositivo encontrado",
+    "message:deleted-preview": "Visualização prévia excluída",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Vista previa de página"  
+    "message:preview-of-page": "Visualização prévia de página"  
   },
 
   "settings": {
     "title": "@:navigation.settings",
-    "behaviour-ui": "Comportamiento e interfaz gráfica",
+    "behaviour-ui": "Comportamento e interface gráfica",
     "locale": "Idioma",
-    "locale:description": "Elige tu idioma",
-    "theme": "Aspecto",
-    "theme:description": "Aspecto. Si utilizas el tema System y lo cambias, será necesario que recargues la aplicación.",
+    "locale:description": "Selecione seu idioma",
+    "theme": "Visual",
+    "theme:description": "Visual. Se usa o tema System e muda, precisa recarregar a página.",
     "theme:system": "System",
     "theme:light": "Light",
     "theme:dark": "Dark",
