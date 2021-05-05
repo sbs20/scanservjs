@@ -86,5 +86,6 @@ exports['clean'] = app.clean;
 exports['server-lint'] = app.server.lint;
 exports['server-build'] = app.server.build;
 exports['build'] = series(app.clean, app.server.lint, app.server.test, app.client.build, app.server.build);
+exports['package'] = app.package;
 exports['release'] = series(exports['build'], app.package);
 exports['default'] = series(exports['build']);
