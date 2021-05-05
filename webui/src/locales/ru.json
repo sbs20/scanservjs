@@ -8,6 +8,29 @@
     "issue": "Обратная связь, исходный код:"
   },
 
+  "colors": {
+    "accent-4": "Default",
+    "red": "Red",
+    "pink": "Pink",
+    "purple": "Purple",
+    "deep-purple": "Deep purple",
+    "indigo": "Indigo",
+    "blue": "Blue",
+    "light-blue": "Light blue",
+    "cyan": "Cyan",
+    "teal": "Teal",
+    "green": "Green",
+    "light-green": "Light green",
+    "lime": "Lime",
+    "yellow": "Yellow",
+    "amber": "Amber",
+    "orange": "Orange",
+    "deep-orange": "Deep orange",
+    "brown": "Brown",
+    "blue-grey": "Blue grey",
+    "grey": "Grey"
+  },
+
   "batch-dialog": {
     "btn-cancel": "Отмена",
     "btn-finish": "Готово",
@@ -120,6 +143,8 @@
     "theme:description": "Тема. При выборе темы как в системе, необходимо обновить страницу.",
     "theme:system": "Как в системе",
     "theme:light": "Светлая",
-    "theme:dark": "Темная"
+    "theme:dark": "Темная",
+    "color": "Colour",
+    "color:description": "Colour. This will change the colour of the top app bar."
   }
 }

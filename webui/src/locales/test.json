@@ -8,6 +8,29 @@
     "issue": "##ABOUT.ISSUE"
   },
 
+  "colors": {
+    "accent-4": "##Default",
+    "red": "##Red",
+    "pink": "##Pink",
+    "purple": "##Purple",
+    "deep-purple": "##Deep purple",
+    "indigo": "##Indigo",
+    "blue": "##Blue",
+    "light-blue": "##Light blue",
+    "cyan": "##Cyan",
+    "teal": "##Teal",
+    "green": "##Green",
+    "light-green": "##Light green",
+    "lime": "##Lime",
+    "yellow": "##Yellow",
+    "amber": "##Amber",
+    "orange": "##Orange",
+    "deep-orange": "##Deep orange",
+    "brown": "##Brown",
+    "blue-grey": "##Blue grey",
+    "grey": "##Grey"
+  },
+
   "batch-dialog": {
     "btn-cancel": "##CANCEL",
     "btn-finish": "##FINISH",
@@ -121,6 +144,8 @@
     "theme:description": "##SETTINGS.THEME:DESCRIPTION",
     "theme:system": "##SETTINGS.THEME:SYSTEM",
     "theme:light": "##SETTINGS.THEME:LIGHT",
-    "theme:dark": "##SETTINGS.THEME:DARK"  
+    "theme:dark": "##SETTINGS.THEME:DARK",
+    "color": "##SETTINGS.COLOR",
+    "color:description": "##SETTINGS.COLOR:DESCRIPTION"
   }
 }
