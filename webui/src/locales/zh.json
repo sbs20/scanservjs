@@ -8,6 +8,29 @@
     "issue": "反馈问题或查看源码"
   },
 
+  "colors": {
+    "accent-4": "Default",
+    "red": "Red",
+    "pink": "Pink",
+    "purple": "Purple",
+    "deep-purple": "Deep purple",
+    "indigo": "Indigo",
+    "blue": "Blue",
+    "light-blue": "Light blue",
+    "cyan": "Cyan",
+    "teal": "Teal",
+    "green": "Green",
+    "light-green": "Light green",
+    "lime": "Lime",
+    "yellow": "Yellow",
+    "amber": "Amber",
+    "orange": "Orange",
+    "deep-orange": "Deep orange",
+    "brown": "Brown",
+    "blue-grey": "Blue grey",
+    "grey": "Grey"
+  },
+
   "batch-dialog": {
     "btn-cancel": "取消",
     "btn-finish": "完成",
@@ -120,6 +143,8 @@
     "theme:description": "界面主题。 若切换主题，请重新加载页面。",
     "theme:system": "系统默认",
     "theme:light": "浅色",
-    "theme:dark": "深色"  
+    "theme:dark": "深色",
+    "color": "Colour",
+    "color:description": "Colour. This will change the colour of the top app bar."
   }
 }

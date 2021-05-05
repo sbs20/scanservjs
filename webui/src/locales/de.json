@@ -8,6 +8,29 @@
     "issue": "Melde Fehler oder wirf einen Blick auf den Quelltext:"
   },
 
+  "colors": {
+    "accent-4": "Default",
+    "red": "Red",
+    "pink": "Pink",
+    "purple": "Purple",
+    "deep-purple": "Deep purple",
+    "indigo": "Indigo",
+    "blue": "Blue",
+    "light-blue": "Light blue",
+    "cyan": "Cyan",
+    "teal": "Teal",
+    "green": "Green",
+    "light-green": "Light green",
+    "lime": "Lime",
+    "yellow": "Yellow",
+    "amber": "Amber",
+    "orange": "Orange",
+    "deep-orange": "Deep orange",
+    "brown": "Brown",
+    "blue-grey": "Blue grey",
+    "grey": "Grey"
+  },
+
   "batch-dialog": {
     "btn-cancel": "Stornieren",
     "btn-finish": "Fertig",
@@ -120,6 +143,8 @@
     "theme:description": "Design. Wenn das Systemdesign geändert wurde, so muss die App neu geladen werden, damit die Änderung wirksam wird.",
     "theme:system": "Systemdesign",
     "theme:light": "Helles Design",
-    "theme:dark": "Dunkles Design"  
+    "theme:dark": "Dunkles Design",
+    "color": "Colour",
+    "color:description": "Colour. This will change the colour of the top app bar."
   }
 }

@@ -8,6 +8,29 @@
     "issue": "Indicar una incidencia o ver el código fuente:"
   },
 
+  "colors": {
+    "accent-4": "Default",
+    "red": "Red",
+    "pink": "Pink",
+    "purple": "Purple",
+    "deep-purple": "Deep purple",
+    "indigo": "Indigo",
+    "blue": "Blue",
+    "light-blue": "Light blue",
+    "cyan": "Cyan",
+    "teal": "Teal",
+    "green": "Green",
+    "light-green": "Light green",
+    "lime": "Lime",
+    "yellow": "Yellow",
+    "amber": "Amber",
+    "orange": "Orange",
+    "deep-orange": "Deep orange",
+    "brown": "Brown",
+    "blue-grey": "Blue grey",
+    "grey": "Grey"
+  },
+
   "batch-dialog": {
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
@@ -120,6 +143,8 @@
     "theme:description": "Aspecto. Si utilizas el tema System y lo cambias, será necesario que recargues la aplicación.",
     "theme:system": "System",
     "theme:light": "Light",
-    "theme:dark": "Dark"  
+    "theme:dark": "Dark",
+    "color": "Colour",
+    "color:description": "Colour. This will change the colour of the top app bar."
   }
 }
