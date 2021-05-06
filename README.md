@@ -7,22 +7,28 @@
 [![GitHub stars](https://img.shields.io/github/stars/sbs20/scanservjs?label=Github%20stars&style=for-the-badge)](https://github.com/sbs20/scanservjs)
 [![GitHub](https://img.shields.io/github/license/sbs20/scanservjs?style=for-the-badge)](https://github.com/sbs20/scanservjs/blob/master/LICENSE.md)
 
+![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.jpg)
+
+Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
+
+## What people are saying
+
 > I've decided to switch to using only this, I find using this in a browser is
 > just perfect and way better than bloated software from printer manufacturers
 
--- *A satisfied user*
 
 > It enabled me to still use my old hp3900 scanner without worrying about
 > drivers and vendor specific UIs. Furthermore, scans just being accessible via
 > an awesome web interface makes it even more brilliant!
 
--- *Another satisfied user*
+
+## About
 
 scanservjs is a web UI frontend for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or
 complicated installation.
 
-### Features
+## Features
 
 * Cropping
 * Source selection (Flatbed / ADF)
@@ -40,12 +46,6 @@ complicated installation.
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
-
-![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.png)
-
-![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen1.png)
-
-Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 
 ## Requirements
 
