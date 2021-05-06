@@ -9,26 +9,26 @@
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
-    "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "accent-4": "Predefinito",
+    "red": "Rosso",
+    "pink": "Rosa",
+    "purple": "Viola",
+    "deep-purple": "Viola profondo",
+    "indigo": "Indaco",
+    "blue": "Blu",
+    "light-blue": "Celeste",
+    "cyan": "Ciano",
+    "teal": "Verde acqua",
+    "green": "Verde",
+    "light-green": "Verde chiaro",
+    "lime": "Verde lime",
+    "yellow": "Giallo",
+    "amber": "Ambra",
+    "orange": "Arancione",
+    "deep-orange": "Arancione profondo",
+    "brown": "Marrone",
+    "blue-grey": "Grigio bluastro",
+    "grey": "Grigio"
   },
 
   "batch-dialog": {
@@ -144,7 +144,7 @@
     "theme:system": "Sistema",
     "theme:light": "Chiaro",
     "theme:dark": "Scuro",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar."
+    "color": "Colore",
+    "color:description": "Colore. Cambia il colore della barra superiore dell'app."
   }
 }
