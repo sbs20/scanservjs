@@ -38,7 +38,7 @@
     "vuetify-loader": "^1.7.2"
   },
   "browserslist": [
-    "> 1%",
+    "> 0.2%",
     "last 2 versions",
     "not dead"
   ],
