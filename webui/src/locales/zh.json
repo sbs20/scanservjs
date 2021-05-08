@@ -4,31 +4,31 @@
   },
 
   "about": {
-    "main": "scanservjs 是一个基于网页的扫描仪UI。 它可以实现在局域网内共享一个或多个扫描仪（用SANE实现）而免去繁复的驱动安装。 扫描的文件可保存为 TIF, JPG, PNG, PDF 和 TXT (使用Tesseract OCR) 等格式，并可配置多种压缩率。 它亦支持多页扫描以及所有与SANE兼容的设备",
-    "issue": "反馈问题或查看源码"
+    "main": "scanservjs 是一个基于网页的扫描仪 UI 。 它（使用 SANE ）实现了在局域网内共享一个或多个扫描仪而无需繁复的驱动安装。 可以配置多种压缩率将扫描的文件保存为 TIF, JPG, PNG, PDF 和 TXT (使用 Tesseract OCR )等格式。 它亦提供多页扫描功能并支持所有与 SANE 兼容的设备。",
+    "issue": "反馈问题或查看源码："
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
-    "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "accent-4": "默认",
+    "red": "红",
+    "pink": "桃红",
+    "purple": "紫",
+    "deep-purple": "绛紫",
+    "indigo": "靛",
+    "blue": "蓝",
+    "light-blue": "湖蓝",
+    "cyan": "青",
+    "teal": "苍",
+    "green": "绿",
+    "light-green": "草绿",
+    "lime": "绿黄",
+    "yellow": "黄",
+    "amber": "琥珀",
+    "orange": "橙",
+    "deep-orange": "橘",
+    "brown": "棕",
+    "blue-grey": "蓝灰",
+    "grey": "灰"
   },
 
   "batch-dialog": {
@@ -68,10 +68,10 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
-    "lineart": "Lineart",
+    "color": "彩色",
+    "halftone": "半调",
+    "gray": "灰度",
+    "lineart": "线性",
 
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
@@ -81,12 +81,12 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
-    "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
-    "duplex": "Duplex",
+    "flatbed": "稿台",
+    "adf": "自动进纸器",
+    "auto": "自动",
+    "left-aligned": "左对齐",
+    "centrally-aligned": "中间对齐",
+    "duplex": "双面",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -101,7 +101,7 @@
     "low-quality": "低画质",
     "uncompressed": "无压缩",
     "lzw-compressed": "LZW 压缩",
-    "ocr": "OCR",
+    "ocr": "OCR文字识别",
     "text-file": "文本文件"
   },  
 
@@ -124,7 +124,7 @@
     "left": "左边距",
     "width": "宽度",
     "height": "高度",
-    "paperSize": "Paper size",
+    "paperSize": "纸张尺寸",
     "brightness": "亮度",
     "contrast": "对比度",
     "message:loading-devices": "加载设备 ...",
@@ -144,7 +144,7 @@
     "theme:system": "系统默认",
     "theme:light": "浅色",
     "theme:dark": "深色",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar."
+    "color": "颜色",
+    "color:description": "切换顶部应用栏的颜色。"
   }
 }
