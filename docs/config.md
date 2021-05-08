@@ -14,8 +14,9 @@ The two things you can modify are:
 * `devices`: The device definitions which are reported by SANE which include
   scanner dimensions and geometry, modes, resolutions and sources.
 
-TL;DR; copy `./config/config.default.js` to `config/config.local.js` and
-override the sections you want.
+TL;DR; copy `./config/config.default.js` to `config/config.local.js`, override
+the sections you want and then restart the app
+`sudo systemctl restart scanservjs.service`
 
 If you are using docker, then you will want to map the configuration directory
 e.g. `-v /my/local/path:/app/config`.
@@ -29,6 +30,8 @@ two functions at different stages in the processing:
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
 * See [example source](../server/config/config.default.js) for more options.
+* Please note that the config file only gets read at start-up - so if you make
+  changes, you will need to restart.
 
 ## Example file
 
