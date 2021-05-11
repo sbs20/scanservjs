@@ -9,26 +9,26 @@
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
+    "accent-4": "Výchozí",
+    "red": "Červená",
+    "pink": "Růžová",
+    "purple": "Fialová",
+    "deep-purple": "Tmavě fialová",
     "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "blue": "Modrá",
+    "light-blue": "Světle modrá",
+    "cyan": "Azurová",
+    "teal": "Šedozelená",
+    "green": "Zelená",
+    "light-green": "Světle zelená",
+    "lime": "Limetková",
+    "yellow": "Žlutá",
+    "amber": "Jantarová",
+    "orange": "Oranžová",
+    "deep-orange": "Tmavě oranžová",
+    "brown": "Hnědá",
+    "blue-grey": "Šedomodrá",
+    "grey": "Šedá"
   },
 
   "batch-dialog": {
@@ -144,7 +144,7 @@
     "theme:system": "Podle systému",
     "theme:light": "Světlý",
     "theme:dark": "Tmavý",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar."
+    "color": "Barva",
+    "color:description": "Barva. Toto nastavení změní barvu horního panelu."
   }
 }
