@@ -1,5 +1,4 @@
 const extend = require('./util').extend;
-const Config = require('./config');
 
 /**
  * @param {number} n 
@@ -157,7 +156,7 @@ class Device {
 
   validate() {
     const mandatory = ['--mode', '--resolution', '-l', '-t', '-x', '-y'];
-    for (var feature of mandatory) {
+    for (const feature of mandatory) {
       if (this.features[feature] === undefined) {
         throw `${feature} is missing from device`;
       }
