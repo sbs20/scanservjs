@@ -118,7 +118,6 @@ class Adapter {
     /** @type {ScanDevice} */
     let device = {
       'id': '',
-      'version': Config.version,
       'features': {}
     };
   
@@ -156,6 +155,15 @@ class Device {
   constructor() {
   }
 
+  validate() {
+    const mandatory = ['--mode', '--resolution', '-l', '-t', '-x', '-y'];
+    for (var feature of mandatory) {
+      if (this.features[feature] === undefined) {
+        throw `${feature} is missing from device`;
+      }
+    }
+  }
+
   /**
    * @param {any|string} o
    * @returns {ScanDevice}
@@ -165,6 +173,7 @@ class Device {
     if (typeof o === 'object') {
       const decorated = Adapter.decorate(o);
       extend(device, decorated);
+      device.validate();
       return device;      
     } else if (typeof o === 'string') {
       const data = Adapter.parse(o);
