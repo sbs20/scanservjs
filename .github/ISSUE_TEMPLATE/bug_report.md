@@ -51,7 +51,7 @@ echo "docker: $(docker -v)"
 cat /etc/*release | sed ':a;N;$!ba;s/\n/; /g'
 
 # Logs if installed manually
-sudo journalctl | grep server.js > scanservjs.log.installed.txt
+sudo journalctl -u scanservjs | gzip > scanservjs.log.installed.txt.gz
 
 # Logs if in docker
 docker logs scanservjs-container > scanservjs.log.docker.txt
