@@ -9,26 +9,26 @@
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
-    "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "accent-4": "Estándar",
+    "red": "Rojo",
+    "pink": "Rosa",
+    "purple": "Morado",
+    "deep-purple": "Morado oscuro",
+    "indigo": "Añil",
+    "blue": "Azul",
+    "light-blue": "Azul claro",
+    "cyan": "Turquesa",
+    "teal": "Verde azulado",
+    "green": "Verde",
+    "light-green": "Verde claro",
+    "lime": "Lima",
+    "yellow": "Amarillo",
+    "amber": "Ambar",
+    "orange": "Naranja",
+    "deep-orange": "Naranja oscuro",
+    "brown": "Marrón",
+    "blue-grey": "Gris azulado",
+    "grey": "Gris"
   },
 
   "batch-dialog": {
@@ -68,10 +68,10 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
-    "lineart": "Lineart",
+    "color": "Color",
+    "halftone": "Punteado",
+    "gray": "Gris",
+    "lineart": "Blanco y negro",
 
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
@@ -81,12 +81,12 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
+    "flatbed": "Cuna",
+    "adf": "Alimentador automático",
     "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
-    "duplex": "Duplex",
+    "left-aligned": "Alineado a la izquierda",
+    "centrally-aligned": "Alineado al centro",
+    "duplex": "Dúplex",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -110,7 +110,7 @@
     "source": "Origen",
     "resolution": "Resolución",
     "mode": "Modo",
-    "dynamic-lineart": "Arte lineal dinámico",
+    "dynamic-lineart": "Blanco y negro dinámico",
     "dynamic-lineart:enabled": "Activado",
     "dynamic-lineart:disabled": "Desactivado",
     "batch": "Lote",
@@ -124,7 +124,7 @@
     "left": "Izquierda",
     "width": "Anchura",
     "height": "Altura",
-    "paperSize": "Paper size",
+    "paperSize": "Tamaño papel",
     "brightness": "Brillo",
     "contrast": "Contraste",
     "message:loading-devices": "Cargando dispositivos...",
@@ -141,10 +141,10 @@
     "locale:description": "Elige tu idioma",
     "theme": "Aspecto",
     "theme:description": "Aspecto. Si utilizas el tema System y lo cambias, será necesario que recargues la aplicación.",
-    "theme:system": "System",
-    "theme:light": "Light",
-    "theme:dark": "Dark",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar."
+    "theme:system": "Estándar",
+    "theme:light": "Claro",
+    "theme:dark": "Oscuro",
+    "color": "Color",
+    "color:description": "Color. Esto modificará el color de la barra superior."
   }
 }
