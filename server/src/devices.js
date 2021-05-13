@@ -23,13 +23,18 @@ class Devices {
    */
   static from(o) {
     if (typeof o === 'object') {
-      const devices = [];
-      if (Array.isArray(o)) {
-        for (let d of o) {
-          devices.push(Device.from(d));
+      try {
+        const devices = [];
+        if (Array.isArray(o)) {
+          for (let d of o) {
+            devices.push(Device.from(d));
+          }
         }
+        return devices;  
+      } catch (exception) {
+        log.warn(exception);
+        return [];
       }
-      return devices;
     } else {
       throw new Error('Unexpected data for Devices');
     }
@@ -46,12 +51,7 @@ class Devices {
 
     if (file.exists()) {
       devices = Devices.from(file.toJson());
-      if (devices.length > 0) {
-        if (devices[0].version !== Config.version) {
-          log.debug('devices.json version is old. Reloading');
-          devices = null;
-        }
-      } else {
+      if (devices.length === 0) {
         log.debug('devices.json contains no devices. Reloading');
         devices = null;
       }

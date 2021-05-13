@@ -469,7 +469,7 @@ export default {
 
     buildRequest() {
       let request = storage.request;
-      if (request !== null) {
+      if (request && request.params) {
         this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
           || this.context.devices[0];
       }
