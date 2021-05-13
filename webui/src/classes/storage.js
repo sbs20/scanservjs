@@ -1,4 +1,3 @@
-import Constants from './constants';
 import Settings from './settings';
 
 let storage = null;
@@ -6,14 +5,7 @@ let storage = null;
 export default class Storage {
 
   get request() {
-    let request = null;
-    if (localStorage.request) {
-      request = JSON.parse(localStorage.request);
-      if (request.version !== Constants.Version) {
-        request = null;
-      }
-    }
-    return request;
+    return localStorage.request ? JSON.parse(localStorage.request) : null;
   }
 
   set request(request) {
