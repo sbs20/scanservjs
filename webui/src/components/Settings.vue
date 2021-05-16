@@ -65,10 +65,10 @@
 
         <settings-item>
           <template v-slot:description>
-            {{ $t('settings.clear:description') }}
+            {{ $t('settings.clear-storage:description') }}
           </template>
           <template v-slot:action>
-            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           </template>
         </settings-item>
       </template>

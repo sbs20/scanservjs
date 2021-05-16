@@ -5,7 +5,8 @@
 
   "about": {
     "main": "scanservjs é uma interface via web simplea. Permite compartilhar via rede um ou mais scanners (pelo SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF, y TXT (com Tesseract OCR) com diversas configurações de compressão, configuráveis. Suporta digitalizar multipágina e todos dispositivos SANE compatíveis.",
-    "issue": "Relatar uma questão ou ver código fonte:"
+    "issue": "Relatar uma questão ou ver código fonte:",
+    "system-info": "System information:"
   },
 
   "colors": {
@@ -119,7 +120,6 @@
     "btn-preview": "Visualização",
     "btn-clear": "Limpar",
     "btn-scan": "Escanear",
-    "btn-reset": "Reestablecer",
     "top": "Acima",
     "left": "Esquerda",
     "width": "Largura",
@@ -145,6 +145,11 @@
     "theme:light": "Light",
     "theme:dark": "Dark",
     "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar."
+    "color:description": "Colour. This will change the colour of the top app bar.",
+    "devices": "Devices and storage",
+    "reset:description": "Clears stored scanner devices and forces a reload",
+    "reset": "Reestablecer",
+    "clear-storage:description": "Clears local storage of any cached parameters",
+    "clear-storage": "Clear"
   }
 }

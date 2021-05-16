@@ -5,7 +5,8 @@
 
   "about": {
     "main": "##ABOUT.MAIN",
-    "issue": "##ABOUT.ISSUE"
+    "issue": "##ABOUT.ISSUE",
+    "system-info": "###ABOUT.SYSTEM-INFO"
   },
 
   "colors": {
@@ -120,7 +121,6 @@
     "btn-preview": "##PREVIEW",
     "btn-clear": "##CLEAR",
     "btn-scan": "##SCAN",
-    "btn-reset": "##RESET",
     "top": "##SCAN.TOP",
     "left": "##SCAN.LEFT",
     "width": "##SCAN.WIDTH",
@@ -146,6 +146,11 @@
     "theme:light": "##SETTINGS.THEME:LIGHT",
     "theme:dark": "##SETTINGS.THEME:DARK",
     "color": "##SETTINGS.COLOR",
-    "color:description": "##SETTINGS.COLOR:DESCRIPTION"
+    "color:description": "##SETTINGS.COLOR:DESCRIPTION",
+    "devices": "##SETTINGS.DEVICES",
+    "reset:description": "##SETTINGS.RESET:DESCRIPTION",
+    "reset": "##SETTINGS.RESET",
+    "clear-storage:description": "##SETTINGS.CLEAR-STORAGE:DESCRIPTION",
+    "clear-storage": "##SETTINGS.CLEAR"
   }
 }
