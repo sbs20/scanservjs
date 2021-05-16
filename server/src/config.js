@@ -97,122 +97,124 @@ class Config {
         { name: 'Junior legal', dimensions: { x: 127, y: 203 } },
         { name: 'Half letter', dimensions: { x: 140, y: 216 } }
       ],
-
-      pipelines: [
-        {
-          extension: 'jpg',
-          description: 'JPG | @:pipeline.high-quality',
-          commands: [
-            'convert @- -quality 92 scan-%04d.jpg',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'jpg',
-          description: 'JPG | @:pipeline.medium-quality',
-          commands: [
-            'convert @- -quality 75 scan-%04d.jpg',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'jpg',
-          description: 'JPG | @:pipeline.low-quality',
-          commands: [
-            'convert @- -quality 50 scan-%04d.jpg',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'png',
-          description: 'PNG',
-          commands: [
-            'convert @- -quality 75 scan-%04d.png',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'tif',
-          description: 'TIF | @:pipeline.uncompressed',
-          commands: [
-            'convert @- scan-0000.tif',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'tif',
-          description: 'TIF | @:pipeline.lzw-compressed',
-          commands: [
-            'convert @- -compress lzw scan-0000.tif',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'pdf',
-          description: 'PDF (TIF | @:pipeline.uncompressed)',
-          commands: [
-            'convert @- scan-0000.pdf',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'pdf',
-          description: 'PDF (TIF | @:pipeline.lzw-compressed)',
-          commands: [
-            'convert @- -compress lzw tmp-%04d.tif && ls tmp-*.tif',
-            'convert @- scan-0000.pdf',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'pdf',
-          description: 'PDF (JPG | @:pipeline.high-quality)',
-          commands: [
-            'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-            'convert @- scan-0000.pdf',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'pdf',
-          description: 'PDF (JPG | @:pipeline.medium-quality)',
-          commands: [
-            'convert @- -quality 75 tmp-%04d.jpg && ls tmp-*.jpg',
-            'convert @- scan-0000.pdf',
-            'ls scan-*.*'
-          ]
-        },
-        {
-          extension: 'pdf',
-          description: 'PDF (JPG | @:pipeline.low-quality)',
-          commands: [
-            'convert @- -quality 50 tmp-%04d.jpg && ls tmp-*.jpg',
-            'convert @- scan-0000.pdf',
-            'ls scan-*.*'
-          ]
-        }
-      ]
     });
 
-    this.pipelines = this.pipelines.concat([
+    const config = this;    
+    this.pipelines = [
       {
-        extension: 'pdf',
-        description: '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)',
+        extension: 'jpg',
+        description: 'JPG | @:pipeline.high-quality',
         commands: [
-          'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
-          `${this.tesseract} -l ${this.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
+          'convert @- -quality 92 scan-%04d.jpg',
           'ls scan-*.*'
         ]
       },
       {
-        extension: 'txt',
-        description: '@:pipeline.ocr | @:pipeline.text-file',
+        extension: 'jpg',
+        description: 'JPG | @:pipeline.medium-quality',
         commands: [
-          `${this.tesseract} -l ${this.ocrLanguage} -c stream_filelist=true - - txt > scan-0001.txt`,
+          'convert @- -quality 75 scan-%04d.jpg',
           'ls scan-*.*'
         ]
+      },
+      {
+        extension: 'jpg',
+        description: 'JPG | @:pipeline.low-quality',
+        commands: [
+          'convert @- -quality 50 scan-%04d.jpg',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'png',
+        description: 'PNG',
+        commands: [
+          'convert @- -quality 75 scan-%04d.png',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'tif',
+        description: 'TIF | @:pipeline.uncompressed',
+        commands: [
+          'convert @- scan-0000.tif',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'tif',
+        description: 'TIF | @:pipeline.lzw-compressed',
+        commands: [
+          'convert @- -compress lzw scan-0000.tif',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: 'PDF (TIF | @:pipeline.uncompressed)',
+        commands: [
+          'convert @- scan-0000.pdf',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: 'PDF (TIF | @:pipeline.lzw-compressed)',
+        commands: [
+          'convert @- -compress lzw tmp-%04d.tif && ls tmp-*.tif',
+          'convert @- scan-0000.pdf',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: 'PDF (JPG | @:pipeline.high-quality)',
+        commands: [
+          'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+          'convert @- scan-0000.pdf',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: 'PDF (JPG | @:pipeline.medium-quality)',
+        commands: [
+          'convert @- -quality 75 tmp-%04d.jpg && ls tmp-*.jpg',
+          'convert @- scan-0000.pdf',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: 'PDF (JPG | @:pipeline.low-quality)',
+        commands: [
+          'convert @- -quality 50 tmp-%04d.jpg && ls tmp-*.jpg',
+          'convert @- scan-0000.pdf',
+          'ls scan-*.*'
+        ]
+      },
+      {
+        extension: 'pdf',
+        description: '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)',
+        get commands() {
+          return [
+            'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+            `${config.tesseract} -l ${config.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
+            'ls scan-*.*'
+          ];
+        }
+      },
+      {
+        extension: 'txt',
+        description: '@:pipeline.ocr | @:pipeline.text-file',
+        get commands() {
+          return [
+            `${config.tesseract} -l ${config.ocrLanguage} -c stream_filelist=true - - txt > scan-0001.txt`,
+            'ls scan-*.*'
+          ];
+        }
       }
-    ]);
+    ];
   }
 
   addEnvironment() {

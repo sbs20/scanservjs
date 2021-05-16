@@ -21,7 +21,7 @@ class System {
         'grep -sq \'docker\\|lxc\' /proc/1/cgroup',
         undefined,
         { ignoreErrors: true } )).length > 0
-    }
+    };
 
     return output;
   }
