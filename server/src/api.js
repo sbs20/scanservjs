@@ -8,6 +8,7 @@ const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
 const ScanController = require('./scan-controller');
+const System = require('./system');
 
 class Api {
 
@@ -118,18 +119,28 @@ class Api {
   }
 
   /**
-   * @param {boolean} [force] 
+   * @returns {void}
+   */
+  static deleteContext() {
+    Devices.reset();
+    this.deletePreview();
+  }
+
+  /**
    * @returns {Promise.<Context>}
    */
-  static async context(force) {
-    if (force) {
-      Devices.reset();
-      this.deletePreview();
-    }
+  static async readContext() {
     const context = await Context.create();
     context.filters = context.filters.map(f => f.description);
     context.pipelines = context.pipelines.map(p => p.description);
     return context;
+  }
+
+  /**
+   * @returns {Promise.<SystemInfo>}
+   */
+  static async readSystem() {
+    return System.info();
   }
 }
 

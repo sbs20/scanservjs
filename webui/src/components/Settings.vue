@@ -50,10 +50,34 @@
 
       </template>
     </settings-section>
+
+    <settings-section>
+      <template v-slot:title>{{ $t('settings.devices') }}</template>
+      <template v-slot:items>
+        <settings-item>
+          <template v-slot:description>
+            {{ $t('settings.reset:description') }}
+          </template>
+          <template v-slot:action>
+            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+          </template>
+        </settings-item>
+
+        <settings-item>
+          <template v-slot:description>
+            {{ $t('settings.clear:description') }}
+          </template>
+          <template v-slot:action>
+            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+          </template>
+        </settings-item>
+      </template>
+    </settings-section>
   </div>
 </template>
 
 <script>
+import Common from '../classes/common';
 import Constants from '../classes/constants';
 import Storage from '../classes/storage';
 
@@ -106,8 +130,24 @@ export default {
   },
 
   methods: {
+    clearStorage() {
+      storage.request = null;
+    },
+
     reload() {
       location.href = `/?anticache=${Date.now()}${location.hash}`;
+    },
+
+    reset() {
+      this.$emit('mask', 1);
+      Common.fetch('context', {
+        method: 'DELETE'
+      }).then(() => {
+        this.$emit('mask', -1);
+      }).catch(error => {
+        this.$emit('notify', { type: 'e', message: error });
+        this.$emit('mask', -1);
+      });
     }
   }
 };

@@ -84,11 +84,20 @@ function configure(app, rootPath) {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.get(['/context', '/context/:force'], async (req, res) => {
+  app.delete('/context', (req, res) => {
     logRequest(req);
-    const force = req.params.force && req.params.force === 'force';
     try {
-      res.send(await Api.context(force));
+      Api.deleteContext();
+      res.send({});
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
+  app.get('/context', async (req, res) => {
+    logRequest(req);
+    try {
+      res.send(await Api.readContext());
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -133,10 +142,10 @@ function configure(app, rootPath) {
     }
   });
 
-  app.delete('/preview', async (req, res) => {
+  app.delete('/preview', (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.deletePreview());
+      res.send(Api.deletePreview());
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -155,6 +164,15 @@ function configure(app, rootPath) {
     logRequest(req);
     try {
       res.send(await Api.scan(req.body));
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
+  app.get('/system', async (req, res) => {
+    logRequest(req);
+    try {
+      res.send(await Api.readSystem());
     } catch (error) {
       sendError(res, 500, error);
     }

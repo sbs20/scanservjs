@@ -104,3 +104,21 @@
  * @property {string} [image]
  * @property {number} [index]
  */
+
+/**
+ * @typedef {Object} OsInfo
+ * @property {string} arch
+ * @property {number} freemem
+ * @property {string} platform
+ * @property {string} release
+ * @property {string} type
+ * @property {string} version
+ */
+
+/**
+ * @typedef {Object} SystemInfo
+ * @property {OsInfo} os
+ * @property {string} node
+ * @property {string} npm
+ * @property {boolean} docker
+ */

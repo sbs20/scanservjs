@@ -50,7 +50,6 @@
           <v-btn color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
           <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
-          <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('scan.btn-reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
         </div>
       </v-col>
 
@@ -198,7 +197,7 @@ export default {
     filters() {
       return this.context.filters.map(f => {
         return {
-          text: this.$t(f),
+          text: this.$te(f) ? this.$t(f) : f,
           value: f
         };
       });
@@ -207,9 +206,8 @@ export default {
     modes() {
       return this.device.features['--mode'].options.map(mode => {
         const key = `mode.${sanitiseLocaleKey(mode)}`;
-        let translation = this.$t(key);
         return {
-          text: translation === key ? mode : translation,
+          text: this.$te(key) ? this.$t(key) : mode,
           value: mode
         };
       });
@@ -244,11 +242,11 @@ export default {
     sources() {
       return this.device.features['--source'].options.map(source => {
         const key = `source.${sanitiseLocaleKey(source)}`;
-        let translation = this.$t(key);
-        return {
-          text: translation === key ? source : translation,
+        const x =  {
+          text: this.$te(key) ? this.$t(key) : source,
           value: source
         };
+        return x;
       });
     }
   },
@@ -421,15 +419,13 @@ export default {
       params.top = bestValue(params.top, adjusted.top, 0, scanner.height);
     },
 
-    readContext(force) {
-      const url = 'context' + (force ? '/force' : '');
-
+    readContext() {
       // Only show notification if things are slow (first time / force)
       const timer = window.setTimeout(() => {
         this.notify({ type: 'i', message: this.$t('scan.message:loading-devices') });
       }, 250);
 
-      return this._fetch(url).then(context => {
+      return this._fetch('context').then(context => {
         window.clearTimeout(timer);
 
         if (context.devices && context.devices.length > 0) {
@@ -443,10 +439,6 @@ export default {
           }
         } else {
           this.notify({ type: 'e', message: this.$t('scan.message:no-devices') });
-        }
-
-        if (force) {
-          this.readPreview();
         }
       });
     },
@@ -476,11 +468,6 @@ export default {
 
       request = Request.create(request, this.device, this.context.pipelines[0]);
       return request;
-    },
-
-    reset() {
-      this.clear();
-      this.readContext(true);
     },
 
     clear() {
