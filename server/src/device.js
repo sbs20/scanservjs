@@ -74,6 +74,7 @@ class Adapter {
    * @returns {ScanDevice}
    */
   static decorate(device) {
+    device.name = device.id;
     for (const key in device.features) {
       const feature = device.features[key];
       feature.parameters = feature.parameters.replace(/^auto\|/, '');

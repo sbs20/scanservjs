@@ -6,7 +6,7 @@
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <v-select v-if="context.devices.length > 0"
           :label="$t('scan.device')" v-model="device"
-          :items="context.devices" return-object item-text="id" @change="clear"></v-select>
+          :items="context.devices" return-object item-text="name" @change="clear"></v-select>
 
         <v-select v-if="'--source' in device.features"
           :label="$t('scan.source')" v-model="request.params.source"

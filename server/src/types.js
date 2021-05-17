@@ -23,6 +23,7 @@
 /**
  * @typedef {Object} ScanDevice
  * @property {string} id
+ * @property {string} name
  * @property {string} version
  * @property {Object.<string, ScanDeviceFeature>} features
  */
