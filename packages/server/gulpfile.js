@@ -10,8 +10,8 @@ const run = require('gulp-run');
 const tar = require('gulp-tar');
 const merge = require('merge-stream');
 
-const DIST = '../dist/';
-const RELEASE = '../release/';
+const DIST = '../../dist/';
+const RELEASE = '../../release/';
 
 const linter = () => {
   return eslint();

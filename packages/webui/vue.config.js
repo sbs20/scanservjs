@@ -28,7 +28,7 @@ module.exports = {
     }
   },
 
-  outputDir: path.resolve(__dirname, '../dist/client'),
+  outputDir: path.resolve(__dirname, '../../dist/client'),
 
   pluginOptions: {
     i18n: {

@@ -3,11 +3,8 @@
   "version": "2.13.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation. scanserv does not do image conversion or manipulation (beyond the bare minimum necessary for the purposes of browser preview) or OCR.",
   "scripts": {
-    "serve": "nodemon --exec 'vue-cli-service serve'",
-    "server-lint": "gulp server-lint",
-    "server-build": "gulp server-build",
-    "client-build": "vue-cli-service build",
-    "client-lint": "vue-cli-service lint",
+    "lint": "gulp server-lint",
+    "build": "gulp server-build",
     "package": "gulp package",
     "test": "mocha"
   },
