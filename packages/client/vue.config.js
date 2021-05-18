@@ -1,4 +1,4 @@
-process.env.VUE_APP_VERSION = require('../server/package.json').version;
+process.env.VUE_APP_VERSION = require('./package.json').version;
 const configure = require('../server/src/configure');
 const path = require('path');
 
