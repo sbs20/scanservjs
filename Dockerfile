@@ -3,21 +3,16 @@ FROM node:14-buster AS builder
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
-COPY server/package*.json "$APP_DIR/server/"
-COPY webui/package*.json "$APP_DIR/webui/"
+COPY package*.json "$APP_DIR/"
+COPY packages/server/package*.json "$APP_DIR/packages/server/"
+COPY packages/client/package*.json "$APP_DIR/packages/client/"
 
-RUN cd server \
-  && npm i --loglevel=error \
-  && cd ../webui \
-  && npm i --loglevel=error
+RUN npm run docker-install
 
-COPY webui/ "$APP_DIR/webui/"
-COPY server/ "$APP_DIR/server/"
+COPY packages/client/ "$APP_DIR/packages/client/"
+COPY packages/server/ "$APP_DIR/packages/server/"
 
-RUN cd webui \
-  && npm run build \
-  && cd ../server \
-  && npm run server-build
+RUN npm run docker-build
 
 # production image
 FROM node:14-buster-slim
