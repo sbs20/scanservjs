@@ -29,7 +29,7 @@ two functions at different stages in the processing:
   function before being either used or sent down tot he browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
-* See [example source](../server/config/config.default.js) for more options.
+* See [example source](../packages/server/config/config.default.js) for more options.
 * Please note that the config file only gets read at start-up - so if you make
   changes, you will need to restart.
 
@@ -62,16 +62,17 @@ module.exports = {
    */
   afterDevices(devices) {
     // Override the defaults for plustek scanners
-    const device = devices.filter(d => d.id.startsWith('plustek'))[0];
-    if (device) {
-      device.features['--mode'].default = 'Color';
-      device.features['--resolution'].default = 150;
-      device.features['--resolution'].options = [75, 150, 300, 600];
-      device.features['--brightness'].default = 0;
-      device.features['--contrast'].default = 5;
-      device.features['-x'].default = 215;
-      device.features['-y'].default = 297;
-    }
+    devices
+      .filter(d => d.id.includes('plustek'))
+      .forEach(device => {
+        device.features['--mode'].default = 'Color';
+        device.features['--resolution'].default = 150;
+        device.features['--resolution'].options = [75, 150, 300, 600];
+        device.features['--brightness'].default = 0;
+        device.features['--contrast'].default = 5;
+        device.features['-x'].default = 215;
+        device.features['-y'].default = 297;  
+      });
   }
 };
 ```
@@ -90,13 +91,14 @@ options.
    */
   afterDevices(devices) {
     // Override the defaults for plustek scanners
-    const device = devices.filter(d => d.id.startsWith('plustek'))[0];
-    if (device) {
-      device.features['--resolution'].default = 150;
-      device.features['--resolution'].options = [75, 150, 300, 600];
-      device.features['-x'].default = 215;
-      device.features['-y'].default = 297;
-    }
+    devices
+      .filter(d => d.id.includes('plustek'))
+      .forEach(device => {
+        device.features['--resolution'].default = 150;
+        device.features['--resolution'].options = [75, 150, 300, 600];
+        device.features['-x'].default = 215;
+        device.features['-y'].default = 297;
+      });
   }
 ```
 
@@ -108,15 +110,36 @@ the cropping logic because scanservjs incorrectly trusts the SANE output.
 
 ```javascript
   afterDevices(devices) {
-    const device = devices.filter(d => d.id.includes('brother'))[0];
-    if (device) {
-      device.features['-l'].limits = [0, 215];
-      device.features['-t'].limits = [0, 297];
-      device.features['-x'].default = 215;
-      device.features['-x'].limits = [0, 215];
-      device.features['-y'].default = 297;
-      device.features['-y'].limits = [0, 297];
-    }
+    devices
+      .filter(d => d.id.includes('brother'))
+      .forEach(device => {
+        device.features['-l'].limits = [0, 215];
+        device.features['-t'].limits = [0, 297];
+        device.features['-x'].default = 215;
+        device.features['-x'].limits = [0, 215];
+        device.features['-y'].default = 297;
+        device.features['-y'].limits = [0, 297];
+      });
+  }
+```
+
+### Friendly device name
+
+If you have many scanners available then you may wish to give devices friendly
+names as per [#212](https://github.com/sbs20/scanservjs/issues/212).
+`{ScanDevice}` objects have a `name` attribute which defaults to the `id` but
+can be anything you want it to be. You just need to override it.
+
+```javascript
+  afterDevices(devices) {
+    const deviceNames = {
+      'plustek:libusb:001:003': 'Downstairs Canon Flatbed',
+      'test:device:unreal': 'Upstairs Canon MFD'
+    };
+
+    devices
+      .filter(d => d.id in deviceNames)
+      .forEach(d => d.name = deviceNames[d.id]);
   }
 ```
 
@@ -124,7 +147,7 @@ the cropping logic because scanservjs incorrectly trusts the SANE output.
 
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans. To learn more read the
-[example source](../server/config/config.default.js). This will insert your own
+[example source](../packages/server/config/config.default.js). This will insert your own
 pipelines at the top of the list.
 
 ```javascript
