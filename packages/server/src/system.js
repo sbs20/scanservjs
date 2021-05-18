@@ -6,14 +6,13 @@ class System {
    * @returns {Promise.<SystemInfo>}
    */
   static async info() {
-    const output = {
+    const info = {
       os: {
         arch: os.arch(),
         freemem: Math.floor(os.freemem() / (1024 * 1024)),
         platform: os.platform(),
         release: os.release(),
-        type: os.type(),
-        version: os.version()
+        type: os.type()
       },
       node: process.version,
       npm: (await Process.spawn('npm -v')).toString().trim(),
@@ -23,7 +22,13 @@ class System {
         { ignoreErrors: true } )).length > 0
     };
 
-    return output;
+    try {
+      info.os.version = os.version();
+    } catch (e) {
+      info.os.version = 'Unavailable';
+    }
+
+    return info;
   }
 }
 
