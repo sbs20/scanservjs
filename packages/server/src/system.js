@@ -18,7 +18,7 @@ class System {
       node: process.version,
       npm: (await Process.spawn('npm -v')).toString().trim(),
       docker: (await Process.spawn(
-        'grep -sq \'docker\\|lxc\' /proc/1/cgroup',
+        'grep -s \'docker\\|lxc\' /proc/1/cgroup',
         undefined,
         { ignoreErrors: true } )).length > 0
     };

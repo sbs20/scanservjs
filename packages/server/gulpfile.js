@@ -1,12 +1,10 @@
 const version = require('./package.json').version;
 const dayjs = require('dayjs');
 const chmod = require('gulp-chmod');
-const del = require('del');
 const eslint = require('gulp-eslint');
 const { dest, series, src } = require('gulp');
 const gzip = require('gulp-gzip');
 const filter = require('gulp-filter');
-const run = require('gulp-run');
 const tar = require('gulp-tar');
 const merge = require('merge-stream');
 
@@ -22,16 +20,6 @@ const linter = () => {
 //  * https://github.com/gulpjs/gulp/tree/master/docs/recipes
 
 const app = {
-  clean: () => {
-    return del([`${DIST}*`], { force: true });
-  },
-
-  client: {
-    build: () => {
-      return run('npm run build', { cwd: '../webui'}).exec();
-    }
-  },
-
   server: {
     lint: () => {
       return src(['./src/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
@@ -44,8 +32,8 @@ const app = {
       const shellFilter = filter('**/*.sh', {restore: true});
   
       const common = src([
-        './bin/installer.sh',
-        './bin/scanservjs.service',
+        './installer.sh',
+        './scanservjs.service',
         './package.json',
         './package-lock.json',
         './*config/**/config.default.js',
@@ -60,10 +48,6 @@ const app = {
     
       return merge(common, source);  
     },
-  
-    test: () => {
-      return run('npm run test').exec();
-    }
   },
   
   package: () => {
@@ -82,10 +66,7 @@ const app = {
   }
 };
 
-exports['clean'] = app.clean;
-exports['server-lint'] = app.server.lint;
-exports['server-build'] = app.server.build;
-exports['build'] = series(app.clean, app.server.lint, app.server.test, app.client.build, app.server.build);
-exports['package'] = app.package;
-exports['release'] = series(exports['build'], app.package);
-exports['default'] = series(exports['build']);
+exports.lint = app.server.lint;
+exports.build = app.server.build;
+exports.package = app.package;
+exports.default = series(exports.build);
