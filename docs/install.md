@@ -9,7 +9,7 @@
   script. But please note that this will install dependecies and needs to run as
   root:
   ```sh
-  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -a
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/installer.sh | sudo bash -s -- -a
   ```
 * If you're using another distro, then for the time being you either need to
   manually run the steps in the install script or use docker.

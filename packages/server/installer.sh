@@ -2,7 +2,7 @@
 
 # scanservjs installer script for Debian and Ubuntu
 # Usage:
-#   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s --
+#   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/installer.sh | sudo bash -s --
 
 tmp="/tmp/scanservjs.bkp"
 location="/var/www/scanservjs"
@@ -222,7 +222,7 @@ scanservjs: https://github.com/sbs20/scanservjs
   If you just ran this from curl and want to install, then just append '-a' to
   your previous command so it looks like:
 
-    curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/bin/installer.sh | sudo bash -s -- -a
+    curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/server/installer.sh | sudo bash -s -- -a
 
 EOF
 }

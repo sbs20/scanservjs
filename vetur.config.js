@@ -1,9 +1,9 @@
 /** @type {import('vls').VeturConfig} */
 module.exports = {
   projects: [
-    './webui',
+    './packages/client',
     {
-      root: './webui',
+      root: './packages/client',
       package: './package.json',
       jsconfig: './jsconfig.json',
       globalComponents: [

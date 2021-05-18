@@ -29,7 +29,7 @@ two functions at different stages in the processing:
   function before being either used or sent down tot he browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
-* See [example source](../server/config/config.default.js) for more options.
+* See [example source](../packages/server/config/config.default.js) for more options.
 * Please note that the config file only gets read at start-up - so if you make
   changes, you will need to restart.
 
@@ -147,7 +147,7 @@ can be anything you want it to be. You just need to override it.
 
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans. To learn more read the
-[example source](../server/config/config.default.js). This will insert your own
+[example source](../packages/server/config/config.default.js). This will insert your own
 pipelines at the top of the list.
 
 ```javascript
