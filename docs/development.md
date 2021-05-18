@@ -7,13 +7,13 @@
 * Navigate to the repo directory
   ```
   sudo npm install -g @vue/cli @vue/cli-service-global gulp-cli
-  cd server && npm i . && cd ../webui && npm i .
+  npm run install
   ```
 
 ## Run for development
 
 ```
-cd webui && npm run serve
+npm run serve
 ```
 
 This will hook the server component into webpack (see vue.config.js) and
@@ -21,14 +21,15 @@ references below.
 
 ## Build
 
-Convenience method which performs linting and builds the client and server
+Before committing please verify and build
 ```
-cd server && gulp
+npm run verify
+npm run build
 ```
 
-or do a release:
+Create a local release package
 ```
-cd server && gulp release
+npm run release
 ```
 
 ## Updating node dependencies
