@@ -82,7 +82,7 @@ class FileInfo {
         throw new Error('Root paths disallowed');
       }  
     }
-  };
+  }
   
   /**
    * @param {string} fullpath 
