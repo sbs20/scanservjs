@@ -99,13 +99,13 @@ class ScanController {
       filename = 'archive.zip';
       extension = 'zip';
       Util.zip(
-        filenames.map(f => `${Config.tempDirectory}${f}`),
-        `${Config.tempDirectory}${filename}`);
+        filenames.map(f => `${Config.tempDirectory}/${f}`),
+        `${Config.tempDirectory}/${filename}`);
     }
 
-    const destination = `${Config.outputDirectory}${Config.filename()}.${extension}`;
+    const destination = `${Config.outputDirectory}/${Config.filename()}.${extension}`;
     await FileInfo
-      .create(`${Config.tempDirectory}${filename}`)
+      .create(`${Config.tempDirectory}/${filename}`)
       .move(destination);
 
     log.debug(`Written data to: ${destination}`);
@@ -139,11 +139,11 @@ class ScanController {
     };
 
     const cmd = new CmdBuilder(Config.convert)
-      .arg(`'${Config.tempDirectory}${filename}'`)
+      .arg(`'${Config.tempDirectory}/${filename}'`)
       .arg('-background', '#808080')
       .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`)
       .arg('-resize', 868)
-      .arg(`'${Config.previewDirectory}preview.tif'`)
+      .arg(`'${Config.previewDirectory}/preview.tif'`)
       .build();
 
     await Process.spawn(cmd);
