@@ -3,17 +3,7 @@ const fs = require('fs');
 const mv = require('mv');
 const path = require('path');
 
-const checkPath = (fullpath) => {
-  if (!Config.allowUnsafePaths) {
-    if (fullpath.indexOf('../') !== -1) {
-      throw new Error('Parent paths disallowed');
-    }
-  
-    if (fullpath.indexOf('/') === 0) {
-      throw new Error('Root paths disallowed');
-    }  
-  }
-};
+
 
 /**
  * @param {number} size
@@ -39,8 +29,13 @@ class FileInfo {
   /**
    * @param {string} fullpath 
    */
-  constructor(fullpath) {
-    checkPath(fullpath);
+  constructor(fullpath, filename) {
+    FileInfo.assertPath(fullpath);
+    if (filename) {
+      FileInfo.assertName(filename);
+      fullpath = path.join(fullpath, filename);
+    }
+
     this.fullname = path.normalize(fullpath);
     if (this.exists()) {
       const stat = fs.statSync(this.fullname);
@@ -58,12 +53,52 @@ class FileInfo {
   }
 
   /**
+   * @param {string} name 
+   */
+  static assertName(name) {
+    if (name === null || name === undefined) {
+      throw new Error('Name cannot be null or undefined');
+    }
+
+    if (/[/\\?%*:|"<>;=]/.test(name)) {
+      throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+    }
+  }
+
+  /**
+   * @param {string} fullpath 
+   */
+  static assertPath(fullpath) {
+    if (/[?%*:|"<>;=]/.test(fullpath)) {
+      throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
+    }
+
+    if (!Config.allowUnsafePaths) {
+      if (fullpath.indexOf('../') !== -1) {
+        throw new Error('Parent paths disallowed');
+      }
+    
+      if (fullpath.indexOf('/') === 0) {
+        throw new Error('Root paths disallowed');
+      }  
+    }
+  };
+  
+  /**
    * @param {string} fullpath 
    */
   static create(fullpath) {
     return new FileInfo(fullpath);
   }
 
+  /**
+   * @param {string} fullpath 
+   * @param {string} filename 
+   */
+  static unsafe(fullpath, filename) {
+    return new FileInfo(fullpath, filename);
+  }
+  
   /**
    * @returns {FileInfo}
    */
@@ -157,7 +192,7 @@ class FileInfo {
           reject(err);
         }
 
-        const files = list.map(f => new FileInfo(`${this.fullname}/${f}`));
+        const files = list.map(f => FileInfo.create(`${this.fullname}/${f}`));
         resolve(files);
       });
     });

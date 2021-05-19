@@ -5,7 +5,7 @@ const FileInfo = require('../src/file-info');
 
 describe('Device', () => {
   it('scanimage-a1.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a1.txt');
+    const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'plustek:libusb:001:008');
@@ -37,7 +37,7 @@ describe('Device', () => {
   });
 
   it('scanimage-a2.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a2.txt');
+    const file = FileInfo.create('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'epson2:libusb:001:029');
@@ -63,7 +63,7 @@ describe('Device', () => {
   });
 
   it('scanimage-a3.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a3.txt');
+    const file = FileInfo.create('test/resource/scanimage-a3.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'magic');
@@ -91,7 +91,7 @@ describe('Device', () => {
   });
 
   it('scanimage-a4.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a4.txt');
+    const file = FileInfo.create('test/resource/scanimage-a4.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'net:192.168.1.4:xerox_mfp:libusb:001:003');
@@ -114,7 +114,7 @@ describe('Device', () => {
   });
 
   it('scanimage-a5.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a5.txt');
+    const file = FileInfo.create('test/resource/scanimage-a5.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'pixma:04A91766_004AE4');
@@ -137,7 +137,7 @@ describe('Device', () => {
   });
 
   it('scanimage-a6.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a6.txt');
+    const file = FileInfo.create('test/resource/scanimage-a6.txt');
     const device = Device.from(file.toText());
 
     assert.strictEqual(device.id, 'brother4:bus9;dev1');

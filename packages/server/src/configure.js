@@ -117,12 +117,7 @@ function configure(app, rootPath) {
     logRequest(req);
     try {
       const name = req.params[0];
-      const file = new FileInfo(`${Config.outputDirectory}/${name}`);
-      const parent = new FileInfo(file.path);
-      const data = new FileInfo(Config.outputDirectory);
-      if (!parent.equals(data)) {
-        throw new Error('Cannot download outside of data directory');
-      }
+      const file = FileInfo.unsafe(Config.outputDirectory, name);
       res.download(file.fullname);
     } catch (error) {
       sendError(res, 500, error);
