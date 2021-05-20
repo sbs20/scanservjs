@@ -5,13 +5,13 @@ const FileInfo = require('../src/file-info');
 
 describe('Devices', () => {
   it('scanimage-l1.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-l1.txt');
+    const file = FileInfo.create('test/resource/scanimage-l1.txt');
     const deviceIds = Devices._parseDevices(file.toText());
     assert.deepStrictEqual(deviceIds, ['plustek:libusb:001:003']);
   });
 
   it('scanimage-l2.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-l2.txt');
+    const file = FileInfo.create('test/resource/scanimage-l2.txt');
     const deviceIds = Devices._parseDevices(file.toText());
     assert.deepStrictEqual(deviceIds, [
       'plustek:libusb:001:003',

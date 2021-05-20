@@ -17,7 +17,7 @@ class Api {
    */
   static async fileList() {
     log.trace('fileList()');
-    const dir = new FileInfo(Config.outputDirectory);
+    const dir = FileInfo.create(Config.outputDirectory);
     let files = await dir.list();
     files = files
       .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension))
@@ -27,17 +27,12 @@ class Api {
   }
 
   /**
-   * @param {string} fullpath 
+   * @param {string} name 
    * @returns {FileInfo}
    */
-  static fileDelete(fullpath) {
+  static fileDelete(name) {
     log.trace('fileDelete()');
-    const file = new FileInfo(fullpath);
-    const parent = new FileInfo(file.path);
-    const data = new FileInfo(Config.outputDirectory);
-    if (!parent.equals(data)) {
-      throw new Error('Cannot delete outside of data directory');
-    }
+    const file = FileInfo.unsafe(Config.outputDirectory, name);
     return file.delete();
   }
 
@@ -59,7 +54,7 @@ class Api {
       }
     });
 
-    const cmd = `${Scanimage.scan(request)} > ${Config.previewDirectory}preview.tif`;
+    const cmd = `${Scanimage.scan(request)} > ${Config.previewDirectory}/preview.tif`;
     log.trace('Executing cmd:', cmd);
     await Process.spawn(cmd);
     return {};
@@ -70,7 +65,7 @@ class Api {
    */
   static deletePreview() {
     log.trace('deletePreview()');
-    const file = new FileInfo(`${Config.previewDirectory}preview.tif`);
+    const file = FileInfo.create(`${Config.previewDirectory}/preview.tif`);
     return file.delete();
   }
 
@@ -82,7 +77,7 @@ class Api {
     log.trace('readPreview()', filters);
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it. 
-    const source = new FileInfo(`${Config.previewDirectory}preview.tif`);
+    const source = FileInfo.create(`${Config.previewDirectory}/preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
       const cmds = [...Config.previewPipeline.commands];
@@ -95,7 +90,7 @@ class Api {
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
-    const buffer = new FileInfo(`${Config.previewDirectory}default.jpg`).toBuffer();
+    const buffer = FileInfo.create(`${Config.previewDirectory}/default.jpg`).toBuffer();
 
     try {
       // We need to know the correct aspect ratio from the device

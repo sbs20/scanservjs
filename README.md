@@ -58,6 +58,8 @@ It supports any
 * [Manual installation](docs/install.md)
 * [Docker installation](docs/docker.md)
 * [Scanner and SANE setup](docs/sane.md)
+* [Proxy setup](docs/proxy.md)
+* [Troubleshooting](docs/troubleshooting.md)
 * [Development notes](docs/development.md)
 
 ## Configuration and device override

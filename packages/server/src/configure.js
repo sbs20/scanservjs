@@ -3,6 +3,7 @@ const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 const Config = require('./config');
+const FileInfo = require('./file-info');
 
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
@@ -115,7 +116,9 @@ function configure(app, rootPath) {
   app.get('/files/*', (req, res) => {
     logRequest(req);
     try {
-      res.download(req.params[0]);
+      const name = req.params[0];
+      const file = FileInfo.unsafe(Config.outputDirectory, name);
+      res.download(file.fullname);
     } catch (error) {
       sendError(res, 500, error);
     }

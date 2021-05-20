@@ -25,7 +25,7 @@ export default class Request {
       },
       filters: request.filters || [],
       pipeline: request.pipeline || pipeline,
-      batch: request.batch || batchMode === undefined ? 'none' : batchMode,
+      batch: request.batch || (batchMode === undefined ? 'none' : batchMode),
       index: 1
     };
 

@@ -46,7 +46,7 @@ class Devices {
    * @returns {Promise.<ScanDevice[]>}
    */
   static async get() {
-    const file = new FileInfo(Config.devicesPath);
+    const file = FileInfo.create(Config.devicesPath);
     let devices = null;
 
     if (file.exists()) {
@@ -86,7 +86,7 @@ class Devices {
    * @returns {void}
    */
   static reset() {
-    const file = new FileInfo(Config.devicesPath);
+    const file = FileInfo.create(Config.devicesPath);
     if (file.exists()) {
       file.delete();
     }

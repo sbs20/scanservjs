@@ -7,7 +7,7 @@ const Request = require('../src/request');
 
 describe('Request', () => {
   it('scanimage-a1.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a1.txt');
+    const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
     const context = new Context([device]);
     const request = new Request(context).extend({
@@ -39,7 +39,7 @@ describe('Request', () => {
   });
 
   it('scanimage-a2.txt', () => {
-    const file = new FileInfo('test/resource/scanimage-a2.txt');
+    const file = FileInfo.create('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
     const context = new Context([device]);
     const request = new Request(context).extend({
