@@ -42,9 +42,9 @@ class Config {
     
       allowUnsafePaths: false,
       devicesPath: './config/devices.json',
-      outputDirectory: './data/output/',
-      previewDirectory: './data/preview/',
-      tempDirectory: './data/temp/',
+      outputDirectory: 'data/output',
+      previewDirectory: 'data/preview',
+      tempDirectory: 'data/temp',
     
       previewResolution: 100,
       previewPipeline: {

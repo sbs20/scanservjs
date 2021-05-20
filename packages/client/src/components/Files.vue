@@ -49,7 +49,7 @@ export default {
 
     fileRemove(file) {
       this.$emit('mask', 1);
-      Common.fetch('files/' + encodeURIComponent(file.fullname), {
+      Common.fetch(`files/${file.name}`, {
         method: 'DELETE'
       }).then(data => {
         this.$emit('notify', { type: 'i', message: `${this.$t('files.message:deleted')} ${data.name}` });
@@ -62,7 +62,7 @@ export default {
     },
 
     open(file) {
-      window.location.href = 'files/' + encodeURIComponent(file.fullname);
+      window.location.href = `files/${file.name}`;
     }
   }
 };

@@ -151,5 +151,18 @@
     "reset": "Reset",
     "clear-storage:description": "Clears local storage of any cached parameters",
     "clear-storage": "Clear"
+  },
+
+  "locales": {
+    "cs": "Czech",
+    "de": "Deutsche",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "it": "Italiano",
+    "pt-BR": "Portuguese (Brazilian)",
+    "ru": "Russian",
+    "zh": "Chinese",
+    "test": "Test"
   }
 }

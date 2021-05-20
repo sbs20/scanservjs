@@ -3,6 +3,8 @@ const configure = require('../server/src/configure');
 const path = require('path');
 
 module.exports = {
+  publicPath: '',
+  
   css: {
     loaderOptions: {
       sass: {

@@ -43,7 +43,9 @@
           </template>
           <template v-slot:action>
             <div style="max-width: 10rem;">
-              <v-select :label="$t('settings.locale')" :items="locales" v-model="settings.locale" @change="reload"></v-select>
+              <v-select :label="$t('settings.locale')" :items="locales"
+                item-text="text" item-value="value"
+                v-model="settings.locale" @change="reload"></v-select>
             </div>
           </template>
         </settings-item>
@@ -95,8 +97,7 @@ export default {
 
   data() {
     return {
-      settings: storage.settings,
-      locales: Constants.Locales
+      settings: storage.settings
     };
   },
 
@@ -106,6 +107,15 @@ export default {
         return {
           text: this.$t(`colors.${c}`),
           value: c
+        };
+      });
+    },
+
+    locales() {
+      return Constants.Locales.map(l => {
+        return {
+          text: this.$t(`locales.${l}`),
+          value: l
         };
       });
     },
@@ -135,7 +145,7 @@ export default {
     },
 
     reload() {
-      location.href = `/?anticache=${Date.now()}${location.hash}`;
+      location.href = `?anticache=${Date.now()}${location.hash}`;
     },
 
     reset() {
