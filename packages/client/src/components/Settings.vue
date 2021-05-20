@@ -135,7 +135,7 @@ export default {
     },
 
     reload() {
-      location.href = `/?anticache=${Date.now()}${location.hash}`;
+      location.href = `?anticache=${Date.now()}${location.hash}`;
     },
 
     reset() {
