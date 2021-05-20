@@ -2,14 +2,16 @@
   <v-simple-table>
     <thead>
       <tr>
+        <th><v-checkbox @change="selectToggle" /></th>
         <th>{{ $t('files.filename') }}</th>
         <th class="file-date">{{ $t('files.date') }}</th>
         <th>{{ $t('files.size') }}</th>
-        <th></th>
+        <th><v-btn color="primary" v-on:click="multipleDelete()" icon><v-icon>mdi-delete</v-icon></v-btn></th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="file in files" v-bind:key="file.name">
+        <td><v-checkbox v-model="selectedFiles" :value="file.name" /></td>
         <td><a @click="open(file)">{{ file.name }}</a></td>
         <td class="file-date">{{ $d(new Date(file.lastModified), 'long', $i18n.locale) }}</td>
         <td>{{ file.sizeString }}</td>
@@ -31,7 +33,8 @@ export default {
 
   data() {
     return {
-      files: []
+      files: [],
+      selectedFiles: []
     };
   },
 
@@ -61,8 +64,31 @@ export default {
       });
     },
 
+    async multipleDelete() {
+      let refresh = false;
+      while (this.selectedFiles.length > 0) {
+        refresh = true;
+        const name = this.selectedFiles[0];
+        try {
+          await Common.fetch(`files/${name}`, { method: 'DELETE' });
+          this.$emit('notify', { type: 'i', message: `${this.$t('files.message:deleted')} ${name}` });
+        } catch (error) {
+          this.$emit('notify', { type: 'e', message: error });
+        }
+        this.selectedFiles.splice(0, 1);
+      }
+
+      if (refresh) {
+        this.fileList();
+      }
+    },
+
     open(file) {
       window.location.href = `files/${file.name}`;
+    },
+
+    selectToggle(value) {
+      this.selectedFiles = value ? this.files.map(f => f.name) : [];
     }
   }
 };
