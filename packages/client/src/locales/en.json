@@ -154,7 +154,7 @@
   },
 
   "locales": {
-    "cs": "Czech",
+    "cs": "Čeština",
     "de": "Deutsche",
     "en": "English",
     "es": "Español",
@@ -162,7 +162,7 @@
     "it": "Italiano",
     "pt-BR": "Portuguese (Brazilian)",
     "ru": "Russian",
-    "zh": "Chinese",
+    "zh": "简体中文",
     "test": "Test"
   }
 }

@@ -1,6 +1,23 @@
 const Constants = {
   Version: process.env.VUE_APP_VERSION,
   
+  DateTimeFormat: {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+      hourCycle: 'h23'
+    }
+  },
+  
   Locales: [
     'cs',
     'de',
