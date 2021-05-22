@@ -6,7 +6,7 @@
   "about": {
     "main": "scanservjs ist ein einfaches, web-basiertes UI für Scanner. Es erlaubt es, einen oder mehrere Scanner (mittels SANE) über das Netzwerk ohne Treiber oder komplizierte Installation freizugeben. Eingescannte Dokumente können als TIF, JPG, PNG, PDF und TXT (mit Tesseract OCR) in verschiedenen, konfigurierbaren Kompressionseinstellungen gespeichert werden. Neben allen SANE-kompatiblen Geräten, wird außerdem mehrseitiges Scannen unterstützt.",
     "issue": "Melde Fehler oder wirf einen Blick auf den Quelltext:",
-    "system-info": "System information:"
+    "system-info": "System information"
   },
 
   "colors": {

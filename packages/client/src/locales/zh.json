@@ -6,7 +6,7 @@
   "about": {
     "main": "scanservjs 是一个基于网页的扫描仪 UI 。 它（使用 SANE ）实现了在局域网内共享一个或多个扫描仪而无需繁复的驱动安装。 可以配置多种压缩率将扫描的文件保存为 TIF, JPG, PNG, PDF 和 TXT (使用 Tesseract OCR )等格式。 它亦提供多页扫描功能并支持所有与 SANE 兼容的设备。",
     "issue": "反馈问题或查看源码：",
-    "system-info": "系统信息:"
+    "system-info": "系统信息"
   },
 
   "colors": {
