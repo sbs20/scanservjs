@@ -7,7 +7,7 @@ ExecStart=/var/www/scanservjs/server/server.js
 Restart=always
 User=scanservjs
 Group=users
-Environment=PATH=/usr/bin:/usr/local/bin:/bin
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
 Environment=NODE_ENV=production
 WorkingDirectory=/var/www/scanservjs
 
