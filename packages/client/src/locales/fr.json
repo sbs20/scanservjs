@@ -6,7 +6,7 @@
   "about": {
     "main": "scanservjs est une simple interface web pour votre scanner. Cette interface permet de partager un ou plusieurs scanners (utilisant SANE) sur un réseau sans avoir besoin de drivers ou d'installation complexe.Cela permet de sauvegarder les images scannées dans les formats de fichiers TIF, JPG, PNG, PDF et TXT (avec Tesseract OCR) avec des compressions paramétrables. Cela supporte les scans avec plusieurs pages et tout matériel compatible avec SANE.",
     "issue": "Signaler un problème ou afficher le code source:",
-    "system-info": "System information:"
+    "system-info": "System information"
   },
 
   "colors": {
