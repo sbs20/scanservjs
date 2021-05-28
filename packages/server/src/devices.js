@@ -63,17 +63,26 @@ class Devices {
       let deviceIds = Config.devices;
       log.debug('Config.devices: ', deviceIds);
       if (Config.devicesFind) {
-        const data = await Process.execute(Scanimage.devices());
-        log.debug('Device list: ', data);
-        const localDevices = Devices._parseDevices(data);
-        deviceIds = deviceIds.concat(localDevices);
+        try {
+          const { stdout } = await Process.execute(Scanimage.devices());
+          log.debug('Device list: ', stdout);
+          const localDevices = Devices._parseDevices(stdout);
+          deviceIds = deviceIds.concat(localDevices);
+        } catch (e) {
+          log.error(e);
+        }
       }
 
       devices = [];
       for (let deviceId of deviceIds) {
-        const data = await Process.execute(Scanimage.features(deviceId));
-        log.debug('Device features: ', data);
-        devices.push(Device.from(data));
+        log.debug('Retrieving device features of', deviceId);
+        try {
+          const { stdout } = await Process.execute(Scanimage.features(deviceId));
+          log.debug('Device features: ', stdout);
+          devices.push(Device.from(stdout));
+        } catch (e) {
+          log.error(e);
+        }
       }
       file.save(JSON.stringify(devices, null, 2));
     }

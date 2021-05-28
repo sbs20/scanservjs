@@ -10,8 +10,7 @@ const Process = {
    * @returns {Promise.<string>}
    */
   async execute(cmd) {
-    const { stdout } = await exec(cmd);
-    return stdout;
+    return await exec(cmd);
   },
 
   /**

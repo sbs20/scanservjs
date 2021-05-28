@@ -5,20 +5,20 @@ const Process = require('../src/process');
 
 describe('Process', () => {
   it('echo', async () => {
-    const result = await Process.execute(new CmdBuilder('echo').arg('hello world').build());
-    assert.strictEqual(result, 'hello world\n');
+    const { stdout } = await Process.execute(new CmdBuilder('echo').arg('hello world').build());
+    assert.strictEqual(stdout, 'hello world\n');
   });
 
   it('echo-security', async () => {
     let result = null;
     result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
-    assert.strictEqual(result, 'hello" && ls -al;# world');
+    assert.strictEqual(result.stdout, 'hello" && ls -al;# world');
 
     result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls -al`').build());
-    assert.strictEqual(result, '`ls -al`');
+    assert.strictEqual(result.stdout, '`ls -al`');
 
     result = await Process.execute(new CmdBuilder('echo').arg('-n', '$(date)').build());
-    assert.strictEqual(result, '$(date)');
+    assert.strictEqual(result.stdout, '$(date)');
   });
 
   it('echo "1\\n2\\n3" | wc -l', async () => {
