@@ -89,27 +89,33 @@ Depending on your setup you have a number of options.
 
 ## Mapping volumes
 
-There are two volumes you may wish to map:
+To access data from outside the docker container, there are two volumes you may
+wish to map:
 
 * The scanned images: use `-v /local/path/scans:/app/data/output`
 * Configuration overrides: use `-v /local/path/cfg:/app/config`
 
-## User and group mapping
+### User and group mapping
 
-The docker image which is created now runs under a non-privileged user account
-with a UID of `2001`. If you attempt to run as a user other than `2001` or `0`
-(e.g. `-u 1000`) then the process inside the container will no longer have
-access to some of the things it needs to and it will fail. Most of the time you
-won't care about the user, but if you're mapping volumes for either config or
-data, then it may matter.
+When mapping volumes, special attention must be paid to users and file systems
+permissions.
 
-The solution in most cases is either to
-* change the group of the container to a known group on the host e.g.
+The docker container runs under a non-privileged user with a UID and GID of `2001`.
+scanservjs relies on this user for editing SANE and airscan configurations inside
+the container. Changing this user's UID (e.g. by using `-u 1000` for `docker run`)
+to access scans/configuration from outside docker **is not advised since it will
+cause these steps to fail.**
+
+Your alternatives are:
+1. changing the group of the container to a known group on the host e.g.
   `-u 2001:1000`. This will keep the user correct (`2001`) but change the group
-  (`1000`)
-* create a corresponding user on the host e.g.
+  (`1000`).
+2. creating a corresponding user on the host e.g.
   `useradd -u 2001 -ms /bin/bash scanservjs`
-* change the host volume permissions e.g. `chmod 777 local-volume`
+3. building a docker image with a custom UID/GID pairing: clone this repository
+  and run `docker build --build-arg UID=1234 --build-arg GID=5678 -t scanservjs_custom .`
+  (with UID and GID adjusted to your liking), then run the custom image (e.g. `docker run scanservjs_custom`).
+4. as a last resort, changing the host volume permissions e.g. `chmod 777 local-volume`
 
 ## Environment variables
 
