@@ -57,7 +57,8 @@
  * @typedef {Object} Configuration
  * @property {string} version
  * @property {number} port
- * @property {ScanDevice} devices
+ * @property {string[]} devices
+ * @property {boolean} devicesFind
  * @property {string} ocrLanguage
  * @property {string} scanimage
  * @property {string} convert

@@ -71,9 +71,13 @@ class Devices {
 
       devices = [];
       for (let deviceId of deviceIds) {
-        const data = await Process.execute(Scanimage.features(deviceId));
-        log.debug('Device features: ', data);
-        devices.push(Device.from(data));
+        try {
+          const data = await Process.execute(Scanimage.features(deviceId));
+          log.debug('Device features: ', data);
+          devices.push(Device.from(data));  
+        } catch (error) {
+          log.error(`Ignoring ${deviceId}. Error: ${error}`);
+        }
       }
       file.save(JSON.stringify(devices, null, 2));
     }

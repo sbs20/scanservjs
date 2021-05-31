@@ -88,6 +88,7 @@
     "left-aligned": "Left Aligned",
     "centrally-aligned": "Centrally Aligned",
     "duplex": "Duplex",
+    "transparency unit": "Transparency Unit",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",

@@ -1,6 +1,6 @@
 {
   "name": "scanservjs",
-  "version": "2.15.0",
+  "version": "2.15.1",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
     "clean": "rm -rf ./dist",
@@ -10,9 +10,8 @@
     "test": "cd packages/server && npm run test",
     "build": "npm run clean && cd packages/client && npm run build && cd ../server && npm run build",
     "package": "cd packages/server && npm run package",
-    "docker-install": "npm run install",
-    "docker-build": "npm run build",
     "verify": "npm run version && npm run lint && npm run test",
+    "docker-build": "npm run verify && docker build -t scanservjs-image .",
     "release": "npm run verify && npm run build && npm run package",
     "serve": "cd packages/client && npm run serve"
   },
