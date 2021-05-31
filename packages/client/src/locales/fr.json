@@ -10,26 +10,26 @@
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
+    "accent-4": "Défaut",
+    "red": "Rouge",
+    "pink": "Rose",
+    "purple": "Violet",
+    "deep-purple": "Violet foncé",
     "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
+    "blue": "Bleu",
+    "light-blue": "Bleu clair",
     "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
+    "teal": "Sarcelle",
+    "green": "Vert",
+    "light-green": "Vert clair",
+    "lime": "Vert citron",
+    "yellow": "Jaune",
+    "amber": "Ambre",
     "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "deep-orange": "Orange foncé",
+    "brown": "Brun",
+    "blue-grey": "Bleu gris",
+    "grey": "Gris"
   },
 
   "batch-dialog": {
@@ -69,9 +69,9 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
+    "color": "Couleur",
+    "halftone": "Noir et blanc",
+    "gray": "Niveau de gris",
     "lineart": "Lineart",
 
     "24bitcolor":"@:mode.color",
@@ -82,12 +82,13 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
+    "flatbed": "Vitre du scanner",
+    "adf": "ADF",
     "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
+    "left-aligned": "Aligné à gauche",
+    "centrally-aligned": "Aligné centré",
     "duplex": "Duplex",
+    "transparency unit": "Transparency Unit",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -97,24 +98,24 @@
   },
 
   "pipeline": {
-    "high-quality": "Qualité élevée",
+    "high-quality": "Qualité haute",
     "medium-quality": "Qualité moyenne",
     "low-quality": "Qualité basse",
     "uncompressed": "Décompressé",
-    "lzw-compressed": "Compression LZW",
+    "lzw-compressed": "Compressé LZW",
     "ocr": "OCR",
     "text-file": "Fichier texte"
   },  
 
   "scan": {
-    "device": "Appareil",
+    "device": "Scanner",
     "source": "Source",
     "resolution": "Résolution",
     "mode": "Mode",
     "dynamic-lineart": "Dynamic Lineart",
     "dynamic-lineart:enabled": "Activé",
     "dynamic-lineart:disabled": "Désactivé",
-    "batch": "Scan groupé",
+    "batch": "Batch",
     "filters": "Filtres",
     "format": "Format",
     "btn-preview": "Aperçu",
@@ -124,32 +125,32 @@
     "left": "Gauche",
     "width": "Largeur",
     "height": "Hauteur",
-    "paperSize": "Paper size",
+    "paperSize": "Taille papier",
     "brightness": "Luminosité",
     "contrast": "Contraste",
     "message:loading-devices": "Chargement des scanners...",
     "message:no-devices": "Aucun scanner trouvé",
-    "message:deleted-preview": "Prévisualisation effacée",
-    "message:turn-documents": "Tournez votre document",
-    "message:preview-of-page": "Prévisualisation de la page"  
+    "message:deleted-preview": "Aperçu supprimé",
+    "message:turn-documents": "Tourner le document",
+    "message:preview-of-page": "Aperçu de la page"  
   },
 
   "settings": {
     "title": "@:navigation.settings",
-    "behaviour-ui": "Comportement et interface utilisateur",
+    "behaviour-ui": "Paramètres et interface utilisateur",
     "locale": "Langue",
-    "locale:description": "Sélection de la langue",
+    "locale:description": "Choisir la langue de l'application",
     "theme": "Thème",
     "theme:description": "Theme. Si vous utilisez le thème de votre système d'exploitation et que vous changez le paramètre, vous devrez recharger l'application",
     "theme:system": "Système",
     "theme:light": "Clair",
-    "theme:dark": "Sombre",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar.",
-    "devices": "Devices and storage",
-    "reset:description": "Clears stored scanner devices and forces a reload",
-    "reset": "Réinitialiser",
-    "clear-storage:description": "Clears local storage of any cached parameters",
-    "clear-storage": "Clear"
+    "theme:dark": "Foncé",
+    "color": "Couleur",
+    "color:description": "Couleur. Ce paramètre modifie la couleur de la barre supérieure",
+    "devices": "Scanners et mémoire locale de l'application",
+    "reset:description": "Efface les scanners mémorisés et force une recherche d'appareils",
+    "reset": "Ré-initialiser",
+    "clear-storage:description": "Efface les données locales des paramètres en cache",
+    "clear-storage": "Effacer"
   }
 }
