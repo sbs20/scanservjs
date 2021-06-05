@@ -175,6 +175,29 @@ pipelines at the top of the list.
   },
 ```
 
+#### Pipeline using "ocrmypdf"
+[ocrmypdf](https://github.com/jbarlow83/OCRmyPDF) is a tool which deskews crooked scans,
+automatically fixes incorrectly rotated pages and performs OCR with tesseract. It needs
+to be installed separately, see the [official instructions](https://ocrmypdf.readthedocs.io/en/latest/installation.html).
+
+Then, add the following pipeline:
+```javascript
+    const pipelines = [
+      {
+        extension: 'pdf',
+        description: 'ocrmypdf (JPG | @:pipeline.high-quality)',
+        get commands() {
+          return [
+            'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+            'convert @- pdf:-',
+            `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages - scan_0000.pdf`,
+            'ls scan_*.*'
+          ];
+        }
+      }
+    ];
+```
+
 ### Change the log level and default scan filename
 
 ```javascript

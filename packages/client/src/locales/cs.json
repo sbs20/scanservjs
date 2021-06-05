@@ -88,7 +88,7 @@
     "left-aligned": "zarovnáno vlevo",
     "centrally-aligned": "zarovnáno na střed",
     "duplex": "oboustranně",
-    "transparency unit": "Transparency Unit",
+    "transparency unit": "Transparentní jednotka",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
