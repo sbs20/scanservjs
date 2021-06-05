@@ -42,9 +42,9 @@ you're putting a lot of trust in the container. In short, best not.
 
 Depending on your setup you have a number of options:
 
-* If your scanner is **connected by USB to the host**, and there are standard SANE
-  drivers, then you can map the device. The best way to do this is to map the
-  actual USB ports.
+* If your scanner is **connected by USB to the host**, and there are standard
+  SANE drivers, then you can map the device. The best way to do this is to map
+  the actual USB ports.
   * Run `sudo sane-find-scanner -q` and you will get a result like
     `found USB scanner (vendor=0x04a9 [Canon], product=0x220d [CanoScan], chip=LM9832/3) at libusb:001:003`.
   * Or run `lsusb` which gives you
@@ -63,14 +63,15 @@ Depending on your setup you have a number of options:
   the local network. You will want to share dbus to make it work
   (`-v /var/run/dbus:/var/run/dbus`).
 
-* If your container is **running inside a VM** you may find that the USB device id
-  is [unstable](https://github.com/sbs20/scanservjs/issues/66) and changes
+* If your container is **running inside a VM** you may find that the USB device
+  id is [unstable](https://github.com/sbs20/scanservjs/issues/66) and changes
   between boots. In these cases, you will probably find it easier to share the
   scanner over the network on the host.
 
 * If you need **proprietary drivers** for your scanner then the best solution is
   either to install the drivers on the host and share it over the network or to
-  create your own docker image based on the scanservjs one and add it in that way.
+  create your own docker image based on the scanservjs one and add it in that
+  way.
 
   Here is an example on how one particular Brother scanner model and its driver
   can be installed in the Dockerfile. The driver (`brscan4-0.4.10-1.amd64.deb`)
@@ -193,21 +194,25 @@ docker run -d -p 8080:8080 \
 ### Hosting it on a Synology NAS using Docker
 
 It can be convenient to host scanservjs on the same machine where you store your
-scans — your NAS. Here's a possible approach for network scanning with a Synology NAS:
-1. Install the [Synology Docker package](https://www.synology.com/en-us/dsm/packages/Docker).
-2. In DSM, create a service user "scanservjs" which will run the Docker container.
-   Make sure to give it write permission to the preferred target location for
-   scans. We'll use `/volume1/scans`.
+scans — your NAS. Here's a possible approach for network scanning with a
+Synology NAS:
+
+1. Install the
+   [Synology Docker package](https://www.synology.com/en-us/dsm/packages/Docker).
+2. In DSM, create a service user "scanservjs" which will run the Docker
+   container. Make sure to give it write permission to the preferred target
+   location for scans. We'll use `/volume1/scans`.
 3. SSH with an admin account onto the NAS and use `id` to determine the UID and
    GID of the service user just created:
     ```sh
     admin@synology:~$ id scanservjs
     uid=1034(scanservjs) gid=100(users) groups=100(users),65538(scanusers)
     ```
-    Keep the session open, we'll need it again in a moment.
-4. On your workstation, download and extract [the latest scanservjs release](https://github.com/sbs20/scanservjs/releases/latest).
-5. In the repository root, create a text file named `docker-compose.yml` with the
-   following content:
+   Keep the session open, we'll need it again in a moment.
+4. On your workstation, download and extract
+   [the latest scanservjs release](https://github.com/sbs20/scanservjs/releases/latest).
+5. In the repository root, create a text file named `docker-compose.yml` with
+   the following content:
     ```yaml
     version: "3"
     services:
@@ -236,11 +241,13 @@ scans — your NAS. Here's a possible approach for network scanning with a Synol
     ```sh
     sudo docker-compose up -d
     ```
-8. After a medium-sized cup of tea, scanservjs should be available at `http://<NAS IP Address>:8080`
-9. Bonus: Create a reverse proxy rule in the [Application Portal](https://www.synology.com/en-global/knowledgebase/DSM/help/DSM/AdminCenter/application_appportalias)
-   so that scanservjs can be reached via `http://scan.synology.lan` (or similar).
-   NAS devices are not the most powerful CPU-wise, so consider setting the proxy
-   timeouts to 300 seconds or more [to prevent timeout issues](troubleshooting.md).
+8. After a medium-sized cup of tea, scanservjs should be available at
+   `http://<NAS IP Address>:8080`
+9. Bonus: Create a reverse proxy rule in the
+   [Application Portal](https://www.synology.com/en-global/knowledgebase/DSM/help/DSM/AdminCenter/application_appportalias)
+   so that scanservjs can be reached via `http://scan.synology.lan` (or
+   similar). Scanning can be slow, so set the proxy timeouts to 300 seconds or
+   more [to prevent timeout issues](troubleshooting.md).
 
 ## Staging builds
 
