@@ -79,6 +79,13 @@ such cases you will need to get the device name from the host, prefix it with
 > file, the only way to access it is by its full device name. You may need to
 > consult your system administrator to find out the names of such devices.
 
+## Scanners requiring additional drivers
+
+Some scanner models require additional drivers to function with SANE. For
+example, Brother offers proprietary drivers for their USB and network scanners.
+Please follow the manufacturer's instructions for setting up such scanners.
+Once a scanner is listed in `scanimage -L`, it should be ready to use with
+scanservjs.
 
 ## SANE Airscan
 

@@ -29,7 +29,8 @@ two functions at different stages in the processing:
   function before being either used or sent down tot he browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
-* See [example source](../packages/server/config/config.default.js) for more options.
+* See [example source](../packages/server/config/config.default.js) for more
+  options.
 * Please note that the config file only gets read at start-up - so if you make
   changes, you will need to restart.
 
@@ -147,8 +148,8 @@ can be anything you want it to be. You just need to override it.
 
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans. To learn more read the
-[example source](../packages/server/config/config.default.js). This will insert your own
-pipelines at the top of the list.
+[example source](../packages/server/config/config.default.js). This will insert
+your own pipelines at the top of the list.
 
 ```javascript
   afterConfig(config) {
@@ -173,6 +174,28 @@ pipelines at the top of the list.
 
     config.pipelines.splice(0, 0, ...pipelines);
   },
+```
+
+#### Pipeline using "ocrmypdf"
+[ocrmypdf](https://github.com/jbarlow83/OCRmyPDF) is a tool which deskews
+crooked scans, automatically fixes incorrectly rotated pages and performs OCR
+with tesseract. It needs to be installed separately, see the
+[official instructions](https://ocrmypdf.readthedocs.io/en/latest/installation.html).
+
+Then, add the following pipeline:
+```javascript
+  config.pipelines.push({
+    extension: 'pdf',
+    description: 'ocrmypdf (JPG | @:pipeline.high-quality)',
+    get commands() {
+      return [
+        'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+        'convert @- pdf:-',
+        `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages - scan_0000.pdf`,
+        'ls scan_*.*'
+      ];
+    }
+  });
 ```
 
 ### Change the log level and default scan filename
