@@ -1,0 +1,156 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs to prosty interfejs internetowy dla Twojego skanera. Pozwala ci udostępnić skaner lub kilka (używając SANE) w sieci bez sterowników lub skompilowanych konfiguracji oprogramowania. Zapisuje do formatów TIF, JPG, PNG, PDF i TXT (używając Tesseract OCR) z różnymi ustawieniami kompresji, zgodnie z Twoimi ustawieniami. Wspiera skanowanie wielu stron i wszystkie urządzenia kompatybilne z SANE.",
+    "issue": "Zgłoś problem lub zobacz kod źródłowy:",
+    "system-info": "Informacje o systemie"
+  },
+
+  "colors": {
+    "accent-4": "Domyślny",
+    "red": "Czerwony",
+    "pink": "Różowy",
+    "purple": "Fioletowy",
+    "deep-purple": "Ciemno fioletowy",
+    "indigo": "Indygo",
+    "blue": "Niebieski",
+    "light-blue": "Jasno niebieski",
+    "cyan": "Turkusowy",
+    "teal": "Niebieskawozielony",
+    "green": "Zielony",
+    "light-green": "Jasno zielony",
+    "lime": "Limonkowo zielony",
+    "yellow": "Żółty",
+    "amber": "Bursztynowy",
+    "orange": "Pomarańczowy",
+    "deep-orange": "Ciemno pomarańczowy",
+    "brown": "Brązowy",
+    "blue-grey": "Niebiesko szary",
+    "grey": "Szary"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Anuluj",
+    "btn-finish": "Zakończ",
+    "btn-rescan": "Zeskanuj ponownie",
+    "btn-next": "Następny"
+  },
+
+  "files": {
+    "filename": "Nazwa pliku",
+    "date": "Data",
+    "size": "Rozmiar",
+    "message:deleted": "Usunięto"
+  },
+
+  "navigation": {
+    "scan": "Skanuj",
+    "files": "Pliki",
+    "settings": "Ustawienia",
+    "about": "Informacje",
+    "version": "Wersja"  
+  },
+
+  "batch-mode": {
+    "none": "Brak",
+    "manual": "Manualny (z monitem)",
+    "auto": "Automatyczny (podajnik)",
+    "auto-collate-standard": "Automatyczny (kompletowane 1, 3... 4, 2)",
+    "auto-collate-reverse": "Automatyczny (kolejność odwrotna 1, 3... 2, 4)"
+  },
+    
+  "filter": {
+    "auto-level": "Automatyczne równanie",
+    "threshold": "Próg",
+    "blur": "Rozmazanie"
+  },
+
+  "mode": {
+    "color": "Kolor",
+    "halftone": "Półton",
+    "gray": "Szary",
+    "lineart": "Kreskowanie",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Skaner płaski",
+    "adf": "ADF",
+    "auto": "Automatyczne",
+    "left-aligned": "Wyrównanie do lewej",
+    "centrally-aligned": "Wyśrodkowane",
+    "duplex": "Dupleks",
+    "transparency unit": "Jednostka przejrzystości",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Wysoka jakość",
+    "medium-quality": "Średnia jakość",
+    "low-quality": "Niska jakość",
+    "uncompressed": "Bez kompresji",
+    "lzw-compressed": "Kompresja LZW",
+    "ocr": "OCR",
+    "text-file": "Plik tekstowy"
+  },  
+
+  "scan": {
+    "device": "Urządzenie",
+    "source": "Źródło",
+    "resolution": "Rozdzielczość",
+    "mode": "Tryb",
+    "dynamic-lineart": "Dynamiczne kreskowanie",
+    "dynamic-lineart:enabled": "Włączone",
+    "dynamic-lineart:disabled": "Wyłączone",
+    "batch": "Partia",
+    "filters": "Filtry",
+    "format": "Format",
+    "btn-preview": "Podgląd",
+    "btn-clear": "Wyczyść",
+    "btn-scan": "Skanuj",
+    "top": "Góra",
+    "left": "Lewo",
+    "width": "Szerokość",
+    "height": "Wysokość",
+    "paperSize": "Rozmiar kartki",
+    "brightness": "Jasność",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Wczytywanie urządzeń...",
+    "message:no-devices": "Nie znaleziono żadnych urządzeń",
+    "message:deleted-preview": "Usunięto podgląd",
+    "message:turn-documents": "Przewróć dokumenty na drugą stronę",
+    "message:preview-of-page": "Podgląd strony"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Zachowanie i Interfejs",
+    "locale": "Język",
+    "locale:description": "Wybierz język",
+    "theme": "Skórka",
+    "theme:description": "Skórka. Jeśli używasz skórki systemowej i ją zmienisz, będziesz musiał ponownie uruchomić aplikacje.",
+    "theme:system": "Systemowa",
+    "theme:light": "Jasna",
+    "theme:dark": "Ciemna",
+    "color": "Kolor",
+    "color:description": "Kolor. To zmieni kolor górnego paska aplikacji.",
+    "devices": "Urządzenia i storage",
+    "reset:description": "Czyści ustawione skanery i wymusza ponowne załadowanie.",
+    "reset": "Zresetuj",
+    "clear-storage:description": "Czyści przechowywane pliki tymczasowe",
+    "clear-storage": "Wyczyść"
+  }
+}
