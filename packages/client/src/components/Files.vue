@@ -6,7 +6,7 @@
         <th>{{ $t('files.filename') }}</th>
         <th class="file-date">{{ $t('files.date') }}</th>
         <th>{{ $t('files.size') }}</th>
-        <th><v-btn color="primary" v-on:click="multipleDelete()" icon><v-icon>mdi-delete</v-icon></v-btn></th>
+        <th><v-btn v-if="selectedFiles.length > 0" color="red" v-on:click="multipleDelete()" icon><v-icon>mdi-delete</v-icon></v-btn></th>
       </tr>
     </thead>
     <tbody>
