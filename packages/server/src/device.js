@@ -156,7 +156,7 @@ class Device {
   }
 
   validate() {
-    const mandatory = ['--mode', '--resolution', '-l', '-t', '-x', '-y'];
+    const mandatory = ['--resolution', '-l', '-t', '-x', '-y'];
     for (const feature of mandatory) {
       if (this.features[feature] === undefined) {
         throw `${feature} is missing from device`;

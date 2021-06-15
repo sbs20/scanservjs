@@ -69,4 +69,37 @@ describe('Request', () => {
     assert.strictEqual(request.params.contrast, undefined);
     assert.strictEqual(request.params.dynamicLineart, undefined);
   });
+
+  it('scanimage-a8.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a8.txt');
+    const device = Device.from(file.toText());
+    const context = new Context([device]);
+    const request = new Request(context).extend({
+      params: {
+        deviceId: 'umax1220u:libusb:001:004',
+        top: -1,
+        left: -20,
+        width: 400,
+        height: 400,
+        resolution: '150',
+        mode: 'Color',
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: 'test-pipeline'
+    });
+    
+    assert.strictEqual(request.params.deviceId, 'umax1220u:libusb:001:004');
+    assert.strictEqual(request.params.mode, undefined);
+    assert.strictEqual(request.params.resolution, '150');
+    assert.strictEqual(request.params.left, 0);
+    assert.strictEqual(request.params.top, 0);
+    assert.strictEqual(request.params.width, 228.6);
+    assert.strictEqual(request.params.height, 298);
+    assert.strictEqual(request.params.brightness, undefined);
+    assert.strictEqual(request.params.contrast, undefined);
+    assert.strictEqual(request.params.dynamicLineart, undefined);
+  });
+
 });
