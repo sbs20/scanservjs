@@ -57,6 +57,7 @@
  * @typedef {Object} Configuration
  * @property {string} version
  * @property {number} port
+ * @property {number} timeout
  * @property {string[]} devices
  * @property {boolean} devicesFind
  * @property {string} ocrLanguage

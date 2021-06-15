@@ -10,6 +10,8 @@ app.use(express.static('client'));
 
 configure(app);
 
-app.listen(Config.port, () => {
+const server = app.listen(Config.port, () => {
   log.info('Started');
 });
+
+server.setTimeout(Config.timeout);
