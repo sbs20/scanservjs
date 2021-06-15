@@ -57,6 +57,7 @@
  * @typedef {Object} Configuration
  * @property {string} version
  * @property {number} port
+ * @property {number} timeout
  * @property {string[]} devices
  * @property {boolean} devicesFind
  * @property {string} ocrLanguage
@@ -84,7 +85,7 @@
  * @property {number} width
  * @property {number} height
  * @property {number} resolution
- * @property {string} mode
+ * @property {string} [mode]
  * @property {string} format
  * @property {string} [source]
  * @property {number} [brightness]

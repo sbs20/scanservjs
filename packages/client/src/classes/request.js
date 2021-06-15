@@ -20,8 +20,7 @@ export default class Request {
         left: request.params.left || device.features['-l'].default,
         width: request.params.width || device.features['-x'].default,
         height: request.params.height || device.features['-y'].default,
-        resolution: request.params.resolution || device.features['--resolution'].default,
-        mode: request.params.mode || device.features['--mode'].default
+        resolution: request.params.resolution || device.features['--resolution'].default
       },
       filters: request.filters || [],
       pipeline: request.pipeline || pipeline,
@@ -29,6 +28,9 @@ export default class Request {
       index: 1
     };
 
+    if ('--mode' in device.features) {
+      obj.params.mode = request.params.mode || device.features['--mode'].default;
+    }
     if ('--source' in device.features) {
       obj.params.source = request.params.source || device.features['--source'].default;
     }
