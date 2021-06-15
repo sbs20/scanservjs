@@ -84,7 +84,7 @@
  * @property {number} width
  * @property {number} height
  * @property {number} resolution
- * @property {string} mode
+ * @property {string} [mode]
  * @property {string} format
  * @property {string} [source]
  * @property {number} [brightness]

@@ -42,8 +42,11 @@ class Scanimage {
     log.debug(JSON.stringify(request));
     const params = request.params;
     const cmdBuilder = new CmdBuilder(Config.scanimage);
-    cmdBuilder.arg('-d', params.deviceId)
-      .arg('--mode', params.mode);
+    cmdBuilder.arg('-d', params.deviceId);
+
+    if ('mode' in params) {
+      cmdBuilder.arg('--mode', params.mode);
+    }
 
     // Source needs to go before resolution
     if ('source' in params) {

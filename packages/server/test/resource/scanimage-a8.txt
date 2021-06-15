@@ -1,0 +1,13 @@
+All options specific to device `umax1220u:libusb:001:004':
+    --resolution auto||75|150|300|600dpi [75]
+        Sets the resolution of the scanned image.
+    --gray[=(yes|no)] [no]
+        Do a grayscale rather than color scan
+    -l 0..228.6mm [0]
+        Top-left x position of scan area.
+    -t 0..298.027mm [0]
+        Top-left y position of scan area.
+    -x 0..228.6mm [228.6]
+        Width of scan-area.
+    -y 0..298.027mm [298.027]
+        Height of scan-area.

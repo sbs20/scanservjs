@@ -31,7 +31,6 @@ class Request {
         width: bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]),
         height: bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]),
         resolution: data.params.resolution || features['--resolution'].default,
-        mode: data.params.mode || features['--mode'].default,
         format: 'tiff'
       },
       filters: data.filters || [],
@@ -40,6 +39,9 @@ class Request {
       index: data.index || 1
     });
 
+    if ('--mode' in features) {
+      this.params.mode = data.params.mode || features['--mode'].default;
+    }
     if ('--source' in features) {
       this.params.source = data.params.source || features['--source'].default;
     }

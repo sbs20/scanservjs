@@ -16,7 +16,7 @@
           :label="$t('scan.resolution')" v-model="request.params.resolution"
           :items="device.features['--resolution']['options']"></v-select>
 
-        <v-select
+        <v-select v-if="'--mode' in device.features"
           :label="$t('scan.mode')" v-model="request.params.mode"
           :items="modes" item-value="value" item-text="text"></v-select>
 
