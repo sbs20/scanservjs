@@ -21,3 +21,10 @@ server{
    ...
 }
 ```
+
+## Long scan timeout
+
+When scanning files with high resolution, e.g. 1200dpi it is very likely for the
+request to timeout. This is because node HTTP times out after 2 minutes by
+default. The solution is to increase the default timeout. That's possible by
+setting `config.timeout = 600000;` (for 10 minutes for example).

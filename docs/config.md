@@ -189,7 +189,7 @@ Then, add the following pipeline:
     description: 'ocrmypdf (JPG | @:pipeline.high-quality)',
     get commands() {
       return [
-        'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
         'convert @- pdf:-',
         `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages - scan_0000.pdf`,
         'ls scan_*.*'
@@ -209,6 +209,24 @@ module.exports = {
     };
 
     config.log.level = 'DEBUG';
+  }
+}
+```
+
+### Change default output directory
+
+Exercise caution with this recipe - the app is designed not to allow unsafe
+paths by default. If you are happy to disable this check, then go ahead.
+
+```javascript
+const dayjs = require('dayjs');
+module.exports = {
+  afterConfig(config) {
+    // Set your path here
+    config.outputDirectory = '/home/me/scanned';
+
+    // By default paths with `..` or `/` are not allowed
+    config.allowUnsafePaths = true;
   }
 }
 ```
