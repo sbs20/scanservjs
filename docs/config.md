@@ -212,3 +212,21 @@ module.exports = {
   }
 }
 ```
+
+### Change default output directory
+
+Exercise caution with this recipe - the app is designed not to allow unsafe
+paths by default. If you are happy to disable this check, then go ahead.
+
+```javascript
+const dayjs = require('dayjs');
+module.exports = {
+  afterConfig(config) {
+    // Set your path here
+    config.outputDirectory = '/home/me/scanned';
+
+    // By default paths with `..` or `/` are not allowed
+    config.allowUnsafePaths = true;
+  }
+}
+```
