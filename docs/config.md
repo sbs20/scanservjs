@@ -189,7 +189,7 @@ Then, add the following pipeline:
     description: 'ocrmypdf (JPG | @:pipeline.high-quality)',
     get commands() {
       return [
-        'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
         'convert @- pdf:-',
         `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages - scan_0000.pdf`,
         'ls scan_*.*'
