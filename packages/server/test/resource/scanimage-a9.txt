@@ -1,0 +1,50 @@
+All options specific to device `utsushi:esci:usb:/sys/devices/platform/soc/20980000.usb/usb1/1-1/1-1.2/1-1.2:1.0':
+  General:
+    --source Document Table [Document Table] [read-only]
+        Document Source
+    --enable-resampling[=(yes|no)] [inactive]
+        This option provides the user with a wider range of supported
+        resolutions.  Resolutions not supported by the hardware will be
+        achieved through image processing methods.
+    --resolution 50..1200dpi [75]
+        Resolution
+    --resolution-bind[=(yes|no)] [yes]
+        Bind X and Y resolutions
+    --x-resolution 50..1200dpi [75] [read-only]
+        X Resolution
+    --y-resolution 50..1200dpi [75] [read-only]
+        Y Resolution
+    --scan-area Executive/Portrait|ISO/A4/Portrait|ISO/A5/Portrait|ISO/A5/Landscape|ISO/A6/Portrait|ISO/A6/Landscape|JIS/B5/Portrait|JIS/B6/Portrait|JIS/B6/Landscape|Letter/Portrait|Manual|Maximum [Manual]
+        Scan Area
+    --mode Monochrome|Grayscale|Color [Color]
+        Image Type
+  Geometry:
+    -x 0..215.9mm [215.9]
+        Width of scan-area.
+    -y 0..297.18mm [297.18]
+        Height of scan-area.
+    -l 0..215.9mm [0]
+        Top Left X
+    -t 0..297.18mm [0]
+        Top Left Y
+  Enhancement:
+    --rotate 0 degrees|90 degrees|180 degrees|270 degrees|Auto [0 degrees]
+        Rotate
+    --blank-threshold 0..100 [0]
+        Skip Blank Pages Settings
+    --brightness -100..100 [0]
+        Change brightness of the acquired image.
+    --contrast -100..100 [0]
+        Change contrast of the acquired image.
+    --threshold 0..255 [128]
+        Threshold
+  Other:
+    --gamma 1.0|1.8 [1.8]
+        Gamma
+    --jpeg-quality 1..100 [90]
+        JPEG Quality
+    --transfer-format JPEG|RAW [RAW]
+        Selecting a compressed format such as JPEG normally results in faster
+        device side processing.
+    --transfer-size 1..268435455 [1048576]
+        Transfer Size

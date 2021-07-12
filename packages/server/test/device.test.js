@@ -179,4 +179,28 @@ describe('Device', () => {
     assert.strictEqual(device.features['-y'].limits[1], 298);
     assert.strictEqual(device.features['-y'].default, 298);
   });
+
+  it('scanimage-a9.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a9.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'utsushi:esci:usb:/sys/devices/platform/soc/20980000.usb/usb1/1-1/1-1.2/1-1.2:1.0');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Monochrome', 'Grayscale', 'Color']);
+    assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.strictEqual(device.features['--source'], undefined);
+    assert.deepStrictEqual(device.features['--resolution'].options, [50,75, 150, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 215.9);
+    assert.strictEqual(device.features['-l'].default, 0);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 297.1);
+    assert.strictEqual(device.features['-t'].default, 0);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 215.9);
+    assert.strictEqual(device.features['-x'].default, 215.9);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 297.1);
+    assert.strictEqual(device.features['-y'].default, 297.1);
+  });
 });
