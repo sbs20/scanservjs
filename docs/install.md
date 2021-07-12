@@ -11,6 +11,11 @@
   ```sh
   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/packages/server/installer.sh | sudo bash -s -- -a
   ```
+* If you're using Arch, then [@dadosch](https://github.com/dadosch) created a
+  PKGBUILD script in Arch's AUR which allows Arch-distro-based users to quickly
+  install and update scanservjs with any AUR helper, for example:
+  `yay -S scanservjs`. See
+  [package](https://aur.archlinux.org/packages/scanservjs/) for more.
 * If you're using another distro, then for the time being you either need to
   manually run the steps in the install script or use docker.
 
