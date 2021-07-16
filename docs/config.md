@@ -26,7 +26,7 @@ e.g. `-v /my/local/path:/app/config`.
 scanservjs looks for a file called `config/config.local.js` and attempts to call
 two functions at different stages in the processing:
 * `afterConfig(config)`: whenever a config is read, the result is passed to this
-  function before being either used or sent down tot he browser.
+  function before being either used or sent down to the browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
 * See [example source](../packages/server/config/config.default.js) for more
