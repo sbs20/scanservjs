@@ -23,7 +23,7 @@
             <v-btn @click="closeRename">
               {{ $t('files.dialog:rename-cancel') }}
             </v-btn>
-            <v-btn @click="renameFileConfirm">
+            <v-btn @click="renameFileConfirm" color="primary">
               {{ $t('files.dialog:rename-save') }}
             </v-btn>
           </v-card-actions>
@@ -31,10 +31,10 @@
       </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.lastModified="{ item }">
+    <template v-slot:[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long', $i18n.locale) }}
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="open(item)" class="mr-2">
         mdi-download
       </v-icon>
