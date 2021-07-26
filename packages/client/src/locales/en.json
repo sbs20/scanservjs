@@ -43,7 +43,8 @@
     "filename": "Filename",
     "date": "Date",
     "size": "Size",
-    "message:deleted": "Deleted"
+    "message:deleted": "Deleted",
+    "actions": "Actions"
   },
 
   "navigation": {
@@ -51,7 +52,7 @@
     "files": "Files",
     "settings": "Settings",
     "about": "About",
-    "version": "Version"  
+    "version": "Version"
   },
 
   "batch-mode": {
@@ -61,7 +62,7 @@
     "auto-collate-standard": "Auto (Collate 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (Reverse 1, 3... 2, 4)"
   },
-    
+
   "filter": {
     "auto-level": "Auto level",
     "threshold": "Threshold",
@@ -105,7 +106,7 @@
     "lzw-compressed": "LZW Compressed",
     "ocr": "OCR",
     "text-file": "Text file"
-  },  
+  },
 
   "scan": {
     "device": "Device",
@@ -132,7 +133,7 @@
     "message:no-devices": "Found no devices",
     "message:deleted-preview": "Deleted preview",
     "message:turn-documents": "Turn documents over",
-    "message:preview-of-page": "Preview of page"  
+    "message:preview-of-page": "Preview of page"
   },
 
   "settings": {
