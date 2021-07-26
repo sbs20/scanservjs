@@ -5,23 +5,42 @@
     <template v-slot:top>
       <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
-          <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+          <v-card-title class="text-h5">{{ $t('files.dialog:delete') }}</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+            <v-btn color="blue darken-1" text @click="closeDelete">{{ $t('files.dialog:delete-cancel') }}</v-btn>
+            <v-btn color="blue darken-1" text @click="deleteItemConfirm">{{ $t('files.dialog:delete-ok') }}</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="dialogEdit" max-width="500px">
         <v-card>
-          <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+          <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-text-field
+                  v-model="editedItem.newName"
+                  label="File name"
+              ></v-text-field>
+            </v-container>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeRename">Cancel</v-btn>
-            <v-btn color="blue darken-1" text @click="renameFileConfirm">OK</v-btn>
-            <v-spacer></v-spacer>
+            <v-btn
+                color="blue darken-1"
+                text
+                @click="closeRename"
+            >
+              {{ $t('files.dialog:rename-cancel') }}
+            </v-btn>
+            <v-btn
+                color="blue darken-1"
+                text
+                @click="renameFileConfirm"
+            >
+              {{ $t('files.dialog:rename-save') }}
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -71,12 +90,12 @@ export default {
           align: 'start',
           sortable: false,
           value: 'name',
-        },        {
+        }, {
           text: this.$t('files.date'),
           align: 'start',
           sortable: false,
           value: 'lastModified',
-        },        {
+        }, {
           text: this.$t('files.size'),
           align: 'start',
           sortable: false,
@@ -85,6 +104,14 @@ export default {
         { text: this.$t('files.actions'), value: 'actions', sortable: false },
       ],
       files: [],
+      editedItem: {
+        name: '',
+        newName: ''
+      },
+      defaultItem: {
+        name: '',
+        newName: ''
+      },
       selectedFiles: []
     };
   },
@@ -146,17 +173,38 @@ export default {
     fileRename(file) {
       this.editedIndex = this.files.indexOf(file);
       this.editedItem = Object.assign({}, file);
+      this.editedItem.newName = this.editedItem.name;
       this.dialogEdit = true;
     },
 
     renameFileConfirm() {
-      this.dialogEdit = false;
+      this.$emit('mask', 1);
+      Common.fetch(`files/${this.editedItem.name}`, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({newName: this.editedItem.newName})
+      }).then(() => {
+        this.$emit('notify', {type: 'i', message: `${this.$t('files.message:renamed')}`});
+        this.fileList();
+        this.$emit('mask', -1);
+      }).catch(error => {
+        this.$emit('notify', {type: 'e', message: error});
+        this.$emit('mask', -1);
+      }).finally(() => {
+        this.closeRename();
+      });
     },
 
-    closeRename () {
+    closeRename() {
       this.dialogEdit = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
-
     open(file) {
       window.location.href = `files/${file.name}`;
     },

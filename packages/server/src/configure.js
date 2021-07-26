@@ -133,6 +133,18 @@ function configure(app, rootPath) {
     }
   });
 
+  app.put('/files/*', (req, res) => {
+    logRequest(req);
+    try {
+      const name = req.params[0];
+      const newName = req.body.newName;
+      FileInfo.unsafe(Config.outputDirectory, name).move(Config.outputDirectory + '/' + newName);
+      res.send('200');
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
   app.post('/preview', async (req, res) => {
     logRequest(req);
     try {

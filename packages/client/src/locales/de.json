@@ -43,7 +43,15 @@
     "filename": "Dateiname",
     "date": "Datum",
     "size": "Größe",
-    "message:deleted": "Gelöscht"
+    "message:deleted": "Gelöscht",
+    "message:renamed": "Datei umbenannt",
+    "dialog:delete": "Datei löschen?",
+    "dialog:delete-cancel": "Abbruch",
+    "dialog:delete-ok": "Ok",
+    "dialog:rename": "Datei umbenennen",
+    "dialog:rename-cancel": "Abbruch",
+    "dialog:rename-save": "Speichern",
+    "actions": "Aktionen"
   },
 
   "navigation": {
