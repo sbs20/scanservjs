@@ -6,7 +6,6 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 
 import Files from './components/Files.vue';
-import ExtendedFiles from './components/ExtendedFiles.vue';
 import Scan from './components/Scan.vue';
 import Settings from './components/Settings.vue';
 import About from './components/About.vue';
@@ -23,7 +22,6 @@ const router = new VueRouter({
   routes: [
     { path: '/about', component: About },
     { path: '/files', component: Files },
-    { path: '/extendedfiles', component: ExtendedFiles },
     { path: '/settings', component: Settings },
     { path: '/scan', component: Scan }
   ]

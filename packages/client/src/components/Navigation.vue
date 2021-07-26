@@ -28,11 +28,6 @@
           <v-list-item-title>{{ $t('navigation.files') }}</v-list-item-title>
         </v-list-item>
 
-        <v-list-item @click="go('/extendedfiles')">
-          <v-list-item-icon><v-icon>mdi-file-document-multiple</v-icon></v-list-item-icon>
-          <v-list-item-title>Extended Files</v-list-item-title>
-        </v-list-item>
-
         <v-list-item @click="go('/settings')">
           <v-list-item-icon><v-icon>mdi-cog</v-icon></v-list-item-icon>
           <v-list-item-title>{{ $t('navigation.settings') }}</v-list-item-title>
