@@ -106,6 +106,17 @@
     "text-file": "文本文档"
   },  
 
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
+
   "scan": {
     "device": "设备",
     "source": "来源",

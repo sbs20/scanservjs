@@ -106,7 +106,18 @@
     "lzw-compressed": "##LZW-COMPRESSED",
     "ocr": "##OCR",
     "text-file": "##TEXT-FILE"
-  },  
+  },
+
+  "paper-size": {
+    "letter": "##LETTER",
+    "legal": "##LEGAL",
+    "tabloid": "##TABLOID",
+    "ledger": "##LEDGER",
+    "junior-legal": "##JUNIOR-LEGAL",
+    "half-letter": "##HALF-LETTER",
+    "portrait": "##PORTRAIT",
+    "landscape": "##LANDSCAPE"
+  },
 
   "scan": {
     "device": "##SCAN.DEVICE",

@@ -107,6 +107,17 @@
     "text-file": "Текстовый файл"
   },
 
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
+
   "scan": {
     "device": "Устройство",
     "source": "Источник",

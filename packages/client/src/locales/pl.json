@@ -107,6 +107,17 @@
     "text-file": "Plik tekstowy"
   },  
 
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
+
   "scan": {
     "device": "Urządzenie",
     "source": "Źródło",
