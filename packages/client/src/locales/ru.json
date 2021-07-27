@@ -44,12 +44,12 @@
     "date": "Дата",
     "size": "Размер",
     "message:deleted": "Удален",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "Файл переименован",
+    "button:delete-selected": "Удалить выбранное",
+    "dialog:rename": "Переименовать",
+    "dialog:rename-cancel": "Отмена",
+    "dialog:rename-save": "Сохранить",
+    "actions": "Действие"
   },
 
   "navigation": {
