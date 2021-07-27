@@ -43,7 +43,13 @@
     "filename": "##FILENAME",
     "date": "##DATE",
     "size": "##SIZE",
-    "message:deleted": "##MESSAGE:DELETED"
+    "message:deleted": "##MESSAGE:DELETED",
+    "message:renamed": "##FILE-RENAMED",
+    "button:delete-selected": "##DELETE-SELECTED",
+    "dialog:rename": "##RENAME",
+    "dialog:rename-cancel": "##CANCEL",
+    "dialog:rename-save": "##SAVE",
+    "actions": "##ACTIONS"
   },
 
   "navigation": {

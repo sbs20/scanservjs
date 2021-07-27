@@ -43,7 +43,13 @@
     "filename": "Nome file",
     "date": "Data",
     "size": "Dimensione",
-    "message:deleted": "Eliminato"
+    "message:deleted": "Eliminato",
+    "message:renamed": "File renamed",
+    "button:delete-selected": "Delete Selected",
+    "dialog:rename": "Change file name",
+    "dialog:rename-cancel": "Cancel",
+    "dialog:rename-save": "Save",
+    "actions": "Actions"
   },
 
   "navigation": {
