@@ -44,12 +44,12 @@
     "date": "Data",
     "size": "Dimensione",
     "message:deleted": "Eliminato",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "File rinominato",
+    "button:delete-selected": "Elimina selezionati",
+    "dialog:rename": "Rinomina file",
+    "dialog:rename-cancel": "Annulla",
+    "dialog:rename-save": "Salva",
+    "actions": "Azioni"
   },
 
   "navigation": {
@@ -114,14 +114,14 @@
   },
 
   "paper-size": {
-    "letter": "Letter",
-    "legal": "Legal",
+    "letter": "Lettera",
+    "legal": "Legale",
     "tabloid": "Tabloid",
     "ledger": "Ledger",
-    "junior-legal": "Junior legal",
-    "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "junior-legal": "Junior legale",
+    "half-letter": "Mezza lettera",
+    "portrait": "Verticale",
+    "landscape": "Orizzontale"
   },
 
   "scan": {
