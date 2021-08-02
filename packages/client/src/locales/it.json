@@ -43,7 +43,13 @@
     "filename": "Nome file",
     "date": "Data",
     "size": "Dimensione",
-    "message:deleted": "Eliminato"
+    "message:deleted": "Eliminato",
+    "message:renamed": "File rinominato",
+    "button:delete-selected": "Elimina selezionati",
+    "dialog:rename": "Rinomina file",
+    "dialog:rename-cancel": "Annulla",
+    "dialog:rename-save": "Salva",
+    "actions": "Azioni"
   },
 
   "navigation": {
@@ -105,6 +111,17 @@
     "lzw-compressed": "Conpresso con LZW",
     "ocr": "OCR",
     "text-file": "File di testo"
+  },
+
+  "paper-size": {
+    "letter": "Lettera",
+    "legal": "Legale",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legale",
+    "half-letter": "Mezza lettera",
+    "portrait": "Verticale",
+    "landscape": "Orizzontale"
   },
 
   "scan": {

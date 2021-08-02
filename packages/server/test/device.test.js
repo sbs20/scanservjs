@@ -188,7 +188,7 @@ describe('Device', () => {
     assert.deepStrictEqual(device.features['--mode'].options, ['Monochrome', 'Grayscale', 'Color']);
     assert.strictEqual(device.features['--mode'].default, 'Color');
     assert.strictEqual(device.features['--source'], undefined);
-    assert.deepStrictEqual(device.features['--resolution'].options, [50,75, 150, 300, 600, 1200]);
+    assert.deepStrictEqual(device.features['--resolution'].options, [50, 75, 150, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 75);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 215.9);

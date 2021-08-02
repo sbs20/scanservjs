@@ -43,7 +43,13 @@
     "filename": "Nombre de fichero",
     "date": "Fecha",
     "size": "Tamaño",
-    "message:deleted": "Borrado"
+    "message:deleted": "Borrado",
+    "message:renamed": "File renamed",
+    "button:delete-selected": "Delete Selected",
+    "dialog:rename": "Change file name",
+    "dialog:rename-cancel": "Cancel",
+    "dialog:rename-save": "Save",
+    "actions": "Actions"
   },
 
   "navigation": {
@@ -106,6 +112,17 @@
     "ocr": "OCR",
     "text-file": "Fichero de texto"
   },  
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
 
   "scan": {
     "device": "Dispositivo",

@@ -6,30 +6,30 @@
   "about": {
     "main": "scanservjs - простой веб-интерфейс для сканеров, который предоставляет общий доступ к сканерам по сети (используя SANE) без необходимости устанавливать драйверы и исключая сложную процедуру настройки. Поддерживаются форматы TIF, JPG, PNG, PDF и TXT (используется Tesseract OCR) с возможностью задать степень сжатия. Доступно сканирование многостраничных документов. Работает со всеми SANE-совместимыми устройствами.",
     "issue": "Обратная связь, исходный код:",
-    "system-info": "System information"
+    "system-info": "Информация о системе"
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
-    "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "accent-4": "По умолчанию",
+    "red": "Красный",
+    "pink": "Розовый",
+    "purple": "Фиолетовый",
+    "deep-purple": "Темно-фиолетовый",
+    "indigo": "Индиго",
+    "blue": "Синий",
+    "light-blue": "Светло-синий",
+    "cyan": "Голубой",
+    "teal": "Бирюзовый",
+    "green": "Зеленый",
+    "light-green": "Светло-зеленый",
+    "lime": "Лайм",
+    "yellow": "Желтый",
+    "amber": "Янтарный",
+    "orange": "Оранжевый",
+    "deep-orange": "Темно-оранжевый",
+    "brown": "Коричневый",
+    "blue-grey": "Серо-голубой",
+    "grey": "Серый"
   },
 
   "batch-dialog": {
@@ -43,7 +43,13 @@
     "filename": "Имя файла",
     "date": "Дата",
     "size": "Размер",
-    "message:deleted": "Удален"
+    "message:deleted": "Удален",
+    "message:renamed": "Файл переименован",
+    "button:delete-selected": "Удалить выбранное",
+    "dialog:rename": "Переименовать",
+    "dialog:rename-cancel": "Отмена",
+    "dialog:rename-save": "Сохранить",
+    "actions": "Действие"
   },
 
   "navigation": {
@@ -69,10 +75,10 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
-    "lineart": "Lineart",
+    "color": "Цветной",
+    "halftone": "Полутона",
+    "gray": "Серый",
+    "lineart": "Черно-белый",
 
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
@@ -82,11 +88,11 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
-    "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
+    "flatbed": "Планшет",
+    "adf": "Автоподача документов",
+    "auto": "Авто",
+    "left-aligned": "Выровнено по левому краю",
+    "centrally-aligned": "Выровнено по центру",
     "duplex": "Duplex",
     "transparency unit": "Transparency Unit",
 
@@ -105,6 +111,17 @@
     "lzw-compressed": "Сжатие LZW",
     "ocr": "OCR",
     "text-file": "Текстовый файл"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
   },
 
   "scan": {
@@ -145,12 +162,12 @@
     "theme:system": "Как в системе",
     "theme:light": "Светлая",
     "theme:dark": "Темная",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar.",
-    "devices": "Devices and storage",
-    "reset:description": "Clears stored scanner devices and forces a reload",
+    "color": "Цвет",
+    "color:description": "Выбор цвета заголовка приложения",
+    "devices": "Устройства и хранилище",
+    "reset:description": "Очистить сохраненные устройства сканера и перезагрузиться",
     "reset": "Сбросить",
-    "clear-storage:description": "Clears local storage of any cached parameters",
-    "clear-storage": "Clear"
+    "clear-storage:description": "Очистить локальное хранилище и сбросить настройки по умолчанию",
+    "clear-storage": "Очистить"
   }
 }

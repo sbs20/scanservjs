@@ -43,7 +43,13 @@
     "filename": "##FILENAME",
     "date": "##DATE",
     "size": "##SIZE",
-    "message:deleted": "##MESSAGE:DELETED"
+    "message:deleted": "##MESSAGE:DELETED",
+    "message:renamed": "##FILE-RENAMED",
+    "button:delete-selected": "##DELETE-SELECTED",
+    "dialog:rename": "##RENAME",
+    "dialog:rename-cancel": "##CANCEL",
+    "dialog:rename-save": "##SAVE",
+    "actions": "##ACTIONS"
   },
 
   "navigation": {
@@ -106,7 +112,18 @@
     "lzw-compressed": "##LZW-COMPRESSED",
     "ocr": "##OCR",
     "text-file": "##TEXT-FILE"
-  },  
+  },
+
+  "paper-size": {
+    "letter": "##LETTER",
+    "legal": "##LEGAL",
+    "tabloid": "##TABLOID",
+    "ledger": "##LEDGER",
+    "junior-legal": "##JUNIOR-LEGAL",
+    "half-letter": "##HALF-LETTER",
+    "portrait": "##PORTRAIT",
+    "landscape": "##LANDSCAPE"
+  },
 
   "scan": {
     "device": "##SCAN.DEVICE",
