@@ -35,7 +35,7 @@
   "batch-dialog": {
     "btn-cancel": "Zrušení",
     "btn-finish": "Dokončit",
-    "btn-rescan": "Znovu oskenovat",
+    "btn-rescan": "Oskenovat znovu",
     "btn-next": "Další"
   },
 
@@ -44,12 +44,12 @@
     "date": "Datum",
     "size": "Velikost",
     "message:deleted": "Odstraněno",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "Soubor byl přejmenován",
+    "button:delete-selected": "Odstranit vybrané",
+    "dialog:rename": "Změnit název souboru",
+    "dialog:rename-cancel": "Zrušit",
+    "dialog:rename-save": "Uložit",
+    "actions": "Akce"
   },
 
   "navigation": {
@@ -71,7 +71,7 @@
   "filter": {
     "auto-level": "Automatické zarovnání",
     "threshold": "Práh",
-    "blur": "Rozmazané"
+    "blur": "Rozostření"
   },
 
   "mode": {
@@ -120,8 +120,8 @@
     "ledger": "Ledger",
     "junior-legal": "Junior legal",
     "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "portrait": "Na výšku",
+    "landscape": "Na šířku"
   },
 
   "scan": {
@@ -158,7 +158,7 @@
     "locale": "Lokalizace",
     "locale:description": "Vyberte vaši lokalizaci",
     "theme": "Motiv",
-    "theme:description": "Motiv. Pokud použijete systémový motiv a ten se změní, budete potřebovat aktualizovat stránku s aplikací.",
+    "theme:description": "Motiv. Pokud použijete systémový motiv a dojde ke změně, budete potřebovat aktualizovat stránku s aplikací.",
     "theme:system": "Podle systému",
     "theme:light": "Světlý",
     "theme:dark": "Tmavý",
