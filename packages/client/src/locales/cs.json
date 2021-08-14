@@ -35,7 +35,7 @@
   "batch-dialog": {
     "btn-cancel": "Zrušení",
     "btn-finish": "Dokončit",
-    "btn-rescan": "Znovu oskenovat",
+    "btn-rescan": "Oskenovat znovu",
     "btn-next": "Další"
   },
 
@@ -71,7 +71,7 @@
   "filter": {
     "auto-level": "Automatické zarovnání",
     "threshold": "Práh",
-    "blur": "Rozmazané"
+    "blur": "Rozostření"
   },
 
   "mode": {
@@ -158,7 +158,7 @@
     "locale": "Lokalizace",
     "locale:description": "Vyberte vaši lokalizaci",
     "theme": "Motiv",
-    "theme:description": "Motiv. Pokud použijete systémový motiv a ten se změní, budete potřebovat aktualizovat stránku s aplikací.",
+    "theme:description": "Motiv. Pokud použijete systémový motiv a dojde ke změně, budete potřebovat aktualizovat stránku s aplikací.",
     "theme:system": "Podle systému",
     "theme:light": "Světlý",
     "theme:dark": "Tmavý",
