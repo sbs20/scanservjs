@@ -44,12 +44,12 @@
     "date": "Datum",
     "size": "Velikost",
     "message:deleted": "Odstraněno",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "Soubor byl přejmenován",
+    "button:delete-selected": "Odstranit vybrané",
+    "dialog:rename": "Změnit název souboru",
+    "dialog:rename-cancel": "Zrušit",
+    "dialog:rename-save": "Uložit",
+    "actions": "Akce"
   },
 
   "navigation": {
@@ -120,8 +120,8 @@
     "ledger": "Ledger",
     "junior-legal": "Junior legal",
     "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "portrait": "Na výšku",
+    "landscape": "Na šířku"
   },
 
   "scan": {
