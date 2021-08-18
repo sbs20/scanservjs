@@ -132,6 +132,7 @@ class FileInfo {
    * @returns {Promise.<void>}
    */
   async move(destination) {
+    FileInfo.assertPath(destination);
     return await new Promise((resolve, reject) => {
       mv(this.fullname, destination, (err) => {
         if (err) {

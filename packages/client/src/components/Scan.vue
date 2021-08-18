@@ -73,7 +73,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
           </template>
-          <v-list>
+          <v-list dense>
             <v-list-item
               v-for="(item, index) in paperSizes"
               @click="updatePaperSize(item)"
@@ -223,9 +223,15 @@ export default {
         y: this.device.features['-y'].limits[1]
       };
 
-      const paperSizes = this.context.paperSizes
-        .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y);
-      return paperSizes;
+      return this.context.paperSizes
+        .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y)
+        .map(paper => {
+          const variables = (paper.name.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
+          variables.forEach(v => {
+            paper.name = paper.name.replaceAll(`@:${v}`, this.$t(v));
+          });
+          return paper;
+        });
     },
 
     pipelines() {

@@ -43,7 +43,13 @@
     "filename": "文件名",
     "date": "日期",
     "size": "大小",
-    "message:deleted": "已删除"
+    "message:deleted": "已删除",
+    "message:renamed": "File renamed",
+    "button:delete-selected": "Delete Selected",
+    "dialog:rename": "Change file name",
+    "dialog:rename-cancel": "Cancel",
+    "dialog:rename-save": "Save",
+    "actions": "Actions"
   },
 
   "navigation": {
@@ -105,6 +111,17 @@
     "ocr": "OCR文字识别",
     "text-file": "文本文档"
   },  
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
 
   "scan": {
     "device": "设备",
