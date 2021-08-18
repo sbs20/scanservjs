@@ -2,11 +2,12 @@ name: docker-build
 
 on:
   workflow_dispatch:
-#   push:
-#     branches:
-#       - 'master'
-#     tags:
-#       - 'v*'
+  push:
+    branches:
+      - 'master'
+      - 'staging'
+    tags:
+      - 'v*'
 
 jobs:
   docker:
@@ -14,12 +15,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
