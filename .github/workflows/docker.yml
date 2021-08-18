@@ -2,11 +2,12 @@ name: docker-build
 
 on:
   workflow_dispatch:
-#   push:
-#     branches:
-#       - 'master'
-#     tags:
-#       - 'v*'
+  push:
+    branches:
+      - 'master'
+      - 'staging'
+    tags:
+      - 'v*'
 
 jobs:
   docker:
@@ -14,12 +15,6 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: sbs20/scanservjs
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -30,11 +25,28 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-      - name: Build and push
-        id: docker_build
+      - name: Push staging
+        if: github.ref == 'refs/heads/staging'
         uses: docker/build-push-action@v2
         with:
-          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:staging
+
+      - name: Push master
+        if: github.ref == 'refs/heads/master'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
+
+      - name: Get version
+        id: get_version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Push release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: docker/build-push-action@v2
+        with:
           push: ${{ github.event_name != 'pull_request' }}
-          tags: release-${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
