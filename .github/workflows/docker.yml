@@ -3,6 +3,9 @@ name: docker-build
 on:
   workflow_dispatch:
   push:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
     branches:
       - 'master'
       - 'staging'
