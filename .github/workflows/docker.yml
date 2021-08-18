@@ -19,7 +19,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: sbs20/scanservjs
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -36,5 +36,5 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: release-${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/release-${{ steps.meta.outputs.tags }}
+          labels: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.meta.outputs.labels }}
