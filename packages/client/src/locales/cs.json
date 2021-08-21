@@ -33,18 +33,18 @@
   },
 
   "batch-dialog": {
-    "btn-cancel": "Zrušení",
+    "btn-cancel": "Přerušit",
     "btn-finish": "Dokončit",
     "btn-rescan": "Oskenovat znovu",
-    "btn-next": "Další"
+    "btn-next": "Další strana"
   },
 
   "files": {
     "filename": "Název souboru",
     "date": "Datum",
     "size": "Velikost",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
+    "items-per-page": "Počet souborů na stránku",
+    "items-per-page-all": "Všechny",
     "message:deleted": "Soubor {0} byl odstraněn",
     "message:renamed": "Soubor byl přejmenován",
     "button:delete-selected": "Odstranit vybrané",
@@ -113,7 +113,7 @@
     "lzw-compressed": "S kompresí LZW",
     "ocr": "OCR",
     "text-file": "Textový soubor"
-  },  
+  },
 
   "paper-size": {
     "letter": "Letter",
