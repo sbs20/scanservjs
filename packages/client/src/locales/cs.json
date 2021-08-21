@@ -33,10 +33,10 @@
   },
 
   "batch-dialog": {
-    "btn-cancel": "Zrušení",
+    "btn-cancel": "Přerušit",
     "btn-finish": "Dokončit",
     "btn-rescan": "Oskenovat znovu",
-    "btn-next": "Další"
+    "btn-next": "Další strana"
   },
 
   "files": {
@@ -113,7 +113,7 @@
     "lzw-compressed": "S kompresí LZW",
     "ocr": "OCR",
     "text-file": "Textový soubor"
-  },  
+  },
 
   "paper-size": {
     "letter": "Letter",
