@@ -45,7 +45,7 @@
     "size": "Velikost",
     "items-per-page": "Files per page",
     "items-per-page-all": "All",
-    "message:deleted": "Odstraněno {0}",
+    "message:deleted": "Soubor {0} byl odstraněn",
     "message:renamed": "Soubor byl přejmenován",
     "button:delete-selected": "Odstranit vybrané",
     "dialog:rename": "Změnit název souboru",
