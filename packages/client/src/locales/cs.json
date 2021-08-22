@@ -33,10 +33,10 @@
   },
 
   "batch-dialog": {
-    "btn-cancel": "Přerušit",
+    "btn-cancel": "Zrušit",
     "btn-finish": "Dokončit",
-    "btn-rescan": "Oskenovat znovu",
-    "btn-next": "Další strana"
+    "btn-rescan": "Znovu oskenovat stranu",
+    "btn-next": "Další"
   },
 
   "files": {
@@ -151,7 +151,7 @@
     "message:no-devices": "Nebyla nalezena žádná zařízení",
     "message:deleted-preview": "Odstranit náhled",
     "message:turn-documents": "Obrátit dokumenty",
-    "message:preview-of-page": "Náhled stránky"
+    "message:preview-of-page": "Náhled strany"
   },
 
   "settings": {
