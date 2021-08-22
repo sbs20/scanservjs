@@ -33,9 +33,9 @@
   },
 
   "batch-dialog": {
-    "btn-cancel": "Zrušení",
+    "btn-cancel": "Zrušit",
     "btn-finish": "Dokončit",
-    "btn-rescan": "Oskenovat znovu",
+    "btn-rescan": "Znovu oskenovat stranu",
     "btn-next": "Další"
   },
 
@@ -43,9 +43,9 @@
     "filename": "Název souboru",
     "date": "Datum",
     "size": "Velikost",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
-    "message:deleted": "Odstraněno {0}",
+    "items-per-page": "Počet souborů na stránku",
+    "items-per-page-all": "Všechny",
+    "message:deleted": "Soubor {0} byl odstraněn",
     "message:renamed": "Soubor byl přejmenován",
     "button:delete-selected": "Odstranit vybrané",
     "dialog:rename": "Změnit název souboru",
@@ -113,7 +113,7 @@
     "lzw-compressed": "S kompresí LZW",
     "ocr": "OCR",
     "text-file": "Textový soubor"
-  },  
+  },
 
   "paper-size": {
     "letter": "Letter",
@@ -151,7 +151,7 @@
     "message:no-devices": "Nebyla nalezena žádná zařízení",
     "message:deleted-preview": "Odstranit náhled",
     "message:turn-documents": "Obrátit dokumenty",
-    "message:preview-of-page": "Náhled stránky"
+    "message:preview-of-page": "Náhled strany"
   },
 
   "settings": {
