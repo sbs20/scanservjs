@@ -64,10 +64,10 @@
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
-        <v-text-field :label="$t('scan.top')" type="number" v-model="request.params.top" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.left')" type="number" v-model="request.params.left" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.width')" type="number" v-model="request.params.width" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.height')" type="number" v-model="request.params.height" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.top')" type="number" step="any" v-model="request.params.top" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.left')" type="number" step="any" v-model="request.params.left" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.width')" type="number" step="any" v-model="request.params.width" @blur="onCoordinatesChange" />
+        <v-text-field :label="$t('scan.height')" type="number" step="any" v-model="request.params.height" @blur="onCoordinatesChange" />
 
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
