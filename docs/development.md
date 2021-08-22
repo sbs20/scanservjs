@@ -1,6 +1,6 @@
 # Development
 
-## Steps
+## Install and setup
 
 * Install Node
 * Clone the repo
@@ -19,15 +19,37 @@ npm run serve
 This will hook the server component into webpack (see vue.config.js) and
 references below.
 
+If you run into the following error, then you may need to increase your inotify
+limit:
+
+```
+[nodemon] Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/.../scanservjs/packages/server/src'
+```
+
+To incease it temporarily:
+
+```
+sudo sysctl fs.inotify.max_user_watches=131072
+```
+
+To update it permanently will depend on your distribution - but this will work
+with Debian:
+
+```
+echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.conf; sudo sysctl -p
+```
+
 ## Build
 
 Before committing please verify and build
+
 ```
 npm run verify
 npm run build
 ```
 
 Create a local release package
+
 ```
 npm run release
 ```
