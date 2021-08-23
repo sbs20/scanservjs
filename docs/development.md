@@ -6,6 +6,9 @@
 # Install dependencies
 sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
 
+# Ideally set the npm version
+sudo npm install npm@7.11.2 -g
+
 # Enable PDF (required for execution and unit tests)
 sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
