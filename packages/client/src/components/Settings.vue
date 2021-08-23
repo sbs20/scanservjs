@@ -22,7 +22,7 @@
             <div style="max-width: 10rem;">
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on">{{ $t('settings.color') }}</v-btn>
+                  <v-btn small v-bind="attrs" v-on="on">{{ $t('settings.color') }}</v-btn>
                 </template>
                 <v-list>
                   <v-list-item v-for="item in colors" :key="item.value"
@@ -61,7 +61,7 @@
             {{ $t('settings.reset:description') }}
           </template>
           <template v-slot:action>
-            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+            <v-btn small color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
           </template>
         </settings-item>
 
@@ -70,7 +70,7 @@
             {{ $t('settings.clear-storage:description') }}
           </template>
           <template v-slot:action>
-            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+            <v-btn small color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           </template>
         </settings-item>
       </template>

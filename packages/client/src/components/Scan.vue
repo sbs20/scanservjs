@@ -9,7 +9,7 @@
             v-if="context.devices.length > 0"
             :label="$t('scan.device')" v-model="device"
             :items="context.devices" return-object item-text="name" @change="clear"></v-select>
-          <v-btn class="ml-2 mt-4 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon>mdi-refresh</v-icon></v-btn>
+          <v-btn small class="ml-2 mt-5 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon>mdi-refresh</v-icon></v-btn>
         </div>
 
         <v-select v-if="'--source' in device.features"
@@ -51,9 +51,9 @@
           item-value="value"></v-select>
 
         <div class="d-flex flex-row-reverse flex-wrap">
-          <v-btn color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
-          <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
-          <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
+          <v-btn small color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
+          <v-btn small color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn small color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
         </div>
       </v-col>
 
@@ -71,7 +71,7 @@
 
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
+            <v-btn small color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
           </template>
           <v-list dense>
             <v-list-item

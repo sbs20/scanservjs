@@ -11,7 +11,7 @@
       <a target="_blank" href="https://github.com/sbs20/scanservjs">https://github.com/sbs20/scanservjs</a>
     </div>
 
-    <v-btn @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
+    <v-btn small @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
 
     <v-dialog v-model="systemInfoDialog" aria-role="dialog" max-width="480" v-on:keydown.stop="_onKeys" aria-modal>
       <v-card>
