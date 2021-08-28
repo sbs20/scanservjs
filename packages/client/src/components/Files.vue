@@ -12,7 +12,7 @@
     <template v-slot:top>
       <v-toolbar flat>
       <v-spacer></v-spacer>
-      <v-btn small @click="multipleDelete" color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
+      <v-btn @click="multipleDelete" color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
       <v-dialog v-model="dialogEdit" max-width="500px">
         <v-card>
           <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
