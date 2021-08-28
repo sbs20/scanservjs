@@ -50,6 +50,12 @@ debug where the problem is:
   [here](./sane.md)) to allow certain groups access to the hardware - but it's
   also worth verifying that the `scanservjs` user is a member of the `scanner`
   group (or the group specified in your udev rule): `groups scanservjs`.
+* If everything so far has worked, then also try running a scan as the
+  scanservjs user with
+  `sudo su - scanservjs -c 'scanimage --format tiff > test.tif'` - this should
+  output a tif file in the scanservjs home directory (probably
+  `/home/scanservjs/`). If you can get this to work then scanservjs should be
+  working fine.
 * Getting logs: use `journalctl`. See the journalctl manpage for details but
   `sudo journalctl -e -u scanservjs` should be enough to get you started.
 

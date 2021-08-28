@@ -1,33 +1,60 @@
 # Development
 
-## Steps
+## Install and setup
 
-* Install Node
-* Clone the repo
-* Navigate to the repo directory
-  ```
-  sudo npm install -g @vue/cli @vue/cli-service-global gulp-cli
-  npm run install
-  ```
+```shell
+# Install dependencies
+sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
 
-## Run for development
+# Ideally set the npm version
+sudo npm install npm@7.11.2 -g
 
-```
+# Enable PDF (required for execution and unit tests)
+sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
+
+# Clone the repo
+git clone https://github.com/sbs20/scanservjs.git
+
+# Install all packages
+cd scanservjs && npm run install
+
+# Run (from the scanservjs directory)
 npm run serve
 ```
 
-This will hook the server component into webpack (see vue.config.js) and
-references below.
+`npm run serve` will hook the development server into webpack (see
+vue.config.js).
+
+If you run into the following error, then you may need to increase your inotify
+limit:
+
+```
+[nodemon] Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/.../scanservjs/packages/server/src'
+```
+
+To incease it temporarily:
+
+```
+sudo sysctl fs.inotify.max_user_watches=131072
+```
+
+To update it permanently will depend on your distribution - but this will work
+with Debian:
+
+```
+echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.conf; sudo sysctl -p
+```
 
 ## Build
 
 Before committing please verify and build
+
 ```
-npm run verify
-npm run build
+npm run verify && npm run build
 ```
 
-Create a local release package
+Alternatively, create a local release package
+
 ```
 npm run release
 ```

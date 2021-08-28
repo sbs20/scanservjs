@@ -16,7 +16,8 @@ module.exports = {
   devServer: {
     before: app => {
       configure(app, '../server/');
-    }
+    },
+    disableHostCheck: true
   },
 
   pages: {
