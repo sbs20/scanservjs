@@ -219,7 +219,6 @@ Exercise caution with this recipe - the app is designed not to allow unsafe
 paths by default. If you are happy to disable this check, then go ahead.
 
 ```javascript
-const dayjs = require('dayjs');
 module.exports = {
   afterConfig(config) {
     // Set your path here
@@ -227,6 +226,20 @@ module.exports = {
 
     // By default paths with `..` or `/` are not allowed
     config.allowUnsafePaths = true;
+  }
+}
+```
+
+### Only show ISO paper sizes
+
+You can use a filter to include only the paper sizes you want. To only show ISO
+sizes do something like the following. You can obviously extend or reverse the
+filter as required.
+
+```javascript
+module.exports = {
+  afterConfig(config) {
+    config.paperSizes = config.paperSizes.filter(p => /[AB]\d/.test(p.name));
   }
 }
 ```

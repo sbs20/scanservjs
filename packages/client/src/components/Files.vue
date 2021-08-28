@@ -4,6 +4,10 @@
       :items="files"
       v-model="selectedFiles"
       item-key="name"
+      :footer-props="{
+        'items-per-page-text': $t('files.items-per-page'),
+        'items-per-page-all-text': $t('files.items-per-page-all')
+      }"
       show-select>
     <template v-slot:top>
       <v-toolbar flat>
@@ -20,10 +24,10 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="closeRename">
+            <v-btn small @click="closeRename">
               {{ $t('files.dialog:rename-cancel') }}
             </v-btn>
-            <v-btn @click="renameFileConfirm" color="primary">
+            <v-btn small @click="renameFileConfirm" color="primary">
               {{ $t('files.dialog:rename-save') }}
             </v-btn>
           </v-card-actions>
@@ -44,6 +48,9 @@
       <v-icon @click="fileRemove(item)" class="mr-2">
         mdi-delete
       </v-icon>
+    </template>
+    <template v-slot:[`footer.page-text`]="items">
+      {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
     </template>
   </v-data-table>
 </template>
@@ -117,7 +124,7 @@ export default {
       Common.fetch(`files/${file.name}`, {
         method: 'DELETE'
       }).then(data => {
-        this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted')} ${data.name}`});
+        this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted', [data.name])}`});
         this.fileList();
         this.$emit('mask', -1);
       }).catch(error => {
@@ -169,7 +176,7 @@ export default {
         const name = this.selectedFiles[0].name;
         try {
           await Common.fetch(`files/${name}`, {method: 'DELETE'});
-          this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted')} ${name}`});
+          this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted', [name])}`});
         } catch (error) {
           this.$emit('notify', {type: 'e', message: error});
         }

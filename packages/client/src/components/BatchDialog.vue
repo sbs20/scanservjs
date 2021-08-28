@@ -1,15 +1,16 @@
 <template>
-  <v-dialog v-model="show" aria-role="dialog" max-width="480" v-on:keydown.stop="_onKeys" persistent aria-modal>
+  <v-dialog v-model="show" aria-role="dialog" max-width="620" v-on:keydown.stop="_onKeys" persistent aria-modal>
     <v-card>
       <v-card-title>
         {{ message }}
       </v-card-title>
       <v-card-text>
-        <v-spacer></v-spacer>
-        <v-btn text @click.prevent="show = false">{{ $t('batch-dialog.btn-cancel') }}</v-btn>
-        <v-btn v-if="onFinish" color="green" text @click.prevent="finish">{{ $t('batch-dialog.btn-finish') }}</v-btn>
-        <v-btn v-if="onRescan" color="warning" text @click.prevent="rescan">{{ $t('batch-dialog.btn-rescan') }}</v-btn>
-        <v-btn color="primary" text @click.prevent="next">{{ $t('batch-dialog.btn-next') }}</v-btn>
+        <div class="d-flex flex-wrap flex-row-reverse">
+          <v-btn small color="primary" text @click.prevent="next">{{ $t('batch-dialog.btn-next') }}</v-btn>
+          <v-btn small v-if="onFinish" color="green" text @click.prevent="finish">{{ $t('batch-dialog.btn-finish') }}</v-btn>
+          <v-btn small v-if="onRescan" text @click.prevent="rescan">{{ $t('batch-dialog.btn-rescan') }}</v-btn>
+          <v-btn small text @click.prevent="show = false" color="warning">{{ $t('batch-dialog.btn-cancel') }}</v-btn>
+        </div>
         <v-img v-if="image" :src="'data:image/jpeg;base64,' + image" contain />
       </v-card-text>
       <v-card-actions>

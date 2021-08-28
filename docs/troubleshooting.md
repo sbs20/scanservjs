@@ -1,5 +1,19 @@
 # Troubleshooting
 
+## scanimage: sane_read: Invalid argument
+
+This is a problem with SANE rather than scanservjs. It usually signifies a
+[problem with the driver](https://askubuntu.com/a/447283). Your best bet is
+going back to first principles with SANE itself. Follow the steps
+[here](./install.md#troubleshooting)
+
+## Cropping results in incorrect positioning
+
+Some scanners mis-report their size - don't know why, but they do. This means
+that when the app attempts to crop things the maths is all wrong. The best way
+around this is to override the reported scanner dimensions. See
+[this recipe](./config.md#override-scanner-dimensions) for more.
+
 ## JSON.parse error
 
 This happens when the browser received a string from the server which is not a
