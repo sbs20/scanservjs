@@ -10,26 +10,26 @@
   },
 
   "colors": {
-    "accent-4": "Default",
-    "red": "Red",
+    "accent-4": "Standard",
+    "red": "Rot",
     "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
+    "purple": "Lila",
+    "deep-purple": "Dunkellila",
     "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
+    "blue": "Blau",
+    "light-blue": "Hellblau",
     "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
+    "teal": "Blaugrün",
+    "green": "Grün",
+    "light-green": "Hellgrün",
     "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
+    "yellow": "Gelb",
+    "amber": "Bernstein",
     "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "deep-orange": "Dunkelorange",
+    "brown": "Braun",
+    "blue-grey": "Blau-Grau",
+    "grey": "Grau"
   },
 
   "batch-dialog": {
@@ -43,8 +43,8 @@
     "filename": "Dateiname",
     "date": "Datum",
     "size": "Größe",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
+    "items-per-page": "Anzahl der Dateien pro Seite",
+    "items-per-page-all": "Alle",
     "message:deleted": "Gelöscht {0}",
     "message:renamed": "Datei umbenannt",
     "button:delete-selected": "Auswahl löschen",
@@ -77,9 +77,9 @@
   },
 
   "mode": {
-    "color": "Colour",
-    "halftone": "Halftone",
-    "gray": "Grey",
+    "color": "Farbe",
+    "halftone": "Rasterbild",
+    "gray": "Graustufen",
     "lineart": "Lineart",
 
     "24bitcolor":"@:mode.color",
@@ -90,11 +90,11 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
-    "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
+    "flatbed": "Flachbrett",
+    "adf": "Dokumenteneinzug",
+    "auto": "Automatisch",
+    "left-aligned": "Linksbündig",
+    "centrally-aligned": "Zentriert",
     "duplex": "Duplex",
     "transparency unit": "Transparency Unit",
 
@@ -144,7 +144,7 @@
     "left": "Links",
     "width": "Breite",
     "height": "Höhe",
-    "paperSize": "Paper size",
+    "paperSize": "Papierformat",
     "brightness": "Helligkeit",
     "contrast": "Kontrast",
     "message:loading-devices": "Suche nach Geräten...",
@@ -164,12 +164,12 @@
     "theme:system": "Systemdesign",
     "theme:light": "Helles Design",
     "theme:dark": "Dunkles Design",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar.",
-    "devices": "Devices and storage",
-    "reset:description": "Clears stored scanner devices and forces a reload",
+    "color": "Hintergrund Design",
+    "color:description": "Hintergrund Design. Hier kann die Farbe der Menüleiste angepasst werden.",
+    "devices": "Geräte und Speicherorte",
+    "reset:description": "Alle gespeicherten Scanner löschen und die App neu laden",
     "reset": "Zurücksetzen",
-    "clear-storage:description": "Clears local storage of any cached parameters",
-    "clear-storage": "Clear"
+    "clear-storage:description": "All gespeicherten Parameter löschen",
+    "clear-storage": "Löschen"
   }
 }
