@@ -9,8 +9,8 @@ on:
     branches:
       - 'master'
       - 'staging'
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 jobs:
   docker:
