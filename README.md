@@ -57,7 +57,7 @@ It supports any
 * Linux host (or VM with necessary pass-through e.g. USB)
 * Software sane-utils, ImageMagick, Tesseract (optional) and nodejs
 
-## Installation
+## Documentation
 
 * [Manual installation](docs/install.md)
 * [Docker installation](docs/docker.md)
@@ -65,12 +65,8 @@ It supports any
 * [Proxy setup](docs/proxy.md)
 * [Troubleshooting](docs/troubleshooting.md)
 * [Development notes](docs/development.md)
-
-## Configuration and device override
-
-If you want to override some specific configuration settings then you can do so
-within `./config/config.local.js`. See [Configuration](docs/config.md) for more
-detail.
+* [Configuration and device override](docs/config.md)
+* [Integration](docs/integration.md)
 
 ## Why?
 

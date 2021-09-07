@@ -1,9 +1,9 @@
-## Reverse proxy
+# Reverse proxy
 
 scanservjs supports reverse proxying and uses relative paths throughout so no
 URL rewriting should be required.
 
-### Apache
+## Apache
 
 Example setup using a debian based distro.
 
