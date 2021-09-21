@@ -176,7 +176,7 @@ class FileInfo {
   /**
    * @returns {any}
    */
-  toJson() {
+  parseJson() {
     return JSON.parse(this.toText());
   }
 

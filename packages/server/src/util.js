@@ -1,6 +1,23 @@
 const AdmZip = require('adm-zip');
 
 const Util = {
+  /**
+   * Rough polyfill for str.matchAll()
+   * @param {RegExp} regex 
+   * @param {string} string 
+   * @returns {RegExpExecArray[]}
+   */
+  matchAll(regex, string) {
+    /** @type {RegExpExecArray[]} */
+    const result = [];
+    /** @type {RegExpExecArray} */
+    let match;
+    while ((match = regex.exec(string)) !== null) {
+      result.push(match);
+    }
+    return result;
+  },
+
   extend() {
     const t = arguments[0];
     for (let i = 1; i < arguments.length; i++) {
