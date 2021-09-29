@@ -131,18 +131,19 @@ class ScanController {
   async updatePreview(filename) {
     const dpmm = this.request.params.resolution / 25.4;
     const device = this.context.getDevice(this.request.params.deviceId);
-    const geometry = {
-      width: device.features['-x'].limits[1] * dpmm,
-      height: device.features['-y'].limits[1] * dpmm,
-      left: this.request.params.left * dpmm,
-      top: this.request.params.top * dpmm
-    };
+    const cmd = new CmdBuilder(Config.convert).arg(`'${Config.tempDirectory}/${filename}'`);
+    if (device.geometry) {
+      const geometry = {
+        width: device.features['-x'].limits[1] * dpmm,
+        height: device.features['-y'].limits[1] * dpmm,
+        left: this.request.params.left * dpmm,
+        top: this.request.params.top * dpmm
+      };
+      cmd.arg('-background', '#808080')
+        .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`);
+    }
 
-    const cmd = new CmdBuilder(Config.convert)
-      .arg(`'${Config.tempDirectory}/${filename}'`)
-      .arg('-background', '#808080')
-      .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`)
-      .arg('-resize', 868)
+    cmd.arg('-resize', 868)
       .arg(`'${Config.previewDirectory}/preview.tif'`)
       .build();
 

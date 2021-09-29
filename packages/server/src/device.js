@@ -11,6 +11,13 @@ class Device {
   }
 
   /**
+   * @returns {boolean}
+   */
+  get geometry() {
+    return ['-x', '-y', '-l', '-t'].every(s => s in this.features);
+  }
+
+  /**
    * Parses the response of scanimage -A into a ScanDevice
    */
   parse() {

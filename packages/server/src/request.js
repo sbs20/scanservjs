@@ -35,7 +35,7 @@ class Request {
       index: data.index || 1
     });
 
-    if (['-x', '-y', '-l', '-t'].every(s => s in features)) {
+    if (device.geometry) {
       this.params.top = bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0);
       this.params.left = bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0);
       this.params.width = bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]);

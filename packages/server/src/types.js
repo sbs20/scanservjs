@@ -25,6 +25,7 @@
  * @property {string} id
  * @property {string} name
  * @property {string} string
+ * @property {boolean} geometry
  * @property {Object.<string, ScanDeviceFeature>} features
  */
 
