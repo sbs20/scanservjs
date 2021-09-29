@@ -5,6 +5,7 @@ const Util = require('./util');
 class Device {
   constructor(string) {
     this.id = '';
+    this.name = '';
     this.features = {};
     this.string = string;
     this.parse();
@@ -39,6 +40,7 @@ class Device {
     const match = /All options specific to device `(.*)'/.exec(this.string);
     if (match) {
       this.id = match[1];
+      this.name = this.id;
     } else {
       throw new Error('Scanimage output contains no matching expressions');
     }
