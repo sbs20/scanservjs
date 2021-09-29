@@ -26,6 +26,11 @@ Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 > broken, meaning the device is useless by itself because one cannot trigger
 > scans, but with this project I can trigger it remotely just fine.
 
+
+> Absolutely love untethering my scanner from my laptop. Also means that I know
+> it will work "forever", regardless of OS updates, since its all just a docker
+> container.
+
 ## About
 
 scanservjs is a web UI frontend for your scanner. It allows you to share one or
