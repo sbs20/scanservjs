@@ -43,7 +43,6 @@ class Feature {
       this.default = Number(this.default);
 
     } else if (this.parameters.indexOf('..') > -1) {
-      // this.options = [50, 75, 100, 150, 200, 300, 600, 1200];
       this.range(this);
       const limits = this.limits;
       this.options = [];
