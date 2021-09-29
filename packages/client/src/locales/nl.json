@@ -171,20 +171,5 @@
     "reset": "Reset",
     "clear-storage:description": "Wist lokale opslag van alle parameters in de cache",
     "clear-storage": "Wissen"
-  },
-
-  "locales": {
-    "cs": "Čeština",
-    "de": "Deutsche",
-    "en": "English",
-    "es": "Español",
-    "fr": "Français",
-    "it": "Italiano",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "pt-BR": "Portuguese (Brazilian)",
-    "ru": "Russian",
-    "zh": "简体中文",
-    "test": "Test"
   }
 }
