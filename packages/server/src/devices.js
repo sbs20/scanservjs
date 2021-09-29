@@ -5,16 +5,11 @@ const FileInfo = require('./file-info');
 const userOptions = require('./user-options');
 const Process = require('./process');
 const Scanimage = require('./scanimage');
+const Util = require('./util');
 
 class Devices {
   static _parseDevices(s) {
-    const deviceIds = [];
-    const pattern = /device `?(.*)'.*/g;
-    let match;
-    while ((match = pattern.exec(s)) !== null) {
-      deviceIds.push(match[1]);
-    }
-    return deviceIds;
+    return Util.matchAll(/device `?(.*)'.*/g, s).map(m => m[1]);
   }
 
   /**
@@ -50,7 +45,7 @@ class Devices {
     let devices = null;
 
     if (file.exists()) {
-      devices = Devices.from(file.toJson());
+      devices = Devices.from(file.parseJson());
       if (devices.length === 0) {
         log.debug('devices.json contains no devices. Reloading');
         devices = null;
@@ -69,6 +64,7 @@ class Devices {
         deviceIds = deviceIds.concat(localDevices);
       }
 
+      /** @type {ScanDevice[]} */
       devices = [];
       for (let deviceId of deviceIds) {
         try {
@@ -79,7 +75,7 @@ class Devices {
           log.error(`Ignoring ${deviceId}. Error: ${error}`);
         }
       }
-      file.save(JSON.stringify(devices, null, 2));
+      file.save(JSON.stringify(devices.map(d => d.string), null, 2));
     }
 
     userOptions.applyToDevices(devices);

@@ -26,6 +26,11 @@ Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
 > broken, meaning the device is useless by itself because one cannot trigger
 > scans, but with this project I can trigger it remotely just fine.
 
+
+> Absolutely love untethering my scanner from my laptop. Also means that I know
+> it will work "forever", regardless of OS updates, since its all just a docker
+> container.
+
 ## About
 
 scanservjs is a web UI frontend for your scanner. It allows you to share one or
@@ -42,8 +47,8 @@ complicated installation.
 * Filters: Autolevels, Threshold, Blur
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
-* International translations: Czech, French, German, Italian, Mandarin, Polish,
-  Portuguese (BR), Russian, Spanish;
+* International translations: Czech, Dutch, French, German, Italian, Mandarin,
+  Polish, Portuguese (BR), Russian, Spanish;
   [Help requested](https://github.com/sbs20/scanservjs/issues/154)
 * Light and dark mode
 * Responsive design
@@ -57,7 +62,7 @@ It supports any
 * Linux host (or VM with necessary pass-through e.g. USB)
 * Software sane-utils, ImageMagick, Tesseract (optional) and nodejs
 
-## Installation
+## Documentation
 
 * [Manual installation](docs/install.md)
 * [Docker installation](docs/docker.md)
@@ -65,12 +70,8 @@ It supports any
 * [Proxy setup](docs/proxy.md)
 * [Troubleshooting](docs/troubleshooting.md)
 * [Development notes](docs/development.md)
-
-## Configuration and device override
-
-If you want to override some specific configuration settings then you can do so
-within `./config/config.local.js`. See [Configuration](docs/config.md) for more
-detail.
+* [Configuration and device override](docs/config.md)
+* [Integration](docs/integration.md)
 
 ## Why?
 

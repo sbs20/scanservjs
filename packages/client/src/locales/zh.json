@@ -43,15 +43,15 @@
     "filename": "文件名",
     "date": "日期",
     "size": "大小",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
+    "items-per-page": "每页文件数",
+    "items-per-page-all": "展示全部",
     "message:deleted": "已删除 {0}",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "文件已更名",
+    "button:delete-selected": "删除所选",
+    "dialog:rename": "更改文件名称",
+    "dialog:rename-cancel": "取消",
+    "dialog:rename-save": "保存",
+    "actions": "操作"
   },
 
   "navigation": {
@@ -121,8 +121,8 @@
     "ledger": "Ledger",
     "junior-legal": "Junior legal",
     "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "portrait": "纵向",
+    "landscape": "横向"
   },
 
   "scan": {

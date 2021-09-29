@@ -26,10 +26,6 @@ class Request {
     extend(this, {
       params: {
         deviceId: device.id,
-        top: bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0),
-        left: bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0),
-        width: bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]),
-        height: bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]),
         resolution: data.params.resolution || features['--resolution'].default,
         format: 'tiff'
       },
@@ -39,6 +35,12 @@ class Request {
       index: data.index || 1
     });
 
+    if (device.geometry) {
+      this.params.top = bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0);
+      this.params.left = bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0);
+      this.params.width = bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]);
+      this.params.height = bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]);
+    }
     if ('--mode' in features) {
       this.params.mode = data.params.mode || features['--mode'].default;
     }

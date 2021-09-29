@@ -203,4 +203,23 @@ describe('Device', () => {
     assert.strictEqual(device.features['-y'].limits[1], 297.1);
     assert.strictEqual(device.features['-y'].default, 297.1);
   });
+
+  it('scanimage-a10.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a10.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'epjitsu:libusb:001:003');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
+    assert.strictEqual(device.features['--mode'].default, 'Lineart');
+    assert.deepStrictEqual(device.features['--source'].options, ['ADF Front', 'ADF Back', 'ADF Duplex']);
+    assert.strictEqual(device.features['--source'].default, 'ADF Front');
+    assert.deepStrictEqual(device.features['--resolution'].options, [50, 75, 150, 300, 600]);
+    assert.strictEqual(device.features['--resolution'].default, 300);
+    assert.strictEqual(device.features['-l'], undefined);
+    assert.strictEqual(device.features['-x'], undefined);
+    assert.deepStrictEqual(device.features['-t'].limits, [0, 289.3]);
+    assert.strictEqual(device.features['-t'].default, 0);
+    assert.strictEqual(device.features['-t'].interval, 0.0211639);
+    assert.strictEqual(device.features['-y'], undefined);
+  });
 });

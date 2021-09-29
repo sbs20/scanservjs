@@ -42,6 +42,9 @@ RUN apt-get update \
   && sed -i \
     's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
     /etc/ImageMagick-6/policy.xml \
+  && sed -i \
+    's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
+    /etc/ImageMagick-6/policy.xml \
   && npm install -g npm@7.11.2
 
 # Create a known user
