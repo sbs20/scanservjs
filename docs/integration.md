@@ -22,6 +22,42 @@ about paperless-ng resulted in
 You could integrate with Dropbox using
 [Dropbox-Uploader](https://github.com/andreafabrizi/Dropbox-Uploader)
 
+## Scan2Mail
+
+1. Setup and configure [msmtp](https://wiki.debian.org/msmtp) and msmtp-mta as
+   described
+   [here](https://decatec.de/linux/linux-einfach-e-mails-versenden-mit-msmtp/)
+2. Install the MIME packer [mpack](https://linux.die.net/man/1/mpack) with
+   `sudo apt install mpack` to send the scanned files
+3. Setup [OCRmyPDF](https://github.com/jbarlow83/OCRmyPDF) as described
+   [here](https://ocrmypdf.readthedocs.io/en/latest/installation.html)
+
+Now create the following pipeline in your `config/config.local.js`
+
+```javascript
+config.pipelines.push({
+  extension: 'pdf',
+  description: 'ocrmypdf (Scan2Mail email@address.tld)',
+  get commands() {
+    return [
+      'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+      'convert @- pdf:-',
+      `file="scan_$(date +"%d_%m_%Y-%H_%M").pdf" && ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "$file" && mpack -s "Document from Scanner@Office" "$file" email@address.tld`,
+      'ls scan_*.*'
+    ];
+  }
+});
+```
+
+The important `Scan2Mail` line is:
+
+```
+file="scan_$(date +"%d_%m_%Y-%H_%M").pdf" && ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "$file" && mpack -s "Document from Scanner@Office" "$file" email@address.tld
+```
+
+This sets a time-based filename, then OCRs and finally sends to
+email@address.tld
+
 ## Other recipes?
 
 If you have other recipes then please share them.
