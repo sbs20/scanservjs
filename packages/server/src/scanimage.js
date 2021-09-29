@@ -55,7 +55,7 @@ class Scanimage {
       
     cmdBuilder.arg('--resolution', params.resolution);
 
-    if (['-x', '-y', '-l', '-t'].every(s => s in params)) {
+    if (['left', 'top', 'width', 'height'].every(s => s in params)) {
       cmdBuilder.arg('-l', params.left)
         .arg('-t', params.top)
         .arg('-x', params.width)

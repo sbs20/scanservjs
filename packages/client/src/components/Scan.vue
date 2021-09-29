@@ -61,7 +61,7 @@
         <cropper v-if="geometry" ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCropperChange"></cropper>
-        <v-img :src="img" />
+        <v-img v-if="!geometry" :src="img" />
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">

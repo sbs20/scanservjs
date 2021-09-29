@@ -131,7 +131,7 @@ class ScanController {
   async updatePreview(filename) {
     const dpmm = this.request.params.resolution / 25.4;
     const device = this.context.getDevice(this.request.params.deviceId);
-    const cmd = new CmdBuilder(Config.convert).arg(`'${Config.tempDirectory}/${filename}'`);
+    const cmdBuilder = new CmdBuilder(Config.convert).arg(`'${Config.tempDirectory}/${filename}'`);
     if (device.geometry) {
       const geometry = {
         width: device.features['-x'].limits[1] * dpmm,
@@ -139,15 +139,14 @@ class ScanController {
         left: this.request.params.left * dpmm,
         top: this.request.params.top * dpmm
       };
-      cmd.arg('-background', '#808080')
+      cmdBuilder.arg('-background', '#808080')
         .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`);
     }
 
-    cmd.arg('-resize', 868)
-      .arg(`'${Config.previewDirectory}/preview.tif'`)
-      .build();
+    cmdBuilder.arg('-resize', 868)
+      .arg(`'${Config.previewDirectory}/preview.tif'`);
 
-    await Process.spawn(cmd);
+    await Process.spawn(cmdBuilder.build());
   }
 
   /**
