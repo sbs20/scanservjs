@@ -52,36 +52,39 @@
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
-          <v-btn color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn v-if="geometry" color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
           <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
         </div>
       </v-col>
 
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
-        <cropper ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
+        <cropper v-if="geometry" ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCropperChange"></cropper>
+        <v-img v-if="!geometry" :src="img" />
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
-        <v-text-field :label="$t('scan.top')" type="number" step="any" v-model="request.params.top" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.left')" type="number" step="any" v-model="request.params.left" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.width')" type="number" step="any" v-model="request.params.width" @blur="onCoordinatesChange" />
-        <v-text-field :label="$t('scan.height')" type="number" step="any" v-model="request.params.height" @blur="onCoordinatesChange" />
+        <template v-if="geometry">
+          <v-text-field :label="$t('scan.top')" type="number" step="any" v-model="request.params.top" @blur="onCoordinatesChange" />
+          <v-text-field :label="$t('scan.left')" type="number" step="any" v-model="request.params.left" @blur="onCoordinatesChange" />
+          <v-text-field :label="$t('scan.width')" type="number" step="any" v-model="request.params.width" @blur="onCoordinatesChange" />
+          <v-text-field :label="$t('scan.height')" type="number" step="any" v-model="request.params.height" @blur="onCoordinatesChange" />
 
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="(item, index) in paperSizes"
-              @click="updatePaperSize(item)"
-              :key="index">
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
+            </template>
+            <v-list dense>
+              <v-list-item
+                v-for="(item, index) in paperSizes"
+                @click="updatePaperSize(item)"
+                :key="index">
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
 
         <div v-if="'--brightness' in device.features">
           <v-slider class="align-center" v-model="request.params.brightness"
@@ -180,6 +183,10 @@ export default {
   },
 
   computed: {
+    geometry() {
+      return ['-x', '-y', '-l', '-t'].every(s => s in this.device.features);
+    },
+
     deviceSize() {
       return {
         width: this.device.features['-x'].limits[1],
@@ -272,7 +279,9 @@ export default {
 
   methods: {
     _resizePreview() {
-      const paperRatio = this.deviceSize.width / this.deviceSize.height;
+      const paperRatio = this.geometry
+        ? this.deviceSize.width / this.deviceSize.height
+        : 210 / 297;
 
       // This only makes a difference when the col-width="auto" - so md+
       const mdBreakpoint = 960;

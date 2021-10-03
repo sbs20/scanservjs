@@ -1,0 +1,175 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs is een simpel web-based UI voor je scanner. Hiermee kun je een of meer scanners (met behulp van SANE) op een netwerk delen zonder dat er stuurprogramma's of een ingewikkelde installatie nodig is. Het kan in TIF, JPG, PNG, PDF en TXT (met Tesseract OCR) opslaan met verschillende compressie-instellingen, wat allemaal kan worden geconfigureerd. Het ondersteunt scannen van meerdere pagina's en alle SANE-compatibele apparaten.",
+    "issue": "Probleem indienen of bekijk de broncode:",
+    "system-info": "Systeem informatie"
+  },
+
+  "colors": {
+    "accent-4": "Standaard",
+    "red": "Rood",
+    "pink": "Roze",
+    "purple": "Paars",
+    "deep-purple": "Donkerpaars",
+    "indigo": "Indigo",
+    "blue": "Blauw",
+    "light-blue": "Lichtblauw",
+    "cyan": "Cyaan",
+    "teal": "Groenblauw",
+    "green": "Groen",
+    "light-green": "Lichtgroen",
+    "lime": "Limoen",
+    "yellow": "Geel",
+    "amber": "Amber",
+    "orange": "Oranje",
+    "deep-orange": "Donkeroranje",
+    "brown": "Bruin",
+    "blue-grey": "Blauwgrijs",
+    "grey": "Grijs"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Annuleren",
+    "btn-finish": "Afronden",
+    "btn-rescan": "Pagina opnieuw scannen",
+    "btn-next": "Volgende"
+  },
+
+  "files": {
+    "filename": "Bestandsnaam",
+    "date": "Datum",
+    "size": "Grootte",
+    "items-per-page": "Bestanden per pagina",
+    "items-per-page-all": "Alles",
+    "message:deleted": "Verwijderd {0}",
+    "message:renamed": "Bestand hernoemd",
+    "button:delete-selected": "Verwijderen geselecteerde bestanden",
+    "dialog:rename": "Pas bestandsnaam aan",
+    "dialog:rename-cancel": "Annuleren",
+    "dialog:rename-save": "Opslaan",
+    "actions": "Acties"
+  },
+
+  "navigation": {
+    "scan": "Scan",
+    "files": "Bestanden",
+    "settings": "Instellingen",
+    "about": "Over",
+    "version": "Versie"
+  },
+
+  "batch-mode": {
+    "none": "Geen",
+    "manual": "Handmatig (met bevestiging)",
+    "auto": "Auto (Documentinvoer)",
+    "auto-collate-standard": "Auto (Sorteren 1, 3... 4, 2)",
+    "auto-collate-reverse": "Auto (Omgedraaid 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Auto nivelleren",
+    "threshold": "Threshold",
+    "blur": "Vervagen"
+  },
+
+  "mode": {
+    "color": "Kleur",
+    "halftone": "Halftoon",
+    "gray": "Grijswaarde",
+    "lineart": "Lijntekening",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Flatbed",
+    "adf": "ADF",
+    "auto": "Auto",
+    "left-aligned": "Links uitgelijnd",
+    "centrally-aligned": "Centraal uitgelijnd",
+    "duplex": "Duplex",
+    "transparency unit": "Transparantie-eenheid",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Hoge kwaliteit",
+    "medium-quality": "Gemiddelde kwaliteit",
+    "low-quality": "Lage kwaliteit",
+    "uncompressed": "Ongecomprimeerd",
+    "lzw-compressed": "LZW gecomprimeerd",
+    "ocr": "OCR",
+    "text-file": "Text bestand"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portret",
+    "landscape": "Landschap"
+  },
+
+  "scan": {
+    "device": "Apparaat",
+    "source": "Bron",
+    "resolution": "Resolutie",
+    "mode": "Modus",
+    "dynamic-lineart": "Dynamische Lijntekening",
+    "dynamic-lineart:enabled": "Ingeschakeld",
+    "dynamic-lineart:disabled": "Uitgeschakeld",
+    "batch": "Batch",
+    "filters": "Filters",
+    "format": "Formaat",
+    "btn-preview": "Voorbeeld",
+    "btn-clear": "Reset",
+    "btn-scan": "Scan",
+    "top": "Boven",
+    "left": "Links",
+    "width": "Breedte",
+    "height": "Hoogte",
+    "paperSize": "Papier formaat",
+    "brightness": "Helderheid",
+    "contrast": "Contrast",
+    "message:loading-devices": "Apparaten laden...",
+    "message:no-devices": "Geen apparaten gevonden",
+    "message:deleted-preview": "Verwijderd voorbeeld",
+    "message:turn-documents": "Draai document om",
+    "message:preview-of-page": "Voorbeeld van pagina"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Werking en UI",
+    "locale": "Taal",
+    "locale:description": "Kies je taal",
+    "theme": "Thema",
+    "theme:description": "Thema. Als je het systeem thema gebruikt and dit aanpast, dien je de app te herladen.",
+    "theme:system": "Systeem",
+    "theme:light": "Licht",
+    "theme:dark": "Donker",
+    "color": "Kleur",
+    "color:description": "Kleur. Dit past de kleur aan van de balk bovenin.",
+    "devices": "Apparaten en opslag",
+    "reset:description": "Wist opgeslagen scanner apparaten en forceert tot heladen",
+    "reset": "Reset",
+    "clear-storage:description": "Wist lokale opslag van alle parameters in de cache",
+    "clear-storage": "Wissen"
+  }
+}

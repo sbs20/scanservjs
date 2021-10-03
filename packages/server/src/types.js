@@ -24,7 +24,8 @@
  * @typedef {Object} ScanDevice
  * @property {string} id
  * @property {string} name
- * @property {string} version
+ * @property {string} string
+ * @property {boolean} geometry
  * @property {Object.<string, ScanDeviceFeature>} features
  */
 

@@ -16,10 +16,6 @@ export default class Request {
       version: Constants.Version,
       params: {
         deviceId: device.id,
-        top: request.params.top || device.features['-t'].default,
-        left: request.params.left || device.features['-l'].default,
-        width: request.params.width || device.features['-x'].default,
-        height: request.params.height || device.features['-y'].default,
         resolution: request.params.resolution || device.features['--resolution'].default
       },
       filters: request.filters || [],
@@ -28,6 +24,12 @@ export default class Request {
       index: 1
     };
 
+    if (['-x', '-y', '-l', '-t'].every(s => s in device.features)) {
+      obj.params.top = request.params.top || device.features['-t'].default;
+      obj.params.left = request.params.left || device.features['-l'].default;
+      obj.params.width = request.params.width || device.features['-x'].default;
+      obj.params.height = request.params.height || device.features['-y'].default;
+    }
     if ('--mode' in device.features) {
       obj.params.mode = request.params.mode || device.features['--mode'].default;
     }

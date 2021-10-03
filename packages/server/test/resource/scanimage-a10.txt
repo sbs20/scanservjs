@@ -1,0 +1,37 @@
+All options specific to device `epjitsu:libusb:001:003':
+  Scan Mode:
+    --source ADF Front|ADF Back|ADF Duplex [ADF Front]
+        Selects the scan source (such as a document-feeder).
+    --mode Lineart|Gray|Color [Lineart]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --resolution 50..600dpi (in steps of 1) [300]
+        Sets the resolution of the scanned image.
+  Geometry:
+    -t 0..289.353mm (in steps of 0.0211639) [0]
+        Top-left y position of scan area.
+    --page-width 2.70898..219.428mm (in steps of 0.0211639) [215.872]
+        Specifies the width of the media.  Required for automatic centering of
+        sheet-fed scans.
+    --page-height 0..450.707mm (in steps of 0.0211639) [292.062]
+        Specifies the height of the media, 0 will auto-detect.
+  Enhancement:
+    --brightness -127..127 (in steps of 1) [0]
+        Controls the brightness of the acquired image.
+    --contrast -127..127 (in steps of 1) [0]
+        Controls the contrast of the acquired image.
+    --threshold 0..255 (in steps of 1) [120]
+        Select minimum-brightness to get a white point
+    --threshold-curve 0..127 (in steps of 1) [55]
+        Dynamic threshold curve, from light to dark, normally 50-65
+  Sensors:
+    --scan[=(yes|no)] [no] [hardware]
+        Scan button
+    --page-loaded[=(yes|no)] [no] [hardware]
+        Page loaded
+    --top-edge[=(yes|no)] [no] [hardware]
+        Paper is pulled partly into adf
+    --cover-open[=(yes|no)] [no] [hardware]
+        Cover open
+    --power-save[=(yes|no)] [no] [hardware]
+        Scanner in power saving mode
+
