@@ -2,7 +2,7 @@
 
 ## One line install
 
-* If you don't already have your scanner working, then you need to get
+* If you don't already have your scanner working, then you must get
   [SANE installed and working](./sane.md) and check permissions etc. Your
   scanner can be attached to a different server / device if you're using saned.
 * If you're using a debian based distro then you can just use the installer
@@ -11,6 +11,7 @@
   ```sh
   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/packages/server/installer.sh | sudo bash -s -- -a
   ```
+  Note: the installer script will always install from the master branch.
 * If you're using Arch, then [@dadosch](https://github.com/dadosch) created a
   PKGBUILD script in Arch's AUR which allows Arch-distro-based users to quickly
   install and update scanservjs with any AUR helper, for example:
