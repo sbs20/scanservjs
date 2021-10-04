@@ -149,7 +149,7 @@
     "contrast": "Kontrast",
     "message:loading-devices": "Načítání zařízení...",
     "message:no-devices": "Nebyla nalezena žádná zařízení",
-    "message:deleted-preview": "Odstranit náhled",
+    "message:deleted-preview": "Náhled byl odstraněn",
     "message:turn-documents": "Obrátit dokumenty",
     "message:preview-of-page": "Náhled strany"
   },
