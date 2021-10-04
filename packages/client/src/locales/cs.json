@@ -150,8 +150,8 @@
     "message:loading-devices": "Načítání zařízení...",
     "message:no-devices": "Nebyla nalezena žádná zařízení",
     "message:deleted-preview": "Náhled byl odstraněn",
-    "message:turn-documents": "Obrátit dokumenty",
-    "message:preview-of-page": "Náhled strany"
+    "message:turn-documents": "Obraťte skenované dokumenty",
+    "message:preview-of-page": "Náhled strany č."
   },
 
   "settings": {
