@@ -4,32 +4,32 @@
   },
 
   "about": {
-    "main": "scanservjs é uma interface via web simplea. Permite compartilhar via rede um ou mais scanners (pelo SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF, y TXT (com Tesseract OCR) com diversas configurações de compressão, configuráveis. Suporta digitalizar multipágina e todos dispositivos SANE compatíveis.",
+    "main": "scanservjs é uma interface via web simples. Permite compartilhar via rede um ou mais scanners (via SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com diversas configurações de compressão. Suporta digitalização multipágina e todos dispositivos SANE compatíveis.",
     "issue": "Relatar uma questão ou ver código fonte:",
-    "system-info": "System information"
+    "system-info": "Informação de sistema"
   },
 
   "colors": {
     "accent-4": "Default",
-    "red": "Red",
-    "pink": "Pink",
-    "purple": "Purple",
-    "deep-purple": "Deep purple",
-    "indigo": "Indigo",
-    "blue": "Blue",
-    "light-blue": "Light blue",
-    "cyan": "Cyan",
-    "teal": "Teal",
-    "green": "Green",
-    "light-green": "Light green",
-    "lime": "Lime",
-    "yellow": "Yellow",
-    "amber": "Amber",
-    "orange": "Orange",
-    "deep-orange": "Deep orange",
-    "brown": "Brown",
-    "blue-grey": "Blue grey",
-    "grey": "Grey"
+    "red": "Vermelho",
+    "pink": "Rosa",
+    "purple": "Roxo",
+    "deep-purple": "Roxo escuro",
+    "indigo": "Índigo",
+    "blue": "Azul",
+    "light-blue": "Azul claro",
+    "cyan": "Ciano",
+    "teal": "Azul petróleo",
+    "green": "Verde",
+    "light-green": "Verde claro",
+    "lime": "Lima",
+    "yellow": "Amarelo",
+    "amber": "Âmbar",
+    "orange": "Laranja",
+    "deep-orange": "Laranja escuro",
+    "brown": "Castanho",
+    "blue-grey": "Azul acinzentado",
+    "grey": "Cinza"
   },
 
   "batch-dialog": {
@@ -43,15 +43,15 @@
     "filename": "Nome do arquivo",
     "date": "Data",
     "size": "Tamanho",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
+    "items-per-page": "Itens por página",
+    "items-per-page-all": "Todos",
     "message:deleted": "Excluído {0}",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "Arquivo renomeado",
+    "button:delete-selected": "Deletar seleccionado",
+    "dialog:rename": "Mudar nome arquivo",
+    "dialog:rename-cancel": "Cancelar",
+    "dialog:rename-save": "Guardar",
+    "actions": "Ações"
   },
 
   "navigation": {
@@ -78,10 +78,9 @@
 
   "mode": {
     "color": "Cor",
-    "halftone": "Meioton",
+    "halftone": "Meio-tom",
     "gray": "Cinza",
-    "lineart": "Artedelinha",
-
+    "lineart": "Arte linear",
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
@@ -91,13 +90,12 @@
 
   "source": {
     "flatbed": "Flatbed",
-    "adf": "Automatic Document Feeder",
+    "adf": "Alimentador Automático de Documento",
     "auto": "Auto",
-    "left-aligned": "Left Aligned",
-    "centrally-aligned": "Centrally Aligned",
+    "left-aligned": "Alinhamento à Esquerda",
+    "centrally-aligned": "Alinhamento ao Centro",
     "duplex": "Duplex",
     "transparency unit": "Transparency Unit",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
@@ -122,8 +120,8 @@
     "ledger": "Ledger",
     "junior-legal": "Junior legal",
     "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "portrait": "Retrato",
+    "landscape": "Paisagem"
   },
 
   "scan": {
@@ -162,14 +160,14 @@
     "theme": "Visual",
     "theme:description": "Visual. Se usa o tema System e muda, precisa recarregar a página.",
     "theme:system": "System",
-    "theme:light": "Light",
-    "theme:dark": "Dark",
-    "color": "Colour",
-    "color:description": "Colour. This will change the colour of the top app bar.",
-    "devices": "Devices and storage",
-    "reset:description": "Clears stored scanner devices and forces a reload",
+    "theme:light": "Claro",
+    "theme:dark": "Escuro",
+    "color": "Cor",
+    "color:description": "Cor. Irá mudar a cor da barra de navegação.",
+    "devices": "Dispositivos e armazenamento",
+    "reset:description": "Limpa scanner e força um refresh",
     "reset": "Reestablecer",
-    "clear-storage:description": "Clears local storage of any cached parameters",
-    "clear-storage": "Clear"
+    "clear-storage:description": "Limpa o armazenamento local de qualquer parâmetro cacheado",
+    "clear-storage": "Limpar"
   }
 }
