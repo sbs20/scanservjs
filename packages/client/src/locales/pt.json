@@ -1,0 +1,191 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs é uma interface web para o seu scanner/digitalizador. Permite partilhar um ou mais scanners (através do SANE) em rede sem necessidade para drivers ou instalações complicadas. Permite guardar como TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com variadas definições de compressão, os quais podem ser configurados. Suporta digitalização multipágina e todos os dispositivos compatíveis com SANE.",
+    "issue": "Submeter um problema ou visualizar código-fonte:",
+    "system-info": "Informação de sistema"
+  },
+
+  "colors": {
+    "accent-4": "Predefinição",
+    "red": "Vermelho",
+    "pink": "Rosa",
+    "purple": "Roxo",
+    "deep-purple": "Roxo escuro",
+    "indigo": "Índigo",
+    "blue": "Azul",
+    "light-blue": "Azul claro",
+    "cyan": "Ciano",
+    "teal": "Azul petróleo",
+    "green": "Verde",
+    "light-green": "Verde claro",
+    "lime": "Lima",
+    "yellow": "Amarelo",
+    "amber": "Âmbar",
+    "orange": "Laranja",
+    "deep-orange": "Laranja escuro",
+    "brown": "Castanho",
+    "blue-grey": "Azul acinzentado",
+    "grey": "Cinza"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Cancelar",
+    "btn-finish": "Terminar",
+    "btn-rescan": "Redigitalizar página",
+    "btn-next": "Próximo"
+  },
+
+  "files": {
+    "filename": "Nome do ficheiro",
+    "date": "Data",
+    "size": "Tamanho",
+    "items-per-page": "Itens por página",
+    "items-per-page-all": "Todos",
+    "message:deleted": "Eliminados {0}",
+    "message:renamed": "Ficheiro renomeado",
+    "button:delete-selected": "Eliminar seleccionados",
+    "dialog:rename": "Mudar nome de ficheiro",
+    "dialog:rename-cancel": "Cancelar",
+    "dialog:rename-save": "Guardar",
+    "actions": "Ações"
+  },
+
+  "navigation": {
+    "scan": "Digitalização",
+    "files": "Ficheiros",
+    "settings": "Definições",
+    "about": "Sobre",
+    "version": "Versão"
+  },
+
+  "batch-mode": {
+    "none": "Nenhum",
+    "manual": "Manual (com intervação)",
+    "auto": "Auto (Alimentador de documentos)",
+    "auto-collate-standard": "Auto (Ordenado 1, 3... 4, 2)",
+    "auto-collate-reverse": "Auto (Reverso 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Nivel automático",
+    "threshold": "Limiar",
+    "blur": "Esbater"
+  },
+
+  "mode": {
+    "color": "Color",
+    "halftone": "Meio tom",
+    "gray": "Cinza",
+    "lineart": "Arte de linha",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Flatbed",
+    "adf": "ADF",
+    "auto": "Auto",
+    "left-aligned": "Alinhamento à Esquerda",
+    "centrally-aligned": "Alinhamento ao Centro",
+    "duplex": "Duplex",
+    "transparency unit": "Unidade de tranparência",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Qualidade alta",
+    "medium-quality": "Qualidade média",
+    "low-quality": "Qualidade baixa",
+    "uncompressed": "Sem compresão",
+    "lzw-compressed": "Compressão LZW",
+    "ocr": "OCR",
+    "text-file": "Ficheiro de texto"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Retrato",
+    "landscape": "Paisagem"
+  },
+
+  "scan": {
+    "device": "Dispositivo",
+    "source": "Fonte",
+    "resolution": "Resolução",
+    "mode": "Modo",
+    "dynamic-lineart": "Arte de linha Dinâmico",
+    "dynamic-lineart:enabled": "Ativado",
+    "dynamic-lineart:disabled": "Desativado",
+    "batch": "Lote",
+    "filters": "Filtros",
+    "format": "Formato",
+    "btn-preview": "Pré-visualziar",
+    "btn-clear": "Limpar",
+    "btn-scan": "Digitalizar",
+    "top": "Topo",
+    "left": "Esquerda",
+    "width": "Largura",
+    "height": "Altura",
+    "paperSize": "Tamanho do papel",
+    "brightness": "Brilho",
+    "contrast": "Contraste",
+    "message:loading-devices": "Carregando dispositivos...",
+    "message:no-devices": "Nenhum dispositivo encontrado",
+    "message:deleted-preview": "Eliminada pré-visualização",
+    "message:turn-documents": "Virar documentos",
+    "message:preview-of-page": "Pré-visualização de página"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Comportamento e Interface Visual",
+    "locale": "Língua",
+    "locale:description": "Escolher língua",
+    "theme": "Tema",
+    "theme:description": "Tema. Se utilizar o tema de sistema e alterá-lo, necessitará de recarregar a aplicação.",
+    "theme:system": "Sistema",
+    "theme:light": "Claro",
+    "theme:dark": "Escuro",
+    "color": "Cor",
+    "color:description": "Cor. Esta opção irá alterar a corra da barra de navegação.",
+    "devices": "Dispositivos e armazenamento",
+    "reset:description": "Limpa dispositivos guardados e força um recarregamento",
+    "reset": "Redefinir",
+    "clear-storage:description": "Limpa a local storage de qualquer parâmetro cacheado",
+    "clear-storage": "Limpar"
+  },
+
+  "locales": {
+    "cs": "Checo",
+    "de": "Alemão",
+    "en": "Inglês",
+    "es": "Espanhol",
+    "fr": "Francês",
+    "it": "Italiano",
+    "nl": "Holandês",
+    "pl": "Polaco",
+    "pt": "Português (Portugal)",
+    "pt-BR": "Português (Brasil)",
+    "ru": "Russo",
+    "zh": "Chinês",
+    "test": "Test"
+  }
+}
