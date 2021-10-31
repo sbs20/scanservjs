@@ -1,0 +1,175 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "scanservjs tarayıcınız için basit bir web arayüzüdür. Bir veya birden fazla tarayıcıyı ağ üzerinden (SANE kullanarak), kolay kurulum ve sürücü gerektirmeden paylaşmanızı sağlar. TIF, JPG, PNG, PDF ve TXT (Tesseract OCR ile) dosya uzantıları ile çeşitli sıkıştırma ayarlarıyla kaydedebilir ve tümü ayarlanabilir. Çoklu sayfa taramasını ve tüm SANE uyumlu cihazları destekler.",
+    "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:",
+    "system-info": "Sistem bilgisi"
+  },
+
+  "colors": {
+    "accent-4": "Varsayılan",
+    "red": "Kırmızı",
+    "pink": "Pembe",
+    "purple": "Mor",
+    "deep-purple": "Koyu mor",
+    "indigo": "Çivit mavisi",
+    "blue": "Mavi",
+    "light-blue": "Açık mavi",
+    "cyan": "Camgöbeği",
+    "teal": "Teal",
+    "green": "Yeşil",
+    "light-green": "Açık yeşil",
+    "lime": "Lime",
+    "yellow": "Sarı",
+    "amber": "Amber",
+    "orange": "Turuncu",
+    "deep-orange": "Koyu turuncu",
+    "brown": "Kahverengi",
+    "blue-grey": "Mavi gri",
+    "grey": "Gri"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "İptal",
+    "btn-finish": "Bitir",
+    "btn-rescan": "Sayfayı tekrar tara",
+    "btn-next": "İleri"
+  },
+
+  "files": {
+    "filename": "Dosya adı",
+    "date": "Tarih",
+    "size": "Boyut",
+    "items-per-page": "Sayfa başı dosya",
+    "items-per-page-all": "Tümü",
+    "message:deleted": "Silindi {0}",
+    "message:renamed": "İsimlendirilen dosya",
+    "button:delete-selected": "Seçileni Sil",
+    "dialog:rename": "Dosya adını değiştir",
+    "dialog:rename-cancel": "İptal",
+    "dialog:rename-save": "Kaydet",
+    "actions": "Eylemler"
+  },
+
+  "navigation": {
+    "scan": "Tara",
+    "files": "Dosyalar",
+    "settings": "Ayarlar",
+    "about": "Hakkında",
+    "version": "Versiyon"
+  },
+
+  "batch-mode": {
+    "none": "Hiçbiri",
+    "manual": "Manüel (istemci ile)",
+    "auto": "Oto (Döküman besleyici)",
+    "auto-collate-standard": "Oto (Sıraya koy 1, 3... 4, 2)",
+    "auto-collate-reverse": "Oto (Ters 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Oto serviye",
+    "threshold": "Eşik",
+    "blur": "Bulanıklık"
+  },
+
+  "mode": {
+    "color": "Renk",
+    "halftone": "Yarım ton",
+    "gray": "Gri",
+    "lineart": "Lineart",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "source": {
+    "flatbed": "Düz platform",
+    "adf": "ADF",
+    "auto": "Oto",
+    "left-aligned": "Sola hizalı",
+    "centrally-aligned": "Ortaya hizalı",
+    "duplex": "Arkalı önlü",
+    "transparency unit": "Şeffaflık Birimi",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Yüksek kalite",
+    "medium-quality": "Orta kalite",
+    "low-quality": "Düşük kalite",
+    "uncompressed": "Sıkıştırma",
+    "lzw-compressed": "LZW Sıkıştırma",
+    "ocr": "OCR",
+    "text-file": "Metin dosyası"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Yarım letter",
+    "portrait": "Dikey",
+    "landscape": "Yatay"
+  },
+
+  "scan": {
+    "device": "Cihaz",
+    "source": "Kaynak",
+    "resolution": "Çözünürlük",
+    "mode": "Mod",
+    "dynamic-lineart": "Dinamik Lineart",
+    "dynamic-lineart:enabled": "Etkin",
+    "dynamic-lineart:disabled": "Devredışı",
+    "batch": "Yığın",
+    "filters": "Filtreler",
+    "format": "Format",
+    "btn-preview": "Ön izleme",
+    "btn-clear": "Temizle",
+    "btn-scan": "Tara",
+    "top": "Üst",
+    "left": "Sol",
+    "width": "En",
+    "height": "Boy",
+    "paperSize": "Sayfa boyutu",
+    "brightness": "Parlaklık",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Cihazlar yükleniyor...",
+    "message:no-devices": "Hiç cihaz bulunamadı",
+    "message:deleted-preview": "Önizleme silindi",
+    "message:turn-documents": "Dökümanı çevir",
+    "message:preview-of-page": "Sayfaynın önizlemesi"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Davranış ve arayüz",
+    "locale": "Dil",
+    "locale:description": "Dilinizi seçiniz",
+    "theme": "Tema",
+    "theme:description": "Tema. Sistem teması kullanırken değiştirirseniz, uygulamayı tekrar yüklemeniz gerekir.",
+    "theme:system": "Sistem",
+    "theme:light": "Açık",
+    "theme:dark": "Koyu",
+    "color": "Renk",
+    "color:description": "Renk. Üst barın rengini değiştirir.",
+    "devices": "Cihazlar ve depolama",
+    "reset:description": "Kayıtlı cihazları temizler ve yeniden yükler",
+    "reset": "Sıfırla",
+    "clear-storage:description": "Depolanmış önbellekteki parametreleri temizler",
+    "clear-storage": "Temizle"
+  },
+}
