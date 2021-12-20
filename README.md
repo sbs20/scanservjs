@@ -83,7 +83,7 @@ more.
 
 Once the scanner is detected then you have a number of pages.
 
-### Scan:
+### Scan
 
 This page gives access to the controls for your scanner. The app will generally
 find the settings available automatically, although some scanners mis-report
