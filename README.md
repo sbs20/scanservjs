@@ -73,6 +73,56 @@ It supports any
 * [Configuration and device override](docs/config.md)
 * [Integration](docs/integration.md)
 
+## Running scanservjs
+
+In most cases the use of the app should be fairly self-explanatory. When the app
+first loads, it attempts to detect your scanner - this step is the most
+precarious and may either require custom drivers or some additional steps if
+you're running a network scanner or docker. See the documentation above for
+more.
+
+Once the scanner is detected then you have a number of pages.
+
+### Scan
+
+This page gives access to the controls for your scanner. The app will generally
+find the settings available automatically, although some scanners mis-report
+their abilities. (If this is the case, then you can override what's detected,
+see [Configuration and device override](docs/config.md) for more). If geometry
+is available (selecting scan size and position) then you will have cropping
+available to you.
+
+There is also the ability to perform batch scanning. If you have a document
+feeder, then just use the `Auto` option. If not then use `Manual` and the app
+will prompt you to change pages between scans.
+
+Any scan operation will always result in a single file. Some image formats, such
+as PDF and TIF support multiple pages, while others, such as PNG and JPG do not.
+If the scan pipeline results in more than one file, then the app will zip the
+files into a single output. You can choose the image format under `Format`.
+
+You can create and customise your own pipelines.
+
+### Files
+
+Any scanned files will be saved in a flat directory which has a simple web view
+available on this page. The intended usage of the app is to allow the user to
+save their scans locally - i.e. to download the files. The app will never delete
+these files, but if you run under docker then unless volume mapping is specified
+then the files may be lost when you run a new version.
+
+Furthermore, users in real life will want to store their scans with their own
+names, directory structures and cloud services or NAS devices. The permutations
+and possibilities are endless and are beyond the scope of the app.
+
+### Settings
+
+The settings page allows you to change the appearance and locale / language.
+
+### About
+
+Copyright information and system info.
+
 ## Why?
 
 This is yet another scanimage-web-front-end. Why? It originally started as an
