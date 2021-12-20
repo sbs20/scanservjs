@@ -25,7 +25,7 @@ install() {
     sane-utils \
     tesseract-ocr
 
-  npm install npm@7.11.2 -g
+  npm install npm@8.3.0 -g
 
   if [ -d "$location" ]; then
     # keep config and data

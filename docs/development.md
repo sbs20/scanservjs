@@ -7,7 +7,7 @@
 sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
 
 # Ideally set the npm version
-sudo npm install npm@7.11.2 -g
+sudo npm install npm@8.3.0 -g
 
 # Enable PDF (required for execution and unit tests)
 sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
@@ -83,9 +83,17 @@ sudo chmod 666 /var/run/docker.sock
 
 Useful commands
 ```sh
-# Build and run
+# Build
 docker build -t scanservjs-image .
+
+# Build the core image
+docker build --target scanservjs-core -t scanservjs-image .
+
+# Remove any existing containers
 docker rm --force scanservjs-container 2> /dev/null
+
+# Different run options
+docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
 docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
 docker run -d -p 8080:8080 -v $HOME/scan-data:/app/data/output --name scanservjs-container --privileged scanservjs-image
 
