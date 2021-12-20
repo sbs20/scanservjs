@@ -34,6 +34,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:staging
+          target: scanservjs-core
 
       - name: Push master
         if: github.ref == 'refs/heads/master'
@@ -41,6 +42,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
+          target: scanservjs-core
 
       - name: Get version
         id: get_version
@@ -53,3 +55,4 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
+          target: scanservjs-core
