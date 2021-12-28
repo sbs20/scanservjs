@@ -33,7 +33,4 @@ fi
 unset IFS
 set +f
 
-service dbus start
-
 node ./server/server.js
-
