@@ -29,13 +29,18 @@ RUN apt-get update \
     sane-utils \
     tesseract-ocr \
     sane-airscan \
+    hplip \
   && sed -i \
     's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
     /etc/ImageMagick-6/policy.xml \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0
+  && npm install -g npm@8.3.0 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo hpaio >> /etc/sane.d/dll.conf
 
 # Core image
 #
