@@ -11,7 +11,7 @@ free to integrate however you want.
 The recommended way is to create a script or program which scans the output
 directory for files and then does something with them.
 
-## insanebd
+## insaned
 
 Use your scanner's hardware 'Scan' button to initiate a new scan via `scanservjs`
 https://gitlab.com/xeijin-dev/insaned
