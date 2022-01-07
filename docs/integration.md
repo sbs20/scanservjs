@@ -14,6 +14,7 @@ directory for files and then does something with them.
 ## insaned
 
 Use your scanner's hardware 'Scan' button to initiate a new scan via `scanservjs`
+
 https://gitlab.com/xeijin-dev/insaned
 
 Requires a scanner that exposes buttons as sensors and `curl`.
