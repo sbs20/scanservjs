@@ -6,7 +6,7 @@
   "about": {
     "main": "scanservjs es una interfaz gráfica simple y basada en web. Permite compartir uno o mas escáneres (utilizando SANE) en una red sin la necesidad de controladores adicionales o una instalación complicada. Permite guardar en formato TIF, JPG, PNG, PDF, y TXT (con Tesseract OCR) con varias configuraciones de compresión, todas ellas configurables. Soporta el escaneo multipágina y todos los dispositivos SANE compatibles.",
     "issue": "Indicar una incidencia o ver el código fuente:",
-    "system-info": "System information"
+    "system-info": "Información del sistema"
   },
 
   "colors": {
@@ -43,15 +43,15 @@
     "filename": "Nombre de fichero",
     "date": "Fecha",
     "size": "Tamaño",
-    "items-per-page": "Files per page",
-    "items-per-page-all": "All",
+    "items-per-page": "Ficheros por página",
+    "items-per-page-all": "Todos",
     "message:deleted": "Borrado {0}",
-    "message:renamed": "File renamed",
-    "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "message:renamed": "Fichero renombrado",
+    "button:delete-selected": "Eliminar seleccionados",
+    "dialog:rename": "Renombrar",
+    "dialog:rename-cancel": "Cancelar",
+    "dialog:rename-save": "Guardar",
+    "actions": "Acciones"
   },
 
   "navigation": {
@@ -116,14 +116,14 @@
   },  
 
   "paper-size": {
-    "letter": "Letter",
-    "legal": "Legal",
-    "tabloid": "Tabloid",
-    "ledger": "Ledger",
-    "junior-legal": "Junior legal",
-    "half-letter": "Half letter",
-    "portrait": "Portrait",
-    "landscape": "Landscape"
+    "letter": "Letter (216 × 279 mm)",
+    "legal": "Legal (216 × 356 mm)",
+    "tabloid": "Tabloid (279 × 432 mm)",
+    "ledger": "Ledger (432 × 279 mm)",
+    "junior-legal": "Junior legal (127 × 203 mm)",
+    "half-letter": "Half letter (140 × 216 mm)",
+    "portrait": "Retrato",
+    "landscape": "Apaisado"
   },
 
   "scan": {
