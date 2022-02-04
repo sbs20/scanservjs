@@ -138,11 +138,11 @@ class ScanController {
       const left = Math.round(this.request.params.left * previewScale);
       const top = Math.round(this.request.params.top * previewScale);
       const width = Math.round(this.request.params.width * previewScale);
-      cmdBuilder.arg('-resize', width)
+      cmdBuilder.arg('-scale', width)
         .arg('-background', '#808080')
         .arg('-extent', `${previewWidth}x${previewHeight}-${left}-${top}`);
     } else {
-      cmdBuilder.arg('-resize', previewWidth);
+      cmdBuilder.arg('-scale', previewWidth);
     }
 
     cmdBuilder.arg(`'${Config.previewDirectory}/preview.tif'`);
