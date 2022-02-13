@@ -29,18 +29,13 @@ RUN apt-get update \
     sane-utils \
     tesseract-ocr \
     sane-airscan \
-    libsane-hpaio \
   && sed -i \
     's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
     /etc/ImageMagick-6/policy.xml \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0 \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN echo hpaio >> /etc/sane.d/dll.conf
+  && npm install -g npm@8.3.0
 
 # Core image
 #
@@ -97,6 +92,16 @@ RUN useradd -o -u $UID -g $GID -m -s /bin/bash $UNAME
 # Change the ownership of config and data since we need to write there
 RUN chown -R $UID:$GID config data /etc/sane.d/net.conf /etc/sane.d/airscan.conf
 USER $UNAME
+
+# hplip image
+#
+# This image adds the HP scanner libs to the image.
+# ==============================================================================
+FROM scanservjs-core AS scanservjs-hplip
+RUN apt-get install -yq libsane-hpaio \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && echo hpaio >> /etc/sane.d/dll.conf
 
 # default build
 FROM scanservjs-core

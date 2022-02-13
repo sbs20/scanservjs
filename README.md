@@ -37,6 +37,8 @@ scanservjs is a web UI frontend for your scanner. It allows you to share one or
 more scanners (using SANE) on a network without the need for drivers or
 complicated installation.
 
+<mark>This branch includes support for HP scanners and ARM build targets.</mark>
+
 ## Features
 
 * Cropping
