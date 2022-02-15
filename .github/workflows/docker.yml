@@ -38,7 +38,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:staging
           target: scanservjs-core
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
 
       - name: Push master
         if: github.ref == 'refs/heads/master'
@@ -47,7 +47,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
           target: scanservjs-core
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
 
       - name: Get version
         id: get_version
@@ -61,4 +61,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
           target: scanservjs-core
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
