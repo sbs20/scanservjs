@@ -19,6 +19,9 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Set up QEMU for multi-platform build
+        uses: docker/setup-qemu-action@v1
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         
@@ -35,6 +38,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:staging
           target: scanservjs-core
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Push master
         if: github.ref == 'refs/heads/master'
@@ -43,6 +47,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
           target: scanservjs-core
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Get version
         id: get_version
@@ -56,3 +61,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
           target: scanservjs-core
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
