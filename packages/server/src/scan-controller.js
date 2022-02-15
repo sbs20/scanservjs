@@ -129,22 +129,23 @@ class ScanController {
    * @returns {Promise.<void>}
    */
   async updatePreview(filename) {
-    const dpmm = this.request.params.resolution / 25.4;
+    const previewWidth = 868;
     const device = this.context.getDevice(this.request.params.deviceId);
     const cmdBuilder = new CmdBuilder(Config.convert).arg(`'${Config.tempDirectory}/${filename}'`);
     if (device.geometry) {
-      const geometry = {
-        width: device.features['-x'].limits[1] * dpmm,
-        height: device.features['-y'].limits[1] * dpmm,
-        left: this.request.params.left * dpmm,
-        top: this.request.params.top * dpmm
-      };
-      cmdBuilder.arg('-background', '#808080')
-        .arg('-extent', `${geometry.width}x${geometry.height}-${geometry.left}-${geometry.top}`);
+      const previewScale = previewWidth / device.features['-x'].limits[1];
+      const previewHeight = Math.round(device.features['-y'].limits[1] * previewScale);
+      const left = Math.round(this.request.params.left * previewScale);
+      const top = Math.round(this.request.params.top * previewScale);
+      const width = Math.round(this.request.params.width * previewScale);
+      cmdBuilder.arg('-scale', width)
+        .arg('-background', '#808080')
+        .arg('-extent', `${previewWidth}x${previewHeight}-${left}-${top}`);
+    } else {
+      cmdBuilder.arg('-scale', previewWidth);
     }
 
-    cmdBuilder.arg('-resize', 868)
-      .arg(`'${Config.previewDirectory}/preview.tif'`);
+    cmdBuilder.arg(`'${Config.previewDirectory}/preview.tif'`);
 
     await Process.spawn(cmdBuilder.build());
   }
