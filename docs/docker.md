@@ -29,9 +29,7 @@ docker run -d \
 * ⚠ By default, configuration and scanned images are stored within the container
   and will be lost if you recreate it. If you want to map your scanned images
   then see mapping section below
-* ⚠ The docker image is amd64 only - and will not work on ARM devices such as
-  the Raspberry Pi. Please follow the manual installation process in these
-  cases
+* ✅ The docker image now supports arm as well as amd64.
 
 ## Accessing hardware
 
@@ -110,24 +108,22 @@ wish to map:
 When mapping volumes, special attention must be paid to users and file systems
 permissions.
 
-The docker container runs under a non-privileged user with a UID and GID of
-`2001`. scanservjs relies on this user for editing SANE and airscan
-configurations inside the container. Changing this user's UID (e.g. by using
-`-u 1000` for `docker run`) to access scans/configuration from outside docker
-**is not advised since it will cause these steps to fail.**
+The docker container runs as root by default. Changing the user's UID (e.g. by
+using `-u 1000` for `docker run`) to access scans/configuration from outside
+docker **is not advised since it will cause scans to fail.**. If running as a
+different user is important to you then see the `scanservjs-user2001` target in
+[../Dockerfile](../Dockerfile).
 
 Your alternatives are:
 1. changing the group of the container to a known group on the host e.g.
-   `-u 2001:1000`. This will keep the user correct (`2001`) but change the group
+   `-u 0:1000`. This will keep the user correct (`0`) but change the group
    (`1000`).
-2. creating a corresponding user on the host e.g.
-   `useradd -u 2001 -ms /bin/bash scanservjs`
-3. building a docker image with a custom UID/GID pairing: clone this repository
+2. building a docker image with a custom UID/GID pairing: clone this repository
    and run
    `docker build --build-arg UID=1234 --build-arg GID=5678 -t scanservjs_custom .`
    (with UID and GID adjusted to your liking), then run the custom image (e.g.
    `docker run scanservjs_custom`).
-4. as a last resort, changing the host volume permissions e.g.
+3. as a last resort, changing the host volume permissions e.g.
    `chmod 777 local-volume`
 
 ## Environment variables

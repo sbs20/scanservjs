@@ -22,6 +22,13 @@ about paperless-ng resulted in
 You could integrate with Dropbox using
 [Dropbox-Uploader](https://github.com/andreafabrizi/Dropbox-Uploader)
 
+## insaned
+
+Use your scanner's hardware 'Scan' button to initiate a new scan via
+`scanservjs`. Requires a scanner that exposes buttons as sensors and `curl`.
+
+* Repo: https://gitlab.com/xeijin-dev/insaned
+
 ## Recipe for Scan2Cloud 
 
 This recipe covers all major cloud providers such as Amazon, Dropbox, Google
