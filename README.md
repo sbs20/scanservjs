@@ -9,7 +9,7 @@
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.jpg)
 
-Copyright 2016-2021 [Sam Strachan](https://github.com/sbs20)
+Copyright 2016-2022 [Sam Strachan](https://github.com/sbs20)
 
 ## What people are saying
 
@@ -52,6 +52,7 @@ complicated installation.
   [Help requested](https://github.com/sbs20/scanservjs/issues/154)
 * Light and dark mode
 * Responsive design
+* Docker images for `amd64`, `arm64` and `armv7`
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
