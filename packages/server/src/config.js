@@ -47,6 +47,8 @@ class Config {
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
     
+      scanimageAdditionalArguments: {},
+
       previewResolution: 100,
       previewPipeline: {
         extension: 'jpg',

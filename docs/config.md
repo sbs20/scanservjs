@@ -243,3 +243,23 @@ module.exports = {
   }
 }
 ```
+
+### Add custom scanimage command line options
+
+Some scanners need
+[additional arguments](https://github.com/sbs20/scanservjs/issues/401) for
+scanimage to behave. It's possible to set them in the config using the
+`scanimageAdditionalArguments` key. This is a dictionary of key value pairs
+which will be applied as arguments.
+
+For the linked issue, the solution is to add:
+
+```javascript
+module.exports = {
+  afterConfig(config) {
+    config.scanimageAdditionalArguments = {
+      '--page-height': 297
+    };
+  }
+}
+```

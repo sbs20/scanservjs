@@ -63,6 +63,7 @@
  * @property {boolean} devicesFind
  * @property {string} ocrLanguage
  * @property {string} scanimage
+ * @property {Object.<string, string>} scanimageAdditionalArguments
  * @property {string} convert
  * @property {string} tesseract
  * @property {boolean} allowUnsafePaths
