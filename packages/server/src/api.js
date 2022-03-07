@@ -20,7 +20,7 @@ class Api {
     const dir = FileInfo.create(Config.outputDirectory);
     let files = await dir.list();
     files = files
-      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension))
+      .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension.toLowerCase()))
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
     log.trace(JSON.stringify(files));
     return files;
