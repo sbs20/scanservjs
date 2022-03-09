@@ -51,7 +51,9 @@
     "dialog:rename": "##RENAME",
     "dialog:rename-cancel": "##CANCEL",
     "dialog:rename-save": "##SAVE",
-    "actions": "##ACTIONS"
+    "actions": "##ACTIONS",
+    "thumbnail-show": "##SHOWTHUMB",
+    "thumbnail-size": "##THUMBSIZE"
   },
 
   "navigation": {

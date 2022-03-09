@@ -106,6 +106,15 @@ class Api {
   }
 
   /**
+   * @param {string} name 
+   * @returns {Promise.<Buffer>}
+   */
+  static async readThumbnail(name) {
+    const source = FileInfo.unsafe(Config.outputDirectory, name);
+    return await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+  }
+
+  /**
    * @param {ScanRequest} req 
    * @returns {ScanResponse}
    */

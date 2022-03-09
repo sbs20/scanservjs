@@ -51,7 +51,9 @@
     "dialog:rename": "Datei umbennen",
     "dialog:rename-cancel": "Abbruch",
     "dialog:rename-save": "Speichern",
-    "actions": "Aktionen"
+    "actions": "Aktionen",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {
