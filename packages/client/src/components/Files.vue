@@ -14,8 +14,8 @@
       <v-checkbox class="mt-6"
         v-model="thumbnails.show" :label="$t('files.thumbnail-show')" />
       <v-slider v-if="thumbnails.show" class="mt-6 ml-8" min="32" max="128" step="16"
-        thumb-label="always" thumb-size="24"
-        v-model="thumbnails.size" inverse-label="true" :label="$t('files.thumbnail-size')"/>
+        v-model="thumbnails.size" inverse-label="true"
+        :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`"/>
       <v-spacer/>
       <v-btn @click="multipleDelete" color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
       <v-dialog v-model="dialogEdit" max-width="500px">
