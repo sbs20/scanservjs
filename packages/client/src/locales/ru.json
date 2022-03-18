@@ -51,7 +51,9 @@
     "dialog:rename": "Переименовать",
     "dialog:rename-cancel": "Отмена",
     "dialog:rename-save": "Сохранить",
-    "actions": "Действие"
+    "actions": "Действие",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {

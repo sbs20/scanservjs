@@ -51,7 +51,9 @@
     "dialog:rename": "更改文件名称",
     "dialog:rename-cancel": "取消",
     "dialog:rename-save": "保存",
-    "actions": "操作"
+    "actions": "操作",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {

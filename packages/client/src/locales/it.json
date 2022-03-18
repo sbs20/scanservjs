@@ -51,7 +51,9 @@
     "dialog:rename": "Rinomina file",
     "dialog:rename-cancel": "Annulla",
     "dialog:rename-save": "Salva",
-    "actions": "Azioni"
+    "actions": "Azioni",
+    "thumbnail-show": "Mostra miniature",
+    "thumbnail-size": "Dimensione miniature"
   },
 
   "navigation": {

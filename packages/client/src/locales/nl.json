@@ -51,7 +51,9 @@
     "dialog:rename": "Pas bestandsnaam aan",
     "dialog:rename-cancel": "Annuleren",
     "dialog:rename-save": "Opslaan",
-    "actions": "Acties"
+    "actions": "Acties",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {

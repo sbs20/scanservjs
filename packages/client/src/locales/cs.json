@@ -51,7 +51,9 @@
     "dialog:rename": "Změnit název souboru",
     "dialog:rename-cancel": "Zrušit",
     "dialog:rename-save": "Uložit",
-    "actions": "Akce"
+    "actions": "Akce",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {

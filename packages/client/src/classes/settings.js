@@ -11,7 +11,11 @@ export default class Settings {
       version: Constants.Version,
       theme: 'system',
       locale: 'en',
-      appColor: 'accent-4'
+      appColor: 'accent-4',
+      thumbnails: {
+        show: true,
+        size: 64
+      }
     };
   }
 }

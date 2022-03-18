@@ -113,7 +113,19 @@ function configure(app, rootPath) {
     }
   });
 
-  app.get('/files/*', (req, res) => {
+  app.get(/\/files\/([^/]+)\/thumbnail/, async (req, res) => {
+    logRequest(req);
+    try {
+      const name = req.params[0];
+      const buffer = await Api.readThumbnail(name);
+      res.type('jpg');
+      res.send(buffer);
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
+  app.get(/\/files\/([^/]+)/, (req, res) => {
     logRequest(req);
     try {
       const name = req.params[0];

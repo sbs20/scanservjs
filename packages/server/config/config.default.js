@@ -12,6 +12,7 @@ module.exports = {
     /**
      * Override any of the following values
      */
+    // config.host = '127.0.0.1';
     // config.port = 8080;
     // config.devices = [];
     // config.ocrLanguage = 'eng';
