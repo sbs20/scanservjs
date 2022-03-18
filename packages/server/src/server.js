@@ -10,7 +10,7 @@ app.use(express.static('client'));
 
 configure(app);
 
-const server = app.listen(Config.port, () => {
+const server = app.listen(Config.port, Config.bindIface, () => {
   log.info('Started');
 });
 

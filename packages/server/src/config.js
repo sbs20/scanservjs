@@ -15,6 +15,7 @@ class Config {
     Object.assign(this, {
       version: Package.version,
       port: 8080,
+      bindIface: "::",
       timeout: 120000,
       devices: [],
       ocrLanguage: 'eng',
