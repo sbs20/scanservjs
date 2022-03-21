@@ -15,6 +15,7 @@ class Config {
     Object.assign(this, {
       version: Package.version,
       port: 8080,
+      host: '::',
       timeout: 120000,
       devices: [],
       ocrLanguage: 'eng',
@@ -47,6 +48,8 @@ class Config {
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
     
+      scanimageAdditionalArguments: {},
+
       previewResolution: 100,
       previewPipeline: {
         extension: 'jpg',

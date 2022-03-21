@@ -43,15 +43,17 @@
     "filename": "Nom de fichier",
     "date": "Date",
     "size": "Taille",
-    "items-per-page": "Files per page",
+    "items-per-page": "Fichiers par page",
     "items-per-page-all": "All",
     "message:deleted": "Supprimé {0}",
-    "message:renamed": "File renamed",
+    "message:renamed": "Fichier renommé",
     "button:delete-selected": "Delete Selected",
-    "dialog:rename": "Change file name",
-    "dialog:rename-cancel": "Cancel",
-    "dialog:rename-save": "Save",
-    "actions": "Actions"
+    "dialog:rename": "Changer le nom du fichier",
+    "dialog:rename-cancel": "Annuler",
+    "dialog:rename-save": "Enregistrer",
+    "actions": "Actions",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {
@@ -96,7 +98,7 @@
     "left-aligned": "Aligné à gauche",
     "centrally-aligned": "Aligné centré",
     "duplex": "Duplex",
-    "transparency unit": "Transparency Unit",
+    "transparency unit": "Unité de transparence",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -116,14 +118,14 @@
   },  
 
   "paper-size": {
-    "letter": "Letter",
+    "letter": "Lettre",
     "legal": "Legal",
     "tabloid": "Tabloid",
     "ledger": "Ledger",
     "junior-legal": "Junior legal",
-    "half-letter": "Half letter",
+    "half-letter": "Demi lettre",
     "portrait": "Portrait",
-    "landscape": "Landscape"
+    "landscape": "Paysage"
   },
 
   "scan": {

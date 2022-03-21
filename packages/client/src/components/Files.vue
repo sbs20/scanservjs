@@ -11,7 +11,12 @@
       show-select>
     <template v-slot:top>
       <v-toolbar flat>
-      <v-spacer></v-spacer>
+      <v-checkbox class="mt-6"
+        v-model="thumbnails.show" :label="$t('files.thumbnail-show')" />
+      <v-slider v-if="thumbnails.show" class="mt-6 ml-8" min="32" max="128" step="16"
+        v-model="thumbnails.size" inverse-label="true"
+        :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`"/>
+      <v-spacer/>
       <v-btn @click="multipleDelete" color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
       <v-dialog v-model="dialogEdit" max-width="500px">
         <v-card>
@@ -35,6 +40,11 @@
       </v-dialog>
       </v-toolbar>
     </template>
+    <template v-slot:[`item.thumb`]="{ item }" v-if="thumbnails.show">
+      <v-img :src="`./files/${item.name}/thumbnail`"
+        :max-height="thumbnails.size" :max-width="thumbnails.size"
+        :contain="true" />
+    </template>
     <template v-slot:[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long', $i18n.locale) }}
     </template>
@@ -57,6 +67,9 @@
 
 <script>
 import Common from '../classes/common';
+import Storage from '../classes/storage';
+
+const storage = Storage.instance();
 
 export default {
   name: 'Files',
@@ -71,22 +84,33 @@ export default {
       dialogEdit: false,
       headers: [
         {
+          align: 'start',
+          sortable: false,
+          value: 'thumb',
+        },
+        {
           text: this.$t('files.filename'),
           align: 'start',
           sortable: true,
           value: 'name',
-        }, {
+        },
+        {
           text: this.$t('files.date'),
           align: 'start',
           sortable: true,
           value: 'lastModified',
-        }, {
+        },
+        {
           text: this.$t('files.size'),
           align: 'start',
           sortable: true,
           value: 'sizeString',
         },
-        {text: this.$t('files.actions'), value: 'actions', sortable: false},
+        {
+          text: this.$t('files.actions'),
+          value: 'actions',
+          sortable: false
+        },
       ],
       files: [],
       editedItem: {
@@ -97,7 +121,11 @@ export default {
         name: '',
         newName: ''
       },
-      selectedFiles: []
+      selectedFiles: [],
+      thumbnails: {
+        show: storage.settings.thumbnails.show,
+        size: storage.settings.thumbnails.size
+      }
     };
   },
 
@@ -105,6 +133,14 @@ export default {
     dialogEdit(val) {
       val || this.closeRename();
     },
+    thumbnails: {
+      handler(thumbnails) {
+        const settings = storage.settings;
+        settings.thumbnails = thumbnails;
+        storage.settings = settings;
+      },
+      deep: true
+    }
   },
 
   methods: {
@@ -200,5 +236,11 @@ export default {
 </script>
 
 <style>
-
+tbody > tr > td {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+div.v-input.v-input__slider {
+  max-width: 250px;
+}
 </style>

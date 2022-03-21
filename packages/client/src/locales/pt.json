@@ -51,7 +51,9 @@
     "dialog:rename": "Mudar nome de ficheiro",
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
-    "actions": "Ações"
+    "actions": "Ações",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {

@@ -87,6 +87,9 @@ install() {
   # Enable PDF
   sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
+  # Avoid out of memory issues with large or multipage scans
+  sed -i 's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ /etc/ImageMagick-6/policy.xml
+
   # Install all the node dependencies
   cd $location && npm install --only=production
 

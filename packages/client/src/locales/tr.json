@@ -51,7 +51,9 @@
     "dialog:rename": "Dosya adını değiştir",
     "dialog:rename-cancel": "İptal",
     "dialog:rename-save": "Kaydet",
-    "actions": "Eylemler"
+    "actions": "Eylemler",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
   },
 
   "navigation": {
