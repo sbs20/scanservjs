@@ -27,7 +27,8 @@ class Request {
       params: {
         deviceId: device.id,
         resolution: data.params.resolution || features['--resolution'].default,
-        format: 'tiff'
+        format: 'tiff',
+        isPreview: data.params.isPreview || false
       },
       filters: data.filters || [],
       pipeline: data.pipeline || null,

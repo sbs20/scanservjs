@@ -50,11 +50,12 @@ class Api {
         resolution: Config.previewResolution,
         brightness: req.params.brightness,
         contrast: req.params.contrast,
-        dynamicLineart: req.params.dynamicLineart
+        dynamicLineart: req.params.dynamicLineart,
+        isPreview: true
       }
     });
 
-    const cmd = `${Scanimage.scan(request)} > ${Config.previewDirectory}/preview.tif`;
+    const cmd = `${Scanimage.scan(request)}`;
     log.trace('Executing cmd:', cmd);
     await Process.spawn(cmd);
     return {};
