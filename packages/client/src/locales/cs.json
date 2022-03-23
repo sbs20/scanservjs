@@ -52,8 +52,8 @@
     "dialog:rename-cancel": "Zrušit",
     "dialog:rename-save": "Uložit",
     "actions": "Akce",
-    "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-show": "Zobrazit miniatury",
+    "thumbnail-size": "Velikost miniatur"
   },
 
   "navigation": {
