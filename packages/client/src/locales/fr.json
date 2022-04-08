@@ -52,8 +52,8 @@
     "dialog:rename-cancel": "Annuler",
     "dialog:rename-save": "Enregistrer",
     "actions": "Actions",
-    "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-show": "Afficher les miniatures",
+    "thumbnail-size": "Taille de la miniature"
   },
 
   "navigation": {
