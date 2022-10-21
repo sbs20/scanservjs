@@ -81,12 +81,10 @@ export default {
         pwaTheme = colors[storage.settings.appColor]['base'];
         break;
     }
-    //Set background color
-    let pwaBackground = this.$vuetify.theme.dark ? '#000000' : '#FFFFFF';
-    
-    let manifest = {
+
+    const manifest = {
       theme_color : pwaTheme,
-      background_color : pwaBackground,
+      background_color : this.$vuetify.theme.dark ? '#000000' : '#FFFFFF',
       display : 'standalone',
       scope : '/',
       start_url : '/#/scan',
@@ -120,11 +118,10 @@ export default {
         }
       ]
     };
-    const url = `data:manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`;
 
-    let element = document.createElement('link');
+    const element = document.createElement('link');
     element.setAttribute('rel', 'manifest');
-    element.setAttribute('href', url);
+    element.setAttribute('href', `data:manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`);
     document.querySelector('head').appendChild(element);
 
     // Default route if connected
