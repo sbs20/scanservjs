@@ -88,7 +88,11 @@ class Scanimage {
       const pattern = `${Config.tempDirectory}/${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
       cmdBuilder.arg(`--batch=${pattern}`);
     } else {
-      cmdBuilder.arg(`> ${Scanimage.filename(request.index)}`);
+      if ('isPreview' in params && params.isPreview) {
+        cmdBuilder.arg(`-o ${Config.previewDirectory}/preview.tif`);
+      } else {
+        cmdBuilder.arg(`-o ${Scanimage.filename(request.index)}`);
+      }
     }
     return cmdBuilder.build();
   }
