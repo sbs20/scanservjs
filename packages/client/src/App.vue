@@ -92,10 +92,40 @@ export default {
       start_url : '/#/scan',
       name : 'scanservjs',
       short_name : 'scanservjs',
-      description : 'SANE scanner nodejs web ui'
+      description : 'SANE scanner nodejs web ui',
+      icons : [
+        {
+          "src": "/icons/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "/icons/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+        },
+        {
+          "src": "/icons/android-chrome-maskable-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/icons/android-chrome-maskable-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
     };
+<<<<<<< Updated upstream
     let content = encodeURIComponent(JSON.stringify(manifest));
     let url = 'data:manifest+json,' + content;
+=======
+
+    const url = `data:manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`;
+
+>>>>>>> Stashed changes
     let element = document.createElement('link');
     element.setAttribute('rel', 'manifest');
     element.setAttribute('href', url);
