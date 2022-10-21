@@ -63,6 +63,7 @@ npm run release
 
 * `npm audit fix` or `npm update`. This won't remove old packages; to do so,
   delete node_modules and reinstall
+* `npx browserslist@latest --update-db`
 
 ## References
 
