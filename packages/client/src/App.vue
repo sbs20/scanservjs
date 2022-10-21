@@ -29,6 +29,8 @@ import Constants from './classes/constants';
 import Storage from './classes/storage';
 import Navigation from './components/Navigation';
 
+import colors from 'vuetify/lib/util/colors';
+
 const storage = Storage.instance();
 
 export default {
@@ -55,6 +57,72 @@ export default {
     this.$vuetify.theme.dark = theme === Constants.Themes.Dark;
 
     this.$i18n.locale = storage.settings.locale;
+
+    //Generate Manifest with theme color
+    let pwaTheme = storage.settings.appColor;
+    //Catch malformed color names
+    switch (storage.settings.appColor) {
+      case 'accent-4':
+        pwaTheme = this.$vuetify.theme.dark ? '#272727' : '#F5F5F5';
+        break;
+      case 'deep-purple':
+        pwaTheme = colors['deepPurple']['base'];
+        break;
+      case 'light-blue':
+        pwaTheme = colors['lightBlue']['base'];
+        break;
+      case 'light-green':
+        pwaTheme = colors['lightGreen']['base'];
+        break;
+      case 'deep-orange':
+        pwaTheme = colors['deepOrange']['base'];
+        break;
+      default:
+        pwaTheme = colors[storage.settings.appColor]['base'];
+        break;
+    }
+
+    const manifest = {
+      theme_color : pwaTheme,
+      background_color : this.$vuetify.theme.dark ? '#000000' : '#FFFFFF',
+      display : 'standalone',
+      scope : '/',
+      start_url : '/#/scan',
+      name : 'scanservjs',
+      short_name : 'scanservjs',
+      description : 'SANE scanner nodejs web ui',
+      icons : [
+        {
+          src : './icons/android-chrome-192x192.png',
+          sizes : '192x192',
+          type : 'image/png',
+          purpose : 'any'
+        },
+        {
+          src : './icons/android-chrome-512x512.png',
+          sizes : '512x512',
+          type : 'image/png',
+          purpose : 'any'
+        },
+        {
+          src : './icons/android-chrome-maskable-192x192.png',
+          sizes : '192x192',
+          type : 'image/png',
+          purpose : 'maskable'
+        },
+        {
+          src : './icons/android-chrome-maskable-512x512.png',
+          sizes : '512x512',
+          type : 'image/png',
+          purpose : 'maskable'
+        }
+      ]
+    };
+
+    const element = document.createElement('link');
+    element.setAttribute('rel', 'manifest');
+    element.setAttribute('href', `data:manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`);
+    document.querySelector('head').appendChild(element);
 
     // Default route if connected
     if (this.$route.matched.length === 0) {
