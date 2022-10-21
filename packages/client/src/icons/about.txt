@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Source Sans Pro
+- Font Author: © 2010 - 2018 Adobe Systems Incorporated (http://www.adobe.com/), with Reserved Font Name ‘Source’.
+- Font Source: http://fonts.gstatic.com/s/sourcesanspro/v21/6xK3dSBYKcSV-LCoeQqfX1RYOo3aP6TkmDZz9g.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
