@@ -23,7 +23,19 @@ install() {
     npm \
     imagemagick \
     sane-utils \
-    tesseract-ocr
+    tesseract-ocr \
+    tesseract-ocr-ces \
+    tesseract-ocr-deu \
+    tesseract-ocr-eng \
+    tesseract-ocr-spa \
+    tesseract-ocr-fra \
+    tesseract-ocr-ita \
+    tesseract-ocr-nld \
+    tesseract-ocr-pol \
+    tesseract-ocr-por \
+    tesseract-ocr-rus \
+    tesseract-ocr-tur \
+    tesseract-ocr-chi-sim
 
   npm install npm@8.3.0 -g
 
