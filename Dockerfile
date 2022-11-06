@@ -97,12 +97,11 @@ ARG UID=2001
 ARG GID=2001
 ARG UNAME=scanservjs
 
-# Create a known user
-RUN groupadd -g $GID -o $UNAME
-RUN useradd -o -u $UID -g $GID -m -s /bin/bash $UNAME
-
-# Change the ownership of config and data since we need to write there
-RUN chown -R $UID:$GID config data /etc/sane.d/net.conf /etc/sane.d/airscan.conf
+# Create a known user, then change the ownership of config and data since we
+# need to write there.
+RUN groupadd -g $GID -o $UNAME \
+  && useradd -o -u $UID -g $GID -m -s /bin/bash $UNAME \
+  && chown -R $UID:$GID /run.sh "$APP_DIR" /etc/sane.d/net.conf /etc/sane.d/airscan.conf
 USER $UNAME
 
 # default build
