@@ -49,7 +49,16 @@
             </div>
           </template>
         </settings-item>
-
+        <settings-item>
+          <template v-slot:description>
+            {{ $t('settings.show-files-after-scan:description') }}
+          </template>
+          <template v-slot:action>
+            <div style="max-width: 10rem;">
+              <v-switch v-model="settings.showFilesAfterScan"></v-switch>
+            </div>
+          </template>
+        </settings-item>
       </template>
     </settings-section>
 

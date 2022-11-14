@@ -12,6 +12,7 @@ export default class Settings {
       theme: 'system',
       locale: 'en',
       appColor: 'accent-4',
+      showFilesAfterScan: true,
       thumbnails: {
         show: true,
         size: 64

@@ -168,6 +168,7 @@
     "theme:dark": "Ciemny",
     "color": "Kolor",
     "color:description": "Zmień kolor górnego paska aplikacji",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Urządzenia i przechowywane pliki",
     "reset:description": "Czyści ustawione skanery i wymusza ich ponowne załadowanie",
     "reset": "Zresetuj",

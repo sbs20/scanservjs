@@ -168,6 +168,7 @@
     "theme:dark": "Dark",
     "color": "Colour",
     "color:description": "Colour. This will change the colour of the top app bar.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Devices and storage",
     "reset:description": "Clears stored scanner devices and forces a reload",
     "reset": "Reset",
