@@ -169,6 +169,7 @@
     "theme:dark": "##SETTINGS.THEME:DARK",
     "color": "##SETTINGS.COLOR",
     "color:description": "##SETTINGS.COLOR:DESCRIPTION",
+    "show-files-after-scan:description": "##SETTINGS:NAVIGATEFILES",
     "devices": "##SETTINGS.DEVICES",
     "reset:description": "##SETTINGS.RESET:DESCRIPTION",
     "reset": "##SETTINGS.RESET",

@@ -541,7 +541,11 @@ export default {
           this.$refs.batchDialog.open(options);
         } else {
           // Finish
-          this.$router.push('/files');
+          if (storage.settings.showFilesAfterScan) {
+            this.$router.push('/files');
+          } else {
+            this.readPreview();
+          }
         }
       });
     },

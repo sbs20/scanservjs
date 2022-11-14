@@ -168,6 +168,7 @@
     "theme:dark": "Tmavý",
     "color": "Barva",
     "color:description": "Barva. Toto nastavení změní barvu horního panelu.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Zařízení a úložiště",
     "reset:description": "Odstraní uložená skenovací zařízení a vynutí opětovné načtení",
     "reset": "Resetovat",

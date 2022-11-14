@@ -168,6 +168,7 @@
     "theme:dark": "Scuro",
     "color": "Colore",
     "color:description": "Colore. Cambia il colore della barra superiore dell'app.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Dispositivi",
     "reset:description": "Cancella la lista degli scanner e ne forza l'aggiornamento",
     "reset": "Ricarica dispositivi",

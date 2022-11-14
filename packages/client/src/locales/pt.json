@@ -168,6 +168,7 @@
     "theme:dark": "Escuro",
     "color": "Cor",
     "color:description": "Cor. Esta opção irá alterar a corra da barra de navegação.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Dispositivos e armazenamento",
     "reset:description": "Limpa dispositivos guardados e força um recarregamento",
     "reset": "Redefinir",

@@ -167,6 +167,7 @@
     "theme:dark": "深色",
     "color": "颜色",
     "color:description": "切换顶部应用栏的颜色。",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "设备和存储",
     "reset:description": "清空扫描仪列表并强制重新加载设备",
     "reset": "重置",

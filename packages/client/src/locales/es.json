@@ -168,6 +168,7 @@
     "theme:dark": "Oscuro",
     "color": "Color",
     "color:description": "Color. Esto modificará el color de la barra superior.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Dispositivos y almacenamiento",
     "reset:description": "Limpia los dispositivos almacenados y fuerza la recarga",
     "reset": "Reestablecer",

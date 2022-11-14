@@ -168,6 +168,7 @@
     "theme:dark": "Koyu",
     "color": "Renk",
     "color:description": "Renk. Üst barın rengini değiştirir.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Cihazlar ve depolama",
     "reset:description": "Kayıtlı cihazları temizler ve yeniden yükler",
     "reset": "Sıfırla",
