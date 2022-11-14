@@ -219,6 +219,7 @@ Synology NAS:
             # ----- enter UID and GID here -----
             UID: 1034
             GID: 100
+          target: scanservjs-user2001
         container_name: scanservjs
         environment:
           # ----- specify network scanners here; see above for more possibilities -----
