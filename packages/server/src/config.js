@@ -50,6 +50,8 @@ class Config {
     
       scanimageAdditionalArguments: {},
 
+      users: {},
+
       previewResolution: 100,
       previewPipeline: {
         extension: 'jpg',

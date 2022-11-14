@@ -1,4 +1,5 @@
 const express = require('express');
+const basicAuth = require('express-basic-auth');
 const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
@@ -84,6 +85,13 @@ function configure(app, rootPath) {
   initialize(rootPath);
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+
+  if (Object.keys(Config.users).length > 0) {
+    app.use(basicAuth({
+      users: Config.users,
+      challenge: true,
+    }));
+  }
 
   app.delete('/context', (req, res) => {
     logRequest(req);
