@@ -168,6 +168,7 @@
     "theme:dark": "Темная",
     "color": "Цвет",
     "color:description": "Выбор цвета заголовка приложения",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Устройства и хранилище",
     "reset:description": "Очистить сохраненные устройства сканера и перезагрузиться",
     "reset": "Сбросить",

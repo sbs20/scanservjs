@@ -168,6 +168,7 @@
     "theme:dark": "Foncé",
     "color": "Couleur",
     "color:description": "Couleur. Ce paramètre modifie la couleur de la barre supérieure",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Scanners et mémoire locale de l'application",
     "reset:description": "Efface les scanners mémorisés et force une recherche d'appareils",
     "reset": "Ré-initialiser",

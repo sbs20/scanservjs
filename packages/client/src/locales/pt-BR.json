@@ -166,6 +166,7 @@
     "theme:dark": "Escuro",
     "color": "Cor",
     "color:description": "Cor. Irá mudar a cor da barra de navegação.",
+    "show-files-after-scan:description": "Show files after scan completes",
     "devices": "Dispositivos e armazenamento",
     "reset:description": "Limpa scanner e força um refresh",
     "reset": "Reestablecer",
