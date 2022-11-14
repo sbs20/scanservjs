@@ -263,3 +263,23 @@ module.exports = {
   }
 }
 ```
+
+### Add Basic Authentication
+
+This is not meaningfully secure. There is no transport security by default, and
+the credentials are stored in plain text. But it may offer some peace of mind to
+deter casual browsing.
+
+Just populate the config with a dictionary with username keys and password
+values.
+
+```javascript
+module.exports = {
+  afterConfig(config) {
+    config.users = {
+      'user1': 'password1',
+      'user2': 'password2'
+    };
+  }
+}
+```
