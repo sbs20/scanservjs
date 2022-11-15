@@ -51,7 +51,7 @@ class Request {
     if ('--brightness' in features) {
       this.params.brightness = data.params.brightness || 0;
     }
-    if ('--contrast' in features) {
+    if ('--contrast' in features && this.params.mode !== 'Lineart') {
       this.params.contrast = data.params.contrast || 0;
     }
     if ('--disable-dynamic-lineart' in features) {
