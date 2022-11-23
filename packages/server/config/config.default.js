@@ -82,6 +82,27 @@ module.exports = {
      * Append to existing pipelines
      */
     // config.pipelines.push(myPipelines[0]);
+
+
+    /* Integration Plugins */
+
+    // Paperless Integration example
+    //
+    // Prevent accessing secrets from the UI
+    // config.plugin_secrets = {
+    //   paperless: {
+    //     token: 'xxxxxxxxxx'
+    //   }
+    // };
+
+    // config.plugins = {
+    //   paperless: {
+    //     hostname: 'paperless.mysite.com',
+    //     https: true,
+    //     always_send: false,  // whether to upload every scan automatically
+    //     show_upload_icon: true, // shows the "Send to Paperless" upload button on Files page
+    //   }
+    // };
   },
 
   /**

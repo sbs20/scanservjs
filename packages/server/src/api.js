@@ -3,6 +3,7 @@ const Config = require('./config');
 const Context = require('./context');
 const Devices = require('./devices');
 const FileInfo = require('./file-info');
+const IntegrationPlugin = require('./integration-plugins');
 const Filters = require('./filters');
 const Process = require('./process');
 const Request = require('./request');
@@ -24,6 +25,13 @@ class Api {
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
     log.trace(JSON.stringify(files));
     return files;
+  }
+
+  static async integrationPluginList() {
+    log.trace('integrationPluginList()');
+    const plugins = IntegrationPlugin.list();
+    log.trace(JSON.stringify(plugins));
+    return plugins;
   }
 
   /**

@@ -9,6 +9,7 @@ const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
 const Util = require('./util');
+const BasePlugin = require('./integration-plugins/base');
 
 class ScanController {
   constructor() {
@@ -104,9 +105,11 @@ class ScanController {
     }
 
     const destination = `${Config.outputDirectory}/${Config.filename()}.${extension}`;
-    await FileInfo
-      .create(`${Config.tempDirectory}/${filename}`)
-      .move(destination);
+    const fileInfo = FileInfo.create(`${Config.tempDirectory}/${filename}`);
+    await fileInfo.move(destination);
+
+    // Run onScan for any registered Plugins
+    BasePlugin.runOnScan(fileInfo);
 
     log.debug(`Written data to: ${destination}`);
     await this.deleteFiles();

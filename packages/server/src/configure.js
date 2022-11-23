@@ -112,6 +112,17 @@ function configure(app, rootPath) {
     }
   });
 
+  app.get('/integration-plugins', async(req, res) => {
+    logRequest(req);
+    try {
+      res.send({
+        config: await Api.integrationPluginList()
+      });
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
   app.get('/files', async (req, res) => {
     logRequest(req);
     try {
