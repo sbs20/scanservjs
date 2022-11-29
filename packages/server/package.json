@@ -24,7 +24,7 @@
     "gulp-gzip": "^1.4.2",
     "gulp-tar": "^3.1.0",
     "merge-stream": "^2.0.0",
-    "mocha": "^8.3.2",
+    "mocha": "^10.1.0",
     "nodemon": "^2.0.7"
   },
   "author": "Sam Strachan",
