@@ -54,9 +54,9 @@ config.pipelines.push({
   get commands() {
     return [
       'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-      'convert @- pdf:-',
-      `rclone copy *.pdf YOUR_PROVIDER:/path/to/folder`,
-      'ls scan_*.*'
+      'convert @- scan-0000.pdf',
+      `rclone copy scan-0000.pdf YOUR_PROVIDER:/path/to/folder`,
+      'ls scan-*.*'
     ];
   }
 });
