@@ -11,6 +11,11 @@
       <a target="_blank" href="https://github.com/sbs20/scanservjs">https://github.com/sbs20/scanservjs</a>
     </div>
 
+    <div class="body-1 mb-4">
+      {{ $t('about.api') }}
+      <a target="_blank" href="/api-docs">Swagger /api-docs</a>
+    </div>
+
     <v-btn @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
 
     <v-dialog v-model="systemInfoDialog" aria-role="dialog" max-width="480" v-on:keydown.stop="_onKeys" aria-modal>

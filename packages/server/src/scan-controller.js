@@ -66,7 +66,7 @@ class ScanController {
   }
 
   /**
-   * @returns {Promise.<void>}
+   * @returns {Promise.<FileInfo>}
    */
   async finish() {
     log.debug(`Post processing: ${this.pipeline.description}`);
@@ -110,6 +110,7 @@ class ScanController {
 
     log.debug(`Written data to: ${destination}`);
     await this.deleteFiles();
+    return FileInfo.create(destination);
   }
 
   /**
@@ -168,8 +169,10 @@ class ScanController {
     }
 
     if (this.finishUp) {
-      await this.finish();
-      return {};
+      const file = await this.finish();
+      return {
+        file
+      };
 
     } else {
       log.debug(`Finished pass: ${this.request.index}`);

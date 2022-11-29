@@ -13,6 +13,8 @@ class Config {
 
   init() {
     Object.assign(this, {
+      applicationName: Package.name,
+      applicationDescription: Package.description,
       version: Package.version,
       port: 8080,
       host: '::',

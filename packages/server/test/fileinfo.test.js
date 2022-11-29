@@ -7,7 +7,7 @@ describe('FileInfo', () => {
     const file = FileInfo.create('./package.json');
     assert.strictEqual(file.exists(), true);
     assert.strictEqual(file.size > 0, true);
-    assert.strictEqual(file.toText().indexOf('scanservjs is a simple web-based UI') > 0, true);
+    assert.strictEqual(file.toText().indexOf('scanservjs-api is a REST based API') > 0, true);
   });
 
   it('Security', () => {
