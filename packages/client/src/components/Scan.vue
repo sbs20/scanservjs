@@ -317,7 +317,7 @@ export default {
 
       let data = Common.clone(this.request);
 
-      this._fetch('scanner/preview', {
+      this._fetch('preview', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -472,14 +472,12 @@ export default {
 
     readPreview() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      this._fetch('preview', {
+      const uri = 'preview?' + new URLSearchParams(
+        this.request.filters.map(e => ['filter', e]));
+
+      this._fetch(uri, {
         cache: 'no-store',
-        method: 'POST',
-        body: JSON.stringify(this.request.filters),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+        method: 'GET'
       }).then(data => {
         this.img = 'data:image/jpeg;base64,' + data.content;
         this._resizePreview();
@@ -508,7 +506,7 @@ export default {
       }
 
       const data = Common.clone(this.request);
-      this._fetch('scanner/scan', {
+      this._fetch('scan', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

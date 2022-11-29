@@ -1,0 +1,588 @@
+paths:
+  /context:
+    delete:
+      summary: Deletes cached context
+      description: |
+        Deletes cached context data, such as previously found scanners, which
+        forces a repopulation of the context on the nest GET
+      tags:
+        - System
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+    get:
+      summary: Gets scanner and configuration context
+      description: |
+        Gets, and reloads if necessary, the fulll system context including
+        configuration and scanner.
+      tags:
+        - System
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Context'
+
+  /files:
+    get:
+      summary: List all scanned files
+      description: |
+        Returns a list of all scanned files
+      tags:
+        - Files
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/definitions/FileInfo'
+
+  /files/{filename}:
+    delete:
+      summary: Deletes a scanned file
+      description: |
+        Deletes a scanned file and returns the file information just prior to
+        deletion.
+      tags:
+        - Files
+      parameters:
+        - name: filename
+          in: path
+          description: Filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/FileInfo'
+
+    get:
+      summary: Gets a file as a blob
+      description: |
+        Gets a specified file and returns binary data as an attachment download.
+      tags:
+        - Files
+      parameters:
+        - name: filename
+          in: path
+          description: Escaped filename
+          required: true
+          schema:
+            type: string
+      produces:
+        - application/pdf
+        - image/png
+        - image/gif
+        - image/jpeg
+      responses:
+        '200':
+          description: OK
+
+    put:
+      summary: Renames a file
+      description: |
+        Renames a file
+      tags:
+        - Files
+      parameters:
+        - name: filename
+          in: path
+          description: Filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New filename
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+      produces:
+        - application/pdf
+        - image/png
+        - image/gif
+        - image/jpeg
+      responses:
+        '200':
+          description: OK
+
+  /files/{filename}/thumbnail:
+    get:
+      summary: Gets an image thumbnail
+      description: |
+        Returns an image thumbnail. If it's a multipage document such as a PDF
+        or TIF then only the first page is returned
+      tags:
+        - Files
+      parameters:
+        - name: filename
+          in: path
+          description: The filename
+          required: true
+          schema:
+            type: string
+      produces:
+        - image/jpeg
+      responses:
+        '200':
+          description: OK
+
+  /preview:
+    delete:
+      summary: Deletes the currently stored preview
+      description: |
+        Deletes the currently stored preview
+      tags:
+        - Files
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/FileInfo'
+
+    get:
+      summary: Reads the currently stored preview
+      description: |
+        Reads the currently stored preview and applies the supplied filters. The
+        filters are defined in /context.
+      tags:
+        - Files
+      parameters:
+        - name: filter
+          in: query
+          description: Filter array
+          required: true
+          schema:
+            type: array
+            item:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/PreviewResponse'
+
+    post:
+      summary: Creates a preview
+      description: |
+        Creates a preview using the ScanRequest in the body. Certain request
+        parameters (such as geometry) are ignored. The full dimensions of the
+        scanner are used intead.
+      tags:
+        - Scanner
+      requestBody:
+        description: Scan Request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ScanRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+
+  /scan:
+    post:
+      summary: Create a scan
+      description: |
+        Creates a scan.
+
+        The request body must contain a ScanRequest object.
+
+        Not all ScanRequest properties are mandatory, and many properties will
+        be defaulted where possible.
+      tags:
+        - Scanner
+      requestBody:
+        description: Scan Request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ScanRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ScanResponse'
+
+  /system:
+    get:
+      summary: Gets host system information
+      description: |
+        Gets host information which is useful for issue reporting
+      tags:
+        - System
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/SystemInfo'
+
+definitions:
+  Feature:
+    properties:
+      default:
+        oneOf:
+          - type: string
+          - type: number
+
+      parameters:
+        type: string
+
+      options:
+        type: array
+        items:
+          oneOf:
+            - type: string
+            - type: number
+
+      limits:
+        type: array
+        items:
+          type: number
+        maxItems: 2
+        example:
+          - -1
+          - 1
+
+      interval:
+        type: number
+        example: 1
+
+  Device:
+    properties:
+      id:
+        type: string
+        example: 'lide20:libusb:001:004'
+      name:
+        type: string
+        example: 'Canon IDE Scanner'
+      features:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/Feature'
+    example:
+      "id": "plustek:libusb:001:004"
+      "name": "plustek:libusb:001:004"
+      "features":
+        "--mode":
+          "text": "--mode Lineart|Gray|Color [Color]"
+          "name": "--mode"
+          "default": "Color"
+          "parameters": "Lineart|Gray|Color"
+          "options":
+            - "Lineart"
+            - "Gray"
+            - "Color"
+          
+        "--depth":
+          "text": "--depth 8|16bit [8]"
+          "name": "--depth"
+          "default": "8"
+          "parameters": "8|16bit"
+        
+        "--resolution":
+          "text": "--resolution 50..1200dpi [50]"
+          "name": "--resolution"
+          "default": 150
+          "parameters": "50..1200dpi"
+          "limits":
+            - 50
+            - 1200
+          "interval": 1
+          "options":
+            - 75
+            - 150
+            - 300
+            - 600
+        
+        "-l":
+          "text": "-l 0..215mm [0]"
+          "name": "-l"
+          "default": 0
+          "parameters": "0..215mm"
+          "limits":
+            - 0
+            - 215
+          "interval": 1
+        
+        "-t":
+          "text": "-t 0..297mm [0]"
+          "name": "-t"
+          "default": 0
+          "parameters": "0..297mm"
+          "limits":
+            - 0
+            - 297
+          "interval": 1
+        
+        "-x":
+          "text": "-x 0..215mm [103]"
+          "name": "-x"
+          "default": 215
+          "parameters": "0..215mm"
+          "limits":
+            - 0
+            - 215
+          "interval": 1
+        
+        "-y":
+          "text": "-y 0..297mm [76.21]"
+          "name": "-y"
+          "default": 297
+          "parameters": "0..297mm"
+          "limits":
+            - 0
+            - 297
+          "interval": 1
+        
+        "--brightness":
+          "text": "--brightness -100..100% (in steps of 1) [0]"
+          "name": "--brightness"
+          "default": 0
+          "parameters": "-100..100% (in steps of 1)"
+          "limits":
+            - -100
+            - 100
+          "interval": 1
+        
+        "--contrast":
+          "text": "--contrast -100..100% (in steps of 1) [0]"
+          "name": "--contrast"
+          "default": 5
+          "parameters": "-100..100% (in steps of 1)"
+          "limits":
+            - -100
+            - 100        
+          "interval": 1
+  
+  Context:
+    properties:
+      version:
+        type: string
+        example: 2.2.2
+
+      devices:
+        type: array
+        items:
+          $ref: '#/definitions/Device'
+
+      pipelines:
+        type: array
+        items:
+          type: string
+        example:
+          - 'JPG | @:pipeline.high-quality'
+          - 'JPG | @:pipeline.medium-quality'
+          - 'JPG | @:pipeline.low-quality'
+          - 'PNG'
+          - 'TIF | @:pipeline.uncompressed'
+          - 'TIF | @:pipeline.lzw-compressed'
+          - 'PDF (TIF | @:pipeline.uncompressed)'
+          - 'PDF (TIF | @:pipeline.lzw-compressed)'
+          - 'PDF (JPG | @:pipeline.high-quality)'
+          - 'PDF (JPG | @:pipeline.medium-quality)'
+          - 'PDF (JPG | @:pipeline.low-quality)'
+          - '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)'
+          - '@:pipeline.ocr | @:pipeline.text-file'
+
+      filters:
+        type: array
+        items:
+          type: string
+        example:
+          - 'filter.auto-level'
+          - 'filter.threshold'
+          - 'filter.blur'
+          - 'Rotate 90'
+
+      paperSizes:
+        type: array
+        items:
+          type: object
+
+      batchModes:
+        type: array
+        items:
+          type: string
+        example:
+          - 'none'
+          - 'manual'
+          - 'auto'
+          - 'auto-collate-standard'
+          - 'auto-collate-reverse'
+
+  SystemInfoOs:
+    properties:
+      arch:
+        type: string
+        example: "x64"
+      freemem:
+        type: integer
+        example: 219
+      platform:
+        type: string
+        example: "linux"
+      release:
+        type: string
+        example: "5.10.0-16-amd64"
+      type:
+        type: string
+        example: "Linux"
+      version:
+        type: string
+        example: "#1 SMP Debian 5.10.127-2 (2022-07-23)"
+
+  SystemInfo:
+    properties:
+      os:
+        $ref: "#/definitions/SystemInfoOs"
+      node:
+        type: string
+        example: "v12.22.12"
+      npm:
+        type: string
+        example: "8.3.0"
+      docker:
+        type: boolean
+
+  FileInfo:
+    properties:
+      "fullname":
+        type: string
+        example: "data/output/scan_2022-11-15 21.14.29.jpg"
+      "extension":
+        type: string
+        example: ".pdf"
+      "lastModified":
+        type: string
+        example: "2022-11-15T21:14:29.391Z"
+      "size":
+        type: integer
+        example: 18880,
+      "sizeString":
+        type: string
+        example: "18 KB"
+      "isDirectory":
+        type: boolean
+        example: false,
+      "name":
+        type: string
+        example: "scan_2022-11-15 21.14.29.pdf"
+      "path":
+        type: string
+        example: "data/output"
+
+  PreviewResponse:
+    properties:
+      content:
+        type: string
+        example: /9j/4AAQSkZJRgABAQEAZABkAAD/2wBDA....
+        
+  ScanRequestParameters:
+    properties:
+      deviceId:
+        type: string
+        example: 'plustek:libusb:001:004'
+      top:
+        type: integer
+        example: 0
+      left:
+        type: integer
+        example: 0
+      width:
+        type: integer
+        example: 215
+      height:
+        type: integer
+        example: 297
+      resolution:
+        type: integer
+        example: 200
+      mode:
+        type: string
+        example: 'Color'
+      source:
+        type: string
+        example: 'Flatbed'
+      brightness:
+        type: integer
+        example: 0
+      contrast:
+        type: integer
+        example: 0
+      dynamicLineart:
+        type: boolean
+        example: false
+    required:
+      - deviceId
+      - resolution
+
+  ScanRequest:
+    properties:
+      params:
+        $ref: '#/definitions/ScanRequestParameters'
+
+      filters:
+        type: array
+        items:
+          type: string
+        example:
+          - 'filter.auto-level'
+          - 'filter.threshold'
+
+      pipeline:
+        type: string
+        example: 'JPG | @:pipeline.high-quality'
+
+      batch:
+        type: string
+        example: 'manual'
+
+      index:
+        type: integer
+        example: 0
+    
+    required:
+      - params
+      - pipeline
+
+  ScanResponse:
+    properties:
+      image:
+        type: string
+        example: 
+      index:
+        type: integer
+        example: 1
+      file:
+        $ref: '#/definitions/FileInfo'

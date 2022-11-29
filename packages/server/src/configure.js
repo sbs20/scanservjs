@@ -3,6 +3,8 @@ const basicAuth = require('express-basic-auth');
 const fs = require('fs');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const Config = require('./config');
 const FileInfo = require('./file-info');
 
@@ -93,6 +95,36 @@ function configure(app, rootPath) {
     }));
   }
 
+  const swaggerSpec = swaggerJsdoc({
+    failOnErrors: true, 
+    swaggerDefinition: {
+      openapi: '3.0.0',
+      info: {
+        title: Config.applicationName,
+        description: Config.applicationDescription,
+        version: Config.version,
+      },
+    },
+    apis: [
+      // Works for normal operation as well as development
+      '../server/src/types.yml'],
+  });
+
+  const swaggerUiOptions = {
+    swaggerOptions: {
+      url: '/api-docs/swagger.json',
+    },
+  };
+
+  app.get(
+    swaggerUiOptions.swaggerOptions.url,
+    (req, res) => res.json(swaggerSpec));
+
+  app.use(
+    '/api-docs',
+    swaggerUi.serveFiles(null, swaggerUiOptions),
+    swaggerUi.setup(null, swaggerUiOptions));
+
   app.delete('/context', (req, res) => {
     logRequest(req);
     try {
@@ -166,10 +198,10 @@ function configure(app, rootPath) {
     }
   });
 
-  app.post('/preview', async (req, res) => {
+  app.get('/preview', async (req, res) => {
     logRequest(req);
     try {
-      const buffer = await Api.readPreview(req.body);
+      const buffer = await Api.readPreview(req.query.filter);
       res.send({
         content: buffer.toString('base64')
       });
@@ -187,7 +219,7 @@ function configure(app, rootPath) {
     }
   });
 
-  app.post('/scanner/preview', async (req, res) => {
+  app.post('/preview', async (req, res) => {
     logRequest(req);
     try {
       res.send(await Api.createPreview(req.body));
@@ -196,7 +228,7 @@ function configure(app, rootPath) {
     }
   });
 
-  app.post('/scanner/scan', async (req, res) => {
+  app.post('/scan', async (req, res) => {
     logRequest(req);
     try {
       res.send(await Api.scan(req.body));

@@ -53,6 +53,7 @@ complicated installation.
 * Light and dark mode
 * Responsive design
 * Docker images for `amd64`, `arm64` and `armv7`
+* Swagger API documentation
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
@@ -123,6 +124,13 @@ The settings page allows you to change the appearance and locale / language.
 ### About
 
 Copyright information and system info.
+
+## Swagger API documentation
+
+There is built in swagger documentation with an API explorer. Access it direct
+using `/api-docs` or navigate from the `About` page.
+
+![swagger](https://github.com/sbs20/scanservjs/raw/master/docs/swagger.png)
 
 ## Why?
 

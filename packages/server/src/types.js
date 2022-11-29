@@ -27,6 +27,9 @@
  * @property {string} string
  * @property {boolean} geometry
  * @property {Object.<string, ScanDeviceFeature>} features
+ * @property {string|undefined} defaultBatchMode
+ * @property {string|undefined} defaultFormat
+ * @property {string|undefined} defaultFilters
  */
 
 /**
@@ -56,6 +59,8 @@
 
 /**
  * @typedef {Object} Configuration
+ * @property {string} applicationName
+ * @property {string} applicationDescription
  * @property {string} version
  * @property {number} port
  * @property {number} timeout
@@ -108,6 +113,7 @@
  * @typedef {Object} ScanResponse
  * @property {string} [image]
  * @property {number} [index]
+ * @property {FileInfo} [file]
  */
 
 /**
