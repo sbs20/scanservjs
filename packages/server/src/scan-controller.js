@@ -8,6 +8,7 @@ const Filters = require('./filters');
 const Process = require('./process');
 const Request = require('./request');
 const Scanimage = require('./scanimage');
+const userOptions = require('./user-options');
 const Util = require('./util');
 
 class ScanController {
@@ -170,6 +171,7 @@ class ScanController {
 
     if (this.finishUp) {
       const file = await this.finish();
+      await userOptions.afterScan(file);
       return {
         file
       };

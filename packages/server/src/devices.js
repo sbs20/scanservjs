@@ -78,7 +78,7 @@ class Devices {
       file.save(JSON.stringify(devices.map(d => d.string), null, 2));
     }
 
-    userOptions.applyToDevices(devices);
+    userOptions.afterDevices(devices);
     return devices;
   }
 
