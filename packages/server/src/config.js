@@ -8,7 +8,7 @@ class Config {
   constructor() {
     this.init();
     this.addEnvironment();
-    userOptions.applyToConfig(this);
+    userOptions.afterConfig(this);
   }
 
   init() {

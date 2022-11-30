@@ -110,5 +110,16 @@ module.exports = {
     //   device.features['-x'].default = 215;
     //   device.features['-y'].default = 297;
     // }
+  },
+
+  /**
+   * This method is called after a scan has completed with the resultant
+   * FileInfo.
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<any>}
+   */
+  async afterScan(fileInfo) {
+    // Copy the file to the home directory
+    // return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
   }
 };

@@ -10,22 +10,33 @@ class UserOptions {
   }
 
   /**
-   * Applies user overrides from config.local.js to the configuration
+   * Passes a config reference to config.local.js for customisation
    * @param {Configuration} config 
    */
-  applyToConfig(config) {
+  afterConfig(config) {
     if (this.local && this.local.afterConfig) {
       this.local.afterConfig(config);
     }
   }
 
   /**
-   * Applies user overrides from config.local.js to the devices
+   * Passes a devices reference to config.local.js for customisation
    * @param {ScanDevice[]} devices 
    */
-  applyToDevices(devices) {
+  afterDevices(devices) {
     if (this.local && this.local.afterDevices) {
       this.local.afterDevices(devices);
+    }
+  }
+
+  /**
+   * Passes a fileInfo of the scan result to config.local.js
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<any>}
+   */
+  async afterScan(fileInfo) {
+    if (this.local && this.local.afterScan) {
+      return await this.local.afterScan(fileInfo);
     }
   }
 }

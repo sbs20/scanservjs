@@ -59,6 +59,7 @@ function logRequest(req) {
  */
 function initialize(rootPath) {
   if (rootPath) {
+    log.warn(`Running with altered rootPath: ${rootPath}`);
     // Only required for running in development
     Object.assign(Config, {
       devicesPath: rootPath + Config.devicesPath,
