@@ -36,9 +36,9 @@ rm -r scanservjs
 
 ## Uninstall
 
-To uninstall, just run `sudo /var/www.scanservjs/installer.sh -u`.
+To uninstall, just run `sudo /var/www/scanservjs/installer.sh -u`.
 
-* You need root privileges - hence sudo
+* You need root privileges - hence `sudo`
 * When you run with no arguments, it will just
   [print the help](https://github.com/sbs20/scanservjs/blob/e4ce5f0de13a23c3050ddd7e58dedb790c9fa4d4/packages/server/installer.sh#L188)
 * You can read the script to see what it does
