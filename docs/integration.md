@@ -48,18 +48,14 @@ directory itself and use either inotify or cron. If you want to embed into the
 pipeline then something like the following may help:
 
 ```javascript
-config.pipelines.push({
-  extension: 'pdf',
-  description: 'PDF | Scan2Cloud ⇒ Your_Configured_Provider_or_Remote ',
-  get commands() {
-    return [
-      'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-      'convert @- scan-0000.pdf',
-      `rclone copy scan-0000.pdf YOUR_PROVIDER:/path/to/folder`,
-      'ls scan-*.*'
-    ];
+  /**
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<Buffer>}
+   */
+  async afterScan(fileInfo) {
+    // Copy the scan to my home directory
+    return await Process.spawn(`rclone copy '${fileInfo.fullname}' YOUR_PROVIDER:/path/to/folder`);
   }
-});
 ```
 
 ## Scan2Mail
@@ -75,28 +71,29 @@ config.pipelines.push({
 Now create the following pipeline in your `config/config.local.js`
 
 ```javascript
-config.pipelines.push({
-  extension: 'pdf',
-  description: 'ocrmypdf (Scan2Mail email@address.tld)',
-  get commands() {
-    return [
-      'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-      'convert @- pdf:-',
-      `file="scan_$(date +"%d_%m_%Y-%H_%M").pdf" && ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "$file" && mpack -s "Document from Scanner@Office" "$file" email@address.tld`,
-      'ls scan_*.*'
-    ];
+  afterConfig(config) {
+    config.pipelines.push({
+      extension: 'pdf',
+      description: 'ocrmypdf',
+      get commands() {
+        return [
+          'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+          'convert @- pdf:-',
+          `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "scan_0.pdf"`,
+          'ls scan_*.*'
+        ];
+      }
+    });
+  },
+
+  /**
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<Buffer>}
+   */
+  async afterScan(fileInfo) {
+    return await Process.spawn(`mpack -s "Document from Scanner@Office" "${fileInfo.fullname}" email@address.tld`);
   }
-});
 ```
-
-The important `Scan2Mail` line is:
-
-```
-file="scan_$(date +"%d_%m_%Y-%H_%M").pdf" && ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "$file" && mpack -s "Document from Scanner@Office" "$file" email@address.tld
-```
-
-This sets a time-based filename, then OCRs and finally sends to
-email@address.tld
 
 ## Other recipes?
 

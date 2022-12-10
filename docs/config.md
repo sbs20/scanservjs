@@ -1,18 +1,24 @@
-# Configuration overrides
+# Configuration and integration
 
 Sometimes scanners don't return quite what you want them to. Likewise, perhaps
-scanservjs doesn't provide the defaults you want. Furtunately it's possible to
-override most things you might want to.
+scanservjs doesn't provide the defaults you want. And maybe you want to do your
+own thing after a scan. Furtunately it's possible to override most things you
+might want to.
 
-The two things you can modify are:
-* `config`: These are the global settings which include things like:
+There are three hooks where you can customise behaviour:
+* `afterConfig`: This provides a reference to the config where you can apply
+  your own changes to global settings which include things like:
   * Server port
   * Log level
   * Preview resolution
   * Output filename
   * Pipelines (output format)
-* `devices`: The device definitions which are reported by SANE which include
-  scanner dimensions and geometry, modes, resolutions and sources.
+* `afterDevices`: You can alter the device definitions which are reported by
+  SANE which include scanner dimensions and geometry, modes, resolutions and
+  sources.
+* `afterScan`: You receive a reference to the file which has just been scanned;
+  copy it somewhere, call a script or write some code.
+
 
 TL;DR; copy `./config/config.default.js` to `config/config.local.js`, override
 the sections you want and then restart the app
@@ -24,11 +30,13 @@ e.g. `-v /my/local/path:/app/config`.
 ## How it works
 
 scanservjs looks for a file called `config/config.local.js` and attempts to call
-two functions at different stages in the processing:
+three functions at different stages in the processing:
 * `afterConfig(config)`: whenever a config is read, the result is passed to this
   function before being either used or sent down to the browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
+* `afterScan(fileInfo)`: whenever a scan completes, the resultant file is passed
+  to this function.
 * See [example source](../packages/server/config/config.default.js) for more
   options.
 * Please note that the config file only gets read at start-up - so if you make
@@ -74,6 +82,15 @@ module.exports = {
         device.features['-x'].default = 215;
         device.features['-y'].default = 297;  
       });
+  }
+
+  /**
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<Buffer>}
+   */
+  async afterScan(fileInfo) {
+    // Copy the scan to my home directory
+    return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
   }
 };
 ```
