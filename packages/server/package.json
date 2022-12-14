@@ -32,7 +32,7 @@
   "dependencies": {
     "adm-zip": "^0.5.5",
     "dayjs": "^1.10.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-basic-auth": "^1.2.1",
     "loglevel": "^1.7.0",
     "loglevel-plugin-prefix": "^0.8.4",
