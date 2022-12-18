@@ -1,7 +1,7 @@
 # scanservjs
 
-[![Build Status](https://img.shields.io/github/workflow/status/sbs20/scanservjs/NodeCI?style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
-[![Code QL Status](https://img.shields.io/github/workflow/status/sbs20/scanservjs/CodeQL?label=CodeQL&style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/sbs20/scanservjs/build.yml?branch=master&style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
+[![Code QL Status](https://img.shields.io/github/actions/workflow/status/sbs20/scanservjs/codeql-analysis.yml?branch=master&style=for-the-badge&label=CodeQL)](https://github.com/sbs20/scanservjs/actions)
 [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/sbs20/scanservjs?style=for-the-badge)](https://hub.docker.com/r/sbs20/scanservjs)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sbs20/scanservjs?style=for-the-badge)](https://hub.docker.com/r/sbs20/scanservjs)
 [![GitHub stars](https://img.shields.io/github/stars/sbs20/scanservjs?label=Github%20stars&style=for-the-badge)](https://github.com/sbs20/scanservjs)
