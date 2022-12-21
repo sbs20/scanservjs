@@ -16,6 +16,10 @@
           :label="$t('scan.source')" v-model="request.params.source"
           :items="sources" item-value="value" item-text="text"></v-select>
 
+        <v-select v-if="'--adf-mode' in device.features"
+          :label="$t('scan.adf-mode')" v-model="request.params.adfMode"
+          :items="adfModes" item-value="value" item-text="text"></v-select>
+
         <v-select
           :label="$t('scan.resolution')" v-model="request.params.resolution"
           :items="device.features['--resolution']['options']"></v-select>
@@ -220,6 +224,16 @@ export default {
         return {
           text: this.$te(key) ? this.$t(key) : mode,
           value: mode
+        };
+      });
+    },
+
+    adfModes() {
+      return this.device.features['--adf-mode'].options.map(adfMode => {
+        const key = `adf-mode.${sanitiseLocaleKey(adfMode)}`;
+        return {
+          text: this.$te(key) ? this.$t(key) : adfMode,
+          value: adfMode
         };
       });
     },

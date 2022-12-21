@@ -68,6 +68,7 @@ class Feature {
     this.parameters = this.parameters.replace(/^auto\|/, '');
     if (this.enabled) {
       switch (this.name) {
+        case '--adf-mode':
         case '--mode':
         case '--source':
           this.options = this.parameters.split('|');
@@ -92,6 +93,10 @@ class Feature {
     }
   }
 
+  /**
+   * @param {string} s
+   * @returns {Feature} 
+   */
   static parse(s) {
     const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]$/g.exec(s);
     const feature = new Feature();
