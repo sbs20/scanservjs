@@ -92,6 +92,11 @@
     "24bit color(fast)": "@:mode.color"
   },
 
+  "adf-mode": {
+    "simplex": "##SIMPLEX",
+    "duplex": "##DUPLEX"
+  },
+
   "source": {
     "flatbed": "##FLATBED",
     "adf": "##ADF",
@@ -134,6 +139,7 @@
     "source": "##SCAN.SOURCE",
     "resolution": "##SCAN.RESOLUTION",
     "mode": "##SCAN.MODE",
+    "adf-mode": "##ADF-MODE",
     "dynamic-lineart": "##SCAN.DYNAMIC-LINEART",
     "dynamic-lineart:enabled": "##ENABLED",
     "dynamic-lineart:disabled": "##DISABLED",

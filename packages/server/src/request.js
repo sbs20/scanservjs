@@ -45,6 +45,9 @@ class Request {
     if ('--mode' in features) {
       this.params.mode = data.params.mode || features['--mode'].default;
     }
+    if ('--adf-mode' in features) {
+      this.params.adfMode = data.params.adfMode || features['--adf-mode'].default;
+    }
     if ('--source' in features) {
       this.params.source = data.params.source || features['--source'].default;
     }

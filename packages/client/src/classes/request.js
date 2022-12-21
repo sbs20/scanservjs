@@ -30,6 +30,9 @@ export default class Request {
       obj.params.width = request.params.width || device.features['-x'].default;
       obj.params.height = request.params.height || device.features['-y'].default;
     }
+    if ('--adf-mode' in device.features) {
+      obj.params.adfMode = request.params.adfMode || device.features['--adf-mode'].default;
+    }
     if ('--mode' in device.features) {
       obj.params.mode = request.params.mode || device.features['--mode'].default;
     }

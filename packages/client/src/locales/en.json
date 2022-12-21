@@ -92,6 +92,11 @@
     "24bit color(fast)": "@:mode.color"
   },
 
+  "adf-mode": {
+    "simplex": "Simplex",
+    "duplex": "Duplex"
+  },
+
   "source": {
     "flatbed": "Flatbed",
     "adf": "ADF",
@@ -134,6 +139,7 @@
     "source": "Source",
     "resolution": "Resolution",
     "mode": "Mode",
+    "adf-mode": "ADF Mode",
     "dynamic-lineart": "Dynamic Lineart",
     "dynamic-lineart:enabled": "Enabled",
     "dynamic-lineart:disabled": "Disabled",

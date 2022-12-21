@@ -73,7 +73,10 @@ class ScanimageCommand {
     if ('source' in params) {
       cmdBuilder.arg('--source', params.source);
     }
-      
+
+    if ('adfMode' in params) {
+      cmdBuilder.arg('--adf-mode', params.adfMode);
+    }
     cmdBuilder.arg('--resolution', params.resolution);
 
     if ('scanimageAdditionalArguments' in Config) {

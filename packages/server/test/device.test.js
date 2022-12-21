@@ -222,4 +222,32 @@ describe('Device', () => {
     assert.strictEqual(device.features['-t'].interval, 0.0211639);
     assert.strictEqual(device.features['-y'], undefined);
   });
+
+  it('scanimage-a11.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a11.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'epson2:net:192.168.1.141');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
+    assert.strictEqual(device.features['--mode'].default, 'Lineart');
+    assert.deepStrictEqual(device.features['--source'].options, ['Flatbed', 'Automatic Document Feeder']);
+    assert.strictEqual(device.features['--source'].default, 'Flatbed');
+    assert.deepStrictEqual(device.features['--adf-mode'].options, ['Simplex', 'Duplex']);
+    assert.strictEqual(device.features['--adf-mode'].default, 'Simplex');
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 100, 150, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 297.1);
+    assert.strictEqual(device.features['-l'].default, 0);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 431.8);
+    assert.strictEqual(device.features['-t'].default, 0);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 297.1);
+    assert.strictEqual(device.features['-x'].default, 297.1);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 431.8);
+    assert.strictEqual(device.features['-y'].default, 431.8);
+  });
+
 });
