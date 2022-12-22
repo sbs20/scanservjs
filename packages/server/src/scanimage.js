@@ -79,17 +79,23 @@ class ScanimageCommand {
     }
     cmdBuilder.arg('--resolution', params.resolution);
 
-    if ('scanimageAdditionalArguments' in Config) {
-      Object.entries(Config.scanimageAdditionalArguments).forEach(([key, value]) => {
-        cmdBuilder.arg(key, value);
-      });
+    if ('pageWidth' in params) {
+      cmdBuilder.arg('--page-width', params.pageWidth);
     }
-
-    if (['left', 'top', 'width', 'height'].every(s => s in params)) {
-      cmdBuilder.arg('-l', params.left)
-        .arg('-t', params.top)
-        .arg('-x', params.width)
-        .arg('-y', params.height);
+    if ('pageHeight' in params) {
+      cmdBuilder.arg('--page-height', params.pageHeight);
+    }
+    if ('left' in params) {
+      cmdBuilder.arg('-l', params.left);
+    }
+    if ('top' in params) {
+      cmdBuilder.arg('-t', params.top);
+    }
+    if ('width' in params) {
+      cmdBuilder.arg('-x', params.width);
+    }
+    if ('height' in params) {
+      cmdBuilder.arg('-y', params.height);
     }
 
     cmdBuilder.arg('--format', params.format);

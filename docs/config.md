@@ -261,23 +261,31 @@ module.exports = {
 }
 ```
 
-### Add custom scanimage command line options
+### Handling `--page-width` and `--page-height`
 
 Some scanners need
 [additional arguments](https://github.com/sbs20/scanservjs/issues/401) for
-scanimage to behave. It's possible to set them in the config using the
-`scanimageAdditionalArguments` key. This is a dictionary of key value pairs
-which will be applied as arguments.
-
-For the linked issue, the solution is to add:
+scanimage to behave. By default, the application _should_ just work. While the
+end user is not presented with an option to change these in the UI, the
+parameters will be automatically defaulted according to the values presented by
+SANE - and will do so **per device**. Should the values not be to your liking
+then you can override them as per any other device setting:
 
 ```javascript
 module.exports = {
-  afterConfig(config) {
-    config.scanimageAdditionalArguments = {
-      '--page-height': 297
-    };
-  }
+  afterDevices(devices) {
+    devices
+      .filter(d => d.id.includes('fujitsu'))
+      .forEach(device => {
+        device.features['--page-height'] = {
+          default: 297,
+          limits:  [0, 297]
+        };
+        device.features['--page-width'] = {
+          default: 215,
+          limits:  [0, 215]
+        };
+      });
 }
 ```
 

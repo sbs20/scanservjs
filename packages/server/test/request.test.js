@@ -102,4 +102,37 @@ describe('Request', () => {
     assert.strictEqual(request.params.dynamicLineart, undefined);
   });
 
+  it('scanimage-a10.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a10.txt');
+    const device = Device.from(file.toText());
+    const context = new Context([device]);
+    const request = new Request(context).extend({
+      params: {
+        top: -1,
+        left: -20,
+        width: 400,
+        height: 400,
+        resolution: '150',
+        mode: 'Color',
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: 'test-pipeline'
+    });
+    
+    assert.strictEqual(request.params.deviceId, 'epjitsu:libusb:001:003');
+    assert.strictEqual(request.params.mode, 'Color');
+    assert.strictEqual(request.params.resolution, '150');
+    assert.strictEqual(request.params.left, undefined);
+    assert.strictEqual(request.params.top, 0);
+    assert.strictEqual(request.params.width, undefined);
+    assert.strictEqual(request.params.height, undefined);
+    assert.strictEqual(request.params.pageWidth, 215.8);
+    assert.strictEqual(request.params.pageHeight, 292);
+    assert.strictEqual(request.params.brightness, 0);
+    assert.strictEqual(request.params.contrast, 0);
+    assert.strictEqual(request.params.dynamicLineart, undefined);
+  });
+
 });
