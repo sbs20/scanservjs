@@ -50,8 +50,6 @@ class Config {
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
     
-      scanimageAdditionalArguments: {},
-
       users: {},
 
       previewResolution: 100,

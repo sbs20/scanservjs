@@ -24,12 +24,25 @@ export default class Request {
       index: 1
     };
 
-    if (['-x', '-y', '-l', '-t'].every(s => s in device.features)) {
-      obj.params.top = request.params.top || device.features['-t'].default;
-      obj.params.left = request.params.left || device.features['-l'].default;
+    if ('-x' in device.features) {
       obj.params.width = request.params.width || device.features['-x'].default;
+    }
+    if ('-y' in device.features) {
       obj.params.height = request.params.height || device.features['-y'].default;
     }
+    if ('-l' in device.features) {
+      obj.params.left = request.params.left || device.features['-l'].default;
+    }
+    if ('-t' in device.features) {
+      obj.params.top = request.params.top || device.features['-t'].default;
+    }
+    if ('--page-height' in device.features) {
+      obj.params.pageHeight = request.params.pageHeight || device.features['--page-height'].default;
+    }
+    if ('--page-width' in device.features) {
+      obj.params.pageWidth = request.params.pageWidth || device.features['--page-width'].default;
+    }
+    
     if ('--adf-mode' in device.features) {
       obj.params.adfMode = request.params.adfMode || device.features['--adf-mode'].default;
     }

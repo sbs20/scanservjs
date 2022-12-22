@@ -215,6 +215,12 @@ describe('Device', () => {
     assert.strictEqual(device.features['--source'].default, 'ADF Front');
     assert.deepStrictEqual(device.features['--resolution'].options, [50, 75, 150, 300, 600]);
     assert.strictEqual(device.features['--resolution'].default, 300);
+    assert.strictEqual(device.features['--page-height'].limits[0], 0);
+    assert.strictEqual(device.features['--page-height'].limits[1], 450.7);
+    assert.strictEqual(device.features['--page-height'].default, 292);
+    assert.strictEqual(device.features['--page-width'].limits[0], 2.7);
+    assert.strictEqual(device.features['--page-width'].limits[1], 219.4);
+    assert.strictEqual(device.features['--page-width'].default, 215.8);
     assert.strictEqual(device.features['-l'], undefined);
     assert.strictEqual(device.features['-x'], undefined);
     assert.deepStrictEqual(device.features['-t'].limits, [0, 289.3]);
@@ -236,6 +242,8 @@ describe('Device', () => {
     assert.strictEqual(device.features['--adf-mode'].default, 'Simplex');
     assert.deepStrictEqual(device.features['--resolution'].options, [75, 100, 150, 300, 600, 1200]);
     assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['--page-height'], undefined);
+    assert.strictEqual(device.features['--page-width'], undefined);
     assert.strictEqual(device.features['-l'].limits[0], 0);
     assert.strictEqual(device.features['-l'].limits[1], 297.1);
     assert.strictEqual(device.features['-l'].default, 0);

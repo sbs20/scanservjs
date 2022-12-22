@@ -525,6 +525,12 @@ definitions:
       height:
         type: integer
         example: 297
+      pageWidth:
+        type: integer
+        example: 215
+      pageHeight:
+        type: integer
+        example: 297
       resolution:
         type: integer
         example: 200
@@ -534,6 +540,9 @@ definitions:
       source:
         type: string
         example: 'Flatbed'
+      adfMode:
+        type: string
+        example: 'Simplex'
       brightness:
         type: integer
         example: 0

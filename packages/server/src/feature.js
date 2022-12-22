@@ -82,6 +82,8 @@ class Feature {
         case '-t':
         case '-x':
         case '-y':
+        case '--page-height':
+        case '--page-width':
           this.geometry();
           break;
         
