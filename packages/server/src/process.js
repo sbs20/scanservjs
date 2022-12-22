@@ -1,10 +1,21 @@
 const util = require('util');
 const log = require('loglevel').getLogger('Process');
 const exec = util.promisify(require('child_process').exec);
+const execSync = require('child_process').execSync;
 const spawn = require('child_process').spawn;
 const extend = require('./util').extend;
 
 const Process = {
+
+  /**
+   * @param {string} cmd 
+   * @returns {string}
+   */
+  executeSync(cmd, options) {
+    const stdout = execSync(cmd, options);
+    return Buffer.from(stdout).toString().trim();
+  },
+  
   /**
    * @param {string} cmd 
    * @returns {Promise.<string>}

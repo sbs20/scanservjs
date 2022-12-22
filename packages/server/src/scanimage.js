@@ -4,12 +4,32 @@ const CmdBuilder = require('./command-builder');
 /** @type {Configuration} */
 const Config = require('./config');
 const Constants = require('./constants');
+const Process = require('./process');
+const semver = require('semver');
 
 class Scanimage {
+  get version() {
+    if (this._version === undefined) {
+      const result = Process.executeSync(`${Config.scanimage} -V`);
+      this._version = /.*backend version (.*)/.exec(result)[1];
+    }
+    return this._version;
+  }
+
+  get supportsOutputFlag() {
+    return semver.satisfies(this.version, '>=1.0.28');
+  }
+}
+
+class ScanimageCommand {
+  constructor() {
+    this.scanimage = new Scanimage();
+  }
+
   /**
    * @returns {string}
    */
-  static devices() {
+  devices() {
     return new CmdBuilder(Config.scanimage)
       .arg('-L')
       .build();
@@ -19,7 +39,7 @@ class Scanimage {
    * @param {string} deviceId
    * @returns {string}
    */
-  static features(deviceId) {
+  features(deviceId) {
     return new CmdBuilder(Config.scanimage)
       .arg('-d', deviceId)
       .arg('-A')
@@ -30,7 +50,7 @@ class Scanimage {
    * @param {number} page 
    * @returns {string}
    */
-  static filename(page) {
+  filename(page) {
     const number = `000${page}`.slice(-4);
     return `${Config.tempDirectory}/${Constants.TEMP_FILESTEM}-0-${number}.tif`;
   }
@@ -39,7 +59,7 @@ class Scanimage {
    * @param {ScanRequest} request 
    * @returns {string}
    */
-  static scan(request) {
+  scan(request) {
     log.debug(JSON.stringify(request));
     const params = request.params;
     const cmdBuilder = new CmdBuilder(Config.scanimage);
@@ -83,19 +103,24 @@ class Scanimage {
     if (params.mode === 'Lineart' && params.dynamicLineart === false) {
       cmdBuilder.arg('--disable-dynamic-lineart=yes');
     }
-    if ([Constants.BATCH_AUTO, Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE]
-      .includes(request.batch)) {
+    if ([Constants.BATCH_AUTO, Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE].includes(request.batch)) {
       const pattern = `${Config.tempDirectory}/${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
       cmdBuilder.arg(`--batch=${pattern}`);
     } else {
-      if ('isPreview' in params && params.isPreview) {
-        cmdBuilder.arg(`-o ${Config.previewDirectory}/preview.tif`);
+      const outputFile = 'isPreview' in params && params.isPreview
+        ? `${Config.previewDirectory}/preview.tif`
+        : this.filename(request.index);
+
+      if (this.scanimage.supportsOutputFlag) {
+        cmdBuilder.arg('-o', outputFile);
       } else {
-        cmdBuilder.arg(`-o ${Scanimage.filename(request.index)}`);
+        cmdBuilder.arg(`> '${outputFile}'`);
       }
     }
     return cmdBuilder.build();
   }
 }
 
-module.exports = Scanimage;
+const scanimageCommand = new ScanimageCommand();
+
+module.exports = scanimageCommand;
