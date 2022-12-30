@@ -13,18 +13,22 @@
         </div>
 
         <v-select v-if="'--source' in device.features"
+          :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.source')" v-model="request.params.source"
           :items="sources" item-value="value" item-text="text"></v-select>
 
         <v-select v-if="'--adf-mode' in device.features"
+          :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.adf-mode')" v-model="request.params.adfMode"
           :items="adfModes" item-value="value" item-text="text"></v-select>
 
         <v-select
+          :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.resolution')" v-model="request.params.resolution"
           :items="device.features['--resolution']['options']"></v-select>
 
         <v-select v-if="'--mode' in device.features"
+          :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.mode')" v-model="request.params.mode"
           :items="modes" item-value="value" item-text="text"></v-select>
 
@@ -36,9 +40,11 @@
           item-value="value" item-text="text"></v-select>
 
         <v-select :label="$t('scan.batch')" v-model="request.batch"
+          :no-data-text="$t('global.no-data-text')"
           :items="batchModes" item-value="value" item-text="text"></v-select>
 
         <v-select
+          :no-data-text="$t('global.no-data-text')"
           v-model="request.filters"
           :items="filters"
           item-text="text"
@@ -48,6 +54,7 @@
           multiple />
 
         <v-select
+          :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.format')"
           v-model="request.pipeline"
           :items="pipelines"
@@ -151,6 +158,7 @@ export default {
 
   data() {
     const device = Device.default();
+    device.name = this.$t('global.no-data-text');
     const request = Request.create(null, device, '');
 
     return {

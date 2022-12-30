@@ -1,6 +1,7 @@
 {
   "global": {
-    "application-name": "scanservjs"
+    "application-name": "scanservjs",
+    "no-data-text": "No data available"
   },
 
   "about": {
