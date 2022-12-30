@@ -24,6 +24,7 @@ install() {
     imagemagick \
     sane-utils \
     tesseract-ocr \
+    tesseract-ocr-ara \
     tesseract-ocr-ces \
     tesseract-ocr-deu \
     tesseract-ocr-eng \
