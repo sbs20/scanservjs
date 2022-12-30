@@ -55,7 +55,7 @@ export default {
         : Constants.Themes.Light;
     }
     this.$vuetify.theme.dark = theme === Constants.Themes.Dark;
-
+    this.$vuetify.rtl = Constants.RtlLocales.includes(storage.settings.locale);    
     this.$i18n.locale = storage.settings.locale;
 
     //Generate Manifest with theme color

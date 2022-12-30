@@ -36,6 +36,10 @@ const Constants = {
     'test'
   ],
 
+  RtlLocales: [
+    'ar'
+  ],
+
   Keys: {
     enter: 13,
     escape: 27
