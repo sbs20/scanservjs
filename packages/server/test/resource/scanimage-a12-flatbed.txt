@@ -1,0 +1,130 @@
+scanimage -A
+Output format is not set, using pnm as a default.
+
+All options specific to device `net:<IP address>:fujitsu:fi-7260:1208958':
+  Standard:
+    --source Flatbed|ADF Front|ADF Back|ADF Duplex [Flatbed]
+        Selects the scan source (such as a document-feeder).
+    --mode Lineart|Halftone|Gray|Color [Lineart]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --resolution 50..600dpi (in steps of 1) [600]
+        Sets the resolution of the scanned image.
+  Geometry:
+    --page-width 0..224.846mm (in steps of 0.0211639) [inactive]
+        Specifies the width of the media.  Required for automatic centering of
+        sheet-fed scans.
+    --page-height 0..2750.47mm (in steps of 0.0211639) [inactive]
+        Specifies the height of the media.
+    -l 0..227.809mm (in steps of 0.0211639) [0]
+        Top-left x position of scan area.
+    -t 0..296.972mm (in steps of 0.0211639) [0]
+        Top-left y position of scan area.
+    -x 0..227.809mm (in steps of 0.0211639) [215.872]
+        Width of scan-area.
+    -y 0..296.972mm (in steps of 0.0211639) [279.364]
+        Height of scan-area.
+  Enhancement:
+    --brightness -127..127 (in steps of 1) [0]
+        Controls the brightness of the acquired image.
+    --contrast -127..127 (in steps of 1) [0]
+        Controls the contrast of the acquired image.
+    --threshold 0..255 (in steps of 1) [0]
+        Select minimum-brightness to get a white point
+    --rif[=(yes|no)] [no]
+        Reverse image format
+    --ht-type Default|Dither|Diffusion [inactive]
+        Control type of halftone filter
+    --ht-pattern 0..3 (in steps of 1) [inactive]
+        Control pattern of halftone filter
+    --emphasis -128..127 (in steps of 1) [0]
+        Negative to smooth or positive to sharpen image
+    --variance 0..255 (in steps of 1) [0]
+        Set SDTC variance rate (sensitivity), 0 equals 127
+  Advanced:
+    --ald[=(yes|no)] [no]
+        Scanner detects paper lower edge. May confuse some frontends.
+    --df-action Default|Continue|Stop [Default]
+        Action following double feed error
+    --df-skew[=(yes|no)] [inactive]
+        Enable double feed error due to skew
+    --df-thickness[=(yes|no)] [inactive]
+        Enable double feed error due to paper thickness
+    --df-length[=(yes|no)] [inactive]
+        Enable double feed error due to paper length
+    --df-diff Default|10mm|15mm|20mm [inactive]
+        Difference in page length to trigger double feed error
+    --df-recovery Default|Off|On [On]
+        Request scanner to reverse feed on paper jam
+    --paper-protect Default|Off|On [On]
+        Request scanner to predict jams in the ADF
+    --adv-paper-protect Default|Off|On [On]
+        Request scanner to predict jams in the ADF using improved sensors
+    --bgcolor Default|White|Black [Default]
+        Set color of background for scans. May conflict with overscan option
+    --dropoutcolor Default|Red|Green|Blue [Default]
+        One-pass scanners use only one color during gray or binary scanning,
+        useful for colored paper or ink
+    --buffermode Default|Off|On [Off]
+        Request scanner to read pages quickly from ADF into internal memory
+    --prepick Default|Off|On [Default]
+        Request scanner to grab next page from ADF
+    --overscan Default|Off|On [Default]
+        Collect a few mm of background on top side of scan, before paper
+        enters ADF, and increase maximum scan area beyond paper size, to allow
+        collection on remaining sides. May conflict with bgcolor option
+    --sleeptimer 0..60 (in steps of 1) [0]
+        Time in minutes until the internal power supply switches to sleep mode
+    --offtimer 0..960 (in steps of 1) [240]
+        Time in minutes until the internal power supply switches the scanner
+        off. Will be rounded to nearest 15 minutes. Zero means never power off.
+    --lowmemory[=(yes|no)] [no]
+        Limit driver memory usage for use in embedded systems. Causes some
+        duplex transfers to alternate sides on each call to sane_read. Value of
+        option 'side' can be used to determine correct image. This option
+        should only be used with custom front-end software.
+    --side[=(yes|no)] [no] [read-only]
+        Tells which side (0=front, 1=back) of a duplex scan the next call to
+        sane_read will return.
+    --hwdeskewcrop[=(yes|no)] [no]
+        Request scanner to rotate and crop pages digitally.
+    --swdeskew[=(yes|no)] [no]
+        Request driver to rotate skewed pages digitally.
+    --swdespeck 0..9 (in steps of 1) [0]
+        Maximum diameter of lone dots to remove from scan.
+    --swcrop[=(yes|no)] [no]
+        Request driver to remove border from pages digitally.
+    --swskip 0..100% (in steps of 0.100006) [0]
+        Request driver to discard pages with low percentage of dark pixels
+  Sensors:
+    --top-edge[=(yes|no)] [no] [hardware]
+        Paper is pulled partly into ADF
+    --a3-paper[=(yes|no)] [no] [hardware]
+        A3 paper detected
+    --b4-paper[=(yes|no)] [no] [hardware]
+        B4 paper detected
+    --a4-paper[=(yes|no)] [no] [hardware]
+        A4 paper detected
+    --b5-paper[=(yes|no)] [no] [hardware]
+        B5 paper detected
+    --page-loaded[=(yes|no)] [no] [hardware]
+        Page loaded
+    --omr-df[=(yes|no)] [no] [hardware]
+        OMR or double feed detected
+    --cover-open[=(yes|no)] [no] [hardware]
+        Cover open
+    --power-save[=(yes|no)] [no] [hardware]
+        Scanner in power saving mode
+    --email[=(yes|no)] [no] [hardware]
+        Email button
+    --manual-feed[=(yes|no)] [no] [hardware]
+        Manual feed selected
+    --scan[=(yes|no)] [no] [hardware]
+        Scan button
+    --function <int> [0] [hardware]
+        Function character on screen
+    --double-feed[=(yes|no)] [no] [hardware]
+        Double feed detected
+    --error-code <int> [0] [hardware]
+        Hardware error code
+    --skew-angle <int> [0] [hardware]
+        Requires black background for scanning
