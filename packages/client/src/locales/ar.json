@@ -1,0 +1,185 @@
+{
+  "global": {
+    "application-name": "scanservjs"
+  },
+
+  "about": {
+    "main": "يعتبر scanservjs واجهة مستخدم بسيطة قائمة على الويب لجهاز المسح الضوئي الخاص بك. يسمح لك بمشاركة ماسحات متعددة (باستخدام SANE) على الشبكة دون الحاجة إلى برامج تشغيل أو تثبيت معقد. يمكنه الحفظ بصيغ TIF و JPG و PNG و PDF و TXT (باستخدام Tesseract OCR) بإعدادات ضغط مختلفة ، والتي يمكن تخصيصها جميعًا. يدعم المسح متعدد الصفحات وجميع الأجهزة المتوافقة مع SANE.",
+    "issue": "قدم مشكلة أو اعرض المصدر:",
+    "api": "وثائق Swagger API:",
+    "system-info": "معلومات النظام"
+  },
+
+  "colors": {
+    "accent-4": "إفتراضي",
+    "red": "أحمر",
+    "pink": "وردي",
+    "purple": "بنفسجي",
+    "deep-purple": "Deep purple",
+    "indigo": "نيلي",
+    "blue": "أزرق",
+    "light-blue": "أزرق فاتح",
+    "cyan": "أزرق سماوي",
+    "teal": "تركواز",
+    "green": "أخضر",
+    "light-green": "أخضر فاتح",
+    "lime": "ليموني",
+    "yellow": "أصفر",
+    "amber": "Amber",
+    "orange": "برتقالي",
+    "deep-orange": "برتقالي داكن",
+    "brown": "بني",
+    "blue-grey": "رمادي مزرق",
+    "grey": "رمادي"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "إلغاء",
+    "btn-finish": "إنهاء",
+    "btn-rescan": "إعادة مسح",
+    "btn-next": "التالي"
+  },
+
+  "files": {
+    "filename": "إسم الملف",
+    "date": "التاريخ",
+    "size": "حجم الملف",
+    "items-per-page": "ملفات لكل صفحة",
+    "items-per-page-all": "الكل",
+    "message:deleted": "تم محي {0}",
+    "message:renamed": "تم تبديل إسم الملف",
+    "button:delete-selected": "حذف الملفات المختارة",
+    "dialog:rename": "تغيير الإسم",
+    "dialog:rename-cancel": "إلغاء",
+    "dialog:rename-save": "حفظ",
+    "actions": "إجراءات",
+    "thumbnail-show": "إظهار الصور المصغرة",
+    "thumbnail-size": "حجم الصور المصغرة"
+  },
+
+  "navigation": {
+    "scan": "مسح",
+    "files": "ملفات",
+    "settings": "إعدادات",
+    "about": "حول",
+    "version": "النسخة"
+  },
+
+  "batch-mode": {
+    "none": "بلا",
+    "manual": "يدوي (بالتوجيه)",
+    "auto": "تلقائي (وحدة تغذية المستندات)",
+    "auto-collate-standard": "تلقائي (ترتيب 1، 3... 4، 2)",
+    "auto-collate-reverse": "تلقائي (ترتيب 1، 3... 2، 4)"
+  },
+
+  "filter": {
+    "auto-level": "مستوى ذاتي",
+    "threshold": "عتبة",
+    "blur": "تمويه"
+  },
+
+  "mode": {
+    "color": "ملون",
+    "halftone": "لون نصفي",
+    "gray": "رمادي",
+    "lineart": "فن خطي",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "بسيط",
+    "duplex": "مزدوج"
+  },
+
+  "source": {
+    "flatbed": "سطح المسح",
+    "adf": "وحدة تغذية المستندات",
+    "auto": "تلقائي",
+    "left-aligned": "محاذاة لليسار",
+    "centrally-aligned": "محاذاة للوسط",
+    "duplex": "ماسح مزدوج",
+    "transparency unit": "وحدة الشفافية",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned، @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned، @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "جودة عالية",
+    "medium-quality": "جودة متوسطة",
+    "low-quality": "جودة منخفضة",
+    "uncompressed": "بلا ضغط",
+    "lzw-compressed": "ضغط LZW",
+    "ocr": "التعرف على الحروف",
+    "text-file": "ملف نصي"
+  },
+
+  "paper-size": {
+    "letter": "الخطاب",
+    "legal": "الشكل القانونى",
+    "tabloid": "التابلويد",
+    "ledger": "الدفتر",
+    "junior-legal": "الشكل القانونى الصغير",
+    "half-letter": "نصف الخطاب",
+    "portrait": "عمودي",
+    "landscape": "أفقي"
+  },
+
+  "scan": {
+    "device": "الجهاز",
+    "source": "المصدر",
+    "resolution": "الدقة",
+    "mode": "الوضع",
+    "adf-mode": "وضع وحدة تغذية المستندات",
+    "dynamic-lineart": "فن خطي ديناميكي",
+    "dynamic-lineart:enabled": "مفعل",
+    "dynamic-lineart:disabled": "غير مفعل",
+    "batch": "دفعة",
+    "filters": "فلتر",
+    "format": "صيغة",
+    "btn-preview": "معاينة",
+    "btn-clear": "حذف",
+    "btn-scan": "مسح",
+    "top": "فوق",
+    "left": "يسار",
+    "width": "عرض",
+    "height": "ارتفاع",
+    "paperSize": "قياس الورق",
+    "brightness": "سطوع",
+    "contrast": "تباين",
+    "message:loading-devices": "جاري تحميل الأجهزة",
+    "message:no-devices": "لم يتم العثور على أي جهاز",
+    "message:deleted-preview": "تم حذه المعاينة",
+    "message:turn-documents": "اقلب المستند",
+    "message:preview-of-page": "معاينة من الصفحة"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "الواجهة والسلوك",
+    "locale": "اللغة",
+    "locale:description": "إختر لغتك",
+    "theme": "السمة",
+    "theme:description": "السمة. إذا كنت تستخدم سمة النظام وقمت بتغييرها ، فستحتاج إلى إعادة تحميل التطبيق.",
+    "theme:system": "نظام",
+    "theme:light": "فاتح",
+    "theme:dark": "داكن",
+    "color": "اللون",
+    "color:description": "اللون. سيؤدي هذا إلى تغيير لون الشريط العلوي",
+    "show-files-after-scan:description": "أظهر الملفات بعد المسح",
+    "devices": "الأجهزة والتخزين",
+    "reset:description": "إزالة أجهزة المسح الضوئي المخزنة وفرض إعادة التحميل",
+    "reset": "إعادة تعيين",
+    "clear-storage:description": "حذف أي إعدادات مؤقتة من التخزين المحلي",
+    "clear-storage": "حذف"
+  }
+}
