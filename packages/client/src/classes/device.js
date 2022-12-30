@@ -2,6 +2,7 @@ export default {
   default() {
     return {
       id: 'Unspecified',
+      name: 'No data available',
       features: {
         '--mode': {
           default: '',
