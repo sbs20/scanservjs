@@ -19,6 +19,7 @@ const Constants = {
   },
   
   Locales: [
+    'ar',
     'cs',
     'de',
     'en',
@@ -33,6 +34,10 @@ const Constants = {
     'tr',
     'zh',
     'test'
+  ],
+
+  RtlLocales: [
+    'ar'
   ],
 
   Keys: {
