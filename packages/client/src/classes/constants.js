@@ -19,6 +19,7 @@ const Constants = {
   },
   
   Locales: [
+    'ar',
     'cs',
     'de',
     'en',
