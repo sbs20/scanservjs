@@ -1,6 +1,6 @@
 {
   "name": "scanservjs-api",
-  "version": "2.24.0",
+  "version": "2.25.0",
   "description": "scanservjs-api is a REST based API to control your scanner.",
   "scripts": {
     "lint": "gulp lint",
