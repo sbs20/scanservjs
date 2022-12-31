@@ -1,11 +1,13 @@
 {
   "global": {
-    "application-name": "scanservjs"
+    "application-name": "scanservjs",
+    "no-data-text": "Dati non disponibili"
   },
 
   "about": {
     "main": "scanservjs è una semplice interfaccia web per il tuo scanner. Permette di condividere uno o più scanner (usando SANE) in una rete, senza necessità di driver o installazioni complicate. Può salvare nei formati TIF, JPG, PNG, PDF e TXT (via Tesseract OCR) con vari livelli di compressione. Supporta la scansione multi-pagina e tutti i dispositivi compatibili con SANE.",
     "issue": "Segnala problemi o visualizza il codice sorgente:",
+    "api": "Documentazione API Swagger:",
     "system-info": "Informazioni di sistema"
   },
 
@@ -91,6 +93,11 @@
     "24bit color(fast)": "@:mode.color"
   },
 
+  "adf-mode": {
+    "simplex": "Solo fronte",
+    "duplex": "Fronte/retro"
+  },
+
   "source": {
     "flatbed": "Piano fisso",
     "adf": "Alimentatore automatico di documenti",
@@ -133,6 +140,7 @@
     "source": "Sorgente",
     "resolution": "Risoluzione",
     "mode": "Modalità",
+    "adf-mode": "Modalità ADF",
     "dynamic-lineart": "Lineart dinamico",
     "dynamic-lineart:enabled": "Abilitato",
     "dynamic-lineart:disabled": "Disabilitato",
@@ -168,7 +176,7 @@
     "theme:dark": "Scuro",
     "color": "Colore",
     "color:description": "Colore. Cambia il colore della barra superiore dell'app.",
-    "show-files-after-scan:description": "Show files after scan completes",
+    "show-files-after-scan:description": "Mostra i file dopo la scansione",
     "devices": "Dispositivi",
     "reset:description": "Cancella la lista degli scanner e ne forza l'aggiornamento",
     "reset": "Ricarica dispositivi",
