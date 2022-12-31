@@ -11,7 +11,7 @@ describe('CommandBuilder', () => {
   it('command-arg', async () => {
     assert.strictEqual(new CmdBuilder('echo')
       .arg('hello world')
-      .build(), 'echo hello world');
+      .build(), 'echo \'hello world\'');
   });
 
   it('command-arg2', async () => {

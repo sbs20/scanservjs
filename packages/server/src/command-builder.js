@@ -11,22 +11,28 @@ class CmdBuilder {
   }
 
   /**
-   * @param {string} key 
    * @param {string|number} [value]
-   * @returns {CmdBuilder}
+   * @returns {string}
    */
-  arg(key, value) {
-    this.args.push(key);
-    if (value !== undefined) {
-      if (typeof value === 'string') {
-        if (value.includes('\'')) {
-          throw Error('Argument must not contain single quote "\'"');
-        }
-        this.args.push(`'${value}'`);
-      } else {
-        this.args.push(`${value}`);
+  _format(value) {
+    if (typeof value === 'string') {
+      if (value.includes('\'')) {
+        throw Error('Argument must not contain single quote "\'"');
+      } else if (['$', ' '].some(c => value.includes(c))) {
+        return `'${value}'`  
       }
     }
+    return `${value}`;
+  }
+
+  /**
+   * @param {Array<string|number>} values
+   * @returns {CmdBuilder}
+   */
+  arg(...values) {
+    this.args.push(...values
+      .filter(s => s !== undefined)
+      .map(this._format));       
     return this;
   }
 
