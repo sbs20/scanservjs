@@ -3,8 +3,8 @@ const AdmZip = require('adm-zip');
 const Util = {
   /**
    * Rough polyfill for str.matchAll()
-   * @param {RegExp} regex 
-   * @param {string} string 
+   * @param {RegExp} regex
+   * @param {string} string
    * @returns {RegExpExecArray[]}
    */
   matchAll(regex, string) {
@@ -45,7 +45,7 @@ const Util = {
   /**
    * @param {FileInfo[]} files
    * @param {boolean} standard
-   * @returns {FileInfo[]} 
+   * @returns {FileInfo[]}
    */
   collate(files, standard) {
     const odd = files.filter(f => f.name.match(/-1-\d{4}\.tif/));

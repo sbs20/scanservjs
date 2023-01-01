@@ -18,9 +18,9 @@ const log = rootLog.getLogger('Http');
 const Api = require('./api');
 
 /**
- * @param {import('express').Response} res 
- * @param {number} code 
- * @param {any} data 
+ * @param {import('express').Response} res
+ * @param {number} code
+ * @param {any} data
  */
 function sendError(res, code, data) {
   let content = {
@@ -37,7 +37,7 @@ function sendError(res, code, data) {
 }
 
 /**
- * @param {import('express').Request} req 
+ * @param {import('express').Request} req
  */
 function logRequest(req) {
   const properties = ['method', 'path', 'params', 'query', 'body'];
@@ -55,7 +55,7 @@ function logRequest(req) {
 }
 
 /**
- * @param {string} rootPath 
+ * @param {string} rootPath
  */
 function initialize(rootPath) {
   if (rootPath) {
@@ -69,7 +69,7 @@ function initialize(rootPath) {
       allowUnsafePaths: true
     });
   }
-  
+
   try {
     fs.mkdirSync(Config.outputDirectory, { recursive: true });
     fs.mkdirSync(Config.tempDirectory, { recursive: true });
@@ -81,8 +81,8 @@ function initialize(rootPath) {
 
 /**
  * Configures express
- * @param {import('express').Express} app 
- * @param {string} rootPath 
+ * @param {import('express').Express} app
+ * @param {string} rootPath
  */
 function configure(app, rootPath) {
   initialize(rootPath);
@@ -97,7 +97,7 @@ function configure(app, rootPath) {
   }
 
   const swaggerSpec = swaggerJsdoc({
-    failOnErrors: true, 
+    failOnErrors: true,
     swaggerDefinition: {
       openapi: '3.0.0',
       info: {

@@ -2,8 +2,8 @@ const Config = require('./config');
 
 class Filters {
   /**
-   * @param {string[]} selected 
-   * @param {boolean} [ignoreRotations] 
+   * @param {string[]} selected
+   * @param {boolean} [ignoreRotations]
    * @returns {string}
    */
   static build(selected, ignoreRotations) {

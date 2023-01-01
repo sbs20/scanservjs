@@ -13,7 +13,7 @@ const diagnostic = (path) => {
 
 class Context {
   /**
-   * @param {ScanDevice[]} devices 
+   * @param {ScanDevice[]} devices
    */
   constructor(devices) {
     this.devices = devices;
@@ -44,7 +44,7 @@ class Context {
   }
 
   /**
-   * @param {string} id 
+   * @param {string} id
    * @returns {ScanDevice}
    */
   getDevice(id) {

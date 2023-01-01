@@ -27,7 +27,7 @@ class Api {
   }
 
   /**
-   * @param {string} name 
+   * @param {string} name
    * @returns {FileInfo}
    */
   static fileDelete(name) {
@@ -37,7 +37,7 @@ class Api {
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {Promise<any>}
    */
   static async createPreview(req) {
@@ -77,7 +77,7 @@ class Api {
   static async readPreview(filters) {
     log.trace('readPreview()', filters);
     // The UI relies on this image being the correct aspect ratio. If there is a
-    // preview image then just use it. 
+    // preview image then just use it.
     const source = FileInfo.create(`${Config.previewDirectory}/preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
@@ -86,7 +86,7 @@ class Api {
         const params = Filters.build(filters, true);
         cmds.splice(0, 0, `convert - ${params} tif:-`);
       }
-    
+
       return await Process.chain(cmds, buffer, { ignoreErrors: true });
     }
 
@@ -100,14 +100,14 @@ class Api {
       const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
       const width = 868;
       const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);  
+      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
     } catch (e) {
       return Promise.resolve(buffer);
     }
   }
 
   /**
-   * @param {string} name 
+   * @param {string} name
    * @returns {Promise.<Buffer>}
    */
   static async readThumbnail(name) {
@@ -116,7 +116,7 @@ class Api {
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {ScanResponse}
    */
   static async scan(req) {

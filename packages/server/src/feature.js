@@ -1,5 +1,5 @@
 /**
- * @param {number} n 
+ * @param {number} n
  * @returns {number}
  */
 function round(n) {
@@ -18,9 +18,9 @@ class Feature {
   }
 
   /**
-   * @param {string} string 
+   * @param {string} string
    * @param {string} delimiter
-   * @returns {number[]} 
+   * @returns {number[]}
    */
   static splitNumbers(string, delimiter) {
     return string.replace(/[a-z%]/ig, '')
@@ -86,7 +86,7 @@ class Feature {
         case '--page-width':
           this.geometry();
           break;
-        
+
         case '--brightness':
         case '--contrast':
           this.lighting();
@@ -97,7 +97,7 @@ class Feature {
 
   /**
    * @param {string} s
-   * @returns {Feature} 
+   * @returns {Feature}
    */
   static parse(s) {
     const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]$/g.exec(s);

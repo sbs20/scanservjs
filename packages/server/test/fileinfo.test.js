@@ -38,7 +38,7 @@ describe('FileInfo', () => {
   it('Directory trailing slash', () => {
     const dir1 = FileInfo.create('./test/resource');
     const dir2 = FileInfo.create('./test/resource/');
-    
+
     assert.strictEqual(dir1.name, dir2.name);
     assert.strictEqual(dir1.fullname, dir2.fullname);
     assert.strictEqual(dir1.name.endsWith('/'), false);

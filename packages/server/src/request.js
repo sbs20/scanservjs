@@ -16,7 +16,7 @@ class Request {
   }
 
   /**
-   * @param {ScanRequest} data 
+   * @param {ScanRequest} data
    * @returns {ScanRequest}
    */
   extend(data) {
@@ -40,19 +40,19 @@ class Request {
       this.params.top = bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0);
     }
     if ('-l' in features) {
-      this.params.left = bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0);      
+      this.params.left = bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0);
     }
     if ('-x' in features) {
-      this.params.width = bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]);      
+      this.params.width = bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]);
     }
     if ('-y' in features) {
-      this.params.height = bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]);      
+      this.params.height = bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]);
     }
     if ('--page-height' in features) {
-      this.params.pageHeight = bound(data.params.pageHeight, features['--page-height'].limits[0], features['--page-height'].limits[1], features['--page-height'].default);      
+      this.params.pageHeight = bound(data.params.pageHeight, features['--page-height'].limits[0], features['--page-height'].limits[1], features['--page-height'].default);
     }
     if ('--page-width' in features) {
-      this.params.pageWidth = bound(data.params.pageWidth, features['--page-width'].limits[0], features['--page-width'].limits[1], features['--page-width'].default);            
+      this.params.pageWidth = bound(data.params.pageWidth, features['--page-width'].limits[0], features['--page-width'].limits[1], features['--page-width'].default);
     }
 
     if ('--mode' in features) {

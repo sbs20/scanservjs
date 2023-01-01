@@ -34,7 +34,7 @@ class ScanimageCommand {
       .arg('-L')
       .build();
   }
-  
+
   /**
    * @param {string} deviceId
    * @returns {string}
@@ -47,7 +47,7 @@ class ScanimageCommand {
   }
 
   /**
-   * @param {number} page 
+   * @param {number} page
    * @returns {string}
    */
   filename(page) {
@@ -56,7 +56,7 @@ class ScanimageCommand {
   }
 
   /**
-   * @param {ScanRequest} request 
+   * @param {ScanRequest} request
    * @returns {string}
    */
   scan(request) {
@@ -99,7 +99,7 @@ class ScanimageCommand {
     }
 
     cmdBuilder.arg('--format', params.format);
-  
+
     if ('depth' in params) {
       cmdBuilder.arg('--depth', params.depth);
     }

@@ -25,7 +25,7 @@ class Device {
     if (this.string === null || this.string === '') {
       throw new Error('No device found');
     }
-    
+
     // find
     //   any number of spaces
     //   match 1 or two hyphens with letters, numbers or hypen
@@ -36,7 +36,7 @@ class Device {
       .map(Feature.parse)
       .filter(f => f.enabled)
       .forEach(f => this.features[f.name] = f);
-  
+
     const match = /All options specific to device `(.*)'/.exec(this.string);
     if (match) {
       this.id = match[1];

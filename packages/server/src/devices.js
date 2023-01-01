@@ -13,7 +13,7 @@ class Devices {
   }
 
   /**
-   * @param {ScanDevice[]} o 
+   * @param {ScanDevice[]} o
    * @returns {ScanDevice[]}
    */
   static from(o) {
@@ -25,7 +25,7 @@ class Devices {
             devices.push(Device.from(d));
           }
         }
-        return devices;  
+        return devices;
       } catch (exception) {
         log.warn(exception);
         return [];
@@ -70,7 +70,7 @@ class Devices {
         try {
           const data = await Process.execute(Scanimage.features(deviceId));
           log.debug('Device features: ', data);
-          devices.push(Device.from(data));  
+          devices.push(Device.from(data));
         } catch (error) {
           log.error(`Ignoring ${deviceId}. Error: ${error}`);
         }

@@ -39,17 +39,17 @@ class Config {
       filename() {
         return `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}`;
       },
-    
+
       scanimage: '/usr/bin/scanimage',
       convert: '/usr/bin/convert',
       tesseract: '/usr/bin/tesseract',
-    
+
       allowUnsafePaths: false,
       devicesPath: './config/devices.json',
       outputDirectory: 'data/output',
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
-    
+
       users: {},
 
       previewResolution: 100,
@@ -82,7 +82,7 @@ class Config {
           params: '-blur 1'
         }
       ],
-    
+
       paperSizes: [
         { name: 'A3 (@:paper-size.portrait)', dimensions: { x: 297, y: 420 } },
         { name: 'A4 (@:paper-size.portrait)', dimensions: { x: 210, y: 297 } },
@@ -111,7 +111,7 @@ class Config {
       ],
     });
 
-    const config = this;    
+    const config = this;
     this.pipelines = [
       {
         extension: 'jpg',

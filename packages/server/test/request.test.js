@@ -25,7 +25,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'plustek:libusb:001:008');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');
@@ -57,7 +57,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'epson2:libusb:001:029');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');
@@ -89,7 +89,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'umax1220u:libusb:001:004');
     assert.strictEqual(request.params.mode, undefined);
     assert.strictEqual(request.params.resolution, '150');
@@ -120,7 +120,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'epjitsu:libusb:001:003');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');

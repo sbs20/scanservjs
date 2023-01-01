@@ -3,7 +3,7 @@ const log = require('loglevel').getLogger('CmdBuilder');
 class CmdBuilder {
 
   /**
-   * @param {string} cmd 
+   * @param {string} cmd
    */
   constructor(cmd) {
     this.cmd = cmd;
@@ -19,7 +19,7 @@ class CmdBuilder {
       if (value.includes('\'')) {
         throw Error('Argument must not contain single quote "\'"');
       } else if (['$', ' '].some(c => value.includes(c))) {
-        return `'${value}'`  
+        return `'${value}'`;
       }
     }
     return `${value}`;
@@ -32,7 +32,7 @@ class CmdBuilder {
   arg(...values) {
     this.args.push(...values
       .filter(s => s !== undefined)
-      .map(this._format));       
+      .map(this._format));
     return this;
   }
 

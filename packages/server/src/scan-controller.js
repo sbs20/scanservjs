@@ -23,7 +23,7 @@ class ScanController {
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    */
   async init(req) {
     this.context = await Context.create();
@@ -127,7 +127,7 @@ class ScanController {
   /**
    * Creates a preview image from a scan. This is less trivial because we need
    * to accommodate the possibility of cropping
-   * @param {string} filename 
+   * @param {string} filename
    * @returns {Promise.<void>}
    */
   async updatePreview(filename) {
@@ -155,7 +155,7 @@ class ScanController {
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {Promise.<ScanResponse>}
    */
   async execute(req) {
@@ -190,7 +190,7 @@ class ScanController {
 
 module.exports = {
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {Promise.<ScanResponse>}
    */
   async run(req) {

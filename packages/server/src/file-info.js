@@ -27,7 +27,7 @@ function sizeString(size) {
 
 class FileInfo {
   /**
-   * @param {string} fullpath 
+   * @param {string} fullpath
    */
   constructor(fullpath, filename) {
     FileInfo.assertPath(fullpath);
@@ -53,7 +53,7 @@ class FileInfo {
   }
 
   /**
-   * @param {string} name 
+   * @param {string} name
    */
   static assertName(name) {
     if (name === null || name === undefined) {
@@ -66,7 +66,7 @@ class FileInfo {
   }
 
   /**
-   * @param {string} fullpath 
+   * @param {string} fullpath
    */
   static assertPath(fullpath) {
     if (/[?%*:|"<>;=]/.test(fullpath)) {
@@ -77,28 +77,28 @@ class FileInfo {
       if (fullpath.indexOf('../') !== -1) {
         throw new Error('Parent paths disallowed');
       }
-    
+
       if (fullpath.indexOf('/') === 0) {
         throw new Error('Root paths disallowed');
-      }  
+      }
     }
   }
-  
+
   /**
-   * @param {string} fullpath 
+   * @param {string} fullpath
    */
   static create(fullpath) {
     return new FileInfo(fullpath);
   }
 
   /**
-   * @param {string} fullpath 
-   * @param {string} filename 
+   * @param {string} fullpath
+   * @param {string} filename
    */
   static unsafe(fullpath, filename) {
     return new FileInfo(fullpath, filename);
   }
-  
+
   /**
    * @returns {FileInfo}
    */
@@ -114,7 +114,7 @@ class FileInfo {
   }
 
   /**
-   * @param {FileInfo} fileinfo 
+   * @param {FileInfo} fileinfo
    * @returns {boolean}
    */
   equals(fileinfo) {

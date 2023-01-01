@@ -8,16 +8,16 @@ const extend = require('./util').extend;
 const Process = {
 
   /**
-   * @param {string} cmd 
+   * @param {string} cmd
    * @returns {string}
    */
   executeSync(cmd, options) {
     const stdout = execSync(cmd, options);
     return Buffer.from(stdout).toString().trim();
   },
-  
+
   /**
-   * @param {string} cmd 
+   * @param {string} cmd
    * @returns {Promise.<string>}
    */
   async execute(cmd) {
@@ -26,9 +26,9 @@ const Process = {
   },
 
   /**
-   * @param {string} cmd 
-   * @param {Buffer|null} [stdin] 
-   * @param {ProcessOptions} [options] 
+   * @param {string} cmd
+   * @param {Buffer|null} [stdin]
+   * @param {ProcessOptions} [options]
    * @return {Promise<Buffer>}
    */
   async spawn(cmd, stdin, options) {
@@ -39,7 +39,7 @@ const Process = {
       maxBuffer: MAX_BUFFER,
       ignoreErrors: false
     }, options);
-    
+
     log.debug(`${cmd}, `, stdin, `, ${JSON.stringify(options)}`);
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
@@ -56,7 +56,7 @@ const Process = {
       if (!options.ignoreErrors) {
         proc.on('error', (exception) => {
           reject(new Error(`${cmd} error: ${exception.message}, stderr: ${stderr}`));
-        });  
+        });
       }
 
       proc.on('close', (code) => {
@@ -70,15 +70,15 @@ const Process = {
 
       if (stdin) {
         proc.stdin.write(stdin);
-        proc.stdin.end();  
+        proc.stdin.end();
       }
     });
   },
 
   /**
-   * @param {string[]} cmds 
-   * @param {Buffer|null} [stdin] 
-   * @param {ProcessOptions} [options] 
+   * @param {string[]} cmds
+   * @param {Buffer|null} [stdin]
+   * @param {ProcessOptions} [options]
    * @return {Promise<Buffer>}
    */
   async chain(cmds, stdin, options) {
