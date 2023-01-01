@@ -5,11 +5,13 @@ const FileInfo = require('./file-info');
 const userOptions = require('./user-options');
 const Process = require('./process');
 const Scanimage = require('./scanimage');
-const Util = require('./util');
+const Regex = require('./regex');
 
 class Devices {
   static _parseDevices(s) {
-    return Util.matchAll(/device `?(.*)'.*/g, s).map(m => m[1]);
+    return Regex.with(/device `?(.*)'.*/g)
+      .matchAll(s)
+      .map(m => m[1]);
   }
 
   /**

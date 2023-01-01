@@ -1,5 +1,5 @@
 const Feature = require('./feature');
-const Util = require('./util');
+const Regex = require('./regex');
 
 /** @type {ScanDevice} */
 class Device {
@@ -31,7 +31,8 @@ class Device {
     //   match 1 or two hyphens with letters, numbers or hypen
     //   match anything (until square brackets)
     //   match anything inside square brackets
-    Util.matchAll(/\s+([-]{1,2}[-a-zA-Z0-9]+ ?.* \[.*\])\n/g, this.string)
+    Regex.with(/\s+([-]{1,2}[-a-zA-Z0-9]+ ?.* \[.*\])\n/g)
+      .matchAll(this.string)
       .map(m => m[1])
       .map(Feature.parse)
       .filter(f => f.enabled)
