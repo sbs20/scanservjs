@@ -25,6 +25,7 @@
     ],
     "keyword-spacing": 1,
     "no-mixed-spaces-and-tabs": 1,
+    "no-multiple-empty-lines": 1,
     "no-trailing-spaces": 1,
     "no-undef": 1,
     "no-unused-vars": 1,

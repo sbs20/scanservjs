@@ -3,8 +3,6 @@ const fs = require('fs');
 const mv = require('mv');
 const path = require('path');
 
-
-
 /**
  * @param {number} size
  * @returns {string}
