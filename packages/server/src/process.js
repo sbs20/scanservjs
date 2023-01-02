@@ -5,7 +5,7 @@ const execSync = require('child_process').execSync;
 const spawn = require('child_process').spawn;
 const extend = require('./util').extend;
 
-const Process = {
+class Process {
 
   /**
    * @param {string} cmd
@@ -14,7 +14,7 @@ const Process = {
   executeSync(cmd, options) {
     const stdout = execSync(cmd, options);
     return Buffer.from(stdout).toString().trim();
-  },
+  }
 
   /**
    * @param {string} cmd
@@ -23,7 +23,7 @@ const Process = {
   async execute(cmd) {
     const { stdout } = await exec(cmd);
     return stdout;
-  },
+  }
 
   /**
    * @param {string} cmd
@@ -73,7 +73,7 @@ const Process = {
         proc.stdin.end();
       }
     });
-  },
+  }
 
   /**
    * @param {string[]} cmds
@@ -84,11 +84,11 @@ const Process = {
   async chain(cmds, stdin, options) {
     let stdout = null;
     for (let cmd of cmds) {
-      stdout = await Process.spawn(cmd, stdin, options);
+      stdout = await this.spawn(cmd, stdin, options);
       stdin = stdout;
     }
     return stdout;
   }
-};
+}
 
-module.exports = Process;
+module.exports = new Process();
