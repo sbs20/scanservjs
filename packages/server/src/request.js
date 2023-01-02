@@ -1,15 +1,18 @@
 const log = require('loglevel').getLogger('Request');
 const Constants = require('./constants');
-const extend = require('./util').extend;
 
-const bound = (n, min, max, def) => {
-  return Math.max(Math.min(n || def, max), min);
-};
+/**
+ * @param {number} data
+ * @returns {ScanDeviceFeature} feature
+ */
+function constrainWithFeature(value, feature) {
+  return Math.max(Math.min(value || feature.default, feature.limits[1]), feature.limits[0]);
+}
 
 class Request {
   constructor(context) {
     this.context = context;
-    this.extend({
+    Object.assign(this, {
       params: {},
       pipeline: null
     });
@@ -21,9 +24,9 @@ class Request {
    */
   extend(data) {
     const device = this.context.getDevice(data.params.deviceId);
-
     const features = device.features;
-    extend(this, {
+
+    Object.assign(this, {
       params: {
         deviceId: device.id,
         resolution: data.params.resolution || features['--resolution'].default,
@@ -37,22 +40,22 @@ class Request {
     });
 
     if ('-t' in features) {
-      this.params.top = bound(data.params.top, features['-t'].limits[0], features['-t'].limits[1], 0);
+      this.params.top = constrainWithFeature(data.params.top, features['-t']);
     }
     if ('-l' in features) {
-      this.params.left = bound(data.params.left, features['-l'].limits[0], features['-l'].limits[1], 0);
+      this.params.left = constrainWithFeature(data.params.left, features['-l']);
     }
     if ('-x' in features) {
-      this.params.width = bound(data.params.width, features['-x'].limits[0], features['-x'].limits[1], features['-x'].limits[1]);
+      this.params.width = constrainWithFeature(data.params.width, features['-x']);
     }
     if ('-y' in features) {
-      this.params.height = bound(data.params.height, features['-y'].limits[0], features['-y'].limits[1], features['-y'].limits[1]);
+      this.params.height = constrainWithFeature(data.params.height, features['-y']);
     }
     if ('--page-height' in features) {
-      this.params.pageHeight = bound(data.params.pageHeight, features['--page-height'].limits[0], features['--page-height'].limits[1], features['--page-height'].default);
+      this.params.pageHeight = constrainWithFeature(data.params.pageHeight, features['--page-height']);
     }
     if ('--page-width' in features) {
-      this.params.pageWidth = bound(data.params.pageWidth, features['--page-width'].limits[0], features['--page-width'].limits[1], features['--page-width'].default);
+      this.params.pageWidth = constrainWithFeature(data.params.pageWidth, features['--page-width']);
     }
 
     if ('--mode' in features) {

@@ -3,7 +3,6 @@ const log = require('loglevel').getLogger('Process');
 const exec = util.promisify(require('child_process').exec);
 const execSync = require('child_process').execSync;
 const spawn = require('child_process').spawn;
-const extend = require('./util').extend;
 
 class Process {
 
@@ -33,7 +32,7 @@ class Process {
    */
   async spawn(cmd, stdin, options) {
     const MAX_BUFFER = 16 * 1024;
-    options = extend({
+    options = Object.assign({
       encoding: 'binary',
       shell: true,
       maxBuffer: MAX_BUFFER,
