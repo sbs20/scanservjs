@@ -11,8 +11,8 @@ describe('FileInfo', () => {
   });
 
   it('Security', () => {
-    assert.throws(() => FileInfo.create('../package.json'), Error, '../package.json');
-    assert.throws(() => FileInfo.create('/usr/bin/ls'), Error, '/usr/bin/ls');
+    assert.throws(() => FileInfo.unsafe('../', 'package.json'), Error, '../package.json');
+    assert.throws(() => FileInfo.unsafe('/usr/bin/ls'), Error, '/usr/bin/ls');
   });
 
   it('Check file path variations', () => {

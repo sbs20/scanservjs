@@ -25,12 +25,34 @@ function sizeString(size) {
 
 class FileInfo {
   /**
+   * @param {boolean} disallowUnsafePaths
    * @param {string} fullpath
+   * @param {string} [filename]
    */
-  constructor(fullpath, filename) {
-    FileInfo.assertPath(fullpath);
+  constructor(disallowUnsafePaths, fullpath, filename) {
+    if (disallowUnsafePaths === undefined) {
+      throw new Error('disallowUnsafePaths must be specified');
+    }
+
+    if (/[?%*:|"<>;=]/.test(fullpath)) {
+      throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
+    }
+
+    if (disallowUnsafePaths) {
+      if (fullpath.indexOf('../') !== -1) {
+        throw new Error('Parent paths disallowed');
+      }
+
+      if (fullpath.indexOf('/') === 0) {
+        throw new Error('Root paths disallowed');
+      }
+
+      if (/[/\\?%*:|"<>;=]/.test(filename)) {
+        throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+      }
+    }
+
     if (filename) {
-      FileInfo.assertName(filename);
       fullpath = path.join(fullpath, filename);
     }
 
@@ -51,42 +73,10 @@ class FileInfo {
   }
 
   /**
-   * @param {string} name
-   */
-  static assertName(name) {
-    if (name === null || name === undefined) {
-      throw new Error('Name cannot be null or undefined');
-    }
-
-    if (/[/\\?%*:|"<>;=]/.test(name)) {
-      throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
-    }
-  }
-
-  /**
-   * @param {string} fullpath
-   */
-  static assertPath(fullpath) {
-    if (/[?%*:|"<>;=]/.test(fullpath)) {
-      throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
-    }
-
-    if (!Config.allowUnsafePaths) {
-      if (fullpath.indexOf('../') !== -1) {
-        throw new Error('Parent paths disallowed');
-      }
-
-      if (fullpath.indexOf('/') === 0) {
-        throw new Error('Root paths disallowed');
-      }
-    }
-  }
-
-  /**
    * @param {string} fullpath
    */
   static create(fullpath) {
-    return new FileInfo(fullpath);
+    return new FileInfo(false, fullpath);
   }
 
   /**
@@ -94,7 +84,7 @@ class FileInfo {
    * @param {string} filename
    */
   static unsafe(fullpath, filename) {
-    return new FileInfo(fullpath, filename);
+    return new FileInfo(!Config.allowUnsafePaths, fullpath, filename);
   }
 
   /**
@@ -183,17 +173,22 @@ class FileInfo {
    */
   async list() {
     return await new Promise((resolve, reject) => {
-      if (!this.isDirectory) {
-        reject(`${this.fullname} is not a directory`);
-      }
-      fs.readdir(this.fullname, (err, list) => {
-        if (err) {
-          reject(err);
-        }
+      if (!this.exists()) {
+        reject(new Error(`${this.fullname} does not exist`));
 
-        const files = list.map(f => FileInfo.create(`${this.fullname}/${f}`));
-        resolve(files);
-      });
+      } else if (!this.isDirectory) {
+        reject(new Error(`${this.fullname} is not a directory`));
+
+      } else {
+        fs.readdir(this.fullname, (err, list) => {
+          if (err) {
+            reject(err);
+          }
+
+          const files = list.map(f => FileInfo.create(`${this.fullname}/${f}`));
+          resolve(files);
+        });
+      }
     });
   }
 }
