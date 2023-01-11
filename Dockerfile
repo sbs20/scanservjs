@@ -23,7 +23,7 @@ RUN npm run build
 # ==============================================================================
 FROM node:16-bullseye-slim AS scanservjs-base
 RUN apt-get update \
-  && apt-get install -yq \
+  && apt-get install --no-install-recommends -yq \
     imagemagick \
     sane \
     sane-utils \
@@ -47,7 +47,7 @@ RUN apt-get update \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0
+  && npm install -g npm@8.3.0 && npm cache clean --force; && rm -rf /var/lib/apt/lists/*;
 
 # Core image
 #
@@ -79,7 +79,7 @@ ENTRYPOINT [ "/run.sh" ]
 
 # Copy the code and install
 COPY --from=scanservjs-build "$APP_DIR/dist" "$APP_DIR/"
-RUN npm install --production
+RUN npm install --production && npm cache clean --force;
 
 EXPOSE 8080
 
@@ -114,7 +114,7 @@ FROM scanservjs-core
 # default - you will need to specifically target it.
 # ==============================================================================
 FROM scanservjs-core AS scanservjs-hplip
-RUN apt-get install -yq libsane-hpaio \
+RUN apt-get install --no-install-recommends -yq libsane-hpaio \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && echo hpaio >> /etc/sane.d/dll.conf
