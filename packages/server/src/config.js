@@ -44,7 +44,6 @@ class Config {
       convert: '/usr/bin/convert',
       tesseract: '/usr/bin/tesseract',
 
-      allowUnsafePaths: false,
       devicesPath: './config/devices.json',
       outputDirectory: 'data/output',
       previewDirectory: 'data/preview',

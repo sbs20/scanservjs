@@ -65,8 +65,7 @@ function initialize(rootPath) {
       devicesPath: rootPath + Config.devicesPath,
       outputDirectory: rootPath + Config.outputDirectory,
       previewDirectory: rootPath + Config.previewDirectory,
-      tempDirectory: rootPath + Config.tempDirectory,
-      allowUnsafePaths: true
+      tempDirectory: rootPath + Config.tempDirectory
     });
   }
 
@@ -192,7 +191,7 @@ function configure(app, rootPath) {
       const name = req.params[0];
       const newName = req.body.newName;
       await FileInfo.unsafe(Config.outputDirectory, name)
-        .move(`${Config.outputDirectory}/${newName}`);
+        .rename(newName);
       res.send('200');
     } catch (error) {
       sendError(res, 500, error);

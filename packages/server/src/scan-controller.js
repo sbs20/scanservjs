@@ -133,7 +133,7 @@ class ScanController {
   async updatePreview(filename) {
     const device = this.context.getDevice(this.request.params.deviceId);
     const cmdBuilder = new CmdBuilder(Config.convert)
-      .arg(`'${Config.tempDirectory}/${filename}'`);
+      .arg(`${Config.tempDirectory}/${filename}`);
 
     const width = 868;
     if (device.geometry) {
@@ -149,7 +149,7 @@ class ScanController {
       cmdBuilder.arg('-scale', width);
     }
 
-    cmdBuilder.arg(`'${Config.previewDirectory}/preview.tif'`);
+    cmdBuilder.arg(`${Config.previewDirectory}/preview.tif`);
 
     await Process.spawn(cmdBuilder.build());
   }

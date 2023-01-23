@@ -240,9 +240,6 @@ module.exports = {
   afterConfig(config) {
     // Set your path here
     config.outputDirectory = '/home/me/scanned';
-
-    // By default paths with `..` or `/` are not allowed
-    config.allowUnsafePaths = true;
   }
 }
 ```

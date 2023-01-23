@@ -1,4 +1,3 @@
-const Config = require('./config');
 const fs = require('fs');
 const mv = require('mv');
 const path = require('path');
@@ -23,36 +22,47 @@ function sizeString(size) {
   }
 }
 
+/**
+ * @param {string} path
+ * @returns {void}
+ */
+function assertUnsafePath(path) {
+  if (path.indexOf('../') !== -1) {
+    throw new Error('Parent paths disallowed');
+  }
+
+  if (path.indexOf('/') === 0) {
+    throw new Error('Root paths disallowed');
+  }
+}
+
+/**
+ * @param {string} filename
+ * @returns {void}
+ */
+function assertUnsafeFilename(filename) {
+  if (/[/\\?%*:|"<>;=]/.test(filename)) {
+    throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+  }
+}
+
 class FileInfo {
   /**
-   * @param {boolean} disallowUnsafePaths
    * @param {string} fullpath
    * @param {string} [filename]
    */
-  constructor(disallowUnsafePaths, fullpath, filename) {
-    if (disallowUnsafePaths === undefined) {
-      throw new Error('disallowUnsafePaths must be specified');
-    }
-
+  constructor(fullpath, filename) {
     if (/[?%*:|"<>;=]/.test(fullpath)) {
       throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
     }
 
+    const disallowUnsafePaths = false;
     if (disallowUnsafePaths) {
-      if (fullpath.indexOf('../') !== -1) {
-        throw new Error('Parent paths disallowed');
-      }
-
-      if (fullpath.indexOf('/') === 0) {
-        throw new Error('Root paths disallowed');
-      }
-
-      if (/[/\\?%*:|"<>;=]/.test(filename)) {
-        throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
-      }
+      assertUnsafePath(fullpath);
     }
 
     if (filename) {
+      assertUnsafeFilename(filename);
       fullpath = path.join(fullpath, filename);
     }
 
@@ -73,18 +83,22 @@ class FileInfo {
   }
 
   /**
+   * Used to create FileInfo objects when the path is known and controlled by
+   * the app
    * @param {string} fullpath
    */
   static create(fullpath) {
-    return new FileInfo(false, fullpath);
+    return new FileInfo(fullpath);
   }
 
   /**
+   * Used to create FileIbfo objects when the filename is from an external and
+   * therefore untrusted source
    * @param {string} fullpath
    * @param {string} filename
    */
   static unsafe(fullpath, filename) {
-    return new FileInfo(!Config.allowUnsafePaths, fullpath, filename);
+    return new FileInfo(fullpath, filename);
   }
 
   /**
@@ -117,16 +131,25 @@ class FileInfo {
   }
 
   /**
-   * @returns {Promise.<void>}
+   * @param {string} filename
+   * @returns {Promise.<FileInfo>}
+   */
+  async rename(filename) {
+    assertUnsafeFilename(filename);
+    return this.move(`${this.path}/${filename}`)
+  }
+
+  /**
+   * @param {string} destination
+   * @returns {Promise.<FileInfo>}
    */
   async move(destination) {
-    FileInfo.assertPath(destination);
     return await new Promise((resolve, reject) => {
       mv(this.fullname, destination, (err) => {
         if (err) {
           reject(err);
         }
-        resolve();
+        resolve(FileInfo.create(destination));
       });
     });
   }
