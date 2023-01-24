@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Regex = require('../src/regex');
+const Regex = require('../src/classes/regex');
 
 describe('Regex', () => {
   it('test.1', () => {

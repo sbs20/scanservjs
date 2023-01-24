@@ -1,16 +1,22 @@
-const log = require('loglevel').getLogger('Scanimage');
+const log = require('loglevel').getLogger('ScanimageCommand');
 
-const CmdBuilder = require('./command-builder');
-/** @type {Configuration} */
-const Config = require('./config');
-const Constants = require('./constants');
+const CommandBuilder = require('./command-builder');
+const Constants = require('../constants');
 const Process = require('./process');
 const semver = require('semver');
 
 class Scanimage {
+
+  /**
+   * @param {Configuration} config 
+   */
+  constructor(config) {
+    this.config = config;
+  }
+
   get version() {
     if (this._version === undefined) {
-      const result = Process.executeSync(`${Config.scanimage} -V`);
+      const result = Process.executeSync(`${this.config.scanimage} -V`);
       this._version = /.*backend version (.*)/.exec(result)[1];
     }
     return this._version;
@@ -21,16 +27,17 @@ class Scanimage {
   }
 }
 
-class ScanimageCommand {
-  constructor() {
-    this.scanimage = new Scanimage();
+module.exports = class ScanimageCommand {
+  constructor(config) {
+    this.config = config;
+    this.scanimage = new Scanimage(config);
   }
 
   /**
    * @returns {string}
    */
   devices() {
-    return new CmdBuilder(Config.scanimage)
+    return new CommandBuilder(this.config.scanimage)
       .arg('-L')
       .build();
   }
@@ -40,7 +47,7 @@ class ScanimageCommand {
    * @returns {string}
    */
   features(deviceId) {
-    return new CmdBuilder(Config.scanimage)
+    return new CommandBuilder(this.config.scanimage)
       .arg('-d', deviceId)
       .arg('-A')
       .build();
@@ -52,7 +59,7 @@ class ScanimageCommand {
    */
   filename(page) {
     const number = `000${page}`.slice(-4);
-    return `${Config.tempDirectory}/${Constants.TEMP_FILESTEM}-0-${number}.tif`;
+    return `${this.config.tempDirectory}/${Constants.TEMP_FILESTEM}-0-${number}.tif`;
   }
 
   /**
@@ -62,7 +69,7 @@ class ScanimageCommand {
   scan(request) {
     log.debug(JSON.stringify(request));
     const params = request.params;
-    const cmdBuilder = new CmdBuilder(Config.scanimage);
+    const cmdBuilder = new CommandBuilder(this.config.scanimage);
     cmdBuilder.arg('-d', params.deviceId);
 
     if ('mode' in params) {
@@ -113,11 +120,11 @@ class ScanimageCommand {
       cmdBuilder.arg('--disable-dynamic-lineart=yes');
     }
     if ([Constants.BATCH_AUTO, Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE].includes(request.batch)) {
-      const pattern = `${Config.tempDirectory}/${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
+      const pattern = `${this.config.tempDirectory}/${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
       cmdBuilder.arg(`--batch=${pattern}`);
     } else {
       const outputFile = 'isPreview' in params && params.isPreview
-        ? `${Config.previewDirectory}/preview.tif`
+        ? `${this.config.previewDirectory}/preview.tif`
         : this.filename(request.index);
 
       if (this.scanimage.supportsOutputFlag) {
@@ -129,7 +136,3 @@ class ScanimageCommand {
     return cmdBuilder.build();
   }
 }
-
-const scanimageCommand = new ScanimageCommand();
-
-module.exports = scanimageCommand;

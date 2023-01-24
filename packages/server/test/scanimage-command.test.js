@@ -1,10 +1,12 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Context = require('../src/context');
-const Device = require('../src/device');
-const FileInfo = require('../src/file-info');
-const Request = require('../src/request');
-const Scanimage = require('../src/scanimage');
+const Context = require('../src/classes/context');
+const Device = require('../src/classes/device');
+const FileInfo = require('../src/classes/file-info');
+const Request = require('../src/classes/request');
+
+const application = require('../src/application');
+const scanimageCommand = application.scanimageCommand();
 
 const requestScan = {
   params: {
@@ -25,10 +27,10 @@ const requestPreview = {
 };
 
 function commandFor(version, request) {
-  const temp = Scanimage.scanimage._version;
-  Scanimage.scanimage._version = version;
-  const command = Scanimage.scan(request);
-  Scanimage.scanimage._version = temp;
+  const temp = scanimageCommand.scanimage._version;
+  scanimageCommand.scanimage._version = version;
+  const command = scanimageCommand.scan(request);
+  scanimageCommand.scanimage._version = temp;
   return command;
 }
 
@@ -66,7 +68,7 @@ describe('ScanimageCommand', () => {
   it('scanimage-a10.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
-    const context = new Context([device]);
+    const context = new Context(application.config(), [device]);
     const request = new Request(context).extend({
       params: {
         mode: 'Color'

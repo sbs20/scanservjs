@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const FileInfo = require('../src/file-info');
+const FileInfo = require('../src/classes/file-info');
 
 describe('FileInfo', () => {
   it('Basic file details', () => {
@@ -85,7 +85,7 @@ describe('FileInfo', () => {
   });
 
   it('File move, rename and delete', async () => {
-    let file = FileInfo.create('./test/resource/~tmp')
+    let file = FileInfo.create('./test/resource/~tmp');
     file.save('Hello world');
     file = await file.move('./test/resource/~temp');
 

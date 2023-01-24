@@ -1,19 +1,4 @@
-const AdmZip = require('adm-zip');
-
-const Util = {
-  /**
-   * @param {string[]} filepaths
-   * @param {string} destination
-   * @returns {void}
-   */
-  zip(filepaths, destination) {
-    const zip = new AdmZip();
-    for (let filepath of filepaths) {
-      zip.addLocalFile(filepath);
-    }
-    zip.writeZip(destination);
-  },
-
+module.exports = new class Collator {
   /**
    * @param {FileInfo[]} files
    * @param {boolean} standard
@@ -41,5 +26,3 @@ const Util = {
     return files;
   }
 };
-
-module.exports = Util;

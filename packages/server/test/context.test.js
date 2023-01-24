@@ -1,15 +1,17 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Config = require('../src/config');
-const Context = require('../src/context');
+const Application = require('../src/application');
+const Context = require('../src/classes/context');
+
+const config = Application.config();
 
 describe('Context', () => {
   it('missing files', () => {
-    const temp = Config.scanimage;
-    Config.scanimage = '/x';
-    const context = new Context([]);
+    const temp = config.scanimage;
+    config.scanimage = '/x';
+    const context = new Context(config, []);
     assert.strictEqual(context.diagnostics.length, 2);
     assert.strictEqual(context.diagnostics[0].success, false);
-    Config.scanimage = temp;
+    config.scanimage = temp;
   });
 });

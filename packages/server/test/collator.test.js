@@ -1,10 +1,10 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Util = require('../src/util');
+const Collator = require('../src/classes/collator');
 
 describe('Util', () => {
   it('collate.1', () => {
-    const files = Util.collate([
+    const files = Collator.collate([
       {name: 'scan-1-0001.tif'}
     ]);
 
@@ -14,7 +14,7 @@ describe('Util', () => {
   });
 
   it('collate.2', () => {
-    const files = Util.collate([
+    const files = Collator.collate([
       {name: 'scan-1-0001.tif'},
       {name: 'scan-2-0001.tif'}
     ]);
@@ -26,7 +26,7 @@ describe('Util', () => {
   });
 
   it('collate.3.standard', () => {
-    const files = Util.collate([
+    const files = Collator.collate([
       {name: 'scan-1-0001.tif'},
       {name: 'scan-1-0002.tif'},
       {name: 'scan-1-0003.tif'},
@@ -46,7 +46,7 @@ describe('Util', () => {
   });
 
   it('collate.3.reverse', () => {
-    const files = Util.collate([
+    const files = Collator.collate([
       {name: 'scan-1-0001.tif'},
       {name: 'scan-1-0002.tif'},
       {name: 'scan-1-0003.tif'},

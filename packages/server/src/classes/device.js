@@ -2,7 +2,7 @@ const Feature = require('./feature');
 const Regex = require('./regex');
 
 /** @type {ScanDevice} */
-class Device {
+module.exports = class Device {
   constructor(string) {
     this.id = '';
     this.name = '';
@@ -70,5 +70,3 @@ class Device {
     }
   }
 }
-
-module.exports = Device;

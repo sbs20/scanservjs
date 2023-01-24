@@ -5,17 +5,18 @@ const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const Config = require('./config');
-const FileInfo = require('./file-info');
+const FileInfo = require('./classes/file-info');
+const application = require('./application');
+const config = application.config();
 
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
 rootLog.enableAll();
-rootLog.setLevel(Config.log.level);
-prefix.apply(rootLog, Config.log.prefix);
+rootLog.setLevel(config.log.level);
+prefix.apply(rootLog, config.log.prefix);
 
 const log = rootLog.getLogger('Http');
-const Api = require('./api');
+const api = require('./api');
 
 /**
  * @param {import('express').Response} res
@@ -44,14 +45,12 @@ function logRequest(req) {
   const output = {};
   for (const property of properties) {
     if (property in req) {
-      if (typeof req[property] === 'string') {
-        output[property] = req[property];
-      } else if (typeof req[property] === 'object' && Object.keys(req[property]).length > 0) {
+      if (typeof req[property] === 'string' || (typeof req[property] === 'object' && Object.keys(req[property]).length > 0)) {
         output[property] = req[property];
       }
     }
   }
-  log.debug('request: ', output);
+  log.debug(output);
 }
 
 /**
@@ -61,17 +60,17 @@ function initialize(rootPath) {
   if (rootPath) {
     log.warn(`Running with altered rootPath: ${rootPath}`);
     // Only required for running in development
-    Object.assign(Config, {
-      devicesPath: rootPath + Config.devicesPath,
-      outputDirectory: rootPath + Config.outputDirectory,
-      previewDirectory: rootPath + Config.previewDirectory,
-      tempDirectory: rootPath + Config.tempDirectory
+    Object.assign(config, {
+      devicesPath: rootPath + config.devicesPath,
+      outputDirectory: rootPath + config.outputDirectory,
+      previewDirectory: rootPath + config.previewDirectory,
+      tempDirectory: rootPath + config.tempDirectory
     });
   }
 
   try {
-    fs.mkdirSync(Config.outputDirectory, { recursive: true });
-    fs.mkdirSync(Config.tempDirectory, { recursive: true });
+    fs.mkdirSync(config.outputDirectory, { recursive: true });
+    fs.mkdirSync(config.tempDirectory, { recursive: true });
   } catch (exception) {
     log.warn(`Error ensuring output and temp directories exist: ${exception}`);
     log.warn(`Currently running node version ${process.version}.`);
@@ -88,9 +87,9 @@ function configure(app, rootPath) {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  if (Object.keys(Config.users).length > 0) {
+  if (Object.keys(config.users).length > 0) {
     app.use(basicAuth({
-      users: Config.users,
+      users: config.users,
       challenge: true,
     }));
   }
@@ -100,14 +99,15 @@ function configure(app, rootPath) {
     swaggerDefinition: {
       openapi: '3.0.0',
       info: {
-        title: Config.applicationName,
-        description: Config.applicationDescription,
-        version: Config.version,
+        title: config.applicationName,
+        description: config.applicationDescription,
+        version: config.version,
       },
     },
     apis: [
       // Works for normal operation as well as development
-      '../server/src/types.yml'],
+      '../server/src/swagger.yml'
+    ],
   });
 
   const swaggerUiOptions = {
@@ -128,7 +128,7 @@ function configure(app, rootPath) {
   app.delete('/context', (req, res) => {
     logRequest(req);
     try {
-      Api.deleteContext();
+      api.deleteContext();
       res.send({});
     } catch (error) {
       sendError(res, 500, error);
@@ -138,7 +138,7 @@ function configure(app, rootPath) {
   app.get('/context', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.readContext());
+      res.send(await api.readContext());
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -147,7 +147,7 @@ function configure(app, rootPath) {
   app.get('/files', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.fileList());
+      res.send(await api.fileList());
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -157,7 +157,7 @@ function configure(app, rootPath) {
     logRequest(req);
     try {
       const name = req.params[0];
-      const buffer = await Api.readThumbnail(name);
+      const buffer = await api.readThumbnail(name);
       res.type('jpg');
       res.send(buffer);
     } catch (error) {
@@ -169,7 +169,7 @@ function configure(app, rootPath) {
     logRequest(req);
     try {
       const name = req.params[0];
-      const file = FileInfo.unsafe(Config.outputDirectory, name);
+      const file = FileInfo.unsafe(config.outputDirectory, name);
       res.download(file.fullname);
     } catch (error) {
       sendError(res, 500, error);
@@ -179,7 +179,7 @@ function configure(app, rootPath) {
   app.delete('/files/*', (req, res) => {
     logRequest(req);
     try {
-      res.send(Api.fileDelete(req.params[0]));
+      res.send(api.fileDelete(req.params[0]));
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -190,7 +190,7 @@ function configure(app, rootPath) {
     try {
       const name = req.params[0];
       const newName = req.body.newName;
-      await FileInfo.unsafe(Config.outputDirectory, name)
+      await FileInfo.unsafe(config.outputDirectory, name)
         .rename(newName);
       res.send('200');
     } catch (error) {
@@ -201,7 +201,7 @@ function configure(app, rootPath) {
   app.get('/preview', async (req, res) => {
     logRequest(req);
     try {
-      const buffer = await Api.readPreview(req.query.filter);
+      const buffer = await api.readPreview(req.query.filter);
       res.send({
         content: buffer.toString('base64')
       });
@@ -213,7 +213,7 @@ function configure(app, rootPath) {
   app.delete('/preview', (req, res) => {
     logRequest(req);
     try {
-      res.send(Api.deletePreview());
+      res.send(api.deletePreview());
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -222,7 +222,7 @@ function configure(app, rootPath) {
   app.post('/preview', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.createPreview(req.body));
+      res.send(await api.createPreview(req.body));
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -231,7 +231,7 @@ function configure(app, rootPath) {
   app.post('/scan', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.scan(req.body));
+      res.send(await api.scan(req.body));
     } catch (error) {
       sendError(res, 500, error);
     }
@@ -240,7 +240,7 @@ function configure(app, rootPath) {
   app.get('/system', async (req, res) => {
     logRequest(req);
     try {
-      res.send(await Api.readSystem());
+      res.send(await api.readSystem());
     } catch (error) {
       sendError(res, 500, error);
     }

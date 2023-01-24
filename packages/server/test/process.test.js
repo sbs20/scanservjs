@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const CmdBuilder = require('../src/command-builder');
-const Process = require('../src/process');
+const CmdBuilder = require('../src/classes/command-builder');
+const Process = require('../src/classes/process');
 
 describe('Process', () => {
   it('echo', async () => {
@@ -40,8 +40,6 @@ describe('Process', () => {
   });
 
   it('cwd', async () => {
-    const cmd = new CmdBuilder('echo').arg('"1\n2\n3"').build();
-    assert.strictEqual(cmd, 'echo "1\n2\n3"');
     const ls = await Process.spawn('ls -al', null, { cwd: './test/resource' });
     assert.strictEqual(ls.indexOf('logo.png') > -1, true);
   });

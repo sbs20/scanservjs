@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Feature = require('../src/feature');
+const Feature = require('../src/classes/feature');
 
 describe('Feature', () => {
   it('range-brightness', () => {

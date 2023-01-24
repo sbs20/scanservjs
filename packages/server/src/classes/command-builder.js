@@ -1,6 +1,6 @@
 const log = require('loglevel').getLogger('CmdBuilder');
 
-class CmdBuilder {
+module.exports = class CommandBuilder {
 
   /**
    * @param {string} cmd
@@ -18,7 +18,7 @@ class CmdBuilder {
     if (typeof value === 'string') {
       if (value.includes('\'')) {
         throw Error('Argument must not contain single quote "\'"');
-      } else if (['$', ' ', '#', '\\', '"'].some(c => value.includes(c))) {
+      } else if (['$', ' ', '#', '\\'].some(c => value.includes(c))) {
         return `'${value}'`;
       }
     }
@@ -53,5 +53,3 @@ class CmdBuilder {
     return cmd;
   }
 }
-
-module.exports = CmdBuilder;

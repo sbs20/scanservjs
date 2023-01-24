@@ -46,7 +46,7 @@ function assertUnsafeFilename(filename) {
   }
 }
 
-class FileInfo {
+module.exports = class FileInfo {
   /**
    * @param {string} fullpath
    * @param {string} [filename]
@@ -215,5 +215,3 @@ class FileInfo {
     });
   }
 }
-
-module.exports = FileInfo;

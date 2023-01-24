@@ -1,11 +1,11 @@
 const os = require('os');
 const Process = require('./process');
 
-class System {
+module.exports = class System {
   /**
    * @returns {Promise.<SystemInfo>}
    */
-  static async info() {
+  async info() {
     const info = {
       os: {
         arch: os.arch(),
@@ -31,5 +31,3 @@ class System {
     return info;
   }
 }
-
-module.exports = System;

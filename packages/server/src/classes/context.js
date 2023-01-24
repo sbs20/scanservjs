@@ -1,6 +1,4 @@
 const fs = require('fs');
-const Config = require('./config');
-const Devices = require('./devices');
 
 const diagnostic = (path) => {
   const success = fs.existsSync(path) && !fs.statSync(path).isDirectory();
@@ -11,37 +9,31 @@ const diagnostic = (path) => {
   };
 };
 
-class Context {
+module.exports = class Context {
   /**
+   * @param {Configuration} config
    * @param {ScanDevice[]} devices
    */
-  constructor(devices) {
+  constructor(config, devices) {
     this.devices = devices;
-    this.version = Config.version;
+    this.version = config.version;
     this.diagnostics = [
-      diagnostic(Config.scanimage),
-      diagnostic(Config.convert)
+      diagnostic(config.scanimage),
+      diagnostic(config.convert)
     ];
     /** @type {Pipeline[]} */
-    this.pipelines = Config.pipelines;
+    this.pipelines = config.pipelines;
 
     /** @type {Filter[]} */
-    this.filters = Config.filters;
+    this.filters = config.filters;
 
     /** @type {PaperSize[]} */
-    this.paperSizes = Config.paperSizes;
+    this.paperSizes = config.paperSizes;
 
     /** @type {string[]} */
-    this.batchModes = Config.batchModes;
+    this.batchModes = config.batchModes;
   }
 
-  /**
-   * @returns {Promise.<Context>}
-   */
-  static async create() {
-    const devices = await Devices.get();
-    return new Context(devices);
-  }
 
   /**
    * @param {string} id
@@ -64,5 +56,3 @@ class Context {
     return device;
   }
 }
-
-module.exports = Context;

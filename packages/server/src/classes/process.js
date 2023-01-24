@@ -1,10 +1,19 @@
 const util = require('util');
-const log = require('loglevel').getLogger('Process');
 const exec = util.promisify(require('child_process').exec);
 const execSync = require('child_process').execSync;
 const spawn = require('child_process').spawn;
 
-class Process {
+module.exports = new class Process {
+
+  /**
+   * @returns {Log.Looger}
+   */
+  log() {
+    if (!this._log) {
+      this._log = require('loglevel').getLogger('Process');
+    }
+    return this._log;
+  }
 
   /**
    * @param {string} cmd
@@ -39,7 +48,13 @@ class Process {
       ignoreErrors: false
     }, options);
 
-    log.debug(`${cmd}, `, stdin, `, ${JSON.stringify(options)}`);
+    this.log().debug({
+      spawn: {
+        cmd,
+        stdin,
+        options
+      }
+    });
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
@@ -59,7 +74,7 @@ class Process {
       }
 
       proc.on('close', (code) => {
-        log.trace(`close(${code}): ${cmd}`);
+        this.log().trace(`close(${code}): ${cmd}`);
         if (code !== 0 && !options.ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {
@@ -89,5 +104,3 @@ class Process {
     return stdout;
   }
 }
-
-module.exports = new Process();

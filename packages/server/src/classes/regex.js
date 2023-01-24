@@ -1,4 +1,4 @@
-class Regex {
+module.exports = class Regex {
   /**
    * Constructor
    * @param {RegExp} regexp
@@ -32,5 +32,3 @@ class Regex {
     return new Regex(regexp);
   }
 }
-
-module.exports = Regex;

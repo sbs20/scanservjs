@@ -18,7 +18,7 @@ function splitNumbers(string, delimiter) {
     .map(s => Number(s));
 }
 
-class Feature {
+module.exports = class Feature {
   /**
    * Constructor
    * @param {string} text
@@ -111,5 +111,3 @@ class Feature {
     return new Feature(s);
   }
 }
-
-module.exports = Feature;

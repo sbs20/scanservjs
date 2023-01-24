@@ -1,11 +1,13 @@
 const dayjs = require('dayjs');
-const userOptions = require('./user-options');
-const Constants = require('./constants');
-const Package = require('../package.json');
-let instance = null;
+const Constants = require('../constants');
+const Package = require('../../package.json');
 
-class Config {
-  constructor() {
+module.exports = class Config {
+  /**
+   * Constructor
+   * @param {UserOptions} userOptions 
+   */
+  constructor(userOptions) {
     this.init();
     this.addEnvironment();
     userOptions.afterConfig(this);
@@ -259,16 +261,4 @@ class Config {
       this.ocrLanguage = process.env.OCR_LANG;
     }
   }
-
-  /**
-   * @returns {Configuration}
-   */
-  static instance() {
-    if (instance === null) {
-      instance = new Config();
-    }
-    return instance;
-  }
 }
-
-module.exports = Config.instance();

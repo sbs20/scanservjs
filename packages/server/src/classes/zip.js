@@ -1,6 +1,6 @@
 const AdmZip = require('adm-zip');
 
-class Zip {
+module.exports = class Zip {
   /**
    * Constructor
    * @param {string} filename
@@ -37,5 +37,3 @@ class Zip {
     return new Zip(filename);
   }
 }
-
-module.exports = Zip;

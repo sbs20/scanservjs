@@ -1,5 +1,5 @@
 const log = require('loglevel').getLogger('Request');
-const Constants = require('./constants');
+const Constants = require('../constants');
 
 /**
  * @param {number} data
@@ -9,7 +9,7 @@ function constrainWithFeature(value, feature) {
   return Math.max(Math.min(value || feature.default, feature.limits[1]), feature.limits[0]);
 }
 
-class Request {
+module.exports = class Request {
   constructor(context) {
     this.context = context;
     Object.assign(this, {
@@ -83,5 +83,3 @@ class Request {
     return this;
   }
 }
-
-module.exports = Request;

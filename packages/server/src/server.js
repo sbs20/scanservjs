@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 const express = require('express');
-const Config = require('./config');
+const application = require('./application');
 const configure = require('./configure');
-const log = require('loglevel').getLogger('server');
-
+const config = application.config();
 const app = express();
 
 app.use(express.static('client'));
 
 configure(app);
 
-const server = app.listen(Config.port, Config.host, () => {
+const server = app.listen(config.port, config.host, () => {
+  const log = require('loglevel').getLogger('server');
   log.info('Started');
 });
 
-server.setTimeout(Config.timeout);
+server.setTimeout(config.timeout);

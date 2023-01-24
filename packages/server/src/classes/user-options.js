@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-class UserOptions {
+module.exports = class UserOptions {
   constructor() {
-    const localPath = path.join(__dirname, '../config/config.local.js');
+    const localPath = path.join(__dirname, '../../config/config.local.js');
     if (fs.existsSync(localPath)) {
       this.local = require(localPath);
     }
@@ -40,6 +40,3 @@ class UserOptions {
     }
   }
 }
-
-const userOptions = new UserOptions();
-module.exports = userOptions;
