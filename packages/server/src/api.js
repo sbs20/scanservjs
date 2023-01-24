@@ -1,23 +1,23 @@
 const log = require('loglevel').getLogger('Api');
-const Config = require('./config');
-const Context = require('./context');
-const Devices = require('./devices');
-const FileInfo = require('./file-info');
-const Filters = require('./filters');
-const Process = require('./process');
-const Request = require('./request');
-const Scanimage = require('./scanimage');
-const ScanController = require('./scan-controller');
-const System = require('./system');
 
-class Api {
+const FileInfo = require('./classes/file-info');
+const Process = require('./classes/process');
+const Request = require('./classes/request');
+const ScanController = require('./scan-controller');
+
+const application = require('./application');
+const config = application.config();
+const system = application.system();
+const scanimageCommand = application.scanimageCommand();
+
+module.exports = new class Api {
 
   /**
    * @returns {Promise.<FileInfo[]>}
    */
-  static async fileList() {
+  async fileList() {
     log.trace('fileList()');
-    const dir = FileInfo.create(Config.outputDirectory);
+    const dir = FileInfo.create(config.outputDirectory);
     let files = await dir.list();
     files = files
       .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension.toLowerCase()))
@@ -27,27 +27,27 @@ class Api {
   }
 
   /**
-   * @param {string} name 
+   * @param {string} name
    * @returns {FileInfo}
    */
-  static fileDelete(name) {
+  fileDelete(name) {
     log.trace('fileDelete()');
-    const file = FileInfo.unsafe(Config.outputDirectory, name);
+    const file = FileInfo.unsafe(config.outputDirectory, name);
     return file.delete();
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {Promise<any>}
    */
-  static async createPreview(req) {
-    const context = await Context.create();
+  async createPreview(req) {
+    const context = await application.context();
     const request = new Request(context).extend({
       params: {
         deviceId: req.params.deviceId,
         mode: req.params.mode,
         source: req.params.source,
-        resolution: Config.previewResolution,
+        resolution: config.previewResolution,
         brightness: req.params.brightness,
         contrast: req.params.contrast,
         dynamicLineart: req.params.dynamicLineart,
@@ -55,7 +55,7 @@ class Api {
       }
     });
 
-    const cmd = `${Scanimage.scan(request)}`;
+    const cmd = `${scanimageCommand.scan(request)}`;
     log.trace('Executing cmd:', cmd);
     await Process.spawn(cmd);
     return {};
@@ -64,9 +64,9 @@ class Api {
   /**
    * @returns {FileInfo}
    */
-  static deletePreview() {
+  deletePreview() {
     log.trace('deletePreview()');
-    const file = FileInfo.create(`${Config.previewDirectory}/preview.tif`);
+    const file = FileInfo.create(`${config.previewDirectory}/preview.tif`);
     return file.delete();
   }
 
@@ -74,68 +74,68 @@ class Api {
    * @param {string[]} filters
    * @returns {Promise.<Buffer>}
    */
-  static async readPreview(filters) {
+  async readPreview(filters) {
     log.trace('readPreview()', filters);
     // The UI relies on this image being the correct aspect ratio. If there is a
-    // preview image then just use it. 
-    const source = FileInfo.create(`${Config.previewDirectory}/preview.tif`);
+    // preview image then just use it.
+    const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
     if (source.exists()) {
       const buffer = source.toBuffer();
-      const cmds = [...Config.previewPipeline.commands];
+      const cmds = [...config.previewPipeline.commands];
       if (filters && filters.length) {
-        const params = Filters.build(filters, true);
+        const params = application.filterBuilder().build(filters, true);
         cmds.splice(0, 0, `convert - ${params} tif:-`);
       }
-    
+
       return await Process.chain(cmds, buffer, { ignoreErrors: true });
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
-    const buffer = FileInfo.create(`${Config.previewDirectory}/default.jpg`).toBuffer();
+    const buffer = FileInfo.create(`${config.previewDirectory}/default.jpg`).toBuffer();
 
     try {
       // We need to know the correct aspect ratio from the device
-      const context = await Context.create();
+      const context = await application.context();
       const device = context.getDevice();
       const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
       const width = 868;
       const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);  
+      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
     } catch (e) {
       return Promise.resolve(buffer);
     }
   }
 
   /**
-   * @param {string} name 
+   * @param {string} name
    * @returns {Promise.<Buffer>}
    */
-  static async readThumbnail(name) {
-    const source = FileInfo.unsafe(Config.outputDirectory, name);
+  async readThumbnail(name) {
+    const source = FileInfo.unsafe(config.outputDirectory, name);
     return await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
   }
 
   /**
-   * @param {ScanRequest} req 
+   * @param {ScanRequest} req
    * @returns {ScanResponse}
    */
-  static async scan(req) {
+  async scan(req) {
     return await ScanController.run(req);
   }
 
   /**
    * @returns {void}
    */
-  static deleteContext() {
-    Devices.reset();
+  deleteContext() {
+    application.deviceReset();
     this.deletePreview();
   }
 
   /**
    * @returns {Promise.<Context>}
    */
-  static async readContext() {
-    const context = await Context.create();
+  async readContext() {
+    const context = await application.context();
     context.filters = context.filters.map(f => f.description);
     context.pipelines = context.pipelines.map(p => p.description);
     return context;
@@ -144,9 +144,7 @@ class Api {
   /**
    * @returns {Promise.<SystemInfo>}
    */
-  static async readSystem() {
-    return System.info();
+  async readSystem() {
+    return system.info();
   }
-}
-
-module.exports = Api;
+};

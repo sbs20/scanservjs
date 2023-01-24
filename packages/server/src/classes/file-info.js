@@ -1,9 +1,6 @@
-const Config = require('./config');
 const fs = require('fs');
 const mv = require('mv');
 const path = require('path');
-
-
 
 /**
  * @param {number} size
@@ -25,14 +22,47 @@ function sizeString(size) {
   }
 }
 
-class FileInfo {
+/**
+ * @param {string} path
+ * @returns {void}
+ */
+function assertPathIsSafe(path) {
+  if (path.indexOf('../') !== -1) {
+    throw new Error('Parent paths disallowed');
+  }
+
+  if (path.indexOf('/') === 0) {
+    throw new Error('Root paths disallowed');
+  }
+}
+
+/**
+ * @param {string} filename
+ * @returns {void}
+ */
+function assertFilenameIsSafe(filename) {
+  if (/[/\\?%*:|"<>;=]/.test(filename)) {
+    throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+  }
+}
+
+module.exports = class FileInfo {
   /**
-   * @param {string} fullpath 
+   * @param {string} fullpath
+   * @param {string} [filename]
    */
   constructor(fullpath, filename) {
-    FileInfo.assertPath(fullpath);
+    if (/[?%*:|"<>;=]/.test(fullpath)) {
+      throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
+    }
+
+    const disallowUnsafePaths = false;
+    if (disallowUnsafePaths) {
+      assertPathIsSafe(fullpath);
+    }
+
     if (filename) {
-      FileInfo.assertName(filename);
+      assertFilenameIsSafe(filename);
       fullpath = path.join(fullpath, filename);
     }
 
@@ -53,52 +83,24 @@ class FileInfo {
   }
 
   /**
-   * @param {string} name 
-   */
-  static assertName(name) {
-    if (name === null || name === undefined) {
-      throw new Error('Name cannot be null or undefined');
-    }
-
-    if (/[/\\?%*:|"<>;=]/.test(name)) {
-      throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
-    }
-  }
-
-  /**
-   * @param {string} fullpath 
-   */
-  static assertPath(fullpath) {
-    if (/[?%*:|"<>;=]/.test(fullpath)) {
-      throw new Error('Path cannot contain illegal characters: ?%*:|"<>;=');
-    }
-
-    if (!Config.allowUnsafePaths) {
-      if (fullpath.indexOf('../') !== -1) {
-        throw new Error('Parent paths disallowed');
-      }
-    
-      if (fullpath.indexOf('/') === 0) {
-        throw new Error('Root paths disallowed');
-      }  
-    }
-  }
-  
-  /**
-   * @param {string} fullpath 
+   * Used to create FileInfo objects when the path is known and controlled by
+   * the app
+   * @param {string} fullpath
    */
   static create(fullpath) {
     return new FileInfo(fullpath);
   }
 
   /**
-   * @param {string} fullpath 
-   * @param {string} filename 
+   * Used to create FileIbfo objects when the filename is from an external and
+   * therefore untrusted source
+   * @param {string} fullpath
+   * @param {string} filename
    */
   static unsafe(fullpath, filename) {
     return new FileInfo(fullpath, filename);
   }
-  
+
   /**
    * @returns {FileInfo}
    */
@@ -114,7 +116,7 @@ class FileInfo {
   }
 
   /**
-   * @param {FileInfo} fileinfo 
+   * @param {FileInfo} fileinfo
    * @returns {boolean}
    */
   equals(fileinfo) {
@@ -129,16 +131,25 @@ class FileInfo {
   }
 
   /**
-   * @returns {Promise.<void>}
+   * @param {string} filename
+   * @returns {Promise.<FileInfo>}
+   */
+  async rename(filename) {
+    assertFilenameIsSafe(filename);
+    return this.move(`${this.path}/${filename}`);
+  }
+
+  /**
+   * @param {string} destination
+   * @returns {Promise.<FileInfo>}
    */
   async move(destination) {
-    FileInfo.assertPath(destination);
     return await new Promise((resolve, reject) => {
       mv(this.fullname, destination, (err) => {
         if (err) {
           reject(err);
         }
-        resolve();
+        resolve(FileInfo.create(destination));
       });
     });
   }
@@ -185,19 +196,22 @@ class FileInfo {
    */
   async list() {
     return await new Promise((resolve, reject) => {
-      if (!this.isDirectory) {
-        reject(`${this.fullname} is not a directory`);
-      }
-      fs.readdir(this.fullname, (err, list) => {
-        if (err) {
-          reject(err);
-        }
+      if (!this.exists()) {
+        reject(new Error(`${this.fullname} does not exist`));
 
-        const files = list.map(f => FileInfo.create(`${this.fullname}/${f}`));
-        resolve(files);
-      });
+      } else if (!this.isDirectory) {
+        reject(new Error(`${this.fullname} is not a directory`));
+
+      } else {
+        fs.readdir(this.fullname, (err, list) => {
+          if (err) {
+            reject(err);
+          }
+
+          const files = list.map(f => FileInfo.create(`${this.fullname}/${f}`));
+          resolve(files);
+        });
+      }
     });
   }
-}
-
-module.exports = FileInfo;
+};

@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-class UserOptions {
+module.exports = class UserOptions {
   constructor() {
-    const localPath = path.join(__dirname, '../config/config.local.js');
+    const localPath = path.join(__dirname, '../../config/config.local.js');
     if (fs.existsSync(localPath)) {
       this.local = require(localPath);
     }
@@ -11,7 +11,7 @@ class UserOptions {
 
   /**
    * Passes a config reference to config.local.js for customisation
-   * @param {Configuration} config 
+   * @param {Configuration} config
    */
   afterConfig(config) {
     if (this.local && this.local.afterConfig) {
@@ -21,7 +21,7 @@ class UserOptions {
 
   /**
    * Passes a devices reference to config.local.js for customisation
-   * @param {ScanDevice[]} devices 
+   * @param {ScanDevice[]} devices
    */
   afterDevices(devices) {
     if (this.local && this.local.afterDevices) {
@@ -31,7 +31,7 @@ class UserOptions {
 
   /**
    * Passes a fileInfo of the scan result to config.local.js
-   * @param {FileInfo} fileInfo 
+   * @param {FileInfo} fileInfo
    * @returns {Promise.<any>}
    */
   async afterScan(fileInfo) {
@@ -39,7 +39,4 @@ class UserOptions {
       return await this.local.afterScan(fileInfo);
     }
   }
-}
-
-const userOptions = new UserOptions();
-module.exports = userOptions;
+};

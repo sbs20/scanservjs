@@ -22,15 +22,15 @@ const linter = () => {
 const app = {
   server: {
     lint: () => {
-      return src(['./src/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
+      return src(['./src/**/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
         .pipe(linter())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
     },
-  
+
     build: () => {
       const shellFilter = filter('**/*.sh', {restore: true});
-  
+
       const common = src([
         './installer.sh',
         './scanservjs.service',
@@ -42,14 +42,14 @@ const app = {
         .pipe(chmod(0o755))
         .pipe(shellFilter.restore)
         .pipe(dest(DIST));
-    
+
       const source = src(['./src/**/*'])
         .pipe(dest(`${DIST}/server/`));
-    
-      return merge(common, source);  
+
+      return merge(common, source);
     },
   },
-  
+
   package: () => {
     const filename = `scanservjs_v${version}_${dayjs().format('YYYYMMDD.HHmmss')}.tar`;
     const shellFilter = filter('**/*.sh', {restore: true});

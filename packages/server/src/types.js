@@ -70,7 +70,6 @@
  * @property {string} scanimage
  * @property {string} convert
  * @property {string} tesseract
- * @property {boolean} allowUnsafePaths
  * @property {string} devicesPath
  * @property {string} outputDirectory
  * @property {string} previewDirectory

@@ -1,8 +1,8 @@
 const Feature = require('./feature');
-const Util = require('./util');
+const Regex = require('./regex');
 
 /** @type {ScanDevice} */
-class Device {
+module.exports = class Device {
   constructor(string) {
     this.id = '';
     this.name = '';
@@ -25,18 +25,19 @@ class Device {
     if (this.string === null || this.string === '') {
       throw new Error('No device found');
     }
-    
+
     // find
     //   any number of spaces
     //   match 1 or two hyphens with letters, numbers or hypen
     //   match anything (until square brackets)
     //   match anything inside square brackets
-    Util.matchAll(/\s+([-]{1,2}[-a-zA-Z0-9]+ ?.* \[.*\])\n/g, this.string)
+    Regex.with(/\s+([-]{1,2}[-a-zA-Z0-9]+ ?.* \[.*\])\n/g)
+      .matchAll(this.string)
       .map(m => m[1])
       .map(Feature.parse)
       .filter(f => f.enabled)
       .forEach(f => this.features[f.name] = f);
-  
+
     const match = /All options specific to device `(.*)'/.exec(this.string);
     if (match) {
       this.id = match[1];
@@ -68,6 +69,4 @@ class Device {
       throw new Error('Unexpected data for Device');
     }
   }
-}
-
-module.exports = Device;
+};

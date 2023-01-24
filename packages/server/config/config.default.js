@@ -6,7 +6,7 @@
  */
 module.exports = {
   /**
-   * @param {Configuration} config 
+   * @param {Configuration} config
    */
   afterConfig(config) {
     /**
@@ -89,12 +89,12 @@ module.exports = {
    * disk) but before being returned to anything else. You can use this to
    * override default settings from the scanner, or resolution options or
    * anything else for that matter.
-   * 
+   *
    * Note that the devices parameter is an array. Most systems will likely just
    * have one scanner, but that's not always true. Therefore you will need to
    * identify the scanner by id or index. It's also possible that the list will
    * be empty if there's an upstream error.
-   * @param {ScanDevice[]} devices 
+   * @param {ScanDevice[]} devices
    */
   afterDevices(devices) {
     /**
@@ -115,7 +115,7 @@ module.exports = {
   /**
    * This method is called after a scan has completed with the resultant
    * FileInfo.
-   * @param {FileInfo} fileInfo 
+   * @param {FileInfo} fileInfo
    * @returns {Promise.<any>}
    */
   async afterScan(fileInfo) {

@@ -1,15 +1,18 @@
 /* eslint-env mocha */
 const assert = require('assert');
-const Context = require('../src/context');
-const Device = require('../src/device');
-const FileInfo = require('../src/file-info');
-const Request = require('../src/request');
+const Application = require('../src/application');
+const Context = require('../src/classes/context');
+const Device = require('../src/classes/device');
+const FileInfo = require('../src/classes/file-info');
+const Request = require('../src/classes/request');
+
+const config = Application.config();
 
 describe('Request', () => {
   it('scanimage-a1.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
-    const context = new Context([device]);
+    const context = new Context(config, [device]);
     const request = new Request(context).extend({
       params: {
         deviceId: 'plustek:libusb:001:008',
@@ -25,7 +28,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'plustek:libusb:001:008');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');
@@ -38,10 +41,37 @@ describe('Request', () => {
     assert.strictEqual(request.params.dynamicLineart, undefined);
   });
 
+  it('scanimage-a1-defaults.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a1.txt');
+    const device = Device.from(file.toText());
+    const context = new Context(config, [device]);
+    const request = new Request(context).extend({
+      params: {
+        deviceId: 'plustek:libusb:001:008',
+        mode: 'Color',
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: 'test-pipeline'
+    });
+
+    assert.strictEqual(request.params.deviceId, 'plustek:libusb:001:008');
+    assert.strictEqual(request.params.mode, 'Color');
+    assert.strictEqual(request.params.resolution, 50);
+    assert.strictEqual(request.params.left, 0);
+    assert.strictEqual(request.params.top, 0);
+    assert.strictEqual(request.params.width, 103);
+    assert.strictEqual(request.params.height, 76.2);
+    assert.strictEqual(request.params.brightness, 0);
+    assert.strictEqual(request.params.contrast, 0);
+    assert.strictEqual(request.params.dynamicLineart, undefined);
+  });
+
   it('scanimage-a2.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
-    const context = new Context([device]);
+    const context = new Context(config, [device]);
     const request = new Request(context).extend({
       params: {
         deviceId: 'epson2:libusb:001:029',
@@ -57,7 +87,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'epson2:libusb:001:029');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');
@@ -73,7 +103,7 @@ describe('Request', () => {
   it('scanimage-a8.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a8.txt');
     const device = Device.from(file.toText());
-    const context = new Context([device]);
+    const context = new Context(config, [device]);
     const request = new Request(context).extend({
       params: {
         deviceId: 'umax1220u:libusb:001:004',
@@ -89,7 +119,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'umax1220u:libusb:001:004');
     assert.strictEqual(request.params.mode, undefined);
     assert.strictEqual(request.params.resolution, '150');
@@ -105,7 +135,7 @@ describe('Request', () => {
   it('scanimage-a10.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
-    const context = new Context([device]);
+    const context = new Context(config, [device]);
     const request = new Request(context).extend({
       params: {
         top: -1,
@@ -120,7 +150,7 @@ describe('Request', () => {
       },
       pipeline: 'test-pipeline'
     });
-    
+
     assert.strictEqual(request.params.deviceId, 'epjitsu:libusb:001:003');
     assert.strictEqual(request.params.mode, 'Color');
     assert.strictEqual(request.params.resolution, '150');

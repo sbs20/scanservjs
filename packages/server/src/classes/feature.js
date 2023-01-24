@@ -1,49 +1,52 @@
 /**
- * @param {number} n 
+ * @param {number} n
  * @returns {number}
  */
 function round(n) {
   return Math.floor(n * 10) / 10;
 }
 
-class Feature {
+/**
+ * @param {string} string
+ * @param {string} delimiter
+ * @returns {number[]}
+ */
+function splitNumbers(string, delimiter) {
+  return string.replace(/[a-z%]/ig, '')
+    .split(delimiter)
+    .filter(s => s.length > 0)
+    .map(s => Number(s));
+}
+
+module.exports = class Feature {
   /**
    * Constructor
+   * @param {string} text
    */
-  constructor() {
+  constructor(text) {
+    this.text = text;
+    this.load();
   }
 
   get enabled() {
     return !['inactive', 'read-only'].includes(this.default);
   }
 
-  /**
-   * @param {string} string 
-   * @param {string} delimiter
-   * @returns {number[]} 
-   */
-  static splitNumbers(string, delimiter) {
-    return string.replace(/[a-z%]/ig, '')
-      .split(delimiter)
-      .filter(s => s.length > 0)
-      .map(s => Number(s));
-  }
-
-  range() {
+  asRange() {
     this.default = round(Number(this.default));
     const range = /(.*?)(?:\s|$)/g.exec(this.parameters);
-    this.limits = Feature.splitNumbers(range[1], '..');
+    this.limits = splitNumbers(range[1], '..');
     const steps = /\(in steps of (\d+\.?\d*)\)/g.exec(this.parameters);
     this.interval = steps ? Number(steps[1]) : 1;
   }
 
-  resolution() {
+  asResolution() {
     if (this.parameters.indexOf('|') > -1) {
-      this.options = Feature.splitNumbers(this.parameters, '|');
+      this.options = splitNumbers(this.parameters, '|');
       this.default = Number(this.default);
 
     } else if (this.parameters.indexOf('..') > -1) {
-      this.range(this);
+      this.asRange(this);
       const limits = this.limits;
       this.options = [];
       for (let value = limits[1]; value > limits[0]; value /= 2) {
@@ -54,17 +57,22 @@ class Feature {
     }
   }
 
-  geometry() {
-    this.range();
+  asGeometry() {
+    this.asRange();
     this.limits[0] = round(this.limits[0]);
     this.limits[1] = round(this.limits[1]);
   }
 
-  lighting() {
-    this.range();
+  asLighting() {
+    this.asRange();
   }
 
   load() {
+    const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]$/g.exec(this.text);
+    this.name = match[1];
+    this.default = match[3];
+    this.parameters = match[2];
+
     this.parameters = this.parameters.replace(/^auto\|/, '');
     if (this.enabled) {
       switch (this.name) {
@@ -75,7 +83,7 @@ class Feature {
           break;
 
         case '--resolution':
-          this.resolution();
+          this.asResolution();
           break;
 
         case '-l':
@@ -84,12 +92,12 @@ class Feature {
         case '-y':
         case '--page-height':
         case '--page-width':
-          this.geometry();
+          this.asGeometry();
           break;
-        
+
         case '--brightness':
         case '--contrast':
-          this.lighting();
+          this.asLighting();
           break;
       }
     }
@@ -97,18 +105,9 @@ class Feature {
 
   /**
    * @param {string} s
-   * @returns {Feature} 
+   * @returns {Feature}
    */
   static parse(s) {
-    const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]$/g.exec(s);
-    const feature = new Feature();
-    feature.text = s;
-    feature.name = match[1];
-    feature.default = match[3];
-    feature.parameters = match[2];
-    feature.load();
-    return feature;
+    return new Feature(s);
   }
-}
-
-module.exports = Feature;
+};

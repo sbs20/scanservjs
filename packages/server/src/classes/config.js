@@ -1,11 +1,13 @@
 const dayjs = require('dayjs');
-const userOptions = require('./user-options');
-const Constants = require('./constants');
-const Package = require('../package.json');
-let instance = null;
+const Constants = require('../constants');
+const Package = require('../../package.json');
 
-class Config {
-  constructor() {
+module.exports = class Config {
+  /**
+   * Constructor
+   * @param {UserOptions} userOptions
+   */
+  constructor(userOptions) {
     this.init();
     this.addEnvironment();
     userOptions.afterConfig(this);
@@ -39,17 +41,16 @@ class Config {
       filename() {
         return `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}`;
       },
-    
+
       scanimage: '/usr/bin/scanimage',
       convert: '/usr/bin/convert',
       tesseract: '/usr/bin/tesseract',
-    
-      allowUnsafePaths: false,
+
       devicesPath: './config/devices.json',
       outputDirectory: 'data/output',
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
-    
+
       users: {},
 
       previewResolution: 100,
@@ -82,7 +83,7 @@ class Config {
           params: '-blur 1'
         }
       ],
-    
+
       paperSizes: [
         { name: 'A3 (@:paper-size.portrait)', dimensions: { x: 297, y: 420 } },
         { name: 'A4 (@:paper-size.portrait)', dimensions: { x: 210, y: 297 } },
@@ -111,7 +112,7 @@ class Config {
       ],
     });
 
-    const config = this;    
+    const config = this;
     this.pipelines = [
       {
         extension: 'jpg',
@@ -260,16 +261,4 @@ class Config {
       this.ocrLanguage = process.env.OCR_LANG;
     }
   }
-
-  /**
-   * @returns {Configuration}
-   */
-  static instance() {
-    if (instance === null) {
-      instance = new Config();
-    }
-    return instance;
-  }
-}
-
-module.exports = Config.instance();
+};

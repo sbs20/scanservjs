@@ -168,7 +168,7 @@ paths:
         - name: filter
           in: query
           description: Filter array
-          required: true
+          required: false
           schema:
             type: array
             item:
