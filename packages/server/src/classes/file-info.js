@@ -26,7 +26,7 @@ function sizeString(size) {
  * @param {string} path
  * @returns {void}
  */
-function assertUnsafePath(path) {
+function assertPathIsSafe(path) {
   if (path.indexOf('../') !== -1) {
     throw new Error('Parent paths disallowed');
   }
@@ -40,7 +40,7 @@ function assertUnsafePath(path) {
  * @param {string} filename
  * @returns {void}
  */
-function assertUnsafeFilename(filename) {
+function assertFilenameIsSafe(filename) {
   if (/[/\\?%*:|"<>;=]/.test(filename)) {
     throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
   }
@@ -58,11 +58,11 @@ module.exports = class FileInfo {
 
     const disallowUnsafePaths = false;
     if (disallowUnsafePaths) {
-      assertUnsafePath(fullpath);
+      assertPathIsSafe(fullpath);
     }
 
     if (filename) {
-      assertUnsafeFilename(filename);
+      assertFilenameIsSafe(filename);
       fullpath = path.join(fullpath, filename);
     }
 
@@ -135,7 +135,7 @@ module.exports = class FileInfo {
    * @returns {Promise.<FileInfo>}
    */
   async rename(filename) {
-    assertUnsafeFilename(filename);
+    assertFilenameIsSafe(filename);
     return this.move(`${this.path}/${filename}`);
   }
 
