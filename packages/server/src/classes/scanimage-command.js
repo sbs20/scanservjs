@@ -8,7 +8,7 @@ const semver = require('semver');
 class Scanimage {
 
   /**
-   * @param {Configuration} config 
+   * @param {Configuration} config
    */
   constructor(config) {
     this.config = config;
@@ -135,4 +135,4 @@ module.exports = class ScanimageCommand {
     }
     return cmdBuilder.build();
   }
-}
+};

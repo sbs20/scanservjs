@@ -34,7 +34,6 @@ module.exports = class Context {
     this.batchModes = config.batchModes;
   }
 
-
   /**
    * @param {string} id
    * @returns {ScanDevice}
@@ -55,4 +54,4 @@ module.exports = class Context {
 
     return device;
   }
-}
+};

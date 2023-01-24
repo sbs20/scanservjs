@@ -30,4 +30,4 @@ module.exports = class System {
 
     return info;
   }
-}
+};

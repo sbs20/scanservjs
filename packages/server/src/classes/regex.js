@@ -31,4 +31,4 @@ module.exports = class Regex {
   static with(regexp) {
     return new Regex(regexp);
   }
-}
+};

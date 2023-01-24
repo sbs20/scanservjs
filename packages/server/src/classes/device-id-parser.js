@@ -13,4 +13,4 @@ module.exports = class DeviceIdParser {
       .matchAll(this.data)
       .map(m => m[1]);
   }
-}
+};

@@ -110,4 +110,4 @@ module.exports = class Feature {
   static parse(s) {
     return new Feature(s);
   }
-}
+};

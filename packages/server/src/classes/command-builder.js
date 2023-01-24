@@ -52,4 +52,4 @@ module.exports = class CommandBuilder {
     log.trace('build()', cmd);
     return cmd;
   }
-}
+};

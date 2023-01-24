@@ -39,4 +39,4 @@ module.exports = class UserOptions {
       return await this.local.afterScan(fileInfo);
     }
   }
-}
+};

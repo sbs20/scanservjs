@@ -1,7 +1,7 @@
 module.exports = class FilterBuilder {
 
   /**
-   * @param {Configuration} config 
+   * @param {Configuration} config
    */
   constructor(config) {
     this.config = config;
@@ -21,4 +21,4 @@ module.exports = class FilterBuilder {
     const params = filters.map(f => f.params).join(' ');
     return params;
   }
-}
+};

@@ -5,7 +5,7 @@ const Package = require('../../package.json');
 module.exports = class Config {
   /**
    * Constructor
-   * @param {UserOptions} userOptions 
+   * @param {UserOptions} userOptions
    */
   constructor(userOptions) {
     this.init();
@@ -261,4 +261,4 @@ module.exports = class Config {
       this.ocrLanguage = process.env.OCR_LANG;
     }
   }
-}
+};

@@ -36,4 +36,4 @@ module.exports = class Zip {
   static file(filename) {
     return new Zip(filename);
   }
-}
+};

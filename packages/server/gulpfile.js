@@ -22,7 +22,7 @@ const linter = () => {
 const app = {
   server: {
     lint: () => {
-      return src(['./src/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
+      return src(['./src/**/*.js', './config/config.default.js', './test/**/*.js', 'gulpfile.js'])
         .pipe(linter())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());

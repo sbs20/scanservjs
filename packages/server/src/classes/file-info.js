@@ -136,7 +136,7 @@ module.exports = class FileInfo {
    */
   async rename(filename) {
     assertUnsafeFilename(filename);
-    return this.move(`${this.path}/${filename}`)
+    return this.move(`${this.path}/${filename}`);
   }
 
   /**
@@ -214,4 +214,4 @@ module.exports = class FileInfo {
       }
     });
   }
-}
+};

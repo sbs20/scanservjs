@@ -69,4 +69,4 @@ module.exports = class Device {
       throw new Error('Unexpected data for Device');
     }
   }
-}
+};

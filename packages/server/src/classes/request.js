@@ -82,4 +82,4 @@ module.exports = class Request {
     log.trace(JSON.stringify(this));
     return this;
   }
-}
+};
