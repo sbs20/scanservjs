@@ -166,14 +166,17 @@ can be anything you want it to be. You just need to override it.
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans.
 
-The pipeline commands will be started subsequently but in separate subprocesses. 
-Therefore, e.g., the definition of variables in one line, can't be accessed in another.
-If you want full scripting capabilities, create a script externally (e.g. in /usr/local/bin), 
-make it executable, and start it here. The script will be executed from the tmp-folder of scanservjs,
-thus, it can access all temporary files. Alternatively, a script can also request parameters, which can be set here.
+The pipeline commands will be started subsequently but in separate subprocesses.
+Therefore, e.g., the definition of variables in one line, can't be accessed in
+another. If you want full scripting capabilities, create a script externally
+(e.g. in /usr/local/bin), make it executable, and start it here. The script will
+be executed from the tmp-folder of scanservjs, thus, it can access all temporary
+files. Alternatively, a script can also request parameters, which can be set
+here.
 
-You are free to create whatever kind of files you want, however, the last command of the pipeline needs to
-return a list of files, which can be further processed by scanservjs to create the final result within scanservjs.
+You are free to create whatever kind of files you want, however, the last
+command of the pipeline needs to return a list of files, which can be further
+processed by scanservjs to create the final result within scanservjs.
 
 To learn more read the
 [example source](../packages/server/config/config.default.js). This will insert
