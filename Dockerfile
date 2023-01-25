@@ -23,7 +23,7 @@ RUN npm run build
 # ==============================================================================
 FROM node:16-bullseye-slim AS scanservjs-base
 RUN apt-get update \
-  && apt-get install --no-install-recommends -yq \
+  && apt-get install -yq \
     imagemagick \
     sane \
     sane-utils \
@@ -41,13 +41,15 @@ RUN apt-get update \
     tesseract-ocr-tur \
     tesseract-ocr-chi-sim \
     sane-airscan \
+    ipp-usb \
+  && rm -rf /var/lib/apt/lists/* \
   && sed -i \
     's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
     /etc/ImageMagick-6/policy.xml \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0 && npm cache clean --force; && rm -rf /var/lib/apt/lists/*;
+  && npm install -g npm@8.3.0 && npm cache clean --force;
 
 # Core image
 #
@@ -114,7 +116,7 @@ FROM scanservjs-core
 # default - you will need to specifically target it.
 # ==============================================================================
 FROM scanservjs-core AS scanservjs-hplip
-RUN apt-get install --no-install-recommends -yq libsane-hpaio \
+RUN apt-get update && apt-get install -yq libsane-hpaio \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && echo hpaio >> /etc/sane.d/dll.conf
