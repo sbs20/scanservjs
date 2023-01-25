@@ -40,16 +40,16 @@ module.exports = class Request {
     });
 
     if ('-t' in features) {
-      this.params.top = constrainWithFeature(data.params.top, features['-t']);
+      this.params.top = constrainWithFeature(data.params.top || features['-t'].limits[0], features['-t']);
     }
     if ('-l' in features) {
-      this.params.left = constrainWithFeature(data.params.left, features['-l']);
+      this.params.left = constrainWithFeature(data.params.left || features['-l'].limits[0], features['-l']);
     }
     if ('-x' in features) {
-      this.params.width = constrainWithFeature(data.params.width, features['-x']);
+      this.params.width = constrainWithFeature(data.params.width || features['-x'].limits[1], features['-x']);
     }
     if ('-y' in features) {
-      this.params.height = constrainWithFeature(data.params.height, features['-y']);
+      this.params.height = constrainWithFeature(data.params.height || features['-y'].limits[1], features['-y']);
     }
     if ('--page-height' in features) {
       this.params.pageHeight = constrainWithFeature(data.params.pageHeight, features['--page-height']);
