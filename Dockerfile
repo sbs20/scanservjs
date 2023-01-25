@@ -49,7 +49,8 @@ RUN apt-get update \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0 && npm cache clean --force;
+  && npm install -g npm@8.3.0 \
+  && npm cache clean --force;
 
 # Core image
 #
@@ -81,7 +82,8 @@ ENTRYPOINT [ "/run.sh" ]
 
 # Copy the code and install
 COPY --from=scanservjs-build "$APP_DIR/dist" "$APP_DIR/"
-RUN npm install --production && npm cache clean --force;
+RUN npm install --production \
+  && npm cache clean --force;
 
 EXPOSE 8080
 
@@ -116,7 +118,8 @@ FROM scanservjs-core
 # default - you will need to specifically target it.
 # ==============================================================================
 FROM scanservjs-core AS scanservjs-hplip
-RUN apt-get update && apt-get install -yq libsane-hpaio \
+RUN apt-get update \
+  && apt-get install -yq libsane-hpaio \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && echo hpaio >> /etc/sane.d/dll.conf
