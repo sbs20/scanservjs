@@ -42,3 +42,18 @@ When scanning files with high resolution, e.g. 1200dpi it is very likely for the
 request to timeout. This is because node HTTP times out after 2 minutes by
 default. The solution is to increase the default timeout. That's possible by
 setting `config.timeout = 600000;` (for 10 minutes for example).
+
+## Docker container loses scanner after device reboot
+
+As per
+[issue #505](https://github.com/sbs20/scanservjs/issues/505#issuecomment-1364533826)
+containers can lose their access to a device after a device reboot.
+
+This is more SANE and containers than this app. The user's solution was to add a
+udev rule as below. You will need to substitute your own product and vendor
+variables.
+
+`/etc/udev/rules.d/99-printer.rules`
+```
+SUBSYSTEMS=="usb",KERNELS=="1-1.1",DRIVERS=="usb",ATTRS{idProduct}=="0827", ATTRS{idVendor}=="04b8", ATTRS{serial}=="L53010612130846360",SYMLINK+="%s{manufacturer}_printer",TAG+="systemd",RUN+="/bin/bash -c '/usr/bin/systemctl restart container-scanservjs.service &'"
+```
