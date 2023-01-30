@@ -20,7 +20,7 @@ module.exports = class Config {
       version: Package.version,
       port: 8080,
       host: '::',
-      timeout: 120000,
+      timeout: 600000,
       devices: [],
       ocrLanguage: 'eng',
       log: {
