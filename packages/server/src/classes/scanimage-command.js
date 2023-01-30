@@ -2,9 +2,9 @@ const log = require('loglevel').getLogger('ScanimageCommand');
 
 const CommandBuilder = require('./command-builder');
 const Constants = require('../constants');
+const LogFormatter = require('./log-formatter');
 const Process = require('./process');
 const semver = require('semver');
-const LogFormatter = require('./log-formatter');
 
 class Scanimage {
 
