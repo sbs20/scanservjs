@@ -1,13 +1,13 @@
 const log = require('loglevel').getLogger('Api');
 
 const FileInfo = require('./classes/file-info');
+const LogFormatter = require('./classes/log-formatter');
 const Process = require('./classes/process');
 const Request = require('./classes/request');
 const ScanController = require('./scan-controller');
 
 const application = require('./application');
 const config = application.config();
-const system = application.system();
 const scanimageCommand = application.scanimageCommand();
 
 module.exports = new class Api {
@@ -22,7 +22,7 @@ module.exports = new class Api {
     files = files
       .filter(f => ['.tif', '.jpg', '.png', '.pdf', '.txt', '.zip'].includes(f.extension.toLowerCase()))
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
-    log.trace(JSON.stringify(files));
+    log.trace(LogFormatter.format().full(files));
     return files;
   }
 
@@ -42,7 +42,7 @@ module.exports = new class Api {
    */
   async createPreview(req) {
     const context = await application.context();
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         deviceId: req.params.deviceId,
         mode: req.params.mode,
@@ -138,13 +138,17 @@ module.exports = new class Api {
    * @returns {Promise.<Context>}
    */
   async readContext() {
-    return await application.context();
+    const context = await application.context();
+    log.info(LogFormatter.format().full(context));
+    return context;
   }
 
   /**
    * @returns {Promise.<SystemInfo>}
    */
   async readSystem() {
-    return system.info();
+    const systemInfo = await application.systemInfo();
+    log.debug(LogFormatter.format().full(systemInfo));
+    return systemInfo;
   }
 };

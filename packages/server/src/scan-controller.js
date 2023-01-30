@@ -28,7 +28,7 @@ class ScanController {
    */
   async init(req) {
     this.context = await application.context();
-    this.request = new Request(this.context).extend(req);
+    this.request = new Request(this.context, req);
     this.pipeline = config.pipelines
       .filter(p => p.description === this.request.pipeline)[0];
     if (this.pipeline === undefined) {
@@ -62,7 +62,7 @@ class ScanController {
    * @returns {Promise.<void>}
    */
   async scan() {
-    log.debug('Scanning');
+    log.info('Scanning');
     await Process.spawn(scanimageCommand.scan(this.request));
   }
 
@@ -108,7 +108,7 @@ class ScanController {
       .create(`${config.tempDirectory}/${filename}`)
       .move(destination);
 
-    log.debug(`Written data to: ${destination}`);
+    log.debug({output: destination});
     await this.deleteFiles();
     return FileInfo.create(destination);
   }
@@ -176,7 +176,7 @@ class ScanController {
       };
 
     } else {
-      log.debug(`Finished pass: ${this.request.index}`);
+      log.info(`Finished pass: ${this.request.index}`);
       /** @type {ScanResponse} */
       const response = { index: this.request.index };
       if (this.request.batch === Constants.BATCH_MANUAL) {

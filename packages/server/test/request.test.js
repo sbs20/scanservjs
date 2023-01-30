@@ -14,7 +14,7 @@ describe('Request', () => {
     const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
     const context = new Context(config, [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         deviceId: 'plustek:libusb:001:008',
         top: -1,
@@ -46,7 +46,7 @@ describe('Request', () => {
     const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
     const context = new Context(config, [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         deviceId: 'plustek:libusb:001:008',
         mode: 'Color',
@@ -73,7 +73,7 @@ describe('Request', () => {
     const file = FileInfo.create('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
     const context = new Context(config, [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         deviceId: 'epson2:libusb:001:029',
         top: -1,
@@ -105,7 +105,7 @@ describe('Request', () => {
     const file = FileInfo.create('test/resource/scanimage-a8.txt');
     const device = Device.from(file.toText());
     const context = new Context(config, [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         deviceId: 'umax1220u:libusb:001:004',
         top: -1,
@@ -137,7 +137,7 @@ describe('Request', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
     const context = new Context(config, [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         top: -1,
         left: -20,

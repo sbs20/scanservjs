@@ -50,7 +50,7 @@ function logRequest(req) {
       }
     }
   }
-  log.debug(output);
+  log.info(output);
 }
 
 /**

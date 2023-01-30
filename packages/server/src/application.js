@@ -9,11 +9,19 @@ const UserOptions = require('./classes/user-options');
 
 module.exports = new class Application {
   constructor() {
+    this._log = null;
     this._userOptions = null;
     /** @type {Configuration} */
     this._config = null;
     /** @type {ScanimageCommand} */
     this._scanimageCommand = null;
+  }
+
+  log() {
+    if (this._log === null) {
+      this._log = require('loglevel').getLogger('Application');
+    }
+    return this._log;
   }
 
   userOptions() {
@@ -47,7 +55,6 @@ module.exports = new class Application {
    * @returns {Promise.<ScanDevice[]>}
    */
   async deviceList() {
-    const log = require('loglevel').getLogger('Application');
     const Process = require('./classes/process');
     const config = this.config();
     const scanimageCommand = this.scanimageCommand();
@@ -65,7 +72,7 @@ module.exports = new class Application {
             }
           }
         } catch (exception) {
-          log.warn(exception);
+          this.log().warn(exception);
           devices = [];
         }
       } else {
@@ -73,19 +80,19 @@ module.exports = new class Application {
       }
 
       if (devices.length === 0) {
-        log.debug('devices.json contains no devices. Reloading');
+        this.log().debug('devices.json contains no devices. Reloading');
         devices = null;
       }
     } else {
-      log.debug('devices.json does not exist. Reloading');
+      this.log().info('devices.json does not exist. Reloading');
     }
 
     if (devices === null) {
       let deviceIds = config.devices;
-      log.debug('Config.devices: ', deviceIds);
+      this.log().debug({'Config.devices': deviceIds});
       if (config.devicesFind) {
         const data = await Process.execute(scanimageCommand.devices());
-        log.debug('Device list: ', data);
+        this.log().debug({'devices': data});
         const localDevices = new DeviceIdParser(data).ids();
         deviceIds = deviceIds.concat(localDevices);
       }
@@ -95,10 +102,10 @@ module.exports = new class Application {
       for (let deviceId of deviceIds) {
         try {
           const data = await Process.execute(scanimageCommand.features(deviceId));
-          log.debug('Device features: ', data);
+          this.log().debug(`features: ${data}`);
           devices.push(Device.from(data));
         } catch (error) {
-          log.error(`Ignoring ${deviceId}. Error: ${error}`);
+          this.log().error(`Ignoring ${deviceId}. Error: ${error}`);
         }
       }
       file.save(JSON.stringify(devices.map(d => d.string), null, 2));
@@ -125,8 +132,8 @@ module.exports = new class Application {
     return new Context(this.config(), devices, this.userOptions());
   }
 
-  system() {
-    return new System();
+  async systemInfo() {
+    return await new System().info();
   }
 
   filterBuilder() {

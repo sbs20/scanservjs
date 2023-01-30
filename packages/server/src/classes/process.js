@@ -6,7 +6,7 @@ const spawn = require('child_process').spawn;
 module.exports = new class Process {
 
   /**
-   * @returns {Log.Looger}
+   * @returns {log.Logger}
    */
   log() {
     if (!this._log) {
@@ -29,6 +29,7 @@ module.exports = new class Process {
    * @returns {Promise.<string>}
    */
   async execute(cmd) {
+    this.log().info({execute: cmd});
     const { stdout } = await exec(cmd);
     return stdout;
   }
@@ -48,13 +49,18 @@ module.exports = new class Process {
       ignoreErrors: false
     }, options);
 
-    this.log().debug({
-      spawn: {
-        cmd,
-        stdin,
-        options
-      }
-    });
+    if (this.log().getLevel() > this.log().levels.DEBUG) {
+      this.log().info({spawn: cmd});
+    } else {
+      this.log().debug({
+        spawn: {
+          cmd,
+          stdin,
+          options
+        }
+      });
+    }
+
     return await new Promise((resolve, reject) => {
       let stdout = Buffer.alloc(0);
       let stderr = '';
