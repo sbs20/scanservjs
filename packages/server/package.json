@@ -6,7 +6,8 @@
     "lint": "gulp lint",
     "build": "gulp build",
     "package": "gulp package",
-    "serve": "nodemon -e js,yml --watch src --exec 'npm run build && node ./src/server.js'",
+    "serve": "npm run build && node ./src/server.js",
+    "serve-nodemon": "nodemon -e js,yml --watch src --exec 'npm run build && node ./src/server.js'",
     "test": "mocha"
   },
   "main": "server/server.js",

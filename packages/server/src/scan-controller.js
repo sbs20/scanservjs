@@ -29,8 +29,7 @@ class ScanController {
   async init(req) {
     this.context = await application.context();
     this.request = new Request(this.context).extend(req);
-    // Check pipeline here. Better to find out sooner if there's a problem
-    this.pipeline = this.context.pipelines
+    this.pipeline = config.pipelines
       .filter(p => p.description === this.request.pipeline)[0];
     if (this.pipeline === undefined) {
       throw Error('No matching pipeline');

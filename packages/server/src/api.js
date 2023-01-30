@@ -112,7 +112,10 @@ module.exports = new class Api {
    */
   async readThumbnail(name) {
     const source = FileInfo.unsafe(config.outputDirectory, name);
-    return await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+    if (source.extension !== '.zip') {
+      return await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+    }
+    return [];
   }
 
   /**
@@ -135,10 +138,7 @@ module.exports = new class Api {
    * @returns {Promise.<Context>}
    */
   async readContext() {
-    const context = await application.context();
-    context.filters = context.filters.map(f => f.description);
-    context.pipelines = context.pipelines.map(p => p.description);
-    return context;
+    return await application.context();
   }
 
   /**
