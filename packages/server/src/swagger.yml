@@ -290,6 +290,10 @@ definitions:
         type: object
         additionalProperties:
           $ref: '#/definitions/Feature'
+      settings:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/Feature'
     example:
       "id": "plustek:libusb:001:004"
       "name": "plustek:libusb:001:004"
@@ -384,7 +388,33 @@ definitions:
             - -100
             - 100        
           "interval": 1
-  
+
+      "settings":
+        "batchMode":
+          "options":
+            - 'none'
+            - 'manual'
+            - 'auto'
+            - 'auto-collate-standard'
+          
+          "default": 'none'
+        
+        "filters":
+          "options":
+            - 'filter.auto-level'
+            - 'filter.threshold'
+            - 'filter.blur'
+
+          "default": []
+        
+        "pipeline":
+          "options":
+            - 'JPG | @:pipeline.high-quality'
+            - 'JPG | @:pipeline.medium-quality'
+            - 'JPG | @:pipeline.low-quality'
+
+          "default": 'JPG | AMAZING quality'
+
   Context:
     properties:
       version:
@@ -396,50 +426,10 @@ definitions:
         items:
           $ref: '#/definitions/Device'
 
-      pipelines:
-        type: array
-        items:
-          type: string
-        example:
-          - 'JPG | @:pipeline.high-quality'
-          - 'JPG | @:pipeline.medium-quality'
-          - 'JPG | @:pipeline.low-quality'
-          - 'PNG'
-          - 'TIF | @:pipeline.uncompressed'
-          - 'TIF | @:pipeline.lzw-compressed'
-          - 'PDF (TIF | @:pipeline.uncompressed)'
-          - 'PDF (TIF | @:pipeline.lzw-compressed)'
-          - 'PDF (JPG | @:pipeline.high-quality)'
-          - 'PDF (JPG | @:pipeline.medium-quality)'
-          - 'PDF (JPG | @:pipeline.low-quality)'
-          - '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)'
-          - '@:pipeline.ocr | @:pipeline.text-file'
-
-      filters:
-        type: array
-        items:
-          type: string
-        example:
-          - 'filter.auto-level'
-          - 'filter.threshold'
-          - 'filter.blur'
-          - 'Rotate 90'
-
       paperSizes:
         type: array
         items:
           type: object
-
-      batchModes:
-        type: array
-        items:
-          type: string
-        example:
-          - 'none'
-          - 'manual'
-          - 'auto'
-          - 'auto-collate-standard'
-          - 'auto-collate-reverse'
 
   SystemInfoOs:
     properties:

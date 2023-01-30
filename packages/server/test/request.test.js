@@ -5,6 +5,7 @@ const Context = require('../src/classes/context');
 const Device = require('../src/classes/device');
 const FileInfo = require('../src/classes/file-info');
 const Request = require('../src/classes/request');
+const UserOptions = require('../src/classes/user-options');
 
 const config = Application.config();
 
@@ -12,7 +13,7 @@ describe('Request', () => {
   it('scanimage-a1.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
-    const context = new Context(config, [device]);
+    const context = new Context(config, [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         deviceId: 'plustek:libusb:001:008',
@@ -26,7 +27,7 @@ describe('Request', () => {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: 'test-pipeline'
+      pipeline: config.pipelines[0].description
     });
 
     assert.strictEqual(request.params.deviceId, 'plustek:libusb:001:008');
@@ -44,7 +45,7 @@ describe('Request', () => {
   it('scanimage-a1-defaults.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a1.txt');
     const device = Device.from(file.toText());
-    const context = new Context(config, [device]);
+    const context = new Context(config, [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         deviceId: 'plustek:libusb:001:008',
@@ -53,7 +54,7 @@ describe('Request', () => {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: 'test-pipeline'
+      pipeline: config.pipelines[0].description
     });
 
     assert.strictEqual(request.params.deviceId, 'plustek:libusb:001:008');
@@ -71,7 +72,7 @@ describe('Request', () => {
   it('scanimage-a2.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a2.txt');
     const device = Device.from(file.toText());
-    const context = new Context(config, [device]);
+    const context = new Context(config, [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         deviceId: 'epson2:libusb:001:029',
@@ -85,7 +86,7 @@ describe('Request', () => {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: 'test-pipeline'
+      pipeline: config.pipelines[0].description
     });
 
     assert.strictEqual(request.params.deviceId, 'epson2:libusb:001:029');
@@ -103,7 +104,7 @@ describe('Request', () => {
   it('scanimage-a8.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a8.txt');
     const device = Device.from(file.toText());
-    const context = new Context(config, [device]);
+    const context = new Context(config, [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         deviceId: 'umax1220u:libusb:001:004',
@@ -117,7 +118,7 @@ describe('Request', () => {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: 'test-pipeline'
+      pipeline: config.pipelines[0].description
     });
 
     assert.strictEqual(request.params.deviceId, 'umax1220u:libusb:001:004');
@@ -135,7 +136,7 @@ describe('Request', () => {
   it('scanimage-a10.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
-    const context = new Context(config, [device]);
+    const context = new Context(config, [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         top: -1,
@@ -148,7 +149,7 @@ describe('Request', () => {
         contrast: 0,
         dynamicLineart: true
       },
-      pipeline: 'test-pipeline'
+      pipeline: config.pipelines[0].description
     });
 
     assert.strictEqual(request.params.deviceId, 'epjitsu:libusb:001:003');

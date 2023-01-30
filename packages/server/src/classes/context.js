@@ -1,4 +1,5 @@
 const fs = require('fs');
+const objectMerger = require('./object-merger');
 
 const diagnostic = (path) => {
   const success = fs.existsSync(path) && !fs.statSync(path).isDirectory();
@@ -14,24 +15,57 @@ module.exports = class Context {
    * @param {Configuration} config
    * @param {ScanDevice[]} devices
    */
-  constructor(config, devices) {
+  constructor(config, devices, userOptions) {
+    if (!config) {
+      throw new Error('config is null or undefined');
+    }
+
+    if (!devices) {
+      throw new Error('devices is null or undefined');
+    }
+
+    if (!userOptions) {
+      throw new Error('userOptions is null or undefined');
+    }
+
+    const defaultSettings = () => {
+      return {
+        batchMode: {
+          options: config.batchModes,
+          default: config.batchModes[0]
+        },
+        filters: {
+          options: config.filters.map(f => f.description),
+          default: []
+        },
+        pipeline: {
+          options: config.pipelines.map(p => p.description),
+          default: config.pipelines[0].description
+        }
+      };
+    };
+
+    // Add defaults for all existing devices - useful for user configuration
+    devices.forEach(device => {
+      device.settings = defaultSettings();
+    });
+
+    userOptions.afterDevices(devices);
+
+    // Re-add defaults in case user adds new devices
+    devices.forEach(device => {
+      device.settings = objectMerger.deepMerge({}, defaultSettings(), device.settings);
+    });
+
     this.devices = devices;
     this.version = config.version;
     this.diagnostics = [
       diagnostic(config.scanimage),
       diagnostic(config.convert)
     ];
-    /** @type {Pipeline[]} */
-    this.pipelines = config.pipelines;
-
-    /** @type {Filter[]} */
-    this.filters = config.filters;
 
     /** @type {PaperSize[]} */
     this.paperSizes = config.paperSizes;
-
-    /** @type {string[]} */
-    this.batchModes = config.batchModes;
   }
 
   /**

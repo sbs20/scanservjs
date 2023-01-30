@@ -11,7 +11,7 @@ configure(app);
 
 const server = app.listen(config.port, config.host, () => {
   const log = require('loglevel').getLogger('server');
-  log.info('Started');
+  log.info(`scanservjs started listening: https://${config.host}:${config.port}`);
 });
 
 server.setTimeout(config.timeout);

@@ -18,7 +18,7 @@ module.exports = new class Application {
 
   userOptions() {
     if (this._userOptions === null) {
-      this._userOptions = new UserOptions();
+      this._userOptions = new UserOptions('../../config/config.local.js');
     }
     return this._userOptions;
   }
@@ -104,7 +104,6 @@ module.exports = new class Application {
       file.save(JSON.stringify(devices.map(d => d.string), null, 2));
     }
 
-    this.userOptions().afterDevices(devices);
     return devices;
   }
 
@@ -123,7 +122,7 @@ module.exports = new class Application {
    */
   async context() {
     const devices = await this.deviceList();
-    return new Context(this.config(), devices);
+    return new Context(this.config(), devices, this.userOptions());
   }
 
   system() {

@@ -37,6 +37,20 @@ export default {
           limits: [-100, 100],
         },
         '--disable-dynamic-lineart': {}
+      },
+      settings: {
+        batchMode: {
+          options: [],
+          default: ''
+        },
+        filters: {
+          options: [],
+          default: []
+        },
+        pipeline: {
+          options: [],
+          default: ''
+        }
       }
     };
   }

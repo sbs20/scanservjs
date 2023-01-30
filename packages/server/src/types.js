@@ -27,9 +27,7 @@
  * @property {string} string
  * @property {boolean} geometry
  * @property {Object.<string, ScanDeviceFeature>} features
- * @property {string|undefined} defaultBatchMode
- * @property {string|undefined} defaultFormat
- * @property {string|undefined} defaultFilters
+ * @property {Object.<string, ScanDeviceFeature>} settings
  */
 
 /**

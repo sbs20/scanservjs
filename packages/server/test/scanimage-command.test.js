@@ -4,6 +4,7 @@ const Context = require('../src/classes/context');
 const Device = require('../src/classes/device');
 const FileInfo = require('../src/classes/file-info');
 const Request = require('../src/classes/request');
+const UserOptions = require('../src/classes/user-options');
 
 const application = require('../src/application');
 const scanimageCommand = application.scanimageCommand();
@@ -68,7 +69,7 @@ describe('ScanimageCommand', () => {
   it('scanimage-a10.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
-    const context = new Context(application.config(), [device]);
+    const context = new Context(application.config(), [device], new UserOptions());
     const request = new Request(context).extend({
       params: {
         mode: 'Color'

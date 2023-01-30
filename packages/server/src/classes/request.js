@@ -1,5 +1,4 @@
 const log = require('loglevel').getLogger('Request');
-const Constants = require('../constants');
 
 /**
  * @param {number} data
@@ -7,6 +6,20 @@ const Constants = require('../constants');
  */
 function constrainWithFeature(value, feature) {
   return Math.max(Math.min(value || feature.default, feature.limits[1]), feature.limits[0]);
+}
+
+/**
+ *
+ * @param {string[]} list
+ * @param {string|string[]} value
+ * @param {string} message
+ */
+function assertContains(list, value, message) {
+  if (Array.isArray(value)) {
+    value.forEach(v => assertContains(list, v, message));
+  } else if (!list.includes(value)) {
+    throw new Error(`${message}: '${value}' not in '${list}'`);
+  }
 }
 
 module.exports = class Request {
@@ -33,11 +46,15 @@ module.exports = class Request {
         format: 'tiff',
         isPreview: data.params.isPreview || false
       },
-      filters: data.filters || [],
-      pipeline: data.pipeline || null,
-      batch: data.batch || Constants.BATCH_NONE,
+      filters: data.filters || device.settings.filters.default,
+      pipeline: data.pipeline || device.settings.pipeline.default,
+      batch: data.batch || device.settings.batchMode.default,
       index: data.index || 1
     });
+
+    assertContains(device.settings['filters'].options, this.filters, 'Invalid filters');
+    assertContains(device.settings['pipeline'].options, this.pipeline, 'Invalid pipeline');
+    assertContains(device.settings['batchMode'].options, this.batch, 'Invalid batchMode');
 
     if ('-t' in features) {
       this.params.top = constrainWithFeature(data.params.top || features['-t'].limits[0], features['-t']);
@@ -60,12 +77,15 @@ module.exports = class Request {
 
     if ('--mode' in features) {
       this.params.mode = data.params.mode || features['--mode'].default;
+      assertContains(features['--mode'].options, this.params.mode, 'Invalid --mode');
     }
     if ('--adf-mode' in features) {
       this.params.adfMode = data.params.adfMode || features['--adf-mode'].default;
+      assertContains(features['--adf-mode'].options, this.params.adfMode, 'Invalid --adf-mode');
     }
     if ('--source' in features) {
       this.params.source = data.params.source || features['--source'].default;
+      assertContains(features['--source'].options, this.params.source, 'Invalid --source');
     }
     if ('--brightness' in features) {
       this.params.brightness = data.params.brightness || 0;

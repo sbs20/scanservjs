@@ -80,7 +80,8 @@ module.exports = {
         device.features['--brightness'].default = 0;
         device.features['--contrast'].default = 5;
         device.features['-x'].default = 215;
-        device.features['-y'].default = 297;  
+        device.features['-y'].default = 297;
+        device.settings.batchMode.options = ['none'];
       });
   }
 
@@ -298,6 +299,47 @@ module.exports = {
         };
       });
 }
+```
+
+### Override batchMode, filters and pipelines
+
+Devices also have their own batch modes, filters and pipelines. By default, each
+device inherits the settings in `config`.
+
+```javascript
+device.settings = {
+  batchMode: {
+    options: config.batchModes,
+    default: config.batchModes[0]
+  },
+  filters: {
+    options: config.filters.map(f => f.description),
+    default: []
+  },
+  pipeline: {
+    options: config.pipelines.map(p => p.description),
+    default: config.pipelines[0].description
+  }
+};
+```
+
+But it's possible to override these settings to limit the options available to a
+specific device or change the default. So just as with other device overrides:
+
+```javascript
+  /**
+   * @param {ScanDevice[]} devices 
+   */
+  afterDevices(devices) {
+    // Override the defaults for plustek scanners
+    devices
+      .filter(d => d.id.includes('plustek'))
+      .forEach(device => {
+        device.settings.batchMode.options = ['none'];
+        device.settings.batchMode.default = 'none';
+        device.settings.filters.default = ['filter.threshold'];
+      });
+  }
 ```
 
 ### Add Basic Authentication

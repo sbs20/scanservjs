@@ -159,16 +159,13 @@ export default {
   data() {
     const device = Device.default();
     device.name = this.$t('global.no-data-text');
-    const request = Request.create(null, device, '');
+    const request = Request.create(null, device);
 
     return {
       context: {
         devices: [
           device
         ],
-        batchModes: [],
-        filters: [],
-        pipelines: [],
         paperSizes: [],
         version: '0'
       },
@@ -200,14 +197,14 @@ export default {
     },
 
     deviceSize() {
-      return {
+      return !this.geometry ? undefined : {
         width: this.device.features['-x'].limits[1],
         height: this.device.features['-y'].limits[1]
       };
     },
 
     batchModes() {
-      return this.context.batchModes.map(mode => {
+      return this.device.settings.batchMode.options.map(mode => {
         const key = `batch-mode.${sanitiseLocaleKey(mode)}`;
         let translation = this.$t(key);
         return {
@@ -218,7 +215,7 @@ export default {
     },
 
     filters() {
-      return this.context.filters.map(f => {
+      return this.device.settings.filters.options.map(f => {
         return {
           text: this.$te(f) ? this.$t(f) : f,
           value: f
@@ -227,26 +224,34 @@ export default {
     },
 
     modes() {
-      return this.device.features['--mode'].options.map(mode => {
-        const key = `mode.${sanitiseLocaleKey(mode)}`;
-        return {
-          text: this.$te(key) ? this.$t(key) : mode,
-          value: mode
-        };
-      });
+      return '--mode' in this.device.features
+        ? this.device.features['--mode'].options.map(mode => {
+          const key = `mode.${sanitiseLocaleKey(mode)}`;
+          return {
+            text: this.$te(key) ? this.$t(key) : mode,
+            value: mode
+          };
+        })
+        : undefined;
     },
 
     adfModes() {
-      return this.device.features['--adf-mode'].options.map(adfMode => {
-        const key = `adf-mode.${sanitiseLocaleKey(adfMode)}`;
-        return {
-          text: this.$te(key) ? this.$t(key) : adfMode,
-          value: adfMode
-        };
-      });
+      return '--adf-mode' in this.device.features
+        ? this.device.features['--adf-mode'].options.map(adfMode => {
+          const key = `adf-mode.${sanitiseLocaleKey(adfMode)}`;
+          return {
+            text: this.$te(key) ? this.$t(key) : adfMode,
+            value: adfMode
+          };
+        })
+        : undefined;
     },
 
     paperSizes() {
+      if (!this.geometry) {
+        return undefined;
+      }
+
       const deviceSize = {
         x: this.device.features['-x'].limits[1],
         y: this.device.features['-y'].limits[1]
@@ -264,7 +269,7 @@ export default {
     },
 
     pipelines() {
-      return this.context.pipelines.map(p => {
+      return this.device.settings.pipeline.options.map(p => {
         const variables = (p.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
         let text = p;
         variables.forEach(v => {
@@ -279,14 +284,16 @@ export default {
     },
 
     sources() {
-      return this.device.features['--source'].options.map(source => {
-        const key = `source.${sanitiseLocaleKey(source)}`;
-        const x =  {
-          text: this.$te(key) ? this.$t(key) : source,
-          value: source
-        };
-        return x;
-      });
+      return '--source' in this.device.features
+        ? this.device.features['--source'].options.map(source => {
+          const key = `source.${sanitiseLocaleKey(source)}`;
+          const x =  {
+            text: this.$te(key) ? this.$t(key) : source,
+            value: source
+          };
+          return x;
+        })
+        : undefined;
     }
   },
 
@@ -513,7 +520,7 @@ export default {
           || this.context.devices[0];
       }
 
-      request = Request.create(request, this.device, this.context.pipelines[0]);
+      request = Request.create(request, this.device);
       return request;
     },
 
