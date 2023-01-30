@@ -4,6 +4,7 @@ const CommandBuilder = require('./command-builder');
 const Constants = require('../constants');
 const Process = require('./process');
 const semver = require('semver');
+const LogFormatter = require('./log-formatter');
 
 class Scanimage {
 
@@ -67,7 +68,7 @@ module.exports = class ScanimageCommand {
    * @returns {string}
    */
   scan(request) {
-    log.debug(JSON.stringify(request));
+    log.debug(LogFormatter.format().full(request));
     const params = request.params;
     const cmdBuilder = new CommandBuilder(this.config.scanimage);
     cmdBuilder.arg('-d', params.deviceId);

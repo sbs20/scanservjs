@@ -24,7 +24,7 @@ module.exports = class Config {
       devices: [],
       ocrLanguage: 'eng',
       log: {
-        level: 'DEBUG',
+        level: 'INFO',
         prefix: {
           template: '[%t] %l (%n):',
           levelFormatter(level) {

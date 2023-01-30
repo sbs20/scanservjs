@@ -1,3 +1,5 @@
+const LogFormatter = require('./log-formatter');
+
 const log = require('loglevel').getLogger('Request');
 
 /**
@@ -23,20 +25,18 @@ function assertContains(list, value, message) {
 }
 
 module.exports = class Request {
-  constructor(context) {
-    this.context = context;
+  /**
+   * Constructor
+   * @param {Context} context
+   * @param {ScanRequest} data
+   */
+  constructor(context, data) {
     Object.assign(this, {
       params: {},
       pipeline: null
     });
-  }
 
-  /**
-   * @param {ScanRequest} data
-   * @returns {ScanRequest}
-   */
-  extend(data) {
-    const device = this.context.getDevice(data.params.deviceId);
+    const device = context.getDevice(data.params.deviceId);
     const features = device.features;
 
     Object.assign(this, {
@@ -99,7 +99,6 @@ module.exports = class Request {
         : true;
     }
 
-    log.trace(JSON.stringify(this));
-    return this;
+    log.trace(LogFormatter.format().full(this));
   }
 };

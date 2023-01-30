@@ -70,7 +70,7 @@ describe('ScanimageCommand', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
     const context = new Context(application.config(), [device], new UserOptions());
-    const request = new Request(context).extend({
+    const request = new Request(context, {
       params: {
         mode: 'Color'
       }

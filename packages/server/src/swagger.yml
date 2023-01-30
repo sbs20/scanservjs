@@ -565,7 +565,7 @@ definitions:
 
       batch:
         type: string
-        example: 'manual'
+        example: 'none'
 
       index:
         type: integer
