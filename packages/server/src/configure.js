@@ -1,6 +1,7 @@
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 const fs = require('fs');
+const path = require('path');
 const rootLog = require('loglevel');
 const prefix = require('loglevel-plugin-prefix');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -105,8 +106,7 @@ function configure(app, rootPath) {
       },
     },
     apis: [
-      // Works for normal operation as well as development
-      '../server/src/swagger.yml'
+      path.join(__dirname, 'swagger.yml')
     ],
   });
 
