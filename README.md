@@ -9,7 +9,7 @@
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.jpg)
 
-Copyright 2016-2022 [Sam Strachan](https://github.com/sbs20)
+Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20)
 
 ## What people are saying
 
