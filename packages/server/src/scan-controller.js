@@ -89,7 +89,7 @@ class ScanController {
       files = (await this.listFiles()).filter(f => f.name.match(/f-\d{4}\.tif/));
     }
 
-    const stdin = files.map(f => f.name).join('\n');
+    const stdin = files.map(f => f.name).join('\n') + '\n';
     log.debug('Executing cmds:', this.pipeline.commands);
     const stdout = await Process.chain(this.pipeline.commands, stdin, { cwd: config.tempDirectory });
     let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
