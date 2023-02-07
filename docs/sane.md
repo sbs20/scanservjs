@@ -1,10 +1,10 @@
-# SANE, imagemagick, scanners
+# SANE, imagemagick, img2pdf, scanners
 
 ## Install
 
 Just use your package manager.
 
-  * Debian / Ubuntu / Raspbian: `sudo apt install sane-utils imagemagick`
+  * Debian / Ubuntu / Raspbian: `sudo apt install sane-utils imagemagick img2pdf`
   * Arch: `sudo pacman -S sane`
 
 ## Validate SANE is working
@@ -137,7 +137,7 @@ then feel free to raise and issues or PR.
  * Type `lsusb` to check the scanner is attached
  * At the terminal type the following commands
     * `opkg update`
-    * `opkg install sane-frontends imagemagick sudo`
+    * `opkg install sane-frontends imagemagick img2pdf sudo`
  * Confirm installation typing...
     * `sane-find-scanner -q`
     * `scanimage -L`

@@ -81,7 +81,7 @@ For more on problems installing an up to date nodejs on Debian which includes
 ```console
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt install -y nodejs
-sudo apt-get install npm sane-utils imagemagick
+sudo apt-get install npm sane-utils imagemagick img2pdf
 ```
 
 Debian calls the node binary "nodejs", which results in npm not being able to
@@ -96,4 +96,4 @@ for more details.
 ## Arch
 
 If you're using Arch, you probably don't need help but this worked a few years
-ago `sudo pacman -S nodejs npm sane-utils imagemagick curl`
+ago `sudo pacman -S nodejs npm sane-utils imagemagick img2pdf curl`

@@ -25,6 +25,7 @@ FROM node:16-bullseye-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
     imagemagick \
+    img2pdf \
     sane \
     sane-utils \
     tesseract-ocr \

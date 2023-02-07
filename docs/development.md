@@ -4,7 +4,7 @@
 
 ```shell
 # Install dependencies
-sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
+sudo apt-get install curl nodejs npm imagemagick img2pdf sane-utils tesseract-ocr
 
 # Ideally set the npm version
 sudo npm install npm@8.3.0 -g

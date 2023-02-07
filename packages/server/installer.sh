@@ -22,6 +22,7 @@ install() {
     nodejs \
     npm \
     imagemagick \
+    img2pdf \
     sane-utils \
     tesseract-ocr \
     tesseract-ocr-ara \
@@ -132,7 +133,7 @@ $ netstat -tulpn | grep :8080 --->
   $(netstat -tulpn | grep ":8080\s")
 
 Either
-* update the port in $location/config/config.local.js or 
+* update the port in $location/config/config.local.js or
 * Stop the other program
 
 After that you can just enable and start:
@@ -183,6 +184,7 @@ hard_uninstall() {
     npm \
     imagemagick \
     sane-utils \
+    img2pdf \
     tesseract-ocr
 }
 
@@ -217,7 +219,7 @@ scanservjs: https://github.com/sbs20/scanservjs
   Install runs through the following steps
 
     * run apt-get update
-    * install SANE, node and imagemagick dependencies
+    * install SANE, node, imagemagick and img2pdf dependencies
     * create the web application in /var/www/scanservjs
     * create a user and systemd service which is enabled and started
 

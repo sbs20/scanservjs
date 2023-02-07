@@ -62,7 +62,7 @@ It supports any
 
 * SANE Scanner
 * Linux host (or VM with necessary pass-through e.g. USB)
-* Software sane-utils, ImageMagick, Tesseract (optional) and nodejs
+* Software sane-utils, ImageMagick, img2pdf, Tesseract (optional) and nodejs
 
 ## Documentation
 
