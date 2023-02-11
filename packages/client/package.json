@@ -26,7 +26,7 @@
     "deepmerge": "^4.2.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "nodemon": "^2.0.7",
+    "nodemon": "^2.0.20",
     "sass": "^1.32.12",
     "sass-loader": "^10.0.2",
     "vue-advanced-cropper": "0.16.10",
