@@ -18,7 +18,7 @@ module.exports = class CommandBuilder {
     if (typeof value === 'string') {
       if (value.includes('\'')) {
         throw Error('Argument must not contain single quote "\'"');
-      } else if (['$', ' ', '#', '\\'].some(c => value.includes(c))) {
+      } else if (['$', ' ', '#', '\\', ';'].some(c => value.includes(c))) {
         return `'${value}'`;
       }
     }
