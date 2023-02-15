@@ -14,6 +14,7 @@ module.exports = class Context {
   /**
    * @param {Configuration} config
    * @param {ScanDevice[]} devices
+   * @param {UserOptions} userOptions
    */
   constructor(config, devices, userOptions) {
     if (!config) {
@@ -66,6 +67,9 @@ module.exports = class Context {
 
     /** @type {PaperSize[]} */
     this.paperSizes = config.paperSizes;
+
+    /** @type {string[]} */
+    this.actions = userOptions.actions().map(a => a.name);
   }
 
   /**

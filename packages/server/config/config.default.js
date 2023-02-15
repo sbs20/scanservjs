@@ -113,7 +113,7 @@ module.exports = {
   },
 
   /**
-   * This method is called after a scan has completed with the resultant
+   * This method is called after every scan has completed with the resultant
    * FileInfo.
    * @param {FileInfo} fileInfo
    * @returns {Promise.<any>}
@@ -121,5 +121,19 @@ module.exports = {
   async afterScan(fileInfo) {
     // Copy the file to the home directory
     // return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
-  }
+  },
+
+  /**
+   * Returns a list of actions that can be run either through the UI or at the
+   * end of a specific pipeline
+   * @type {Action[]}
+   */
+  actions: [
+    // {
+    //   name: 'Echo',
+    //   async execute(fileInfo) {
+    //     return await Process.spawn(`echo '${fileInfo.fullname}'`);
+    //   }
+    // }
+  ]
 };

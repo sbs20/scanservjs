@@ -37,6 +37,20 @@ module.exports = new class Api {
   }
 
   /**
+   * Runs an action on a file
+   * @param {string} actionName
+   * @param {string} fileName
+   * @returns {Promise.<any>}
+   */
+  async fileAction(actionName, fileName) {
+    const fileInfo = FileInfo.unsafe(config.outputDirectory, fileName);
+    if (!fileInfo.exists()) {
+      throw new Error(`File '${fileName}' does not exist`);
+    }
+    await application.userOptions().action(actionName).execute(fileInfo);
+  }
+
+  /**
    * @param {ScanRequest} req
    * @returns {Promise<any>}
    */
