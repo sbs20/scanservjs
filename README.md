@@ -47,8 +47,8 @@ complicated installation.
 * Filters: Autolevels, Threshold, Blur
 * Configurable overrides for all defaults as well as filters and formats
 * Multipage scanning (with collation for double sided scans)
-* International translations: Arabic, Czech, Dutch, French, German, Italian, Mandarin,
-  Polish, Portuguese (PT & BR), Russian, Spanish, Turkish;
+* International translations: Arabic, Czech, Dutch, French, German, Italian,
+  Mandarin, Polish, Portuguese (PT & BR), Russian, Slovak, Spanish, Turkish;
   [Help requested](https://github.com/sbs20/scanservjs/issues/154)
 * Light and dark mode
 * Responsive design

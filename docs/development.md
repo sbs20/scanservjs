@@ -59,6 +59,12 @@ Alternatively, create a local release package
 npm run release
 ```
 
+## Find missing translations
+
+```
+npm run missing-translations
+```
+
 ## Updating node dependencies
 
 * `npm audit fix` or `npm update`. This won't remove old packages; to do so,
