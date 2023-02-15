@@ -4,6 +4,7 @@
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
     "clean": "rm -rf ./dist",
+    "missing-translations": "cd packages/client && npm run missing-translations",
     "version": "npm i && cd packages/client && npm --allow-same-version --no-git-tag-version version $npm_package_version && cd ../server && npm --allow-same-version --no-git-tag-version version $npm_package_version",
     "install": "cd packages/client && npm i --loglevel=error && cd ../server && npm i --loglevel=error",
     "lint": "cd packages/server && npm run lint",

@@ -1,11 +1,13 @@
 {
   "global": {
-    "application-name": "##APPNAME"
+    "application-name": "##APPNAME",
+    "no-data-text": "##NODATA"
   },
 
   "about": {
     "main": "##ABOUT.MAIN",
     "issue": "##ABOUT.ISSUE",
+    "api": "##SWAGGER API:",
     "system-info": "###ABOUT.SYSTEM-INFO"
   },
 
@@ -45,8 +47,10 @@
     "size": "##SIZE",
     "items-per-page": "##ITEMS-PER-PAGE",
     "items-per-page-all": "##ALL",
+    "message:action": "##RUN {0} ON {1}",
     "message:deleted": "##MESSAGE:DELETED {0}",
     "message:renamed": "##FILE-RENAMED",
+    "button:action-selected": "##RUN-ACTION",
     "button:delete-selected": "##DELETE-SELECTED",
     "dialog:rename": "##RENAME",
     "dialog:rename-cancel": "##CANCEL",
