@@ -122,8 +122,8 @@ function configure(app, rootPath) {
 
   app.use(
     '/api-docs',
-    swaggerUi.serveFiles(null, swaggerUiOptions),
-    swaggerUi.setup(null, swaggerUiOptions));
+    swaggerUi.serveFiles(swaggerSpec, swaggerUiOptions),
+    swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 
   app.delete('/context', (req, res) => {
     logRequest(req);
@@ -148,6 +148,18 @@ function configure(app, rootPath) {
     logRequest(req);
     try {
       res.send(await api.fileList());
+    } catch (error) {
+      sendError(res, 500, error);
+    }
+  });
+
+  app.post(/\/files\/([^/]+)\/actions\/([^/]+)/, async (req, res) => {
+    logRequest(req);
+    try {
+      const fileName = req.params[0];
+      const actionName = req.params[1];
+      await api.fileAction(actionName, fileName);
+      res.send('200');
     } catch (error) {
       sendError(res, 500, error);
     }

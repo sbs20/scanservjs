@@ -110,7 +110,13 @@ class ScanController {
 
     log.debug({output: destination});
     await this.deleteFiles();
-    return FileInfo.create(destination);
+
+    const fileInfo = FileInfo.create(destination);
+    if ('afterAction' in this.pipeline) {
+      userOptions.action(this.pipeline.afterAction).execute(fileInfo);
+    }
+
+    return fileInfo;
   }
 
   /**
