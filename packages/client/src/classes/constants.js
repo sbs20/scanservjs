@@ -31,6 +31,7 @@ const Constants = {
     'pt',
     'pt-BR',
     'ru',
+    'sk',
     'tr',
     'zh',
     'test'
