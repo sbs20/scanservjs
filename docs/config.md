@@ -207,7 +207,7 @@ files. Alternatively, a script can also request parameters, which can be set
 here.
 
 The first command of the pipeline will receive, in its standard input, the
-(newline-separated) list of files that have been processed (one file per page).
+newline-separated list of files that have been processed (one file per page).
 Their order may differ from the alphabetical and numeric order, but it is
 important to use the file order given, because the collation feature may have
 re-ordered them (e.g. in case the user scanned every odd, then every even page).

@@ -55,80 +55,89 @@ Depending on your setup you have a number of options:
       `chmod a+rw dev/bus/usb/001/003` - see
       [this](https://github.com/sbs20/scanservjs/issues/221#issuecomment-828757430)
       helpful answer for more.
-  * In case your scanner is **not** always plugged, the device path will change every so often, and the previous solution will not work. Also, some devices will go to sleep after long idle times, effectively getting "unplugged" and "plugged again" over and over.<br/>
-  In this case, you may use `udev` so that it starts or re-configures your container whenever your scanner is hot-plugged. This is suggested in [the official Docker documentation](https://docs.docker.com/engine/reference/commandline/run/#device-cgroup-rule):
-    * Run `lsusb` to retrieve your device "vendor ID" and "product ID". In the example above, `Bus 001 Device 003: ID 04a9:220d Canon, Inc. CanoScan N670U/N676U/LiDE 20` means that the vendor ID is `04a9`, and the product ID is `220d`.
+  * In case your scanner is **not** always plugged, the device path will change
+    every so often, and the previous solution will not work. Also, some devices
+    will go to sleep after long idle times, effectively getting "unplugged" and
+    "plugged again" over and over.<br/> In this case, you may use `udev` so that
+    it starts or re-configures your container whenever your scanner is
+    hot-plugged. This is suggested in
+    [the official Docker documentation](https://docs.docker.com/engine/reference/commandline/run/#device-cgroup-rule):
+    * Run `lsusb` to retrieve your device "vendor ID" and "product ID". In the
+      example above,
+      `Bus 001 Device 003: ID 04a9:220d Canon, Inc. CanoScan N670U/N676U/LiDE 20`
+      means that the vendor ID is `04a9`, and the product ID is `220d`.
     * Add a udev rule
-    ```
-    $ cat /etc/udev/rules.d/50-add-scanner.rules
-    ACTION=="add", ATTR{idVendor}=="04a9", ATTR{idProduct}=="1774", RUN+="/etc/scan/bind-scanner-to-container.sh $name $major $minor $attr{idVendor} $attr{idProduct}"
-    ```
+      `/etc/udev/rules.d/50-add-scanner.rules`
+      ```
+      ACTION=="add", ATTR{idVendor}=="04a9", ATTR{idProduct}=="1774", RUN+="/etc/scan/bind-scanner-to-container.sh $name $major $minor $attr{idVendor} $attr{idProduct}"
+      ```
     * Make `udev` aware of this change: `sudo udevadm control --reload-rules`
     * This will run the following script every time the scanner is plugged.
-    ```
-    # This script must be executable by root
-    $ cat /etc/scan/bind-scanner-to-container.sh
-    #!/bin/bash
+      `/etc/scan/bind-scanner-to-container.sh`
+      ```sh
+      #!/bin/bash
+      # This script must be executable by root
+      DEVICE_PATH="$1"
+      MAJOR_NUMBER="$2"
+      MINOR_NUMBER="$3"
 
-    DEVICE_PATH="$1"
-    MAJOR_NUMBER="$2"
-    MINOR_NUMBER="$3"
+      # USB identifiers of the device
+      VENDOR_ID="$4"
+      PRODUCT_ID="$5"
 
-    # USB identifiers of the device
-    VENDOR_ID="$4"
-    PRODUCT_ID="$5"
+      CONTAINER_NAME="scan"
+      IMAGE_NAME="sbs20/scanservjs:release-v2.25.0"
 
-    CONTAINER_NAME="scan"
-    IMAGE_NAME="sbs20/scanservjs:release-v2.25.0"
+      logger "Scanner ($VENDOR_ID:$PRODUCT_ID) is available at $DEVICE_PATH. Let's make it available to the scan server container"
 
-    logger "Scanner ($VENDOR_ID:$PRODUCT_ID) is available at $DEVICE_PATH. Let's make it available to the scan server container"
+      # Is the container running already?
+      container_id=$(docker ps -q -f name=scddan)
+      if [ -z "$container_id" ]; then
+          # Container was not running. We should start it, with the right device ID
+          device_nb=$(lsusb | grep "$VENDOR_ID:$PRODUCT_ID" | grep -o -E "Device [0-9]+" | grep -o -E "[0-9]+")
 
-    # Is the container running already?
-    container_id=$(docker ps -q -f name=scddan)
-    if [ -z "$container_id" ]; then
-        # Container was not running. We should start it, with the right device ID
-        device_nb=$(lsusb | grep "$VENDOR_ID:$PRODUCT_ID" | grep -o -E "Device [0-9]+" | grep -o -E "[0-9]+") # One day I'll learn how to extract groups using grep
+          if [ -z "$device_nb" ]; then
+              logger "Unable to find where this device is connected. Ignoring."
+              exit 1
+          fi
 
-        if [ -z "$device_nb" ]; then
-            logger "Unable to find where this device is connected. Ignoring."
-            exit 1
-        fi
+          # Waiting for Docker to be available (if the scanner is plugged when the host boots, udev will trigger this script before Docker is even started)
+          attempts=0
+          while true ; do
+              if [ "$(systemctl is-active docker)" == "active" ]; then
+                  break
+              fi
+              sleep 10
+              attempts=$(( attempts + 1 ))
+              if [ "$attempts" -gt 10 ]; then
+                  logger "Docker is not running. Will not start scan server."
+                  exit 1
+              fi
+          done
 
-        # Waiting for Docker to be available (if the scanner is plugged when the host boots, udev will trigger this script before Docker is even started)
-        attempts=0
-        while true ; do
-            if [ "$(systemctl is-active docker)" == "active" ]; then
-                break
-            fi
-            sleep 10
-            attempts=$(( attempts + 1 ))
-            if [ "$attempts" -gt 10 ]; then
-                logger "Docker is not running. Will not start scan server."
-                exit 1
-            fi
-        done
-
-        logger "Starting the scan server from $IMAGE_NAME, with device $device_nb ($VENDOR_ID:$PRODUCT_ID, major number is $MAJOR_NUMBER)..."
-        # --device adds the existing device to the container.
-        # --device-cgroup-rule makes it possible to add future hot-plugged devices
-        # see https://docs.docker.com/engine/reference/commandline/run/#device-cgroup-rule
-        docker run -d \
-          --rm \
-          -p 8080:8080 \
-          -v /var/run/dbus:/var/run/dbus \
-          -v /path/to/the/optional/scan/folder:/app/data/output \
-          -v /path/to/the/optional/custom/config:/app/config \
-          --name "$CONTAINER_NAME" \
-          --device=/dev/bus/usb/001/"$device_nb":/dev/bus/usb/001/"$device_nb" \
-          --device-cgroup-rule="c $MAJOR_NUMBER:* rmw" \
-          "$IMAGE_NAME" 2>&1 | logger
-    else
-        # Container is running. We just have to add the device there
-        logger "Adding the new scanner to the scan server container..."
-        docker exec "$CONTAINER_NAME" mknod "/dev/$DEVICE_PATH" c "$MAJOR_NUMBER" "$MINOR_NUMBER" 2>&1 | logger
-    fi
-    ```
-    * If you prefer, you may tweak both files above e.g. to stop the container when the scanner is disconnected, and re-start the container when the device is re-connected.
+          logger "Starting the scan server from $IMAGE_NAME, with device $device_nb ($VENDOR_ID:$PRODUCT_ID, major number is $MAJOR_NUMBER)..."
+          # --device adds the existing device to the container.
+          # --device-cgroup-rule makes it possible to add future hot-plugged devices
+          # see https://docs.docker.com/engine/reference/commandline/run/#device-cgroup-rule
+          docker run -d \
+            --rm \
+            -p 8080:8080 \
+            -v /var/run/dbus:/var/run/dbus \
+            -v /path/to/the/optional/scan/folder:/app/data/output \
+            -v /path/to/the/optional/custom/config:/app/config \
+            --name "$CONTAINER_NAME" \
+            --device=/dev/bus/usb/001/"$device_nb":/dev/bus/usb/001/"$device_nb" \
+            --device-cgroup-rule="c $MAJOR_NUMBER:* rmw" \
+            "$IMAGE_NAME" 2>&1 | logger
+      else
+          # Container is running. We just have to add the device there
+          logger "Adding the new scanner to the scan server container..."
+          docker exec "$CONTAINER_NAME" mknod "/dev/$DEVICE_PATH" c "$MAJOR_NUMBER" "$MINOR_NUMBER" 2>&1 | logger
+      fi
+      ```
+    * If you prefer, you may tweak both files above e.g. to stop the container
+      when the scanner is disconnected, and re-start the container when the
+      device is re-connected.
 
 * If your scanner is **driverless over the network**, then
   [sane-airscan](https://github.com/alexpevzner/sane-airscan) should be able to
