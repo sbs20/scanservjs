@@ -13,7 +13,7 @@
 
     <div class="body-1 mb-4">
       {{ $t('about.api') }}
-      <a target="_blank" href="/api-docs">Swagger /api-docs</a>
+      <a target="_blank" href="api-docs">Swagger /api-docs</a>
     </div>
 
     <v-btn @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
