@@ -258,4 +258,39 @@ describe('Device', () => {
     assert.strictEqual(device.features['-y'].default, 431.8);
   });
 
+  it('scanimage-a13.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a13.txt');
+    const device = Device.from(file.toText());
+
+    assert.strictEqual(device.id, 'hpaio:/usb/PSC_1600_series?serial=MY4C3C30Z5L0');
+    assert.deepStrictEqual(device.features['--mode'].options, ['Lineart', 'Gray', 'Color']);
+    assert.strictEqual(device.features['--mode'].default, 'Color');
+    assert.deepStrictEqual(device.features['--resolution'].options, [75, 100, 150, 200, 300, 600, 1200]);
+    assert.strictEqual(device.features['--resolution'].default, 75);
+    assert.strictEqual(device.features['--contrast'].limits[0], -127);
+    assert.strictEqual(device.features['--contrast'].limits[1], 127);
+    assert.strictEqual(device.features['--contrast'].interval, 1);
+    assert.strictEqual(device.features['--contrast'].default, 0);
+    assert.strictEqual(device.features['--contrast'].meta, 'advanced');
+    assert.strictEqual(device.features['--brightness'].limits[0], -127);
+    assert.strictEqual(device.features['--brightness'].limits[1], 127);
+    assert.strictEqual(device.features['--brightness'].interval, 1);
+    assert.strictEqual(device.features['--brightness'].default, 0);
+    assert.strictEqual(device.features['--brightness'].meta, 'advanced');
+    assert.deepStrictEqual(device.features['--source'].options, ['Flatbed']);
+    assert.strictEqual(device.features['--source'].default, 'Flatbed');
+    assert.strictEqual(device.features['--source'].meta, 'advanced');
+    assert.strictEqual(device.features['-l'].limits[0], 0);
+    assert.strictEqual(device.features['-l'].limits[1], 215.9);
+    assert.strictEqual(device.features['-l'].default, 0);
+    assert.strictEqual(device.features['-t'].limits[0], 0);
+    assert.strictEqual(device.features['-t'].limits[1], 296.9);
+    assert.strictEqual(device.features['-t'].default, 0);
+    assert.strictEqual(device.features['-x'].limits[0], 0);
+    assert.strictEqual(device.features['-x'].limits[1], 215.9);
+    assert.strictEqual(device.features['-x'].default, 215.9);
+    assert.strictEqual(device.features['-y'].limits[0], 0);
+    assert.strictEqual(device.features['-y'].limits[1], 296.9);
+    assert.strictEqual(device.features['-y'].default, 296.9);
+  });
 });
