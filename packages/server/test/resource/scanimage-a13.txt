@@ -1,0 +1,36 @@
+
+All options specific to device `hpaio:/usb/PSC_1600_series?serial=MY4C3C30Z5L0':
+  Scan mode:
+    --mode Lineart|Gray|Color [Color]
+        Selects the scan mode (e.g., lineart, monochrome, or color).
+    --resolution 75|100|150|200|300|600|1200dpi [75]
+        Sets the resolution of the scanned image.
+  Advanced:
+    --contrast -127..127 [0] [advanced]
+        Controls the contrast of the acquired image.
+    --brightness -127..127 [0] [advanced]
+        Controls the brightness of the acquired image.
+    --compression None|JPEG [JPEG] [advanced]
+        Selects the scanner compression method for faster scans, possibly at
+        the expense of image quality.
+    --jpeg-quality 0..100 [10] [advanced]
+        Sets the scanner JPEG compression factor. Larger numbers mean better
+        compression, and smaller numbers mean better image quality.
+    --batch-scan[=(yes|no)] [no] [advanced]
+        Enables continuous scanning with automatic document feeder (ADF).
+    --source Flatbed [Flatbed] [advanced]
+        Selects the scan source (such as a document-feeder).
+    --duplex[=(yes|no)] [inactive]
+        Enables scanning on both sides of the page.
+  Geometry:
+    --length-measurement Unknown|Approximate|Padded [Padded] [advanced]
+        Selects how the scanned image length is measured and reported, which
+        is impossible to know in advance for scrollfed scans.
+    -l 0..215.9mm [0]
+        Top-left x position of scan area.
+    -t 0..296.926mm [0]
+        Top-left y position of scan area.
+    -x 0..215.9mm [215.9]
+        Width of scan-area.
+    -y 0..296.926mm [296.926]
+        Height of scan-area.

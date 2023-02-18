@@ -28,10 +28,6 @@ module.exports = class Feature {
     this.load();
   }
 
-  get enabled() {
-    return !['inactive', 'read-only'].includes(this.default);
-  }
-
   asRange() {
     this.default = round(Number(this.default));
     const range = /(.*?)(?:\s|$)/g.exec(this.parameters);
@@ -68,10 +64,12 @@ module.exports = class Feature {
   }
 
   load() {
-    const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*) \[(.*)\]$/g.exec(this.text);
+    const match = /^\s*([-]{1,2}[-a-zA-Z0-9]+) ?(.*?) \[(.*?)\](?: \[(.*?)\])?$/g.exec(this.text);
     this.name = match[1];
     this.default = match[3];
     this.parameters = match[2];
+    this.meta = match[4];
+    this.enabled = this.default !== 'inactive' && this.meta !== 'read-only';
 
     this.parameters = this.parameters.replace(/^auto\|/, '');
     if (this.enabled) {
