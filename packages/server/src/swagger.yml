@@ -572,6 +572,9 @@ definitions:
       dynamicLineart:
         type: boolean
         example: false
+      ald:
+        type: string
+        example: 'yes'
     required:
       - deviceId
       - resolution

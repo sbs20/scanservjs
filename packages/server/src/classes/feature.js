@@ -36,6 +36,14 @@ module.exports = class Feature {
     this.interval = steps ? Number(steps[1]) : 1;
   }
 
+  asEnum() {
+    // Example: [=(yes|no)]
+    const match = /^\[=\((.*)\)\]$/.exec(this.parameters);
+    if (match !== null) {
+      this.options = match[1].split('|');
+    }
+  }
+
   asResolution() {
     if (this.parameters.indexOf('|') > -1) {
       this.options = splitNumbers(this.parameters, '|');
@@ -96,6 +104,10 @@ module.exports = class Feature {
         case '--brightness':
         case '--contrast':
           this.asLighting();
+          break;
+
+        case '--ald':
+          this.asEnum();
           break;
       }
     }
