@@ -108,6 +108,9 @@ module.exports = class ScanimageCommand {
 
     cmdBuilder.arg('--format', params.format);
 
+    if ('ald' in params) {
+      cmdBuilder.arg(`--ald=${params.ald}`);
+    }
     if ('depth' in params) {
       cmdBuilder.arg('--depth', params.depth);
     }
