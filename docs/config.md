@@ -57,7 +57,7 @@ three functions at different stages in the processing:
 ## Example file
 
 ```javascript
-const Process = require('../src/classes/process');
+const Process = require('../server/classes/process');
 
 module.exports = {
   /**

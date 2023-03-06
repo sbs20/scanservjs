@@ -71,6 +71,9 @@ pipeline then something like the following may help:
 Now create the following pipeline in your `config/config.local.js`
 
 ```javascript
+const Process = require('../server/classes/process');
+
+module.exports = {
   afterConfig(config) {
     config.pipelines.push({
       extension: 'pdf',
@@ -93,6 +96,7 @@ Now create the following pipeline in your `config/config.local.js`
   async afterScan(fileInfo) {
     return await Process.spawn(`mpack -s "Document from Scanner@Office" "${fileInfo.fullname}" email@address.tld`);
   }
+};
 ```
 
 ## Other recipes?
