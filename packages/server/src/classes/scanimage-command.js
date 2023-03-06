@@ -73,18 +73,16 @@ module.exports = class ScanimageCommand {
     const cmdBuilder = new CommandBuilder(this.config.scanimage);
     cmdBuilder.arg('-d', params.deviceId);
 
-    if ('mode' in params) {
-      cmdBuilder.arg('--mode', params.mode);
-    }
-
-    // Source needs to go before resolution
     if ('source' in params) {
       cmdBuilder.arg('--source', params.source);
     }
-
+    if ('mode' in params) {
+      cmdBuilder.arg('--mode', params.mode);
+    }
     if ('adfMode' in params) {
       cmdBuilder.arg('--adf-mode', params.adfMode);
     }
+
     cmdBuilder.arg('--resolution', params.resolution);
 
     if ('pageWidth' in params) {
