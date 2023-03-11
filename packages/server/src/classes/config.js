@@ -130,7 +130,7 @@ module.exports = class Config {
         extension: 'jpg',
         description: 'JPG | @:pipeline.high-quality',
         commands: [
-          'convert @- -quality 92 scan-%04d.jpg',
+          'while read filename ; do convert -quality 92 $filename scan-$(date +%s.%N).jpg ; done',
           'ls scan-*.*'
         ]
       },
@@ -138,7 +138,7 @@ module.exports = class Config {
         extension: 'jpg',
         description: 'JPG | @:pipeline.medium-quality',
         commands: [
-          'convert @- -quality 75 scan-%04d.jpg',
+          'while read filename ; do convert -quality 75 $filename scan-$(date +%s.%N).jpg ; done',
           'ls scan-*.*'
         ]
       },
@@ -146,7 +146,7 @@ module.exports = class Config {
         extension: 'jpg',
         description: 'JPG | @:pipeline.low-quality',
         commands: [
-          'convert @- -quality 50 scan-%04d.jpg',
+          'while read filename ; do convert -quality 50 $filename scan-$(date +%s.%N).jpg ; done',
           'ls scan-*.*'
         ]
       },
@@ -154,7 +154,7 @@ module.exports = class Config {
         extension: 'png',
         description: 'PNG',
         commands: [
-          'convert @- -quality 75 scan-%04d.png',
+          'while read filename ; do convert -quality 75 $filename scan-$(date +%s.%N).png ; done',
           'ls scan-*.*'
         ]
       },
@@ -162,7 +162,7 @@ module.exports = class Config {
         extension: 'tif',
         description: 'TIF | @:pipeline.uncompressed',
         commands: [
-          'convert @- scan-0000.tif',
+          'while read filename ; do convert $filename scan-$(date +%s.%N).tif ; done',
           'ls scan-*.*'
         ]
       },
@@ -170,7 +170,7 @@ module.exports = class Config {
         extension: 'tif',
         description: 'TIF | @:pipeline.lzw-compressed',
         commands: [
-          'convert @- -compress lzw scan-0000.tif',
+          'while read filename ; do convert -compress lzw $filename scan-$(date +%s.%N).tif ; done',
           'ls scan-*.*'
         ]
       },
@@ -186,7 +186,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (TIF | @:pipeline.lzw-compressed)',
         commands: [
-          'convert @- -compress lzw tmp-%04d.tif && ls tmp-*.tif',
+          'while read filename ; do convert -compress lzw $filename converted-$(date +%s.%N).tif ; done',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -195,7 +195,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.high-quality)',
         commands: [
-          'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+          'while read filename ; do convert -quality 92 $filename converted-$(date +%s.%N).jpg ; done',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -204,7 +204,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.medium-quality)',
         commands: [
-          'convert @- -quality 75 tmp-%04d.jpg && ls tmp-*.jpg',
+          'while read filename ; do convert -quality 75 $filename converted-$(date +%s.%N).jpg ; done',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -213,7 +213,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.low-quality)',
         commands: [
-          'convert @- -quality 50 tmp-%04d.jpg && ls tmp-*.jpg',
+          'while read filename ; do convert -quality 50 $filename converted-$(date +%s.%N).jpg ; done',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -223,7 +223,7 @@ module.exports = class Config {
         description: '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)',
         get commands() {
           return [
-            'convert @- -quality 92 tmp-%d.jpg && ls tmp-*.jpg',
+            'while read filename ; do convert -quality 92 $filename tmp-$(date +%s.%N).jpg ; done  && ls tmp-*.jpg',
             `${config.tesseract} -l ${config.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
             'ls scan-*.*'
           ];
