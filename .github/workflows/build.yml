@@ -3,15 +3,16 @@ name: NodeCI
 on:
   workflow_dispatch:
 
-  push:
+  pull_request:
     paths-ignore:
       - '.github/**'
       - 'docs/**'
+      - 'CODE_OF_CONDUCT.md'
+      - 'LICENSE'
       - 'README.md'
-    branches:
-      - master
+      - 'Dockerfile'
+      - 'run.sh'
 
-  pull_request:
     branches:
       - master
 
