@@ -61,7 +61,7 @@ const locales = new class Locales {
   async children() {
     return (await this.all()).filter(l => l.key !== BASE);
   }
-}
+};
 
 async function main() {
   const en = await locales.base();
