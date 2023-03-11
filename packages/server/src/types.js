@@ -41,6 +41,7 @@
  * @property {string} extension
  * @property {string} description
  * @property {string[]} commands
+ * @property {string} [afterAction]
  */
 
 /**
@@ -128,4 +129,16 @@
  * @property {string} node
  * @property {string} npm
  * @property {boolean} docker
+ */
+
+/**
+ * @typedef {Function} FnActionExec
+ * @param {FileInfo} fileInfo
+ * @returns {Promise.<any>}
+ */
+
+/**
+ * @typedef {Object} Action
+ * @property {string} name
+ * @property {FnActionExec} execute
  */

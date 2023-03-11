@@ -142,6 +142,31 @@ paths:
         '200':
           description: OK
 
+  /files/{filename}/actions/{actionName}:
+    post:
+      summary: Performs an action on a file
+      description: |
+        Runs a user definable action (specified in `config.local.js`) on a given
+        file. It returns a simple HTTP response with no body.
+      tags:
+        - Files
+      parameters:
+        - name: filename
+          in: path
+          description: The filename
+          required: true
+          schema:
+            type: string
+        - name: actionName
+          in: path
+          description: The action name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
   /preview:
     delete:
       summary: Deletes the currently stored preview
@@ -431,6 +456,11 @@ definitions:
         items:
           type: object
 
+      actions:
+        type: array
+        items:
+          type: string
+
   SystemInfoOs:
     properties:
       arch:
@@ -542,6 +572,9 @@ definitions:
       dynamicLineart:
         type: boolean
         example: false
+      ald:
+        type: string
+        example: 'yes'
     required:
       - deviceId
       - resolution

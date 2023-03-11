@@ -83,13 +83,13 @@ class ScanController {
 
     // Apply filters
     if (this.request.filters.length > 0) {
-      const stdin = files.map(f => f.name).join('\n');
+      const stdin = files.map(f => `${f.name}\n`).join('');
       const cmd = `convert @- ${application.filterBuilder().build(this.request.filters)} f-%04d.tif`;
       await Process.spawn(cmd, stdin, { cwd: config.tempDirectory });
       files = (await this.listFiles()).filter(f => f.name.match(/f-\d{4}\.tif/));
     }
 
-    const stdin = files.map(f => f.name).join('\n') + '\n';
+    const stdin = files.map(f => `${f.name}\n`).join('');
     log.debug('Executing cmds:', this.pipeline.commands);
     const stdout = await Process.chain(this.pipeline.commands, stdin, { cwd: config.tempDirectory });
     let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
@@ -110,7 +110,13 @@ class ScanController {
 
     log.debug({output: destination});
     await this.deleteFiles();
-    return FileInfo.create(destination);
+
+    const fileInfo = FileInfo.create(destination);
+    if ('afterAction' in this.pipeline) {
+      userOptions.action(this.pipeline.afterAction).execute(fileInfo);
+    }
+
+    return fileInfo;
   }
 
   /**

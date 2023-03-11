@@ -14,10 +14,26 @@
       <v-checkbox class="mt-6"
         v-model="thumbnails.show" :label="$t('files.thumbnail-show')" />
       <v-slider v-if="thumbnails.show" class="mt-6 ml-8" min="32" max="128" step="16"
-        v-model="thumbnails.size" inverse-label="true"
+        v-model="thumbnails.size" :inverse-label="true"
         :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`"/>
       <v-spacer/>
-      <v-btn @click="multipleDelete" color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
+      <v-btn
+        @click="multipleDelete"
+        :disabled="selectedFiles.length === 0"
+        color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
+      <v-menu bottom :offset-y="true" v-if="actions.length > 0">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            :disabled="selectedFiles.length === 0"
+            color="primary"
+            v-bind="attrs" v-on="on">{{ $t('files.button:action-selected') }}</v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-for="(action, index) in actions" :key="index" :value="action" @click="multipleAction(action)">
+            <v-list-item-title >{{ action }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <v-dialog v-model="dialogEdit" max-width="500px">
         <v-card>
           <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
@@ -76,6 +92,7 @@ export default {
 
   mounted() {
     this.fileList();
+    this.actionList();
   },
 
   data() {
@@ -125,7 +142,8 @@ export default {
       thumbnails: {
         show: storage.settings.thumbnails.show,
         size: storage.settings.thumbnails.size
-      }
+      },
+      actions: []
     };
   },
 
@@ -144,6 +162,17 @@ export default {
   },
 
   methods: {
+    actionList() {
+      this.$emit('mask', 1);
+      Common.fetch('context').then(context => {
+        this.actions = context.actions;
+        this.$emit('mask', -1);
+      }).catch(error => {
+        this.$emit('notify', {type: 'e', message: error});
+        this.$emit('mask', -1);
+      });
+    },
+
     fileList() {
       this.$emit('mask', 1);
       Common.fetch('files').then(files => {
@@ -213,6 +242,25 @@ export default {
         try {
           await Common.fetch(`files/${name}`, {method: 'DELETE'});
           this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted', [name])}`});
+        } catch (error) {
+          this.$emit('notify', {type: 'e', message: error});
+        }
+        this.selectedFiles.splice(0, 1);
+      }
+
+      if (refresh) {
+        this.fileList();
+      }
+    },
+
+    async multipleAction(actionName) {
+      let refresh = false;
+      while (this.selectedFiles.length > 0) {
+        refresh = true;
+        const filename = this.selectedFiles[0].name;
+        try {
+          await Common.fetch(`files/${filename}/actions/${actionName}`, {method: 'POST'});
+          this.$emit('notify', {type: 'i', message: `${this.$t('files.message:action', [actionName, filename])}`});
         } catch (error) {
           this.$emit('notify', {type: 'e', message: error});
         }

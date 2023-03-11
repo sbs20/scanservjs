@@ -98,6 +98,10 @@ module.exports = class Request {
         ? data.params.dynamicLineart
         : true;
     }
+    if ('--ald' in features) {
+      this.params.ald = data.params.ald || features['--ald'].default;
+      assertContains(features['--ald'].options, this.params.ald, 'Invalid --ald');
+    }
 
     log.trace(LogFormatter.format().full(this));
   }

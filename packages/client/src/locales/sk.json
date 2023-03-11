@@ -1,0 +1,186 @@
+{
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "Žiadne dáta nie sú k dispozícii"
+  },
+
+  "about": {
+    "main": "scanservjs je jednoduché webové užívateľské rozhranie pre váš skener. Umožňuje vám zdieľať jeden alebo viac skenerov (s využitím SANE) bez ovládačov či komplikovanej inštalácie. Dokáže ukladať do formátov TIF, JPG, PNG, PDF a TXT (pre rozpoznávanie znakov využíva Tesseract OCR) spolu s nastavením úrovne kompresie. Podporuje viacstránkové skenovanie a všetky zariadenia kompatibilné so SANE.",
+    "issue": "Nahláste chybu alebo si prezrite zdrojový kód:",
+    "api": "Swagger API dokumentácia:",
+    "system-info": "Informácie o systéme"
+  },
+
+  "colors": {
+    "accent-4": "Predvolená",
+    "red": "Červená",
+    "pink": "Ružová",
+    "purple": "Fialová",
+    "deep-purple": "Tmavofialová",
+    "indigo": "Indigo",
+    "blue": "Modrá",
+    "light-blue": "Svetlomodrá",
+    "cyan": "Azúrová",
+    "teal": "Zelenomodrá",
+    "green": "Zelená",
+    "light-green": "Svetlozelená",
+    "lime": "Limetková",
+    "yellow": "Žltá",
+    "amber": "Jantárová",
+    "orange": "Oranžová",
+    "deep-orange": "Tmavooranžová",
+    "brown": "Hnedá",
+    "blue-grey": "Modrošedá",
+    "grey": "Šedá"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Zrušiť",
+    "btn-finish": "Dokončiť",
+    "btn-rescan": "Znovu oskenovať stránku",
+    "btn-next": "Ďalšia"
+  },
+
+  "files": {
+    "filename": "Názov súboru",
+    "date": "Dátum",
+    "size": "Veľkosť",
+    "items-per-page": "Počet súborov na stránku",
+    "items-per-page-all": "Všetky",
+    "message:deleted": "Súbor {0} bol odstránený",
+    "message:renamed": "Súbor bol premenovaný",
+    "button:delete-selected": "Odstrániť výber",
+    "dialog:rename": "Premenovať",
+    "dialog:rename-cancel": "Zrušiť",
+    "dialog:rename-save": "Uložiť",
+    "actions": "Akcie",
+    "thumbnail-show": "Zobraziť miniatúry",
+    "thumbnail-size": "Veľkosť miniatúr"
+  },
+
+  "navigation": {
+    "scan": "Skenovanie",
+    "files": "Súbory",
+    "settings": "Nastavenia",
+    "about": "Informácie",
+    "version": "Verzia"
+  },
+
+  "batch-mode": {
+    "none": "Vypnutý",
+    "manual": "Manuálny (s výzvou)",
+    "auto": "Automatický (Podávač dokumentov)",
+    "auto-collate-standard": "Automatický (V poradí 1, 3... ...4, 2)",
+    "auto-collate-reverse": "Automatický (Reverzne 1, 3... 2, 4...)"
+  },
+    
+  "filter": {
+    "auto-level": "Automatická úroveň",
+    "threshold": "Prah",
+    "blur": "Rozostrenie"
+  },
+
+  "mode": {
+    "color": "Farebný",
+    "halftone": "Polotón",
+    "gray": "Čiernobiely",
+    "lineart": "Perokresba",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Jednostranný",
+    "duplex": "Obojstranný"
+  },
+
+  "source": {
+    "flatbed": "Skenovacia doska",
+    "adf": "Automatický podávač",
+    "auto": "Automaticky",
+    "left-aligned": "Zarovnané vľavo",
+    "centrally-aligned": "Zarovnané na stred",
+    "duplex": "Obojstranne",
+    "transparency unit": "Transparentná jednotka",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Vysoká kvalita",
+    "medium-quality": "Stredná kvalita",
+    "low-quality": "Nízka kvalita",
+    "uncompressed": "Bez kompresie",
+    "lzw-compressed": "S kompresiou LZW",
+    "ocr": "OCR",
+    "text-file": "Textový súbor"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Na výšku",
+    "landscape": "Na šírku"
+  },
+
+  "scan": {
+    "device": "Zariadenie",
+    "source": "Zdroj",
+    "resolution": "Rozlišenie",
+    "mode": "Farebný režim",
+    "adf-mode": "Režim podávača dokumentov",
+    "dynamic-lineart": "Dynamická perokresba",
+    "dynamic-lineart:enabled": "Zapnutá",
+    "dynamic-lineart:disabled": "Vypnutá",
+    "batch": "Viacstránkový sken",
+    "filters": "Filtre",
+    "format": "Výstupný formát",
+    "btn-preview": "Náhľad",
+    "btn-clear": "Vyčistiť",
+    "btn-scan": "Skenovať",
+    "top": "Horný okraj",
+    "left": "Ľavý okraj",
+    "width": "Šírka",
+    "height": "Výška",
+    "paperSize": "Veľkosť papiera",
+    "brightness": "Jas",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Načítanie zariadení...",
+    "message:no-devices": "Žiadne zariadenia sa nenašli",
+    "message:deleted-preview": "Náhľad bol vyčistený",
+    "message:turn-documents": "Obráťte skenované dokumenty",
+    "message:preview-of-page": "Náhľad strany č."
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Správanie a uživateľské rozhranie",
+    "locale": "Lokalizácia",
+    "locale:description": "Vyberte si vašu lokalizáciu",
+    "theme": "Motív",
+    "theme:description": "Motív. Ak používate systémový motív a zmeníte ho, bude potrebné obnoviť stránku s aplikáciou.",
+    "theme:system": "Podľa systému",
+    "theme:light": "Svetlý",
+    "theme:dark": "Tmavý",
+    "color": "Farba",
+    "color:description": "Farba. Toto nastavenie zmení farbu vrchného panelu.",
+    "show-files-after-scan:description": "Zobraziť súbory po dokončení skenovania.",
+    "devices": "Zariadenia a úložisko",
+    "reset:description": "Odstráni skenovacie zariadenia a vynúti ich opätovné načítanie.",
+    "reset": "Resetovať",
+    "clear-storage:description": "Vyčistí uložené parametre v lokálnej pamäti prehliadača.",
+    "clear-storage": "Vyčistiť"
+  }
+}

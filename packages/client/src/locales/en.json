@@ -47,8 +47,10 @@
     "size": "Size",
     "items-per-page": "Files per page",
     "items-per-page-all": "All",
+    "message:action": "Ran {0} on {1}",
     "message:deleted": "Deleted {0}",
     "message:renamed": "File renamed",
+    "button:action-selected": "Run action...",
     "button:delete-selected": "Delete Selected",
     "dialog:rename": "Change file name",
     "dialog:rename-cancel": "Cancel",
@@ -197,6 +199,7 @@
     "pt": "Portuguese (Portugal)",
     "pt-BR": "Portuguese (Brazilian)",
     "ru": "Russian",
+    "sk": "Slovenčina",
     "tr": "Türkçe",
     "zh": "简体中文",
     "test": "Test"

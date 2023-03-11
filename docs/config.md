@@ -5,7 +5,7 @@ scanservjs doesn't provide the defaults you want. And maybe you want to do your
 own thing after a scan. Furtunately it's possible to override most things you
 might want to.
 
-There are three hooks where you can customise behaviour:
+There are various hooks where you can customise behaviour:
 * `afterConfig`: This provides a reference to the config where you can apply
   your own changes to global settings which include things like:
   * Server port
@@ -18,7 +18,17 @@ There are three hooks where you can customise behaviour:
   sources.
 * `afterScan`: You receive a reference to the file which has just been scanned;
   copy it somewhere, call a script or write some code.
-
+* `actions`: You can define custom actions which can be applied to files either
+  in the UI or referenced in a pipeline. An action object must have a name and
+  async execute method taking a `FileInfo`:
+  ```javascript
+  {
+    name: 'Copy file to home directory',
+    async execute(fileInfo) {
+      await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
+    }
+  }
+  ```
 
 TL;DR; copy `./config/config.default.js` to `config/config.local.js`, override
 the sections you want and then restart the app
@@ -35,8 +45,10 @@ three functions at different stages in the processing:
   function before being either used or sent down to the browser.
 * `afterDevices(devices)`: whenever the devices are read, the result is passed
   to this function before being used.
-* `afterScan(fileInfo)`: whenever a scan completes, the resultant file is passed
-  to this function.
+* `afterScan(fileInfo)`: whenever any scan completes, the resultant file is
+  passed to this function.
+* `actions`: Either at the end of a specific pipeline or on user request. If it
+  runs at the end of the scan, then it's just prior to the `afterScan` event.
 * See [example source](../packages/server/config/config.default.js) for more
   options.
 * Please note that the config file only gets read at start-up - so if you make
@@ -45,6 +57,8 @@ three functions at different stages in the processing:
 ## Example file
 
 ```javascript
+const Process = require('../server/classes/process');
+
 module.exports = {
   /**
    * @param {Configuration} config 
@@ -93,6 +107,23 @@ module.exports = {
     // Copy the scan to my home directory
     return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
   }
+
+  /**
+   * @type {Action[]}
+   */
+  actions: [
+    {
+      name: 'Echo',
+      /**
+       * @param {FileInfo} fileInfo
+       * @returns {Promise.<any>}
+       */
+      async execute(fileInfo) {
+        // Output the filepath (relative to the present working direectory)
+        return await Process.spawn(`echo '${fileInfo.fullname}'`);
+      }
+    }
+  ]
 };
 ```
 
@@ -174,6 +205,12 @@ another. If you want full scripting capabilities, create a script externally
 be executed from the tmp-folder of scanservjs, thus, it can access all temporary
 files. Alternatively, a script can also request parameters, which can be set
 here.
+
+The first command of the pipeline will receive, in its standard input, the
+newline-separated list of files that have been processed (one file per page).
+Their order may differ from the alphabetical and numeric order, but it is
+important to use the file order given, because the collation feature may have
+re-ordered them (e.g. in case the user scanned every odd, then every even page).
 
 You are free to create whatever kind of files you want, however, the last
 command of the pipeline needs to return a list of files, which can be further
@@ -340,6 +377,47 @@ specific device or change the default. So just as with other device overrides:
         device.settings.filters.default = ['filter.threshold'];
       });
   }
+```
+
+### Add actions and call after a specific pipeline
+
+Create a file action to do wwhatever you like - this might be useful for
+integrating with paperless-ng. The example below defines a pipeline which
+creates a PDF and then copies it to the home directory on completion.
+
+```javascript
+const Process = require('../src/classes/process');
+
+module.exports = {
+  /**
+   * @param {Configuration} config 
+   */
+  afterConfig(config) {
+    // Add a custom copy pipeline
+    config.pipelines.push({
+      extension: 'pdf',
+      description: 'PDF to home directory',
+      commands: [
+        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+        'convert @- scan-0000.pdf',
+        'ls scan-*.*'
+      ],
+      afterAction: 'Copy to Home Directory'
+    });
+  },
+
+  /**
+   * @type {Action[]}
+   */
+  actions: [
+    {
+      name: 'Copy to Home Directory',
+      async execute(fileInfo) {
+        return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
+      }
+    }
+  ]
+};
 ```
 
 ### Add Basic Authentication

@@ -15,10 +15,16 @@ describe('CommandBuilder', () => {
       'echo \'hello world\'');
   });
 
-  it('command-arg2', async () => {
+  it('command-arg-hash', async () => {
     assert.strictEqual(
       new CommandBuilder('echo').arg('-n', 'hello#world').build(),
       'echo -n \'hello#world\'');
+  });
+
+  it('command-arg-comma', async () => {
+    assert.strictEqual(
+      new CommandBuilder('echo').arg('-n', 'hello;world').build(),
+      'echo -n \'hello;world\'');
   });
 
   it('command-security-1', async () => {
