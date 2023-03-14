@@ -1,0 +1,208 @@
+{
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "No data available"
+  },
+
+  "about": {
+    "main": "scanservjs is a simple web-based UI for your scanner. It allows you to share one or more scanners (using SANE) on a network without the need for drivers or complicated installation. It can save to TIF, JPG, PNG, PDF and TXT (with Tesseract OCR) with varying compression settings, all of which can be configured. It supports multipage scanning and all SANE compatible devices.",
+    "issue": "File an issue or view the source code:",
+    "api": "Swagger API documentation:",
+    "system-info": "System information"
+  },
+
+  "colors": {
+    "accent-4": "Default",
+    "red": "Red",
+    "pink": "Pink",
+    "purple": "Purple",
+    "deep-purple": "Deep purple",
+    "indigo": "Indigo",
+    "blue": "Blue",
+    "light-blue": "Light blue",
+    "cyan": "Cyan",
+    "teal": "Teal",
+    "green": "Green",
+    "light-green": "Light green",
+    "lime": "Lime",
+    "yellow": "Yellow",
+    "amber": "Amber",
+    "orange": "Orange",
+    "deep-orange": "Deep orange",
+    "brown": "Brown",
+    "blue-grey": "Blue gray",
+    "grey": "Gray"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Cancel",
+    "btn-finish": "Finish",
+    "btn-rescan": "Rescan page",
+    "btn-next": "Next"
+  },
+
+  "files": {
+    "filename": "Filename",
+    "date": "Date",
+    "size": "Size",
+    "items-per-page": "Files per page",
+    "items-per-page-all": "All",
+    "message:action": "Ran {0} on {1}",
+    "message:deleted": "Deleted {0}",
+    "message:renamed": "File renamed",
+    "button:action-selected": "Run action...",
+    "button:delete-selected": "Delete Selected",
+    "dialog:rename": "Change file name",
+    "dialog:rename-cancel": "Cancel",
+    "dialog:rename-save": "Save",
+    "actions": "Actions",
+    "thumbnail-show": "Show thumbnails",
+    "thumbnail-size": "Thumbnail size"
+  },
+
+  "navigation": {
+    "scan": "Scan",
+    "files": "Files",
+    "settings": "Settings",
+    "about": "About",
+    "version": "Version"
+  },
+
+  "batch-mode": {
+    "none": "None",
+    "manual": "Manual (with prompt)",
+    "auto": "Auto (Document feeder)",
+    "auto-collate-standard": "Auto (Collate 1, 3... 4, 2)",
+    "auto-collate-reverse": "Auto (Reverse 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Auto level",
+    "threshold": "Threshold",
+    "blur": "Blur"
+  },
+
+  "mode": {
+    "color": "Color",
+    "halftone": "Halftone",
+    "gray": "Gray",
+    "lineart": "Lineart",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Simplex",
+    "duplex": "Duplex"
+  },
+
+  "source": {
+    "flatbed": "Flatbed",
+    "adf": "ADF",
+    "auto": "Auto",
+    "left-aligned": "Left Aligned",
+    "centrally-aligned": "Centrally Aligned",
+    "duplex": "Duplex",
+    "transparency unit": "Transparency Unit",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "High quality",
+    "medium-quality": "Medium quality",
+    "low-quality": "Low quality",
+    "uncompressed": "Uncompressed",
+    "lzw-compressed": "LZW Compressed",
+    "ocr": "OCR",
+    "text-file": "Text file"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
+
+  "scan": {
+    "device": "Device",
+    "source": "Source",
+    "resolution": "Resolution",
+    "mode": "Mode",
+    "adf-mode": "ADF Mode",
+    "dynamic-lineart": "Dynamic Lineart",
+    "dynamic-lineart:enabled": "Enabled",
+    "dynamic-lineart:disabled": "Disabled",
+    "batch": "Batch",
+    "filters": "Filters",
+    "format": "Format",
+    "btn-preview": "Preview",
+    "btn-clear": "Clear",
+    "btn-scan": "Scan",
+    "top": "Top",
+    "left": "Left",
+    "width": "Width",
+    "height": "Height",
+    "paperSize": "Paper size",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "message:loading-devices": "Loading devices...",
+    "message:no-devices": "Found no devices",
+    "message:deleted-preview": "Deleted preview",
+    "message:turn-documents": "Turn documents over",
+    "message:preview-of-page": "Preview of page"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Behaviour and UI",
+    "locale": "Locale",
+    "locale:description": "Choose your locale",
+    "theme": "Theme",
+    "theme:description": "Theme. If you use system theme and change it, you will need to reload the app.",
+    "theme:system": "System",
+    "theme:light": "Light",
+    "theme:dark": "Dark",
+    "color": "Color",
+    "color:description": "Color. This will change the color of the top app bar.",
+    "show-files-after-scan:description": "Show files after scan completes",
+    "devices": "Devices and storage",
+    "reset:description": "Clears stored scanner devices and forces a reload",
+    "reset": "Reset",
+    "clear-storage:description": "Clears local storage of any cached parameters",
+    "clear-storage": "Clear"
+  },
+
+  "locales": {
+    "ar": "العربية",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "en": "English",
+    "en-US": "English (United States)",
+    "es": "Español",
+    "fr": "Français",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Portuguese (Portugal)",
+    "pt-BR": "Portuguese (Brazilian)",
+    "ru": "Russian",
+    "sk": "Slovenčina",
+    "tr": "Türkçe",
+    "zh": "简体中文",
+    "test": "Test"
+  }
+}
