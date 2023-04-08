@@ -163,6 +163,14 @@ module.exports = class FileInfo {
   }
 
   /**
+   * @param {BufferLike}
+   * @returns {void}
+   */
+  saveAsync(data) {
+    fs.writeFile(this.fullname, data, () => {});
+  }
+
+  /**
    * @returns {string}
    */
   toBase64() {
@@ -175,6 +183,21 @@ module.exports = class FileInfo {
   toBuffer() {
     const bits = fs.readFileSync(this.fullname);
     return Buffer.from(bits);
+  }
+
+  /**
+   * @returns {Buffer}
+   */
+  toBufferAsync() {
+    return new Promise((resolve, reject) => {
+      fs.readFile(this.fullname, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(Buffer.from(data));
+      });
+    });
   }
 
   /**

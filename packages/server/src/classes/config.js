@@ -48,6 +48,7 @@ module.exports = class Config {
 
       devicesPath: './config/devices.json',
       outputDirectory: 'data/output',
+      thumbnailDirectory: 'data/thumbnail',
       previewDirectory: 'data/preview',
       tempDirectory: 'data/temp',
 

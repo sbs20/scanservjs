@@ -64,6 +64,7 @@ function initialize(rootPath) {
     Object.assign(config, {
       devicesPath: rootPath + config.devicesPath,
       outputDirectory: rootPath + config.outputDirectory,
+      thumbnailDirectory: rootPath + config.thumbnailDirectory,
       previewDirectory: rootPath + config.previewDirectory,
       tempDirectory: rootPath + config.tempDirectory
     });
@@ -71,6 +72,7 @@ function initialize(rootPath) {
 
   try {
     fs.mkdirSync(config.outputDirectory, { recursive: true });
+    fs.mkdirSync(config.thumbnailDirectory, { recursive: true });
     fs.mkdirSync(config.tempDirectory, { recursive: true });
   } catch (exception) {
     log.warn(`Error ensuring output and temp directories exist: ${exception}`);
