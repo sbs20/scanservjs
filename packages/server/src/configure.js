@@ -206,6 +206,8 @@ function configure(app, rootPath) {
       const newName = req.body.newName;
       await FileInfo.unsafe(config.outputDirectory, name)
         .rename(newName);
+      const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, name);
+      if (thumbnail.exists()) thumbnail.rename(newName);
       res.send('200');
     } catch (error) {
       sendError(res, 500, error);
