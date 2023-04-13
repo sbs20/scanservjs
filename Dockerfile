@@ -23,7 +23,7 @@ RUN npm run build
 # ==============================================================================
 FROM node:16-bullseye-slim AS scanservjs-base
 RUN apt-get update \
-  && apt-get install -yq \
+  && apt-get install --no-install-recommends -yq \
     imagemagick \
     sane \
     sane-utils \
@@ -119,7 +119,7 @@ FROM scanservjs-core
 # ==============================================================================
 FROM scanservjs-core AS scanservjs-hplip
 RUN apt-get update \
-  && apt-get install -yq libsane-hpaio \
+  && apt-get install --no-install-recommends -yq libsane-hpaio \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && echo hpaio >> /etc/sane.d/dll.conf
