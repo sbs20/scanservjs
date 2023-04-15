@@ -68,6 +68,8 @@ ENV \
   SANED_NET_HOSTS="" \
   # This gets added to /etc/sane.d/airscan.conf
   AIRSCAN_DEVICES="" \
+  # This gets added to /etc/sane.d/pimxa.conf
+  PIXMA_HOSTS="" \
   # This directs scanserv not to bother querying `scanimage -L`
   SCANIMAGE_LIST_IGNORE="" \
   # This gets added to scanservjs/server/config.js:devices
