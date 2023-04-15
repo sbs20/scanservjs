@@ -220,6 +220,7 @@ Your alternatives are:
 * `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
   your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
   variable (semicolon delimited).
+* `PIXMA_HOSTS`: If you want to use a PIXMA scanner which uses the bjnp protocol then to perform the equivalent of adding hosts to `/etc/sane.d/pixma.conf` specify a list of ip addresses separated by semicolons in the `PIXMA_HOSTS` environment variable.
 * `DELIMITER`: if you need to include semi-colons (`;`) in your environment
   variables, this allows you to choose an alternative delimiter.
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
@@ -256,7 +257,7 @@ docker run -d -p 8080:8080 \
 
 ### A bit of everything
 
-Add two net hosts to sane, use airscan to connect to two remote scanners, don't
+Add two net hosts to sane, use airscan to connect to two remote scanners, add two pixma scanners using the bjnp protocol, don't
 use `scanimage -L`, force a list of devices, override the OCR language and run
 in privileged mode
 
@@ -264,6 +265,7 @@ in privileged mode
 docker run -d -p 8080:8080 \
   -e SANED_NET_HOSTS="10.0.100.30;10.0.100.31" \
   -e AIRSCAN_DEVICES='"Canon MFD" = "http://192.168.0.10/eSCL";"EPSON MFD" = "http://192.168.0.11/eSCL"' \
+  -e PIXMA_HOSTS="10.0.100.32;10.0.100.33" \
   -e SCANIMAGE_LIST_IGNORE=true \
   -e DEVICES="net:10.0.100.30:plustek:libusb:001:003;net:10.0.100.31:plustek:libusb:001:003;airscan:e0:Canon TR8500 series;airscan:e1:EPSON Cool Series" \
   -e OCR_LANG="fra" \
