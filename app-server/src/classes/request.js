@@ -48,14 +48,17 @@ module.exports = class Request {
       },
       filters: data.filters || device.settings.filters.default,
       pipeline: data.pipeline || device.settings.pipeline.default,
-      batch: data.batch || device.settings.batchMode.default,
       index: data.index || 1
     });
 
-    assertContains(device.settings['filters'].options, this.filters, 'Invalid filters');
-    assertContains(device.settings['pipeline'].options, this.pipeline, 'Invalid pipeline');
-    assertContains(device.settings['batchMode'].options, this.batch, 'Invalid batchMode');
-
+    if ('--source' in features) {
+      this.params.source = data.params.source || features['--source'].default;
+      assertContains(features['--source'].options, this.params.source, 'Invalid --source');
+    }
+    if ('--mode' in features) {
+      this.params.mode = data.params.mode || features['--mode'].default;
+      assertContains(features['--mode'].options, this.params.mode, 'Invalid --mode');
+    }
     if ('-t' in features) {
       this.params.top = constrainWithFeature(data.params.top || features['-t'].limits[0], features['-t']);
     }
@@ -67,25 +70,6 @@ module.exports = class Request {
     }
     if ('-y' in features) {
       this.params.height = constrainWithFeature(data.params.height || features['-y'].limits[1], features['-y']);
-    }
-    if ('--page-height' in features) {
-      this.params.pageHeight = constrainWithFeature(data.params.pageHeight, features['--page-height']);
-    }
-    if ('--page-width' in features) {
-      this.params.pageWidth = constrainWithFeature(data.params.pageWidth, features['--page-width']);
-    }
-
-    if ('--mode' in features) {
-      this.params.mode = data.params.mode || features['--mode'].default;
-      assertContains(features['--mode'].options, this.params.mode, 'Invalid --mode');
-    }
-    if ('--adf-mode' in features) {
-      this.params.adfMode = data.params.adfMode || features['--adf-mode'].default;
-      assertContains(features['--adf-mode'].options, this.params.adfMode, 'Invalid --adf-mode');
-    }
-    if ('--source' in features) {
-      this.params.source = data.params.source || features['--source'].default;
-      assertContains(features['--source'].options, this.params.source, 'Invalid --source');
     }
     if ('--brightness' in features) {
       this.params.brightness = data.params.brightness || 0;
@@ -102,6 +86,32 @@ module.exports = class Request {
       this.params.ald = data.params.ald || features['--ald'].default;
       assertContains(features['--ald'].options, this.params.ald, 'Invalid --ald');
     }
+
+    const sourceInfo = 'source' in this.params
+      ? device.sourceInfo[this.params.source]
+      : undefined;
+
+    const adfEnabled = sourceInfo ? sourceInfo.isAdf : true;
+
+    // ADF specific options
+    if ('--page-height' in features && adfEnabled) {
+      this.params.pageHeight = constrainWithFeature(data.params.pageHeight, features['--page-height']);
+    }
+    if ('--page-width' in features && adfEnabled) {
+      this.params.pageWidth = constrainWithFeature(data.params.pageWidth, features['--page-width']);
+    }
+    if ('--adf-mode' in features && adfEnabled) {
+      this.params.adfMode = data.params.adfMode || features['--adf-mode'].default;
+      assertContains(features['--adf-mode'].options, this.params.adfMode, 'Invalid --adf-mode');
+    }
+
+    const batchModes = sourceInfo ? sourceInfo.batchModes : device.settings['batchMode'].options;
+
+    this.batch = data.batch || (sourceInfo && batchModes[0]) || device.settings.batchMode.default;
+
+    assertContains(device.settings['filters'].options, this.filters, 'Invalid filters');
+    assertContains(device.settings['pipeline'].options, this.pipeline, 'Invalid pipeline');
+    assertContains(batchModes, this.batch, 'Invalid batchMode');
 
     log.trace(LogFormatter.format().full(this));
   }

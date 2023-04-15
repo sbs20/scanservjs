@@ -78,7 +78,7 @@ describe('ScanimageCommand', () => {
     const command = commandFor('1.0.31', request);
 
     // eslint-disable-next-line quotes
-    assert.strictEqual(command, `/usr/bin/scanimage -d epjitsu:libusb:001:003 --source 'ADF Front' --mode Color --resolution 300 --page-width 215.8 --page-height 292 -t 0 --format tiff --brightness 0 --contrast 0 -o data/temp/~tmp-scan-0-0001.tif`);
+    assert.strictEqual(command, `/usr/bin/scanimage -d epjitsu:libusb:001:003 --source 'ADF Front' --mode Color --resolution 300 --page-width 215.8 --page-height 292 -t 0 --format tiff --brightness 0 --contrast 0 '--batch=data/temp/~tmp-scan-1-%04d.tif'`);
   });
 
   it('scanimage-a14.txt', () => {
@@ -92,7 +92,7 @@ describe('ScanimageCommand', () => {
     });
     const command = commandFor('1.1.1', request);
     // eslint-disable-next-line quotes
-    assert.strictEqual(command, `/usr/bin/scanimage -d 'fujitsu:ScanSnap S1500:8176' --source 'ADF Front' --mode Lineart --resolution 600 --page-width 215.8 --page-height 279.3 -l 0 -t 0 -x 215.8 -y 279.3 --format tiff --ald=yes --brightness 0 -o data/temp/~tmp-scan-0-0001.tif`);
+    assert.strictEqual(command, `/usr/bin/scanimage -d 'fujitsu:ScanSnap S1500:8176' --source 'ADF Front' --mode Lineart --resolution 600 --page-width 215.8 --page-height 279.3 -l 0 -t 0 -x 215.8 -y 279.3 --format tiff --ald=yes --brightness 0 '--batch=data/temp/~tmp-scan-1-%04d.tif'`);
   });
 
   it('scanimage-batch.txt', () => {

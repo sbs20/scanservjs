@@ -166,4 +166,93 @@ describe('Request', () => {
     assert.strictEqual(request.params.dynamicLineart, undefined);
   });
 
+  it('scanimage-a12-hybrid-flatbed.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a12-hybrid.txt');
+    const device = Device.from(file.toText());
+    const context = new Context(config, [device], new UserOptions());
+    const request = new Request(context, {
+      params: {
+        source: 'Flatbed',
+        top: -1,
+        left: -20,
+        width: 400,
+        height: 400,
+        pageWidth: 100,
+        pageHeight: 100,
+        resolution: '150',
+        mode: 'Color',
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: config.pipelines[0].description
+    });
+
+    assert.deepEqual(request, {
+      'batch': 'none',
+      'filters': [],
+      'index': 1,
+      'params': {
+        'ald': 'no',
+        'brightness': 0,
+        'contrast': 0,
+        'deviceId': 'net:<IP address>:fujitsu:fi-7260:1208958',
+        'format': 'tiff',
+        'height': 296.9,
+        'isPreview': false,
+        'left': 0,
+        'mode': 'Color',
+        'resolution': '150',
+        'source': 'Flatbed',
+        'top': 0,
+        'width': 227.8
+      },
+      'pipeline': 'JPG | @:pipeline.high-quality'
+    });
+  });
+
+  it('scanimage-a12-hybrid-adf.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a12-hybrid.txt');
+    const device = Device.from(file.toText());
+    const context = new Context(config, [device], new UserOptions());
+    const request = new Request(context, {
+      params: {
+        source: 'ADF Front',
+        top: -1,
+        left: -20,
+        width: 400,
+        height: 400,
+        resolution: '150',
+        mode: 'Color',
+        brightness: 0,
+        contrast: 0,
+        dynamicLineart: true
+      },
+      pipeline: config.pipelines[0].description
+    });
+
+    assert.deepEqual(request, {
+      'batch': 'auto',
+      'filters': [],
+      'index': 1,
+      'params': {
+        'ald': 'no',
+        'brightness': 0,
+        'contrast': 0,
+        'deviceId': 'net:<IP address>:fujitsu:fi-7260:1208958',
+        'format': 'tiff',
+        'height': 296.9,
+        'isPreview': false,
+        'left': 0,
+        'mode': 'Color',
+        'pageHeight': 2750.4,
+        'pageWidth': 224.8,
+        'resolution': '150',
+        'source': 'ADF Front',
+        'top': 0,
+        'width': 227.8
+      },
+      'pipeline': 'JPG | @:pipeline.high-quality'
+    });
+  });
 });

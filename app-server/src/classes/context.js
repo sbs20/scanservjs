@@ -1,4 +1,6 @@
 const fs = require('fs');
+const DeviceSettings = require('./device-settings');
+const SourceInfo = require('./source-info');
 const objectMerger = require('./object-merger');
 
 const diagnostic = (path) => {
@@ -29,33 +31,18 @@ module.exports = class Context {
       throw new Error('userOptions is null or undefined');
     }
 
-    const defaultSettings = () => {
-      return {
-        batchMode: {
-          options: config.batchModes,
-          default: config.batchModes[0]
-        },
-        filters: {
-          options: config.filters.map(f => f.description),
-          default: []
-        },
-        pipeline: {
-          options: config.pipelines.map(p => p.description),
-          default: config.pipelines[0].description
-        }
-      };
-    };
-
     // Add defaults for all existing devices - useful for user configuration
     devices.forEach(device => {
-      device.settings = defaultSettings();
+      device.settings = new DeviceSettings(config);
+      device.sourceInfo = new SourceInfo(device);
     });
 
     userOptions.afterDevices(devices);
 
     // Re-add defaults in case user adds new devices
     devices.forEach(device => {
-      device.settings = objectMerger.deepMerge({}, defaultSettings(), device.settings);
+      device.settings = objectMerger.deepMerge({}, new DeviceSettings(config), device.settings);
+      device.sourceInfo = objectMerger.deepMerge({}, new SourceInfo(device), device.sourceInfo);
     });
 
     this.devices = devices;
