@@ -52,8 +52,8 @@
     "dialog:rename-cancel": "Abbruch",
     "dialog:rename-save": "Speichern",
     "actions": "Aktionen",
-    "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-show": "Vorschaubilder anzeigen",
+    "thumbnail-size": "Vorschaubildgröße"
   },
 
   "navigation": {
@@ -98,7 +98,7 @@
     "left-aligned": "Linksbündig",
     "centrally-aligned": "Zentriert",
     "duplex": "Duplex",
-    "transparency unit": "Transparency Unit",
+    "transparency unit": "Durchlichteinheit",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -168,7 +168,7 @@
     "theme:dark": "Dunkles Design",
     "color": "Farbe",
     "color:description": "Hintergrund Design. Hier kann die Farbe der Menüleiste angepasst werden.",
-    "show-files-after-scan:description": "Show files after scan completes",
+    "show-files-after-scan:description": "Dateien nach Abschluss des Scans anzeigen",
     "devices": "Geräte und Speicherorte",
     "reset:description": "Alle gespeicherten Scanner löschen und die App neu laden",
     "reset": "Zurücksetzen",
