@@ -168,7 +168,7 @@
 
   "settings": {
     "title": "@:navigation.settings",
-    "behaviour-ui": "Behaviour and UI",
+    "behaviour-ui": "Behavior and UI",
     "locale": "Locale",
     "locale:description": "Choose your locale",
     "theme": "Theme",
@@ -184,25 +184,5 @@
     "reset": "Reset",
     "clear-storage:description": "Clears local storage of any cached parameters",
     "clear-storage": "Clear"
-  },
-
-  "locales": {
-    "ar": "العربية",
-    "cs": "Čeština",
-    "de": "Deutsch",
-    "en": "English",
-    "en-US": "English (United States)",
-    "es": "Español",
-    "fr": "Français",
-    "it": "Italiano",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "pt": "Portuguese (Portugal)",
-    "pt-BR": "Portuguese (Brazilian)",
-    "ru": "Russian",
-    "sk": "Slovenčina",
-    "tr": "Türkçe",
-    "zh": "简体中文",
-    "test": "Test"
   }
 }
