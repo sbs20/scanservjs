@@ -15,14 +15,17 @@ module.exports = class CommandBuilder {
    * @returns {string}
    */
   _format(value) {
-    if (typeof value === 'string') {
+    if (['boolean', 'number'].includes(typeof value)) {
+      return `${value}`;
+    } else if ('string' === typeof value) {
       if (value.includes('\'')) {
         throw Error('Argument must not contain single quote "\'"');
-      } else if (['$', ' ', '#', '\\', ';'].some(c => value.includes(c))) {
-        return `'${value}'`;
+      } else if (/^[0-9a-z-=/~.:]+$/i.test(value)) {
+        return `${value}`;
       }
+      return `'${value}'`;
     }
-    return `${value}`;
+    throw Error(`Invalid argument type: '${typeof value}'`);
   }
 
   /**
@@ -33,6 +36,18 @@ module.exports = class CommandBuilder {
     this.args.push(...values
       .filter(s => s !== undefined)
       .map(this._format));
+    return this;
+  }
+
+  /**
+   * @param {string} operator
+   * @returns {CmdBuilder}
+   */
+  redirect(operator) {
+    if (typeof operator !== 'string' || !/^[&<>|]+$/.test(operator)) {
+      throw Error(`Invalid argument: '${operator}'`);
+    }
+    this.args.push(operator);
     return this;
   }
 

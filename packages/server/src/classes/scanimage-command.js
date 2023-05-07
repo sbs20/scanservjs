@@ -132,7 +132,7 @@ module.exports = class ScanimageCommand {
       if (this.scanimage.supportsOutputFlag) {
         cmdBuilder.arg('-o', outputFile);
       } else {
-        cmdBuilder.arg('>', outputFile);
+        cmdBuilder.redirect('>').arg(outputFile);
       }
     }
     return cmdBuilder.build();

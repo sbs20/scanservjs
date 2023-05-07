@@ -17,13 +17,15 @@ describe('Process', () => {
     result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls -al`').build());
     assert.strictEqual(result, '`ls -al`');
 
+    result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls\t-al`').build());
+    assert.strictEqual(result, '`ls\t-al`');
+
     result = await Process.execute(new CmdBuilder('echo').arg('-n', '$(date)').build());
     assert.strictEqual(result, '$(date)');
   });
 
   it('echo "1\\n2\\n3" | wc -l', async () => {
     const cmd = new CmdBuilder('echo').arg('"1\n2\n3"').build();
-    assert.strictEqual(cmd, 'echo "1\n2\n3"');
     const ls = await Process.spawn(cmd);
     const result = await Process.spawn('wc -l', ls);
     assert.strictEqual(result.toString(), '3\n');
