@@ -7,9 +7,8 @@ on:
     paths-ignore:
       - '.github/**'
       - 'docs/**'
-      - 'CODE_OF_CONDUCT.md'
       - 'LICENSE'
-      - 'README.md'
+      - '**/*.md'
       - 'Dockerfile'
       - 'run.sh'
 
