@@ -14,6 +14,7 @@
     "array-bracket-spacing": 1,
     "brace-style": 1,
     "comma-spacing": 1,
+    "curly": 1,
     "eol-last": 1,
     "eqeqeq": 1,
     "indent": [
