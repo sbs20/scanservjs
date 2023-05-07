@@ -38,32 +38,32 @@ function commandFor(version, request) {
 describe('ScanimageCommand', () => {
   it('scanimageVersion:1.0.27:scan', () => {
     const command = commandFor('1.0.27', requestScan);
-    assert.ok(command.match(/.*scanimage.* > data\/temp\/~tmp-scan-0-ined.tif/));
+    assert.match(command, /.*scanimage.* > data\/temp\/~tmp-scan-0-ined.tif/);
   });
 
   it('scanimageVersion:1.0.27:preview', () => {
     const command = commandFor('1.0.27', requestPreview);
-    assert.ok(command.match(/.*scanimage.* > data\/preview\/preview.tif/));
+    assert.match(command, /.*scanimage.* > data\/preview\/preview.tif/);
   });
 
   it('scanimageVersion:1.0.28:scan', () => {
     const command = commandFor('1.0.28', requestScan);
-    assert.ok(command.match(/.*scanimage.* -o data\/temp\/~tmp-scan-0-ined.tif/));
+    assert.match(command, /.*scanimage.* -o data\/temp\/~tmp-scan-0-ined.tif/);
   });
 
   it('scanimageVersion:1.0.28:preview', () => {
     const command = commandFor('1.0.28', requestPreview);
-    assert.ok(command.match(/.*scanimage.* -o data\/preview\/preview.tif/));
+    assert.match(command, /.*scanimage.* -o data\/preview\/preview.tif/);
   });
 
   it('scanimageVersion:1.0.31:scan', () => {
     const command = commandFor('1.0.31', requestScan);
-    assert.ok(command.match(/.*scanimage.* -o data\/temp\/~tmp-scan-0-ined.tif/));
+    assert.match(command, /.*scanimage.* -o data\/temp\/~tmp-scan-0-ined.tif/);
   });
 
   it('scanimageVersion:1.0.31:preview', () => {
     const command = commandFor('1.0.31', requestPreview);
-    assert.ok(command.match(/.*scanimage.* -o data\/preview\/preview.tif/));
+    assert.match(command, /.*scanimage.* -o data\/preview\/preview.tif/);
   });
 
   it('scanimage-a10.txt', () => {
