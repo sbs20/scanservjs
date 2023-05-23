@@ -36,7 +36,8 @@ install() {
     tesseract-ocr-por \
     tesseract-ocr-rus \
     tesseract-ocr-tur \
-    tesseract-ocr-chi-sim
+    tesseract-ocr-chi-sim \
+    net-tools
 
   npm install npm@8.3.0 -g
 
