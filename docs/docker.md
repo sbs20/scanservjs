@@ -91,7 +91,7 @@ Depending on your setup you have a number of options:
       logger "Scanner ($VENDOR_ID:$PRODUCT_ID) is available at $DEVICE_PATH. Let's make it available to the scan server container"
 
       # Is the container running already?
-      container_id=$(docker ps -q -f name=scddan)
+      container_id=$(docker ps -q -f name=$CONTAINER_NAME)
       if [ -z "$container_id" ]; then
           # Container was not running. We should start it, with the right device ID
           device_nb=$(lsusb | grep "$VENDOR_ID:$PRODUCT_ID" | grep -o -E "Device [0-9]+" | grep -o -E "[0-9]+")
