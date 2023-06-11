@@ -74,6 +74,8 @@
 
   "filter": {
     "auto-level": "Auto nivelleren",
+    "auto-contrast": "Auto contrast",
+    "more-contrast": "More contrast",
     "threshold": "Threshold",
     "blur": "Vervagen"
   },

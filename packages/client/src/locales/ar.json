@@ -75,6 +75,8 @@
 
   "filter": {
     "auto-level": "مستوى ذاتي",
+    "auto-contrast": "Auto contrast",
+    "more-contrast": "More contrast",
     "threshold": "عتبة",
     "blur": "تمويه"
   },
