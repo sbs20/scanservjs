@@ -78,6 +78,8 @@
 
   "filter": {
     "auto-level": "Auto level",
+    "auto-contrast": "Auto contrast",
+    "more-contrast": "More contrast",
     "threshold": "Threshold",
     "blur": "Blur"
   },

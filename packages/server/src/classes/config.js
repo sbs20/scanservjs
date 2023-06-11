@@ -71,6 +71,10 @@ module.exports = class Config {
 
       filters: [
         {
+          description: 'filter.auto-constrast',
+          params: '-auto-contrast'
+        },
+        {
           description: 'filter.auto-level',
           params: '-auto-level'
         },
@@ -81,6 +85,10 @@ module.exports = class Config {
         {
           description: 'filter.blur',
           params: '-blur 1'
+        },
+        {
+          description: 'filter.more-constrast',
+          params: '-level 90%,10%'
         }
       ],
 

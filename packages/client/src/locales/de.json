@@ -74,6 +74,8 @@
 
   "filter": {
     "auto-level": "Automatische Farbjustierung",
+    "auto-contrast": "Automatische Kontrastjustierung",
+    "more-contrast": "Starker Kontrast",
     "threshold": "Schwellwert",
     "blur": "Weichzeichner"
   },

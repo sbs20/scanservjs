@@ -66,7 +66,7 @@
     "files": "##FILES",
     "settings": "##SETTINGS",
     "about": "##ABOUT",
-    "version": "##VERSION"  
+    "version": "##VERSION"
   },
 
   "batch-mode": {
@@ -76,9 +76,11 @@
     "auto-collate-standard": "##COLLATE-STANDARD",
     "auto-collate-reverse": "##COLLATE-REVERSE"
   },
-  
+
   "filter": {
     "auto-level": "##SCAN.FILTERS:AUTO-LEVEL",
+    "auto-contrast": "##SCAN.FILTERS:AUTO-CONTRAST",
+    "more-contrast": "##SCAN.FILTERS:MORE-CONTRAST",
     "threshold": "##SCAN.FILTERS:THRESHOLD",
     "blur": "##SCAN.FILTERS:BLUR"
   },
@@ -164,7 +166,7 @@
     "message:no-devices": "##SCAN.NO-DEVICES",
     "message:deleted-preview": "##SCAN.DELETED-PREVIEW",
     "message:turn-documents": "##SCAN.TURN",
-    "message:preview-of-page": "##SCAN.PREVIEW-OF"  
+    "message:preview-of-page": "##SCAN.PREVIEW-OF"
   },
 
   "settings": {
