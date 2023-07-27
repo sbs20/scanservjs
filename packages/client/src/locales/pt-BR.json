@@ -6,11 +6,11 @@
   "about": {
     "main": "scanservjs é uma interface via web simples. Permite compartilhar via rede um ou mais scanners (via SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com diversas configurações de compressão. Suporta digitalização multipágina e todos dispositivos SANE compatíveis.",
     "issue": "Relatar uma questão ou ver código fonte:",
-    "system-info": "Informação de sistema"
+    "system-info": "Informação do sistema"
   },
 
   "colors": {
-    "accent-4": "Default",
+    "accent-4": "Padrão",
     "red": "Vermelho",
     "pink": "Rosa",
     "purple": "Roxo",
@@ -47,18 +47,18 @@
     "items-per-page-all": "Todos",
     "message:deleted": "Excluído {0}",
     "message:renamed": "Arquivo renomeado",
-    "button:delete-selected": "Deletar seleccionado",
+    "button:delete-selected": "Deletar selecionado",
     "dialog:rename": "Mudar nome arquivo",
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
     "actions": "Ações",
-    "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-show": "Mostrar previsualizações",
+    "thumbnail-size": "Tamanho da previsualização"
   },
 
   "navigation": {
     "scan": "Escanear",
-    "files": "Ficheros",
+    "files": "Arquivos",
     "settings": "Configuração",
     "about": "Sobre",
     "version": "Versão"  
@@ -91,13 +91,13 @@
   },
 
   "source": {
-    "flatbed": "Flatbed",
+    "flatbed": "Vidro",
     "adf": "Alimentador Automático de Documento",
     "auto": "Auto",
     "left-aligned": "Alinhamento à Esquerda",
     "centrally-aligned": "Alinhamento ao Centro",
     "duplex": "Duplex",
-    "transparency unit": "Transparency Unit",
+    "transparency unit": "Unidade de transparência",
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
@@ -149,9 +149,9 @@
     "contrast": "Contraste",
     "message:loading-devices": "Carregando dispositivos...",
     "message:no-devices": "Nenhum dispositivo encontrado",
-    "message:deleted-preview": "Visualização prévia excluída",
+    "message:deleted-preview": "Prévisualização excluída",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Visualização prévia de página"  
+    "message:preview-of-page": "Previsualização de página"  
   },
 
   "settings": {
@@ -160,17 +160,17 @@
     "locale": "Idioma",
     "locale:description": "Selecione seu idioma",
     "theme": "Visual",
-    "theme:description": "Visual. Se usa o tema System e muda, precisa recarregar a página.",
+    "theme:description": "Visual. Se usa o tema System e mudar, precisa recarregar a página.",
     "theme:system": "System",
     "theme:light": "Claro",
     "theme:dark": "Escuro",
     "color": "Cor",
     "color:description": "Cor. Irá mudar a cor da barra de navegação.",
-    "show-files-after-scan:description": "Show files after scan completes",
+    "show-files-after-scan:description": "Mostrar arquivos depois de escanear",
     "devices": "Dispositivos e armazenamento",
-    "reset:description": "Limpa scanner e força um refresh",
-    "reset": "Reestablecer",
-    "clear-storage:description": "Limpa o armazenamento local de qualquer parâmetro cacheado",
+    "reset:description": "Limpa scanner e força uma atualização",
+    "reset": "Reiniciar",
+    "clear-storage:description": "Limpa o armazenamento local de qualquer parâmetro gravado em cache",
     "clear-storage": "Limpar"
   }
 }
