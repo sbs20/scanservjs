@@ -136,6 +136,9 @@ module.exports = class FileInfo {
    */
   async rename(filename) {
     assertFilenameIsSafe(filename);
+    if (!filename.endsWith(this.extension)) {
+      filename+=this.extension;
+    }
     return this.move(`${this.path}/${filename}`);
   }
 
