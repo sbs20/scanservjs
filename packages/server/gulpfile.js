@@ -35,7 +35,6 @@ const app = {
         './installer.sh',
         './scanservjs.service',
         './package.json',
-        './package-lock.json',
         './*config/**/config.default.js',
         './*data/**/default.jpg'])
         .pipe(shellFilter)
