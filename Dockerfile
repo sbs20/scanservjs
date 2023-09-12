@@ -19,9 +19,9 @@ RUN npm run build
 
 # Sane image
 #
-# This is the minimum bullseye/node/sane image required which is used elsewhere.
+# This is the minimum bookworm/node/sane image required which is used elsewhere.
 # ==============================================================================
-FROM node:16-bullseye-slim AS scanservjs-base
+FROM node:16-bookworm-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
     imagemagick \
