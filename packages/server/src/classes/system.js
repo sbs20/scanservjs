@@ -1,17 +1,65 @@
 const os = require('os');
-const fs = require('fs/promises');
 const Process = require('./process');
+const FileInfo = require('./file-info');
 
-// Detect npm version and container type and cache them here
-const npmVersion = getNpmVersion();
-const containerType = detectContainerType();
+const ContainerTypes = {
+  NONE: 'none',
+  DOCKER: 'docker',
+  PODMAN: 'podman',
+  SYSTEMD_NSPAWN: 'systemd-nspawn'
+};
 
-module.exports = class System {
+/**
+ * @returns {Promise<string>} The detected npm version
+ */
+async function getNpmVersion() {
+  try {
+    const buffer = await Process.spawn('npm -v');
+    return buffer.toString().trim();
+  } catch (error) {
+    return 'Failed to determine';
+  }
+}
+
+/**
+ * @returns {'docker' | 'podman' | 'systemd-nspawn' | null>} The used container technology, or null if no container was detected.
+ */
+function getContainerType() {
+  if (FileInfo.unsafe('/.dockerenv').exists()) {
+    return ContainerTypes.DOCKER;
+  }
+
+  if (FileInfo.unsafe('/run/.containerenv').exists()) {
+    return ContainerTypes.PODMAN;
+  }
+
+  const containerManager = FileInfo.unsafe('/run/host/container-manager');
+  if (containerManager.exists() && containerManager.toText() === ContainerTypes.SYSTEMD_NSPAWN) {
+    return ContainerTypes.SYSTEMD_NSPAWN;
+  }
+
+  return ContainerTypes.NONE;
+}
+
+module.exports = new class System {
+
+  constructor() {
+    this.npmVersion = null;
+    this.containerType = null;
+  }
+
   /**
    * @returns {Promise.<SystemInfo>}
    */
   async info() {
-    const container = await containerType;
+    if (this.containerType === null) {
+      this.containerType = getContainerType();
+    }
+
+    if (this.npmVersion === null) {
+      this.npmVersion = await getNpmVersion();
+    }
+
     const info = {
       os: {
         arch: os.arch(),
@@ -21,9 +69,8 @@ module.exports = class System {
         type: os.type()
       },
       node: process.version,
-      npm: await npmVersion,
-      docker: container === "docker",
-      containerType: container,
+      npm: this.npmVersion,
+      containerType: this.containerType,
     };
 
     try {
@@ -35,44 +82,3 @@ module.exports = class System {
     return info;
   }
 };
-
-/**
- * @returns {Promise<string | null>} The detected npm version, or null, if detection failed.
- */
-async function getNpmVersion() {
-  try {
-    const proc = await Process.spawn('npm -v');
-    return proc.toString().trim();
-  } catch (error) {
-    console.error("Failed to determine npm version", error);
-    return null;
-  }
-}
-
-/**
- * @returns {Promise<'docker' | 'podman' | 'systemd-nspawn' | null>} The used container technology, or null if no container was detected.
- */
-async function detectContainerType() {
-  try {
-    // Detect docker by the /.dockerenv file
-    await fs.stat('/.dockerenv');
-    return 'docker';
-  } catch (_) {}
-
-  try {
-    // Detect podman by the /run/.containerenv file
-    await fs.stat('/run/.containerenv');
-    return 'podman';
-  } catch (_) {}
-
-  try {
-    // Detect systemd-nspawn by the /run/host/container-manager file
-    const manager = await fs.readFile("/run/host/container-manager", 'utf-8');
-    if (manager === 'systemd-nspawn') {
-      return 'systemd-nspawn';
-    }
-  } catch (_) {}
-
-  return null;
-}
-
