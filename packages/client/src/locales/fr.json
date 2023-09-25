@@ -73,7 +73,9 @@
   },
 
   "filter": {
-    "auto-level": "Automatique",
+    "auto-level": "Niveaux automatiques",
+    "auto-contrast": "Contraste automatique",
+    "more-contrast": "Augmenter le contraste",
     "threshold": "Seuil",
     "blur": "Flou"
   },
