@@ -32,6 +32,10 @@ module.exports = new class Api {
    */
   fileDelete(name) {
     log.trace('fileDelete()');
+    const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, name);
+    if (thumbnail.exists()) {
+      thumbnail.delete();
+    }
     const file = FileInfo.unsafe(config.outputDirectory, name);
     return file.delete();
   }
@@ -127,7 +131,14 @@ module.exports = new class Api {
   async readThumbnail(name) {
     const source = FileInfo.unsafe(config.outputDirectory, name);
     if (source.extension !== '.zip') {
-      return await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+      const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, name);
+      if (thumbnail.exists()) {
+        return thumbnail.toBuffer();
+      } else {
+        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+        thumbnail.save(buffer);
+        return buffer;
+      }
     }
     return [];
   }

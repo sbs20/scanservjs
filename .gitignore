@@ -96,6 +96,7 @@ dist
 **/server/config/devices.json
 **/server/data/output/*
 **/server/data/temp/*
+**/server/data/thumbnail/*
 **/server/data/preview/*.tif
 **/scan*.jpg
 **/config.local.js
