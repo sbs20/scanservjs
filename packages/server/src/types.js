@@ -71,6 +71,7 @@
  * @property {string} tesseract
  * @property {string} devicesPath
  * @property {string} outputDirectory
+ * @property {string} thumbnailDirectory
  * @property {string} previewDirectory
  * @property {string} tempDirectory
  * @property {number} previewResolution
