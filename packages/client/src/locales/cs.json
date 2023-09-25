@@ -76,6 +76,8 @@
     
   "filter": {
     "auto-level": "Automatické zarovnání",
+    "auto-contrast": "Automatický kontrast",
+    "more-contrast": "Vyšší kontrast",
     "threshold": "Práh",
     "blur": "Rozostření"
   },
