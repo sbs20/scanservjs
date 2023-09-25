@@ -133,7 +133,7 @@ module.exports = new class Application {
   }
 
   async systemInfo() {
-    return await new System().info();
+    return await System.info();
   }
 
   filterBuilder() {
