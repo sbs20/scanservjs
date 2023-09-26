@@ -54,22 +54,7 @@ function logRequest(req) {
   log.info(output);
 }
 
-/**
- * @param {string} rootPath
- */
-function initialize(rootPath) {
-  if (rootPath) {
-    log.warn(`Running with altered rootPath: ${rootPath}`);
-    // Only required for running in development
-    Object.assign(config, {
-      devicesPath: rootPath + config.devicesPath,
-      outputDirectory: rootPath + config.outputDirectory,
-      thumbnailDirectory: rootPath + config.thumbnailDirectory,
-      previewDirectory: rootPath + config.previewDirectory,
-      tempDirectory: rootPath + config.tempDirectory
-    });
-  }
-
+function initialize() {
   try {
     fs.mkdirSync(config.outputDirectory, { recursive: true });
     fs.mkdirSync(config.thumbnailDirectory, { recursive: true });
@@ -83,10 +68,9 @@ function initialize(rootPath) {
 /**
  * Configures express
  * @param {import('express').Express} app
- * @param {string} rootPath
  */
-function configure(app, rootPath) {
-  initialize(rootPath);
+function configure(app) {
+  initialize();
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 

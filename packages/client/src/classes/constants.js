@@ -1,5 +1,5 @@
 const Constants = {
-  Version: process.env.VUE_APP_VERSION,
+  Version: __PACKAGE_VERSION__,
   
   DateTimeFormat: {
     short: {
