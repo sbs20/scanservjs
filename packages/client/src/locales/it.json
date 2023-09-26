@@ -47,8 +47,10 @@
     "size": "Dimensione",
     "items-per-page": "File per pagina",
     "items-per-page-all": "Tutti",
+    "message:action": "Eseguito {0} su {1}",
     "message:deleted": "Eliminato {0}",
     "message:renamed": "File rinominato",
+    "button:action-selected": "Esegui azione...",
     "button:delete-selected": "Elimina selezionati",
     "dialog:rename": "Rinomina file",
     "dialog:rename-cancel": "Annulla",
@@ -76,6 +78,8 @@
   
   "filter": {
     "auto-level": "Livello automatico",
+    "auto-contrast": "Contrasto automatico",
+    "more-contrast": "Più contrasto",
     "threshold": "Soglia",
     "blur": "Sfocatura"
   },
