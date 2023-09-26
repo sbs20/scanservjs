@@ -127,6 +127,7 @@ docker container restart scanservjs-container
 docker ps -a
 docker image prune
 docker image rm -f $(docker image ls --filter dangling=true -q)
+docker builder prune
 
 # Danger
 docker image rm -f $(docker image ls -a -q)

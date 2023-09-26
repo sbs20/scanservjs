@@ -2,7 +2,7 @@
 #
 # The builder image simply builds the core javascript app and nothing else
 # ==============================================================================
-FROM node:16-alpine AS scanservjs-build
+FROM node:18-alpine AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
@@ -21,7 +21,7 @@ RUN npm run build
 #
 # This is the minimum bookworm/node/sane image required which is used elsewhere.
 # ==============================================================================
-FROM node:16-bookworm-slim AS scanservjs-base
+FROM node:18-bookworm-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
     imagemagick \
