@@ -3,11 +3,12 @@
 ## Install and setup
 
 ```shell
+# Setup any nodejs requirements
+# https://github.com/nodesource/distributions#installation-instructions
+# curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
 # Install dependencies
 sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
-
-# Ideally set the npm version
-sudo npm install npm@8.3.0 -g
 
 # Enable PDF (required for execution and unit tests)
 sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
@@ -19,11 +20,11 @@ git clone https://github.com/sbs20/scanservjs.git
 cd scanservjs && npm run install
 
 # Run (from the scanservjs directory)
-npm run serve
+npm run dev
 ```
 
-`npm run serve` will hook the development server into webpack (see
-vue.config.js).
+`npm run dev` will simultanesouly run the server (see
+package.json ad vite.config.js).
 
 If you run into the following error, then you may need to increase your inotify
 limit:
@@ -73,7 +74,6 @@ npm run missing-translations
 
 ## References
 
-* [Run server with webpack](https://dennisreimann.de/articles/vue-cli-serve-express.html)
 * [i18n](https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n)
 
 ## Docker
@@ -140,4 +140,58 @@ docker run -d \
   --name scanservjs-container \
   --privileged \
   scanservjs-image
+```
+
+## Using docker to build
+
+You may wish to attempt building with a different version of node. There are
+various ways to achieve this but Docker works well.
+
+```Docker
+# build.Dockerfile
+FROM node:18-alpine AS release-node18
+WORKDIR /app
+
+COPY package*.json /app/
+COPY packages/server/package*.json /app/packages/server/
+COPY packages/client/package*.json /app/packages/client/
+
+RUN npm run install
+
+COPY packages/client/ /app/packages/client/
+COPY packages/server/ /app/packages/server/
+
+RUN npm run build && npm run package
+
+RUN ls -al /app/release/
+```
+
+Run the dockerfile:
+
+```sh
+docker build --target release-node18 --file build.Dockerfile --tag scanservjs-release-node18 .
+```
+
+If you want, you can copy the files out again:
+
+```sh
+id=$(docker create scanservjs-release-node18)
+docker cp $id:/app/release ./release
+docker rm -v $id
+```
+
+You can take this a step further and run a release - although it won't run
+successfully to completion.
+
+```Docker
+# Deploy
+FROM debian:11.7-slim AS debian11
+
+COPY --from=release-node18 /app/release/* /tmp/
+
+RUN ls -al /tmp/
+
+RUN mkdir -p /tmp/scanserv-install \
+  && tar -xvf /tmp/scanservjs*.tar.gz -C /tmp/scanserv-install \
+  && /tmp/scanserv-install/installer.sh --install
 ```

@@ -2,60 +2,57 @@
   <div>
     <div class="text-h5 mb-4">{{ $t('settings.title') }}</div>
     <settings-section>
-      <template v-slot:title>{{ $t('settings.behaviour-ui') }}</template>
-      <template v-slot:items>
+      <template #title>{{ $t('settings.behaviour-ui') }}</template>
+      <template #items>
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.theme:description') }}
           </template>
-          <template v-slot:action>
+          <template #action>
             <div style="max-width: 10rem;">
-              <v-select :label="$t('settings.theme')" :items="themes" v-model="settings.theme" @change="reload"></v-select>
+              <v-select v-model="settings.theme" :label="$t('settings.theme')" :items="themes" item-title="text" @update:model-value="reload" />
             </div>
           </template>
         </settings-item>
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.color:description') }}
           </template>
-          <template v-slot:action>
+          <template #action>
             <div style="max-width: 10rem;">
               <v-menu offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on">{{ $t('settings.color') }}</v-btn>
+                <template #activator="{ props }">
+                  <v-btn v-bind="props">{{ $t('settings.color') }}</v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="item in colors" :key="item.value"
-                    style="min-height: 36px;"
-                    @click="settings.appColor = item.value; reload()">
-                    <v-list-item-content class="pl-2 pt-1 pb-1 pr-2" :class="item.value">
-                      {{ item.text }}
-                    </v-list-item-content>
-                  </v-list-item>
+                  <v-list-item v-for="item in colors" :key="item.value" :class="`bg-${item.value}`"
+                    min-height="36px"
+                    :title="item.text"
+                    @click="settings.appColor = item.value; reload()" />
                 </v-list>
               </v-menu>
             </div>
           </template>
         </settings-item>
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.locale:description') }}
           </template>
-          <template v-slot:action>
+          <template #action>
             <div style="max-width: 10rem;">
-              <v-select :label="$t('settings.locale')" :items="locales"
-                item-text="text" item-value="value"
-                v-model="settings.locale" @change="reload"></v-select>
+              <v-select v-model="settings.locale" :label="$t('settings.locale')"
+                :items="locales" item-title="text"
+                item-value="value" @update:model-value="reload" />
             </div>
           </template>
         </settings-item>
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.show-files-after-scan:description') }}
           </template>
-          <template v-slot:action>
+          <template #action>
             <div style="max-width: 10rem;">
-              <v-switch v-model="settings.showFilesAfterScan"></v-switch>
+              <v-switch v-model="settings.showFilesAfterScan" />
             </div>
           </template>
         </settings-item>
@@ -63,23 +60,23 @@
     </settings-section>
 
     <settings-section>
-      <template v-slot:title>{{ $t('settings.devices') }}</template>
-      <template v-slot:items>
+      <template #title>{{ $t('settings.devices') }}</template>
+      <template #items>
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.reset:description') }}
           </template>
-          <template v-slot:action>
-            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+          <template #action>
+            <v-btn color="secondary" class="ml-1 mb-1" @click="reset">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
           </template>
         </settings-item>
 
         <settings-item>
-          <template v-slot:description>
+          <template #description>
             {{ $t('settings.clear-storage:description') }}
           </template>
-          <template v-slot:action>
-            <v-btn color="secondary" @click="reset" class="ml-1 mb-1">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+          <template #action>
+            <v-btn color="secondary" class="ml-1 mb-1" @click="reset">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           </template>
         </settings-item>
       </template>
@@ -92,17 +89,20 @@ import Common from '../classes/common';
 import Constants from '../classes/constants';
 import Storage from '../classes/storage';
 
-import SettingsSection from './SettingsSection';
-import SettingsItem from './SettingsItem';
+import SettingsSection from './SettingsSection.vue';
+import SettingsItem from './SettingsItem.vue';
 
 const storage = Storage.instance();
 
 export default {
   name: 'Settings',
+
   components: {
     SettingsSection,
     SettingsItem
   },
+
+  emits: ['mask', 'notify'],
 
   data() {
     return {

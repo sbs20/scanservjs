@@ -1,128 +1,130 @@
 <template>
   <div>
     <v-row>
-      <v-spacer/>
+      <v-spacer />
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <div class="d-flex">
-          <v-select style="min-width: 0px;"
-            v-if="context.devices.length > 0"
-            :label="$t('scan.device')" v-model="device"
-            :items="context.devices" return-object item-text="name" @change="clear"></v-select>
-          <v-btn small class="ml-2 mt-5 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon>mdi-refresh</v-icon></v-btn>
+          <v-select v-if="context.devices.length > 0"
+            v-model="device"
+            style="min-width: 0px;"
+            :label="$t('scan.device')"
+            :items="context.devices" return-object item-title="name" @change="clear" />
+          <v-btn small class="ml-2 mt-4 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon>mdi-refresh</v-icon></v-btn>
         </div>
 
         <v-select v-if="'--source' in device.features"
-          :no-data-text="$t('global.no-data-text')"
-          :label="$t('scan.source')" v-model="request.params.source"
-          :items="sources" item-value="value" item-text="text"></v-select>
+          v-model="request.params.source"
+          :no-data-text="$t('global.no-data-text')" :label="$t('scan.source')"
+          :items="sources" item-value="value" item-title="text" />
 
         <v-select v-if="'--adf-mode' in device.features"
-          :no-data-text="$t('global.no-data-text')"
-          :label="$t('scan.adf-mode')" v-model="request.params.adfMode"
-          :items="adfModes" item-value="value" item-text="text"></v-select>
+          v-model="request.params.adfMode"
+          :no-data-text="$t('global.no-data-text')" :label="$t('scan.adf-mode')"
+          :items="adfModes" item-value="value" item-title="text" />
 
         <v-select
-          :no-data-text="$t('global.no-data-text')"
-          :label="$t('scan.resolution')" v-model="request.params.resolution"
-          :items="device.features['--resolution']['options']"></v-select>
+          v-model="request.params.resolution"
+          :no-data-text="$t('global.no-data-text')" :label="$t('scan.resolution')"
+          :items="device.features['--resolution']['options']" />
 
         <v-select v-if="'--mode' in device.features"
-          :no-data-text="$t('global.no-data-text')"
-          :label="$t('scan.mode')" v-model="request.params.mode"
-          :items="modes" item-value="value" item-text="text"></v-select>
+          v-model="request.params.mode"
+          :no-data-text="$t('global.no-data-text')" :label="$t('scan.mode')"
+          :items="modes" item-value="value" item-title="text" />
 
         <v-select v-if="'--disable-dynamic-lineart' in device.features"
-          :label="$t('scan.dynamic-lineart')" v-model="request.params.mode"
+          v-model="request.params.mode"
+          :label="$t('scan.dynamic-lineart')"
           :items="[
             { value: false, text: $t('scan.dynamic-lineart:disabled') },
             { value: true, text: $t('scan.dynamic-lineart:enabled') }]"
-          item-value="value" item-text="text"></v-select>
+          item-value="value" item-title="text" />
 
-        <v-select :label="$t('scan.batch')" v-model="request.batch"
+        <v-select v-model="request.batch" :label="$t('scan.batch')"
           :no-data-text="$t('global.no-data-text')"
-          :items="batchModes" item-value="value" item-text="text"></v-select>
+          :items="batchModes" item-value="value" item-title="text" />
 
         <v-select
-          :no-data-text="$t('global.no-data-text')"
           v-model="request.filters"
+          :no-data-text="$t('global.no-data-text')"
           :items="filters"
-          item-text="text"
+          item-title="text"
           item-value="value"
           :label="$t('scan.filters')"
-          @change="readPreview"
-          multiple />
+          multiple
+          @change="readPreview" />
 
         <v-select
+          v-model="request.pipeline"
           :no-data-text="$t('global.no-data-text')"
           :label="$t('scan.format')"
-          v-model="request.pipeline"
           :items="pipelines"
-          item-text="text"
-          item-value="value"></v-select>
+          item-title="text"
+          item-value="value" />
 
         <div class="d-flex flex-row-reverse flex-wrap">
-          <v-btn color="primary" @click="scan(1)" class="ml-1 mb-1">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
-          <v-btn v-if="geometry" color="green" @click="createPreview" class="ml-1 mb-1">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
-          <v-btn color="amber" @click="deletePreview" class="ml-1 mb-1">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+          <v-btn color="primary" class="ml-1 mb-1" @click="scan(1)">{{ $t('scan.btn-scan') }} <v-icon class="ml-2">mdi-camera</v-icon></v-btn>
+          <v-btn v-if="geometry" color="green" class="ml-1 mb-1" @click="createPreview">{{ $t('scan.btn-preview') }} <v-icon class="ml-2">mdi-magnify</v-icon></v-btn>
+          <v-btn color="amber" class="ml-1 mb-1" @click="deletePreview">{{ $t('scan.btn-clear') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
         </div>
       </v-col>
 
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
-        <cropper v-if="geometry" ref="cropper" class="cropper" :key="preview.key" :transitionTime="10" :wheelResize="false"
+        <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-            :src="img" @change="onCropperChange"></cropper>
+            :src="img" @change="onCropperChange" />
         <v-img v-if="!geometry" :src="img" />
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <template v-if="geometry">
-          <v-text-field :label="$t('scan.top')" type="number" step="any" v-model="request.params.top" @blur="onCoordinatesChange" />
-          <v-text-field :label="$t('scan.left')" type="number" step="any" v-model="request.params.left" @blur="onCoordinatesChange" />
-          <v-text-field :label="$t('scan.width')" type="number" step="any" v-model="request.params.width" @blur="onCoordinatesChange" />
-          <v-text-field :label="$t('scan.height')" type="number" step="any" v-model="request.params.height" @blur="onCoordinatesChange" />
+          <v-text-field v-model="request.params.top" :label="$t('scan.top')" type="number" step="any" @blur="onCoordinatesChange" />
+          <v-text-field v-model="request.params.left" :label="$t('scan.left')" type="number" step="any" @blur="onCoordinatesChange" />
+          <v-text-field v-model="request.params.width" :label="$t('scan.width')" type="number" step="any" @blur="onCoordinatesChange" />
+          <v-text-field v-model="request.params.height" :label="$t('scan.height')" type="number" step="any" @blur="onCoordinatesChange" />
 
           <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" v-bind="attrs" v-on="on">{{ $t('scan.paperSize') }}</v-btn>
+            <template #activator="{ props }">
+              <v-btn color="primary" class="mb-4" v-bind="props">{{ $t('scan.paperSize') }}</v-btn>
             </template>
             <v-list dense>
               <v-list-item
                 v-for="(item, index) in paperSizes"
-                @click="updatePaperSize(item)"
-                :key="index">
+                :key="index"
+                @click="updatePaperSize(item)">
                 <v-list-item-title>{{ item.name }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </template>
 
-        <div v-if="'--brightness' in device.features">
-          <v-slider class="align-center" v-model="request.params.brightness"
+        <template v-if="'--brightness' in device.features">
+          <v-slider v-model="request.params.brightness" class="align-center ml-0"
             :step="device.features['--brightness']['interval']"
             :min="device.features['--brightness']['limits'][0]"
             :max="device.features['--brightness']['limits'][1]">
-            <template v-slot:prepend>
-              <v-text-field :label="$t('scan.brightness')" 
-                style="width: 60px" type="number" v-model="request.params.brightness" />
+            <template #prepend>
+              <v-text-field v-model="request.params.brightness" 
+                :label="$t('scan.brightness')" style="width: 60px" type="number" />
             </template>
           </v-slider>
-        </div>
+        </template>
 
         <div v-if="'--contrast' in device.features">
-          <v-slider class="align-center" v-model="request.params.contrast"
+          <v-slider v-model="request.params.contrast" class="align-center ml-0"
             :step="device.features['--contrast']['interval']"
             :min="device.features['--contrast']['limits'][0]"
             :max="device.features['--contrast']['limits'][1]">
-            <template v-slot:prepend>
-              <v-text-field :label="$t('scan.contrast')" 
-                style="width: 60px" type="number" v-model="request.params.contrast" />
+            <template #prepend>
+              <v-text-field v-model="request.params.contrast" 
+                :label="$t('scan.contrast')" style="width: 60px" type="number" />
             </template>
           </v-slider>
         </div>
       </v-col>
       
-      <v-spacer/>
+      <v-spacer />
     </v-row>
 
     <batch-dialog ref="batchDialog" />
@@ -131,12 +133,15 @@
 
 <script>
 import { Cropper } from 'vue-advanced-cropper';
-import BatchDialog from './BatchDialog';
+import { useI18n } from 'vue-i18n';
+import BatchDialog from './BatchDialog.vue';
 
 import Common from '../classes/common';
 import Device from '../classes/device';
 import Request from '../classes/request';
 import Storage from '../classes/storage';
+
+import 'vue-advanced-cropper/dist/style.css';
 
 const storage = Storage.instance();
 
@@ -150,10 +155,21 @@ function sanitiseLocaleKey(s) {
 }
 
 export default {
+
   name: 'Scan',
+
   components: {
     Cropper,
     BatchDialog
+  },
+
+  emits: ['mask', 'notify'],
+
+  setup() {
+    const { te } = useI18n();
+    return {
+      te
+    };
   },
 
   data() {
@@ -178,17 +194,6 @@ export default {
         key: 0
       }
     };
-  },
-
-  mounted() {
-    this._resizePreview();
-    this.readContext().then(() => {
-      this.readPreview();
-    });
-    window.addEventListener('resize', () => {
-      clearTimeout(this.preview.timer);
-      this.preview.timer = setTimeout(this._resizePreview, 100);
-    });
   },
 
   computed: {
@@ -217,7 +222,7 @@ export default {
     filters() {
       return this.device.settings.filters.options.map(f => {
         return {
-          text: this.$te(f) ? this.$t(f) : f,
+          text: this.$t(f),
           value: f
         };
       });
@@ -228,7 +233,7 @@ export default {
         ? this.device.features['--mode'].options.map(mode => {
           const key = `mode.${sanitiseLocaleKey(mode)}`;
           return {
-            text: this.$te(key) ? this.$t(key) : mode,
+            text: this.te(key) ? this.$t(key) : mode,
             value: mode
           };
         })
@@ -240,7 +245,7 @@ export default {
         ? this.device.features['--adf-mode'].options.map(adfMode => {
           const key = `adf-mode.${sanitiseLocaleKey(adfMode)}`;
           return {
-            text: this.$te(key) ? this.$t(key) : adfMode,
+            text: this.te(key) ? this.$t(key) : adfMode,
             value: adfMode
           };
         })
@@ -288,7 +293,7 @@ export default {
         ? this.device.features['--source'].options.map(source => {
           const key = `source.${sanitiseLocaleKey(source)}`;
           const x =  {
-            text: this.$te(key) ? this.$t(key) : source,
+            text: this.te(key) ? this.$t(key) : source,
             value: source
           };
           return x;
@@ -304,6 +309,17 @@ export default {
       },
       deep: true
     }
+  },
+
+  mounted() {
+    this._resizePreview();
+    this.readContext().then(() => {
+      this.readPreview();
+    });
+    window.addEventListener('resize', () => {
+      clearTimeout(this.preview.timer);
+      this.preview.timer = setTimeout(this._resizePreview, 100);
+    });
   },
 
   methods: {
@@ -442,7 +458,7 @@ export default {
       this.$refs.cropper.setCoordinates(adjusted);
     },
 
-    onCropperChange({coordinates}) {
+    onCropperChange({ coordinates }) {
       const adjusted = this.scaleCoordinates(
         coordinates,
         1 / this.pixelsPerMm().x,

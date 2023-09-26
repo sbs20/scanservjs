@@ -1,0 +1,5 @@
+$font: 'Segoe UI', 'Roboto', 'Lucida Grande', 'San Francisco', 'Lucidabright', 'Helvetica';
+
+@use 'vuetify' with (
+  $body-font-family: $font,
+);

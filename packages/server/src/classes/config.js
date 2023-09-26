@@ -1,6 +1,9 @@
 const dayjs = require('dayjs');
+const path = require('path');
 const Constants = require('../constants');
 const Package = require('../../package.json');
+
+const BASE_PATH = process.env.SCANSERV_BASE_PATH || './';
 
 module.exports = class Config {
   /**
@@ -46,11 +49,11 @@ module.exports = class Config {
       convert: '/usr/bin/convert',
       tesseract: '/usr/bin/tesseract',
 
-      devicesPath: './config/devices.json',
-      outputDirectory: 'data/output',
-      thumbnailDirectory: 'data/thumbnail',
-      previewDirectory: 'data/preview',
-      tempDirectory: 'data/temp',
+      devicesPath: path.join(BASE_PATH, 'config/devices.json'),
+      outputDirectory: path.join(BASE_PATH, 'data/output'),
+      thumbnailDirectory: path.join(BASE_PATH, 'data/thumbnail'),
+      previewDirectory: path.join(BASE_PATH, 'data/preview'),
+      tempDirectory: path.join(BASE_PATH, 'data/temp'),
 
       users: {},
 

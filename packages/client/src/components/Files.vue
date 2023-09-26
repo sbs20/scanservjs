@@ -2,80 +2,82 @@
   <v-data-table
       :headers="headers"
       :items="files"
+      :items-per-page-text="$t('files.items-per-page')"
       v-model="selectedFiles"
-      item-key="name"
-      :footer-props="{
-        'items-per-page-text': $t('files.items-per-page'),
-        'items-per-page-all-text': $t('files.items-per-page-all')
-      }"
+      return-object
       show-select>
-    <template v-slot:top>
+    <template #top>
       <v-toolbar flat>
-      <v-checkbox class="mt-6"
-        v-model="thumbnails.show" :label="$t('files.thumbnail-show')" />
-      <v-slider v-if="thumbnails.show" class="mt-6 ml-8" min="32" max="128" step="16"
-        v-model="thumbnails.size" :inverse-label="true"
-        :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`"/>
-      <v-spacer/>
-      <v-btn
-        @click="multipleDelete"
-        :disabled="selectedFiles.length === 0"
-        color="primary">{{ $t('files.button:delete-selected') }}</v-btn>
-      <v-menu bottom :offset-y="true" v-if="actions.length > 0">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
+        <v-checkbox v-model="thumbnails.show"
+          class="mt-6" :label="$t('files.thumbnail-show')" />
+        <v-slider v-if="thumbnails.show" v-model="thumbnails.size" class="mt-6 ml-8" min="32" max="128"
+          step="16" :inverse-label="true"
+          :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`" />
+        <v-spacer />
+        <v-btn
             :disabled="selectedFiles.length === 0"
             color="primary"
-            v-bind="attrs" v-on="on">{{ $t('files.button:action-selected') }}</v-btn>
-        </template>
-        <v-list>
-          <v-list-item v-for="(action, index) in actions" :key="index" :value="action" @click="multipleAction(action)">
-            <v-list-item-title >{{ action }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-      <v-dialog v-model="dialogEdit" max-width="500px">
-        <v-card>
-          <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-text-field v-model="editedItem.newName" :label="$t('files.filename')">
-              </v-text-field>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn small @click="closeRename">
-              {{ $t('files.dialog:rename-cancel') }}
+            @click="multipleDelete">
+          {{ $t('files.button:delete-selected') }}
+        </v-btn>
+        <v-menu v-if="actions.length > 0" bottom :offset-y="true">
+          <template #activator="{ on, attrs }">
+            <v-btn
+                :disabled="selectedFiles.length === 0"
+                color="primary"
+                v-bind="attrs" v-on="on">
+              {{ $t('files.button:action-selected') }}
             </v-btn>
-            <v-btn small @click="renameFileConfirm" color="primary">
-              {{ $t('files.dialog:rename-save') }}
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+          </template>
+          <v-list>
+            <v-list-item v-for="(action, index) in actions" :key="index" :value="action" @click="multipleAction(action)">
+              <v-list-item-title>{{ action }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-dialog v-model="dialogEdit" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-text-field v-model="editedItem.newName" :label="$t('files.filename')" />
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn small @click="closeRename">
+                {{ $t('files.dialog:rename-cancel') }}
+              </v-btn>
+              <v-btn small color="primary" @click="renameFileConfirm">
+                {{ $t('files.dialog:rename-save') }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:[`item.thumb`]="{ item }" v-if="thumbnails.show">
-      <v-img :src="`./files/${item.name}/thumbnail`"
+
+    <template v-if="thumbnails.show" #[`item.thumb`]="{ item }">
+      <v-img :src="`./files/${item.columns.name}/thumbnail`"
+        width="128"
         :max-height="thumbnails.size" :max-width="thumbnails.size"
         :contain="true" />
     </template>
-    <template v-slot:[`item.lastModified`]="{ item }">
-      {{ $d(new Date(item.lastModified), 'long', $i18n.locale) }}
+    <template #[`item.lastModified`]="{ item }">
+      {{ $d(new Date(item.columns.lastModified), 'long') }}
     </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon @click="open(item)" class="mr-2">
+    <template #[`item.actions`]="{ item }">
+      <v-icon class="mr-2" @click="open(item.columns)">
         mdi-download
       </v-icon>
-      <v-icon @click="fileRename(item)" class="mr-2">
+      <v-icon class="mr-2" @click="fileRename(item.columns)">
         mdi-pencil
       </v-icon>
-      <v-icon @click="fileRemove(item)" class="mr-2">
+      <v-icon class="mr-2" @click="fileRemove(item.columns)">
         mdi-delete
       </v-icon>
     </template>
-    <template v-slot:[`footer.page-text`]="items">
+    <template #[`footer.page-text`]="items">
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
     </template>
   </v-data-table>
@@ -84,16 +86,17 @@
 <script>
 import Common from '../classes/common';
 import Storage from '../classes/storage';
-
+import { VDataTable } from 'vuetify/labs/VDataTable';
 const storage = Storage.instance();
 
 export default {
   name: 'Files',
 
-  mounted() {
-    this.fileList();
-    this.actionList();
+  components: {
+    VDataTable
   },
+
+  emits: ['mask', 'notify'],
 
   data() {
     return {
@@ -104,29 +107,31 @@ export default {
           align: 'start',
           sortable: false,
           value: 'thumb',
+          key: 'thumb',
         },
         {
-          text: this.$t('files.filename'),
+          title: this.$t('files.filename'),
           align: 'start',
           sortable: true,
-          value: 'name',
+          key: 'name',
         },
         {
-          text: this.$t('files.date'),
+          title: this.$t('files.date'),
           align: 'start',
           sortable: true,
-          value: 'lastModified',
+          key: 'lastModified',
         },
         {
-          text: this.$t('files.size'),
+          title: this.$t('files.size'),
           align: 'start',
           sortable: true,
-          value: 'sizeString',
+          key: 'sizeString',
         },
         {
-          text: this.$t('files.actions'),
+          title: this.$t('files.actions'),
           value: 'actions',
-          sortable: false
+          sortable: false,
+          key: 'actions',
         },
       ],
       files: [],
@@ -159,6 +164,11 @@ export default {
       },
       deep: true
     }
+  },
+
+  mounted() {
+    this.fileList();
+    this.actionList();
   },
 
   methods: {

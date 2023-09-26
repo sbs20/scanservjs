@@ -1,4 +1,11 @@
 {
+  "$vuetify": {
+    "dataFooter": {
+      "itemsPerPageAll": "@:files.items-per-page-all"
+    },
+    "noDataText": "@:global.no-data-text"
+  },
+
   "global": {
     "application-name": "scanservjs"
   },
