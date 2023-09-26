@@ -3,17 +3,18 @@
   "version": "3.0.0-SNAPSHOT",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
+    "clean-modules": "rm -rf node_modules packages/client/node_modules packages/server/node_modules",
     "clean": "rm -rf ./dist",
-    "missing-translations": "cd packages/client && npm run missing-translations",
-    "version": "npm i && cd packages/client && npm --allow-same-version --no-git-tag-version version $npm_package_version && cd ../server && npm --allow-same-version --no-git-tag-version version $npm_package_version",
-    "lint": "cd packages/server && npm run lint",
-    "test": "cd packages/server && npm run test",
-    "build": "npm run clean && cd packages/client && npm run build && cd ../server && npm run build",
-    "package": "cd packages/server && npm run package",
+    "missing-translations": "npm run missing-translations --workspace=packages/client",
+    "version": "npm i && npm --allow-same-version --no-git-tag-version version $npm_package_version --workspace=packages/server --workspace=packages/client",
+    "lint": "npm run lint --workspace=packages/server --workspace=packages/client",
+    "test": "npm run test --workspace=packages/server",
+    "build": "npm run clean && npm run build --workspace=packages/client --workspace=packages/server",
+    "package": "npm run package --workspace=packages/server",
     "verify": "npm run version && npm run lint && npm run test",
     "docker-build": "npm run verify && docker build -t scanservjs-image .",
     "release": "npm run verify && npm run build && npm run package",
-    "serve": "cd packages/client && npm run serve"
+    "dev": "npm run dev --workspace=packages/client"
   },
   "repository": {
     "type": "git",

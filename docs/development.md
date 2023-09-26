@@ -17,7 +17,7 @@ sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="
 git clone https://github.com/sbs20/scanservjs.git
 
 # Install all packages
-cd scanservjs && npm run install
+cd scanservjs && npm install .
 
 # Run (from the scanservjs directory)
 npm run dev
@@ -101,6 +101,7 @@ docker rm --force scanservjs-container 2> /dev/null
 
 # Different run options
 docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
+docker run -d -p 8080:8080 -e SANED_NET_HOSTS="10.0.100.30" --name scanservjs-container --privileged scanservjs-image
 docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
 docker run -d -p 8080:8080 -v $HOME/scan-data:/app/data/output --name scanservjs-container --privileged scanservjs-image
 
@@ -156,7 +157,7 @@ COPY package*.json /app/
 COPY packages/server/package*.json /app/packages/server/
 COPY packages/client/package*.json /app/packages/client/
 
-RUN npm run install
+RUN npm install .
 
 COPY packages/client/ /app/packages/client/
 COPY packages/server/ /app/packages/server/

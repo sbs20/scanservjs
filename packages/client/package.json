@@ -1,5 +1,5 @@
 {
-  "name": "scanservjs",
+  "name": "scanservjs-ui",
   "version": "3.0.0-SNAPSHOT",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "author": "Sam Strachan",
@@ -7,7 +7,7 @@
     "clean": "rm -rf ./dist",
     "dev": "concurrently 'vite' 'export SCANSERV_BASE_PATH=../server/ && nodemon ../server/src/server.js'",
     "missing-translations": "node missing-translations.js",
-    "serve": "vite preview",
+    "preview": "vite preview",
     "build": "npm run clean && vite build",
     "lint": "eslint --ext .js,.vue src"
   },

@@ -10,7 +10,7 @@ COPY package*.json "$APP_DIR/"
 COPY packages/server/package*.json "$APP_DIR/packages/server/"
 COPY packages/client/package*.json "$APP_DIR/packages/client/"
 
-RUN npm run install
+RUN npm install .
 
 COPY packages/client/ "$APP_DIR/packages/client/"
 COPY packages/server/ "$APP_DIR/packages/server/"
