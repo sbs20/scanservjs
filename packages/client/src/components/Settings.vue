@@ -67,7 +67,7 @@
             {{ $t('settings.reset:description') }}
           </template>
           <template #action>
-            <v-btn color="secondary" class="ml-1 mb-1" @click="reset">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
+            <v-btn color="warning" class="ml-1 mb-1" @click="reset">{{ $t('settings.reset') }} <v-icon class="ml-2">mdi-refresh</v-icon></v-btn>
           </template>
         </settings-item>
 
@@ -76,7 +76,7 @@
             {{ $t('settings.clear-storage:description') }}
           </template>
           <template #action>
-            <v-btn color="secondary" class="ml-1 mb-1" @click="reset">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
+            <v-btn color="warning" class="ml-1 mb-1" @click="reset">{{ $t('settings.clear-storage') }} <v-icon class="ml-2">mdi-delete</v-icon></v-btn>
           </template>
         </settings-item>
       </template>

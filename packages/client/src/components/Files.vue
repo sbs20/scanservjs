@@ -1,9 +1,9 @@
 <template>
   <v-data-table
+      v-model="selectedFiles"
       :headers="headers"
       :items="files"
       :items-per-page-text="$t('files.items-per-page')"
-      v-model="selectedFiles"
       return-object
       show-select>
     <template #top>
@@ -16,7 +16,7 @@
         <v-spacer />
         <v-btn
             :disabled="selectedFiles.length === 0"
-            color="primary"
+            color="warning"
             @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
