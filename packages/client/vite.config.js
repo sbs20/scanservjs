@@ -8,12 +8,8 @@ import packageJson from './package.json'
 export default defineConfig({
   server: {
     proxy: {
+      '/api': 'http://localhost:8080',
       '/api-docs': 'http://localhost:8080',
-      '/context': 'http://localhost:8080',
-      '/files': 'http://localhost:8080',
-      '/preview': 'http://localhost:8080',
-      '/scan': 'http://localhost:8080',
-      '/system': 'http://localhost:8080',
     }
   },
   plugins: [

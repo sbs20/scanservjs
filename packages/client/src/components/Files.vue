@@ -58,7 +58,7 @@
     </template>
 
     <template v-if="thumbnails.show" #[`item.thumb`]="{ item }">
-      <v-img :src="`./files/${item.columns.name}/thumbnail`"
+      <v-img :src="`api/v1/files/${item.columns.name}/thumbnail`"
         width="128"
         :max-height="thumbnails.size" :max-width="thumbnails.size"
         :contain="true" />
@@ -174,7 +174,7 @@ export default {
   methods: {
     actionList() {
       this.$emit('mask', 1);
-      Common.fetch('context').then(context => {
+      Common.fetch('api/v1/context').then(context => {
         this.actions = context.actions;
         this.$emit('mask', -1);
       }).catch(error => {
@@ -185,7 +185,7 @@ export default {
 
     fileList() {
       this.$emit('mask', 1);
-      Common.fetch('files').then(files => {
+      Common.fetch('api/v1/files').then(files => {
         this.files = files;
         this.$emit('mask', -1);
       }).catch(error => {
@@ -196,7 +196,7 @@ export default {
 
     fileRemove(file) {
       this.$emit('mask', 1);
-      Common.fetch(`files/${file.name}`, {
+      Common.fetch(`api/v1/files/${file.name}`, {
         method: 'DELETE'
       }).then(data => {
         this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted', [data.name])}`});
@@ -217,7 +217,7 @@ export default {
 
     renameFileConfirm() {
       this.$emit('mask', 1);
-      Common.fetch(`files/${this.editedItem.name}`, {
+      Common.fetch(`api/v1/files/${this.editedItem.name}`, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
@@ -250,7 +250,7 @@ export default {
         refresh = true;
         const name = this.selectedFiles[0].name;
         try {
-          await Common.fetch(`files/${name}`, {method: 'DELETE'});
+          await Common.fetch(`api/v1/files/${name}`, {method: 'DELETE'});
           this.$emit('notify', {type: 'i', message: `${this.$t('files.message:deleted', [name])}`});
         } catch (error) {
           this.$emit('notify', {type: 'e', message: error});
@@ -269,7 +269,7 @@ export default {
         refresh = true;
         const filename = this.selectedFiles[0].name;
         try {
-          await Common.fetch(`files/${filename}/actions/${actionName}`, {method: 'POST'});
+          await Common.fetch(`api/v1/files/${filename}/actions/${actionName}`, {method: 'POST'});
           this.$emit('notify', {type: 'i', message: `${this.$t('files.message:action', [actionName, filename])}`});
         } catch (error) {
           this.$emit('notify', {type: 'e', message: error});
@@ -283,7 +283,7 @@ export default {
     },
 
     open(file) {
-      window.location.href = `files/${file.name}`;
+      window.location.href = `api/v1/files/${file.name}`;
     },
 
     selectToggle(value) {

@@ -1,5 +1,5 @@
 paths:
-  /context:
+  /api/v1/context:
     delete:
       summary: Deletes cached context
       description: |
@@ -30,7 +30,7 @@ paths:
               schema:
                 $ref: '#/definitions/Context'
 
-  /files:
+  /api/v1/files:
     get:
       summary: List all scanned files
       description: |
@@ -47,7 +47,7 @@ paths:
                 items:
                   $ref: '#/definitions/FileInfo'
 
-  /files/{filename}:
+  /api/v1/files/{filename}:
     delete:
       summary: Deletes a scanned file
       description: |
@@ -121,7 +121,7 @@ paths:
         '200':
           description: OK
 
-  /files/{filename}/thumbnail:
+  /api/v1/files/{filename}/thumbnail:
     get:
       summary: Gets an image thumbnail
       description: |
@@ -142,7 +142,7 @@ paths:
         '200':
           description: OK
 
-  /files/{filename}/actions/{actionName}:
+  /api/v1/files/{filename}/actions/{actionName}:
     post:
       summary: Performs an action on a file
       description: |
@@ -167,7 +167,7 @@ paths:
         '200':
           description: OK
 
-  /preview:
+  /api/v1/preview:
     delete:
       summary: Deletes the currently stored preview
       description: |
@@ -230,7 +230,7 @@ paths:
                 type: object
                 example: {}
 
-  /scan:
+  /api/v1/scan:
     post:
       summary: Create a scan
       description: |
@@ -257,7 +257,7 @@ paths:
               schema:
                 $ref: '#/definitions/ScanResponse'
 
-  /system:
+  /api/v1/system:
     get:
       summary: Gets host system information
       description: |
