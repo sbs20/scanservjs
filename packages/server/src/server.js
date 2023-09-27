@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 const express = require('express');
 const application = require('./application');
-const configure = require('./configure');
 const config = application.config();
 const app = express();
+const ExpressConfigurer = require('./express-configurer');
 
-app.use(express.static('client'));
-
-configure(app);
+ExpressConfigurer.with(app)
+  .encoding()
+  .statics()
+  .basicAuth()
+  .swagger()
+  .endpoints();
 
 const server = app.listen(config.port, config.host, () => {
   const log = require('loglevel').getLogger('server');
