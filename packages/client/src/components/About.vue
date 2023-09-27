@@ -57,7 +57,7 @@ export default {
 
     showSystemInfo() {
       this.$emit('mask', 1);
-      Common.fetch('system').then(data => {
+      Common.fetch('api/v1/system').then(data => {
         this.systemInfoDialog = true;
         this.systemInfo = data;
         this.$emit('mask', -1);

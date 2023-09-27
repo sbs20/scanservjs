@@ -159,7 +159,7 @@ export default {
 
     reset() {
       this.$emit('mask', 1);
-      Common.fetch('context', {
+      Common.fetch('api/v1/context', {
         method: 'DELETE'
       }).then(() => {
         this.$emit('mask', -1);

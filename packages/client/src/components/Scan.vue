@@ -362,7 +362,7 @@ export default {
 
       let data = Common.clone(this.request);
 
-      this._fetch('preview', {
+      this._fetch('api/v1/preview', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -383,7 +383,7 @@ export default {
 
     deletePreview() {
       this.mask(1);
-      Common.fetch('preview', {
+      Common.fetch('api/v1/preview', {
         method: 'DELETE'
       }).then(() => {
         this.notify({ type: 'i', message: this.$t('scan.message:deleted-preview') });
@@ -489,7 +489,7 @@ export default {
         this.notify({ type: 'i', message: this.$t('scan.message:loading-devices') });
       }, 250);
 
-      return this._fetch('context').then(context => {
+      return this._fetch('api/v1/context').then(context => {
         window.clearTimeout(timer);
 
         if (context.devices && context.devices.length > 0) {
@@ -508,7 +508,7 @@ export default {
     },
 
     deviceRefresh() {
-      this._fetch('context', {
+      this._fetch('api/v1/context', {
         method: 'DELETE'
       }).then(() => {
         this.readContext();
@@ -517,7 +517,7 @@ export default {
 
     readPreview() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      const uri = 'preview?' + new URLSearchParams(
+      const uri = 'api/v1/preview?' + new URLSearchParams(
         this.request.filters.map(e => ['filter', e]));
 
       this._fetch(uri, {
@@ -551,7 +551,7 @@ export default {
       }
 
       const data = Common.clone(this.request);
-      this._fetch('scan', {
+      this._fetch('api/v1/scan', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

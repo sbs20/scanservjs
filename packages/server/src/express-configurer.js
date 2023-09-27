@@ -60,7 +60,7 @@ function formatForLog(req) {
 const EndpointSpecs = [
   {
     method: 'delete',
-    path: '/context',
+    path: '/api/v1/context',
     callback: async (req, res) => {
       api.deleteContext();
       res.send({});
@@ -68,17 +68,17 @@ const EndpointSpecs = [
   },
   {
     method: 'get',
-    path: '/context',
+    path: '/api/v1/context',
     callback: async (req, res) => res.send(await api.readContext())
   },
   {
     method: 'get',
-    path: '/files',
+    path: '/api/v1/files',
     callback: async (req, res) => res.send(await api.fileList())
   },
   {
     method: 'post',
-    path: /\/files\/([^/]+)\/actions\/([^/]+)/,
+    path: /\/api\/v1\/files\/([^/]+)\/actions\/([^/]+)/,
     callback: async (req, res) => {
       const fileName = req.params[0];
       const actionName = req.params[1];
@@ -88,7 +88,7 @@ const EndpointSpecs = [
   },
   {
     method: 'get',
-    path: /\/files\/([^/]+)\/thumbnail/,
+    path: /\/api\/v1\/files\/([^/]+)\/thumbnail/,
     callback: async (req, res) => {
       const name = req.params[0];
       const buffer = await api.readThumbnail(name);
@@ -98,7 +98,7 @@ const EndpointSpecs = [
   },
   {
     method: 'get',
-    path: /\/files\/([^/]+)/,
+    path: /\/api\/v1\/files\/([^/]+)/,
     callback: async (req, res) => {
       const name = req.params[0];
       const file = FileInfo.unsafe(config.outputDirectory, name);
@@ -107,12 +107,12 @@ const EndpointSpecs = [
   },
   {
     method: 'delete',
-    path: '/files/*',
+    path: '/api/v1/files/*',
     callback: async (req, res) => res.send(api.fileDelete(req.params[0]))
   },
   {
     method: 'put',
-    path: '/files/*',
+    path: '/api/v1/files/*',
     callback: async (req, res) => {
       const name = req.params[0];
       const newName = req.body.newName;
@@ -126,7 +126,7 @@ const EndpointSpecs = [
   },
   {
     method: 'get',
-    path: '/preview',
+    path: '/api/v1/preview',
     callback: async (req, res) => {
       const buffer = await api.readPreview(req.query.filter);
       res.send({
@@ -136,22 +136,22 @@ const EndpointSpecs = [
   },
   {
     method: 'delete',
-    path: '/preview',
+    path: '/api/v1/preview',
     callback: async (req, res) => res.send(api.deletePreview())
   },
   {
     method: 'post',
-    path: '/preview',
+    path: '/api/v1/preview',
     callback: async (req, res) => res.send(await api.createPreview(req.body))
   },
   {
     method: 'post',
-    path: '/scan',
+    path: '/api/v1/scan',
     callback: async (req, res) => res.send(await api.scan(req.body))
   },
   {
     method: 'get',
-    path: '/system',
+    path: '/api/v1/system',
     callback: async (req, res) => res.send(await api.readSystem())
   }
 ];
