@@ -14,25 +14,22 @@
           step="16" :inverse-label="true"
           :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`" />
         <v-spacer />
-        <v-btn
-            :disabled="selectedFiles.length === 0"
-            color="warning"
-            @click="multipleDelete">
+        <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
         <v-menu v-if="actions.length > 0" bottom :offset-y="true">
-          <template #activator="{ on, attrs }">
+          <template #activator="{ props }">
             <v-btn
                 :disabled="selectedFiles.length === 0"
                 color="primary"
-                v-bind="attrs" v-on="on">
-              {{ $t('files.button:action-selected') }}
+                v-bind="props">
+              <v-icon v-if="smAndDown">mdi-dots-vertical</v-icon>
+              <span v-if="!smAndDown">{{ $t('files.button:action-selected') }}</span>
             </v-btn>
           </template>
           <v-list>
-            <v-list-item v-for="(action, index) in actions" :key="index" :value="action" @click="multipleAction(action)">
-              <v-list-item-title>{{ action }}</v-list-item-title>
-            </v-list-item>
+            <v-list-item v-if="smAndDown" :title="$t('files.button:delete-selected')" @click="multipleDelete" />
+            <v-list-item v-for="(action, index) in actions" :key="index" :title="action" @click="multipleAction(action)" />
           </v-list>
         </v-menu>
         <v-dialog v-model="dialogEdit" max-width="500px">
@@ -87,6 +84,7 @@
 import Common from '../classes/common';
 import Storage from '../classes/storage';
 import { VDataTable } from 'vuetify/labs/VDataTable';
+import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
 
 export default {
@@ -98,11 +96,38 @@ export default {
 
   emits: ['mask', 'notify'],
 
+  setup() {
+    const { smAndDown } = useDisplay();
+    return {
+      smAndDown
+    };
+  },
+  
   data() {
     return {
       dialogDelete: false,
       dialogEdit: false,
-      headers: [
+      files: [],
+      editedItem: {
+        name: '',
+        newName: ''
+      },
+      defaultItem: {
+        name: '',
+        newName: ''
+      },
+      selectedFiles: [],
+      thumbnails: {
+        show: storage.settings.thumbnails.show,
+        size: storage.settings.thumbnails.size
+      },
+      actions: []
+    };
+  },
+
+  computed: {
+    headers() {
+      const headers = [
         {
           align: 'start',
           sortable: false,
@@ -133,23 +158,14 @@ export default {
           sortable: false,
           key: 'actions',
         },
-      ],
-      files: [],
-      editedItem: {
-        name: '',
-        newName: ''
-      },
-      defaultItem: {
-        name: '',
-        newName: ''
-      },
-      selectedFiles: [],
-      thumbnails: {
-        show: storage.settings.thumbnails.show,
-        size: storage.settings.thumbnails.size
-      },
-      actions: []
-    };
+      ];
+
+      if (this.smAndDown) {
+        headers.splice(2, 2);
+      }
+      console.log(headers);
+      return headers;
+    }
   },
 
   watch: {
