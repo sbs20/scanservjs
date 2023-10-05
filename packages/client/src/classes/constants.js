@@ -34,6 +34,7 @@ const Constants = {
     'ru',
     'sk',
     'tr',
+    'uk',
     'zh',
     'test'
   ],
