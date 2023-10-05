@@ -1,0 +1,180 @@
+{
+   "$vuetify": {
+      "dataFooter": {
+        "pageText": "{0} - {1} / {2}",
+        "itemsPerPageAll": "@:files.items-per-page-all"
+      },
+      "noDataText": "@:global.no-data-text"
+   },
+
+   "global":{
+      "application-name":"scanservjs",
+      "no-data-text":"Доступних даних немає"
+   },
+   "about":{
+      "main":"Scanservjs - простий веб-інтерфейс для сканерів, який надає загальний доступ до сканерів по мережі (з використанням SANE) без необхідності встановлювати драйвери та складної процедури налаштування. Підтримуються формати TIF, JPG, PNG, PDF та TXT (з використанням Tesseract OCR) з можливістю встановлення ступеня стиснення. Доступне сканування багатосторінкових документів. Працює з усіма пристроями, сумісними з SANE.",
+      "issue":"Зворотній зв'язок, вихідний код:",
+      "api":"Документація Swagger API:",
+      "system-info":"Інформація про систему"
+   },
+   "colors":{
+      "accent-4":"За замовчуванням",
+      "red":"Червоний",
+      "pink":"Рожевий",
+      "purple":"Фіолетовий",
+      "deep-purple":"Темно-фіолетовий",
+      "indigo":"Індиго",
+      "blue":"Синій",
+      "light-blue":"Світло-синій",
+      "cyan":"Бірюзовий",
+      "teal":"Бірюзовий",
+      "green":"Зелений",
+      "light-green":"Світло-зелений",
+      "lime":"Лайм",
+      "yellow":"Жовтий",
+      "amber":"Янтарний",
+      "orange":"Помаранчевий",
+      "deep-orange":"Темно-оранжевий",
+      "brown":"Коричневий",
+      "blue-grey":"Сіро-голубий",
+      "grey":"Сірий"
+   },
+   "batch-dialog":{
+      "btn-cancel":"Скасувати",
+      "btn-finish":"Готово",
+      "btn-rescan":"Пересканувати",
+      "btn-next":"Далі"
+   },
+   "files":{
+      "filename":"Ім'я файлу",
+      "date":"Дата",
+      "size":"Розмір",
+      "items-per-page":"Файлів на сторінку",
+      "items-per-page-all":"Всі",
+      "message:action":"Виконано {0} на {1}",
+      "message:deleted":"Видалено {0}",
+      "message:renamed":"Файл перейменовано",
+      "button:action-selected":"Виконати дію...",
+      "button:delete-selected":"Видалити вибране",
+      "dialog:rename":"Перейменувати",
+      "dialog:rename-cancel":"Скасувати",
+      "dialog:rename-save":"Зберегти",
+      "actions":"Дії",
+      "thumbnail-show":"Показувати мініатюри",
+      "thumbnail-size":"Розмір мініатюри"
+   },
+   "navigation":{
+      "scan":"Сканування",
+      "files":"Файли",
+      "settings":"Налаштування",
+      "about":"Про програму",
+      "version":"Версія"
+   },
+   "batch-mode":{
+      "none":"Не вибрано",
+      "manual":"Вручну (з попереднім переглядом)",
+      "auto":"Авто (у порядку сканування)",
+      "auto-collate-standard":"Авто (Співставити 1, 3... 4, 2)",
+      "auto-collate-reverse":"Авто (У зворотному порядку 1, 3... 2, 4)"
+   },
+   "filter":{
+      "auto-level":"Автоматичне вирівнювання",
+      "threshold":"Поріг",
+      "blur":"Розмиття"
+   },
+   "mode":{
+      "color":"Кольоровий",
+      "halftone":"Полутон",
+      "gray":"Сірий",
+      "lineart":"Чорно-білий",
+      "24bitcolor":"@:mode.color",
+      "black & white":"@:mode.lineart",
+      "gray(error diffusion)":"@:mode.halftone",
+      "true gray":"@:mode.gray",
+      "24bit color(fast)":"@:mode.color"
+   },
+   "adf-mode":{
+      "simplex":"Простий режим",
+      "duplex":"Дуплексний режим"
+   },
+   "source":{
+      "flatbed":"Планшет",
+      "adf":"Автоподавач документів",
+      "auto":"Авто",
+      "left-aligned":"Вирівняно за лівим краєм",
+      "centrally-aligned":"Вирівняно по центру",
+      "duplex":"Дуплекс",
+      "transparency unit":"Transparency Unit",
+      "automatic document feeder":"@:source.adf",
+      "automatic document feeder(left aligned)":"@:source.adf (@:source.left-aligned)",
+      "automatic document feeder(left aligned,duplex)":"@:source.adf (@:source.left-aligned, @:source.duplex)",
+      "automatic document feeder(centrally aligned)":"@:source.adf (@:source.centrally-aligned)",
+      "automatic document feeder(centrally aligned,duplex)":"@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+   },
+   "pipeline":{
+      "high-quality":"Висока якість",
+      "medium-quality":"Середня якість",
+      "low-quality":"Низька якість",
+      "uncompressed":"Без стиснення",
+      "lzw-compressed":"Стиснення LZW",
+      "ocr":"OCR",
+      "text-file":"Текстовий файл"
+   },
+   "paper-size":{
+      "letter":"Letter",
+      "legal":"Legal",
+      "tabloid":"Tabloid",
+      "ledger":"Ledger",
+      "junior-legal":"Junior legal",
+      "half-letter":"Half letter",
+      "portrait":"Portrait",
+      "landscape":"Landscape"
+   },
+   "scan":{
+      "device":"Пристрій",
+      "source":"Джерело",
+      "resolution":"Роздільна здатність",
+      "mode":"Режим сканування",
+      "adf-mode":"Режим АПД",
+      "dynamic-lineart":"Чорно-біле",
+      "dynamic-lineart:enabled":"Увімкнено",
+      "dynamic-lineart:disabled":"Вимкнено",
+      "batch":"Пакетний режим",
+      "filters":"Фільтри",
+      "format":"Формат",
+      "btn-preview":"Попередній перегляд",
+      "btn-clear":"Очистити",
+      "btn-scan":"Сканувати",
+      "top":"Відступ зверху",
+      "left":"Відступ зліва",
+      "width":"Ширина",
+      "height":"Висота",
+      "paperSize":"Розмір паперу",
+      "brightness":"Яскравість",
+      "contrast":"Контраст",
+      "message:loading-devices":"Отримання списку пристроїв...",
+      "message:no-devices":"Пристрої не знайдено",
+      "message:deleted-preview":"Видалено",
+      "message:turn-documents":"Повернути",
+      "message:preview-of-page":"Попередній перегляд сторінки"
+   },
+   "settings":{
+      "title":"@:navigation.settings",
+      "behaviour-ui":"Інтерфейс та поведінка",
+      "locale":"Мова",
+      "locale:description":"Виберіть мову",
+      "theme":"Тема",
+      "theme:description":"Тема. При виборі теми як в системі, необхідно оновити сторінку.",
+      "theme:system":"Як в системі",
+      "theme:light":"Світла",
+      "theme:dark":"Темна",
+      "color":"Колір",
+      "color:description":"Вибір кольору заголовка додатка",
+      "show-files-after-scan:description":"Перейти до Файлів після сканування",
+      "devices":"Пристрої та сховище",
+      "reset:description":"Очистити збережені пристрої сканування та перезавантажити",
+      "reset":"Скинути",
+      "clear-storage:description":"Очистити локальне сховище та скинути налаштування за замовчуванням",
+      "clear-storage":"Очистити"
+   }
+}
