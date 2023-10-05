@@ -1,0 +1,195 @@
+{
+  "$vuetify": {
+    "dataFooter": {
+      "itemsPerPageAll": "@:files.items-per-page-all"
+    },
+    "noDataText": "@:global.no-data-text"
+  },
+
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "Nincs elérhető adat"
+  },
+
+  "about": {
+    "main": "A scanservjs egy egyszerű webes felhasználói felület a szkenneréhez. Lehetővé teszi egy vagy több szkenner (SANE használatával) megosztását egy hálózaton, illesztőprogramok vagy bonyolult telepítés nélkül. TIF, JPG, PNG, PDF és TXT formátumba (Tesseract OCR segítségével) tud menteni, különböző tömörítési beállításokkal, amelyek mindegyike konfigurálható. Támogatja a többoldalas szkennelést és az összes SANE-kompatibilis eszközt.",
+    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
+    "api": "Swagger API dokumentáció:",
+    "system-info": "Rendszer információ"
+  },
+
+  "colors": {
+    "accent-4": "Alapértelmezett",
+    "red": "Piros",
+    "pink": "Rózsaszín",
+    "purple": "Lila",
+    "deep-purple": "Sötét Lila",
+    "indigo": "Indigo",
+    "blue": "Kék",
+    "light-blue": "Világos kék",
+    "cyan": "Ciánkék",
+    "teal": "Teal",
+    "green": "Zöld",
+    "light-green": "Világos zöld",
+    "lime": "Lime",
+    "yellow": "Sárga",
+    "amber": "Borostyán sárga",
+    "orange": "Narancssárga",
+    "deep-orange": "Sötét Narancssárga",
+    "brown": "Barna",
+    "blue-grey": "Kékesszürke",
+    "grey": "Szürke"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Mégsem",
+    "btn-finish": "Kész",
+    "btn-rescan": "Oldal újrascannelése",
+    "btn-next": "Következő"
+  },
+
+  "files": {
+    "filename": "Fájlnév",
+    "date": "Dátum",
+    "size": "Méret",
+    "items-per-page": "Fileok oldalanként",
+    "items-per-page-all": "Mind",
+    "message:action": "Futtaás {0} az {1}-ből",
+    "message:deleted": "Törölt {0}",
+    "message:renamed": "Fájl átnevezve",
+    "button:action-selected": "Feladat futtatása...",
+    "button:delete-selected": "Kijelöltek törlése",
+    "dialog:rename": "Fájl átnevezése",
+    "dialog:rename-cancel": "Mégsem",
+    "dialog:rename-save": "Mentés",
+    "actions": "Akciók",
+    "thumbnail-show": "Bélyegképek mutatása",
+    "thumbnail-size": "Bélyegképek mérete"
+  },
+
+  "navigation": {
+    "scan": "Szkennelés",
+    "files": "Fájlok",
+    "settings": "Beállítások",
+    "about": "A programról",
+    "version": "Verzió"
+  },
+
+  "batch-mode": {
+    "none": "Nincs",
+    "manual": "Kézi (megerősítéssel)",
+    "auto": "Automata (Dokumentum adagolóval)",
+    "auto-collate-standard": "Automata (Leválogatás 1, 3... 4, 2)",
+    "auto-collate-reverse": "Automata (Kihagyás 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Automata szint",
+    "threshold": "Korlát",
+    "blur": "Elmosás"
+  },
+
+  "mode": {
+    "color": "Színes",
+    "halftone": "Féltónus",
+    "gray": "Szürke",
+    "lineart": "Lineart",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Egyoldalas",
+    "duplex": "Kétoldalas"
+  },
+
+  "source": {
+    "flatbed": "Síkágyas",
+    "adf": "ADF",
+    "auto": "Automata",
+    "left-aligned": "Balra Igazított",
+    "centrally-aligned": "Középre Igazított",
+    "duplex": "Kétoldalas",
+    "transparency unit": "Átlátszósági egység",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Magas minőség",
+    "medium-quality": "Közepes minőség",
+    "low-quality": "Alacsony minőség",
+    "uncompressed": "Tömörítés nélkül",
+    "lzw-compressed": "LZW tömörítéssel",
+    "ocr": "OCR",
+    "text-file": "Szöveges fájl"
+  },
+
+  "paper-size": {
+    "letter": "Levél",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Fél levél",
+    "portrait": "Álló",
+    "landscape": "Fekvő"
+  },
+
+  "scan": {
+    "device": "Eszköz",
+    "source": "Forrás",
+    "resolution": "Felbontás",
+    "mode": "Mód",
+    "adf-mode": "ADF Mód",
+    "dynamic-lineart": "Dinamikus Lineart",
+    "dynamic-lineart:enabled": "Bekapcsolva",
+    "dynamic-lineart:disabled": "Kikapcsolva",
+    "batch": "Több lap",
+    "filters": "Szűrők",
+    "format": "Formátum",
+    "btn-preview": "Előnézet",
+    "btn-clear": "Tisztítás",
+    "btn-scan": "Szkennelés",
+    "top": "Felül",
+    "left": "Balról",
+    "width": "Szélesség",
+    "height": "Magasság",
+    "paperSize": "Papír méret",
+    "brightness": "Fényerő",
+    "contrast": "Kontraszt",
+    "message:loading-devices": "Eszközök keresése...",
+    "message:no-devices": "Nem találtam eszközt",
+    "message:deleted-preview": "Törölt előnézet",
+    "message:turn-documents": "Fordítsa meg a dokumentumokat",
+    "message:preview-of-page": "Oldal előnézete"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Viselkedés és UI",
+    "locale": "Nyelv",
+    "locale:description": "Válassz nyelvet",
+    "theme": "Téma",
+    "theme:description": "Téma. Ha a rendszer témáját használja, és megváltoztatja, akkor újra kell töltenie az alkalmazást.",
+    "theme:system": "Rendszer",
+    "theme:light": "Világos",
+    "theme:dark": "Sötét",
+    "color": "Szín",
+    "color:description": "Szín. Ez megváltoztatja a felső alkalmazássáv színét.",
+    "show-files-after-scan:description": "Mutasd a fileokat a szkennelés végén",
+    "devices": "Eszközök és tárolók",
+    "reset:description": "Törli a tárolt szkennereszközöket és újratöltést kényszerít ki.",
+    "reset": "Reset",
+    "clear-storage:description": "Törli a gyorsítótárazott paraméterek helyi tárolását",
+    "clear-storage": "Törlés"
+  }
+}

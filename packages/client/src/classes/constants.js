@@ -26,6 +26,7 @@ const Constants = {
     'en-US',
     'es',
     'fr',
+    'hu',
     'it',
     'nl',
     'pl',
