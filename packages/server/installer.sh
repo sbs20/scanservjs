@@ -2,15 +2,15 @@
 
 # scanservjs installer script for Debian and Ubuntu
 # Usage:
-#   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/packages/server/installer.sh | sudo bash -s --
+#   ./installer.sh  -i
 
 tmp="/tmp/scanservjs.bkp"
 location="/var/www/scanservjs"
 
 assert_root() {
   if [ "$(id -u)" -ne "0" ]; then
-      echo "Error: This script must be executed with root privileges. Try sudo."
-      exit 1
+    echo "Error: This script must be executed with root privileges. Try sudo."
+    exit 1
   fi
 }
 
@@ -38,8 +38,6 @@ install() {
     tesseract-ocr-tur \
     tesseract-ocr-chi-sim \
     net-tools
-
-  npm install npm@8.3.0 -g
 
   if [ -d "$location" ]; then
     # keep config and data
@@ -71,18 +69,12 @@ install() {
 
   mkdir -p $location
 
-  if [ "1" = "$auto" ]; then
-    url=$(curl -s https://api.github.com/repos/sbs20/scanservjs/releases/latest | grep browser_download_url | cut -d '"' -f 4)
-    curl -L $url | tar -zxf - -C $location/
-
-  else
-    srcdir="$(cd "$(dirname "$0")" && pwd)"
-    if [ ! -e $srcdir/scanservjs.service ]; then
-      echo "Cannot find other package files. Did you mean to run --auto-install?"
-      exit 1;
-    fi
-    cp -rf $srcdir/* $location
+  srcdir="$(cd "$(dirname "$0")" && pwd)"
+  if [ ! -e $srcdir/scanservjs.service ]; then
+    echo "Cannot find other package files. Did you mean to run --auto-install?"
+    exit 1;
   fi
+  cp -rf $srcdir/* $location
 
   # Restore files
   if [ -d "$tmp" ]; then
@@ -105,7 +97,7 @@ install() {
   sed -i 's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ /etc/ImageMagick-6/policy.xml
 
   # Install all the node dependencies
-  cd $location && npm install --only=production
+  cd $location && npm install --omit=dev
 
   # Now copy the service definition
   cp $location/scanservjs.service /etc/systemd/system
@@ -229,17 +221,9 @@ scanservjs: https://github.com/sbs20/scanservjs
 # Arguments
 ===========
   usage:
-    -a | --auto-install : install scanservjs from GitHub
     -i | --install      : install scanservjs from local package
     -u | --uninstall    : uninstall scanservjs (leaves web and data files)
     --force-uninstall   : uninstall scanservjs (removes all dependencies - dragons here)
-
-# Running via curl
-==================
-  If you just ran this from curl and want to install, then just append '-a' to
-  your previous command so it looks like:
-
-    curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/packages/server/installer.sh | sudo bash -s -- -a
 
 EOF
 }
@@ -248,10 +232,6 @@ EOF
 assert_root
 
 case "$1" in
-  -a|--auto-install)
-    auto=1
-    install
-    ;;
   -i|--install)
     auto=0
     install

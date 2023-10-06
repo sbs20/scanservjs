@@ -9,9 +9,14 @@
   script. But please note that this will install dependecies and needs to run as
   root:
   ```sh
-  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/packages/server/installer.sh | sudo bash -s -- -a
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v latest
   ```
-  Note: the installer script will always install from the master branch.
+
+  If you wish to install an old version then you can now do so:
+  ```sh
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v v2.23.0
+  ```
+
 * If you're using Arch, then [@dadosch](https://github.com/dadosch) created a
   PKGBUILD script in Arch's AUR which allows Arch-distro-based users to quickly
   install and update scanservjs with any AUR helper, for example:
