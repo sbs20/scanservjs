@@ -138,6 +138,6 @@ input[type=number] {
   background: rgba(0,0,0,.4);
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 10000;
 }
 </style>
