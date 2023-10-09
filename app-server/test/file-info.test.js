@@ -37,7 +37,7 @@ describe('FileInfo', () => {
 
   it('List file', async () => {
     await assert.rejects(
-      async () => FileInfo.create('../package.json').list(),
+      async () => FileInfo.create('./missing-file.txt').list(),
       /Error: .* does not exist/);
     await assert.rejects(
       async () => FileInfo.create('./package.json').list(),

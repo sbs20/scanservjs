@@ -3,18 +3,26 @@
   "version": "3.0.0-SNAPSHOT",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
-    "clean-modules": "rm -rf node_modules packages/client/node_modules packages/server/node_modules",
-    "clean": "rm -rf ./dist",
-    "missing-translations": "npm run missing-translations --workspace=packages/client",
-    "version": "npm i && npm --allow-same-version --no-git-tag-version version $npm_package_version --workspace=packages/server --workspace=packages/client",
-    "lint": "npm run lint --workspace=packages/server --workspace=packages/client",
-    "test": "npm run test --workspace=packages/server",
-    "build": "npm run clean && npm run build --workspace=packages/client --workspace=packages/server",
-    "package": "npm run package --workspace=packages/server",
-    "verify": "npm run version && npm run lint && npm run test",
-    "docker-build": "npm run verify && docker build -t scanservjs-image .",
-    "release": "npm run verify && npm run build && npm run package",
-    "dev": "npm run dev --workspace=packages/client"
+    "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
+    "build": "npm run build:version && npm run build --workspaces && gulp assemble",
+    "clean": "npm run clean:dist && npm run clean:modules",
+    "clean:dist": "rm -rf ./dist && npm run clean:dist --workspaces",
+    "clean:modules": "rm -rf ./node_modules && npm run clean:modules --workspaces",
+    "dev": "concurrently 'npm run dev --workspace app-ui' 'npm run dev --workspace app-server'",
+    "lint": "npm run lint --workspaces",
+    "package": "gulp package",
+    "test": "npm run test --workspace=app-server",
+    "util:docker-build": "npm run verify && docker build --target scanservjs-core --tag scanservjs-image .",
+    "util:missing-translations": "npm run missing-translations --workspace=app-ui"
+  },
+  "devDependencies": {
+    "concurrently": "8.2.1",
+    "gulp": "4.0.2",
+    "gulp-chmod": "3.1.0",
+    "gulp-filter": "7.0.0",
+    "gulp-gzip": "1.4.2",
+    "gulp-tar": "3.1.0",
+    "merge-stream": "2.0.0"
   },
   "repository": {
     "type": "git",
@@ -22,5 +30,8 @@
   },
   "author": "Sam Strachan",
   "license": "GPL-2.0",
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "app-server",
+    "app-ui"
+  ]
 }

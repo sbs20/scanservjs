@@ -6,14 +6,14 @@ FROM node:18-alpine AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
-COPY package*.json "$APP_DIR/"
-COPY packages/server/package*.json "$APP_DIR/packages/server/"
-COPY packages/client/package*.json "$APP_DIR/packages/client/"
+COPY package*.json gulpfile.js "$APP_DIR/"
+COPY app-server/package*.json "$APP_DIR/app-server/"
+COPY app-ui/package*.json "$APP_DIR/app-ui/"
 
 RUN npm install .
 
-COPY packages/client/ "$APP_DIR/packages/client/"
-COPY packages/server/ "$APP_DIR/packages/server/"
+COPY app-server/ "$APP_DIR/app-server/"
+COPY app-ui/ "$APP_DIR/app-ui/"
 
 RUN npm run build
 
@@ -49,7 +49,6 @@ RUN apt-get update \
   && sed -i \
     's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
     /etc/ImageMagick-6/policy.xml \
-  && npm install -g npm@8.3.0 \
   && npm cache clean --force;
 
 # Core image
@@ -84,7 +83,7 @@ ENTRYPOINT [ "/run.sh" ]
 
 # Copy the code and install
 COPY --from=scanservjs-build "$APP_DIR/dist" "$APP_DIR/"
-RUN npm install --production \
+RUN npm install --omit=dev \
   && npm cache clean --force;
 
 EXPOSE 8080

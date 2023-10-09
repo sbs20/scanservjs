@@ -1,0 +1,49 @@
+{
+  "name": "scanservjs-server",
+  "version": "3.0.0-SNAPSHOT",
+  "description": "scanservjs-api is a REST based API to control your scanner.",
+  "scripts": {
+    "build": "gulp build",
+    "clean": "npm run clean:dist && npm run clean:modules",
+    "clean:dist": "rm -rf ./dist",
+    "clean:modules": "rm -rf ./node_modules",
+    "dev": "nodemon -e js,json,yml src/server.js",
+    "lint": "gulp lint",
+    "serve": "node ./src/server.js",
+    "test": "mocha"
+  },
+  "main": "server/server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbs20/scanservjs"
+  },
+  "devDependencies": {
+    "eslint": "8.51.0",
+    "gulp": "4.0.2",
+    "gulp-chmod": "3.1.0",
+    "gulp-eslint": "6.0.0",
+    "gulp-filter": "7.0.0",
+    "merge-stream": "2.0.0",
+    "mocha": "10.2.0",
+    "nodemon": "3.0.1"
+  },
+  "author": "Sam Strachan",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "adm-zip": "0.5.10",
+    "dayjs": "1.11.10",
+    "express": "4.18.2",
+    "express-basic-auth": "1.2.1",
+    "loglevel": "1.8.1",
+    "loglevel-plugin-prefix": "0.8.4",
+    "mv": "2.1.1",
+    "semver": "7.5.4",
+    "swagger-jsdoc": "6.2.8",
+    "swagger-ui-express": "4.6.3"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server"
+    ]
+  }
+}
