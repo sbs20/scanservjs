@@ -93,11 +93,10 @@ dist
 
 
 # Project specific
-**/server/config/devices.json
-**/server/data/output/*
-**/server/data/temp/*
-**/server/data/thumbnail/*
-**/server/data/preview/*.tif
-**/scan*.jpg
+app-server/config/devices.json
+app-server/data/output/*
+app-server/data/temp/*
+app-server/data/thumbnail/*
+app-server/data/preview/*.tif
 **/config.local.js
 var

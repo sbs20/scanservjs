@@ -51,19 +51,13 @@ echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.c
 Before committing please verify and build
 
 ```
-npm run verify && npm run build
-```
-
-Alternatively, create a local release package
-
-```
-npm run release
+npm run lint && npm run test && npm run build
 ```
 
 ## Find missing translations
 
 ```
-npm run missing-translations
+npm run util:missing-translations
 ```
 
 ## Updating node dependencies
@@ -154,14 +148,14 @@ various ways to achieve this but Docker works well.
 FROM node:18-alpine AS release-node18
 WORKDIR /app
 
-COPY package*.json /app/
-COPY packages/server/package*.json /app/packages/server/
-COPY packages/client/package*.json /app/packages/client/
+COPY package*.json gulpfile.js "$APP_DIR/"
+COPY app-server/package*.json "$APP_DIR/app-server/"
+COPY app-ui/package*.json "$APP_DIR/app-ui/"
 
 RUN npm install .
 
-COPY packages/client/ /app/packages/client/
-COPY packages/server/ /app/packages/server/
+COPY app-server/ "$APP_DIR/app-server/"
+COPY app-ui/ "$APP_DIR/app-ui/"
 
 RUN npm run build && npm run package
 
