@@ -1,4 +1,4 @@
-packages/server/node_modules
-packages/client/node_modules
-release
+app-server/node_modules
+app-ui/node_modules
+node_modules
 var
