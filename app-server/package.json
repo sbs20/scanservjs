@@ -3,12 +3,12 @@
   "version": "3.0.0-SNAPSHOT",
   "description": "scanservjs-api is a REST based API to control your scanner.",
   "scripts": {
-    "build": "gulp build",
+    "build": "node build.js",
     "clean": "npm run clean:dist && npm run clean:modules",
     "clean:dist": "rm -rf ./dist",
     "clean:modules": "rm -rf ./node_modules",
     "dev": "nodemon -e js,json,yml src/server.js",
-    "lint": "gulp lint",
+    "lint": "eslint ./src/**/*.js ./config/config.default.js ./test/**/*.js build.js",
     "serve": "node ./src/server.js",
     "test": "mocha"
   },
@@ -19,11 +19,7 @@
   },
   "devDependencies": {
     "eslint": "8.51.0",
-    "gulp": "4.0.2",
-    "gulp-chmod": "3.1.0",
-    "gulp-eslint": "6.0.0",
-    "gulp-filter": "7.0.0",
-    "merge-stream": "2.0.0",
+    "fs-extra": "11.1.1",
     "mocha": "10.2.0",
     "nodemon": "3.0.1"
   },

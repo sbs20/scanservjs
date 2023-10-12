@@ -148,9 +148,10 @@ various ways to achieve this but Docker works well.
 FROM node:18-alpine AS release-node18
 WORKDIR /app
 
-COPY package*.json gulpfile.js "$APP_DIR/"
+COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
+COPY app-assets/* "$APP_DIR/app-assets/"
 
 RUN npm install .
 

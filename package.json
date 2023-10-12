@@ -4,25 +4,22 @@
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
     "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
-    "build": "npm run build:version && npm run build --workspaces && gulp assemble",
-    "clean": "npm run clean:dist && npm run clean:modules",
+    "build": "npm run build:version && npm run build --workspaces && node build.js --assemble",
+    "clean": "npm run clean:dist && npm run clean:modules && npm run clean:release",
     "clean:dist": "rm -rf ./dist && npm run clean:dist --workspaces",
     "clean:modules": "rm -rf ./node_modules && npm run clean:modules --workspaces",
+    "clean:release": "rm -rf ./release",
     "dev": "concurrently 'npm run dev --workspace app-ui' 'npm run dev --workspace app-server'",
     "lint": "npm run lint --workspaces",
-    "package": "gulp package",
+    "package": "node build.js --package",
     "test": "npm run test --workspace=app-server",
-    "util:docker-build": "npm run verify && docker build --target scanservjs-core --tag scanservjs-image .",
+    "util:docker-build": "docker build --target scanservjs-core --tag scanservjs-image .",
     "util:missing-translations": "npm run missing-translations --workspace=app-ui"
   },
   "devDependencies": {
     "concurrently": "8.2.1",
-    "gulp": "4.0.2",
-    "gulp-chmod": "3.1.0",
-    "gulp-filter": "7.0.0",
-    "gulp-gzip": "1.4.2",
-    "gulp-tar": "3.1.0",
-    "merge-stream": "2.0.0"
+    "fs-extra": "11.1.1",
+    "tar": "6.2.0"
   },
   "repository": {
     "type": "git",

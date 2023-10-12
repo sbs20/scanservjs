@@ -6,9 +6,10 @@ FROM node:18-alpine AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
-COPY package*.json gulpfile.js "$APP_DIR/"
+COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
+COPY app-assets/* "$APP_DIR/app-assets/"
 
 RUN npm install .
 
@@ -82,7 +83,7 @@ RUN ["chmod", "+x", "/run.sh"]
 ENTRYPOINT [ "/run.sh" ]
 
 # Copy the code and install
-COPY --from=scanservjs-build "$APP_DIR/dist" "$APP_DIR/"
+COPY --from=scanservjs-build "$APP_DIR/dist/core" "$APP_DIR/"
 RUN npm install --omit=dev \
   && npm cache clean --force;
 
