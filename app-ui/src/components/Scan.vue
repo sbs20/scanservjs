@@ -9,7 +9,7 @@
             v-model="device"
             style="min-width: 0px;"
             :label="$t('scan.device')"
-            :items="context.devices" return-object item-title="name" @change="clear" />
+            :items="context.devices" return-object item-title="name" @update:model-value="clear" />
           <v-btn small class="ml-2 mt-4 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon>mdi-refresh</v-icon></v-btn>
         </div>
 
@@ -53,7 +53,7 @@
           item-value="value"
           :label="$t('scan.filters')"
           multiple
-          @change="readPreview" />
+          @update:model-value="readPreview" />
 
         <v-select
           v-model="request.pipeline"
