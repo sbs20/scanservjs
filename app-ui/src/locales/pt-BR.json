@@ -7,12 +7,14 @@
   },
 
   "global": {
-    "application-name": "scanservjs"
+    "application-name": "scanservjs",
+    "no-data-text": "Sem informação disponível"
   },
 
   "about": {
     "main": "scanservjs é uma interface via web simples. Permite compartilhar via rede um ou mais scanners (via SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com diversas configurações de compressão. Suporta digitalização multipágina e todos dispositivos SANE compatíveis.",
-    "issue": "Relatar uma questão ou ver código fonte:",
+    "issue": "Relatar um problema ou ver código fonte:",
+    "api": "Documentação Swagger da API:",
     "system-info": "Informação do sistema"
   },
 
@@ -52,9 +54,11 @@
     "size": "Tamanho",
     "items-per-page": "Itens por página",
     "items-per-page-all": "Todos",
+    "message:action": "Finalizado {0} de {1}",
     "message:deleted": "Excluído {0}",
     "message:renamed": "Arquivo renomeado",
-    "button:delete-selected": "Deletar selecionado",
+    "button:action-selected": "Executar ação...",
+    "button:delete-selected": "Excluir selecionado",
     "dialog:rename": "Mudar nome arquivo",
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
@@ -95,6 +99,11 @@
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Apenas 1 lado da folha",
+    "duplex": "Dois lados da folha"
   },
 
   "source": {
@@ -138,6 +147,7 @@
     "source": "Origem",
     "resolution": "Resolução",
     "mode": "Modo",
+    "adf-mode": "Modo Alimentador Automático de Documentos",
     "dynamic-lineart": "Arte linear dinâmico",
     "dynamic-lineart:enabled": "Ativado",
     "dynamic-lineart:disabled": "Desativado",
