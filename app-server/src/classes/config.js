@@ -186,7 +186,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (TIF | @:pipeline.lzw-compressed)',
         commands: [
-          'while read filename ; do convert -compress lzw $filename converted-$(date +%s.%N).tif ; done',
+          'while read filename ; do convert -compress lzw $filename converted-$(date +%s.%N).tif ; done && ls converted-*.tif',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -195,7 +195,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.high-quality)',
         commands: [
-          'while read filename ; do convert -quality 92 $filename converted-$(date +%s.%N).jpg ; done',
+          'while read filename ; do convert -quality 92 $filename converted-$(date +%s.%N).jpg ; done && ls converted-*.jpg',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -204,7 +204,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.medium-quality)',
         commands: [
-          'while read filename ; do convert -quality 75 $filename converted-$(date +%s.%N).jpg ; done',
+          'while read filename ; do convert -quality 75 $filename converted-$(date +%s.%N).jpg ; done && ls converted-*.jpg',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -213,7 +213,7 @@ module.exports = class Config {
         extension: 'pdf',
         description: 'PDF (JPG | @:pipeline.low-quality)',
         commands: [
-          'while read filename ; do convert -quality 50 $filename converted-$(date +%s.%N).jpg ; done',
+          'while read filename ; do convert -quality 50 $filename converted-$(date +%s.%N).jpg ; done && ls converted-*.jpg',
           'convert @- scan-0000.pdf',
           'ls scan-*.*'
         ]
@@ -223,7 +223,7 @@ module.exports = class Config {
         description: '@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)',
         get commands() {
           return [
-            'while read filename ; do convert -quality 92 $filename tmp-$(date +%s.%N).jpg ; done  && ls tmp-*.jpg',
+            'while read filename ; do convert -quality 92 $filename converted-$(date +%s.%N).jpg ; done && ls converted-*.jpg',
             `${config.tesseract} -l ${config.ocrLanguage} -c stream_filelist=true - - pdf > scan-0001.pdf`,
             'ls scan-*.*'
           ];
