@@ -110,4 +110,30 @@ describe('CommandBuilder', () => {
       () => new CommandBuilder('echo').redirect(['invalid']).build(),
       /Error: Invalid argument.*/);
   });
+
+  it('command-argPair-simple', async () => {
+    assert.strictEqual(
+      new CommandBuilder('echo').argPair('--batch', 'path.jpg').build(),
+      'echo --batch=path.jpg');
+  });
+
+  it('command-argPair-escape', async () => {
+    assert.strictEqual(
+      new CommandBuilder('echo').argPair('--batch', '/path/file-%04d.jpg').build(),
+      // eslint-disable-next-line quotes
+      `echo --batch='/path/file-%04d.jpg'`);
+  });
+
+  it('command-argPair-escape-dblquote', async () => {
+    assert.strictEqual(
+      new CommandBuilder('echo').argPair('--batch', '/path/file-".jpg').build(),
+      // eslint-disable-next-line quotes
+      `echo --batch='/path/file-".jpg'`);
+  });
+
+  it('command-argPair-bad', async () => {
+    assert.throws(
+      () => new CommandBuilder('echo').argPair('--batch', 'file-\'.jpg').build(),
+      /Error: Argument must not contain.*/);
+  });
 });
