@@ -123,7 +123,7 @@ module.exports = class ScanimageCommand {
     }
     if ([Constants.BATCH_AUTO, Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE].includes(request.batch)) {
       const pattern = `${this.config.tempDirectory}/${Constants.TEMP_FILESTEM}-${request.index}-%04d.tif`;
-      cmdBuilder.arg(`--batch=${pattern}`);
+      cmdBuilder.argPair('--batch', pattern);
     } else {
       const outputFile = 'isPreview' in params && params.isPreview
         ? `${this.config.previewDirectory}/preview.tif`

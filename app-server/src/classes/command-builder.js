@@ -40,6 +40,30 @@ module.exports = class CommandBuilder {
   }
 
   /**
+   * Use for arguments requiring key=value. Using `arg(...)` doesn't work:
+   *
+   * ```js
+   *   .arg('-key', 'value') // becomes "-key value"
+   *   .arg('-key=value') // becomes "'-key=value'"
+   * ```
+   *
+   * Both of these results are incorrect and fail to work.
+   *
+   * This method provides a solution so that
+   *
+   * ```js
+   *   .argPair('-key', 'value') // becomes "-key='value'"
+   * ```
+   * @param {string} key
+   * @param {string} value
+   */
+  argPair(key, value) {
+    const arg = `${this._format(key)}=${this._format(value)}`;
+    this.args.push(arg);
+    return this;
+  }
+
+  /**
    * @param {string} operator
    * @returns {CmdBuilder}
    */

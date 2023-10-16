@@ -95,4 +95,19 @@ describe('ScanimageCommand', () => {
     assert.strictEqual(command, `/usr/bin/scanimage -d 'fujitsu:ScanSnap S1500:8176' --source 'ADF Front' --mode Lineart --resolution 600 --page-width 215.8 --page-height 279.3 -l 0 -t 0 -x 215.8 -y 279.3 --format tiff --ald=yes --brightness 0 -o data/temp/~tmp-scan-0-0001.tif`);
   });
 
+  it('scanimage-batch.txt', () => {
+    const file = FileInfo.create('test/resource/scanimage-a5.txt');
+    const device = Device.from(file.toText());
+    const context = new Context(application.config(), [device], new UserOptions());
+    const request = new Request(context, {
+      params: {
+        source: 'Automatic Document Feeder'
+      },
+      batch: 'auto'
+    });
+    const command = commandFor('1.1.1', request);
+    // eslint-disable-next-line quotes
+    assert.strictEqual(command, `/usr/bin/scanimage -d 'pixma:04A91766_004AE4' --source 'Automatic Document Feeder' --mode Color --resolution 75 -l 0 -t 0 -x 216 -y 355.6 --format tiff --batch='data/temp/~tmp-scan-1-%04d.tif'`);
+  });
+
 });
