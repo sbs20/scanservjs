@@ -23,8 +23,8 @@ cd scanservjs && npm install .
 npm run dev
 ```
 
-`npm run dev` will simultanesouly run the server (see
-package.json ad vite.config.js).
+`npm run dev` will simultanesouly run the server (see package.json and
+vite.config.js).
 
 If you run into the following error, then you may need to increase your inotify
 limit:
@@ -145,22 +145,23 @@ various ways to achieve this but Docker works well.
 
 ```Docker
 # build.Dockerfile
-FROM node:18-alpine AS release-node18
-WORKDIR /app
+FROM node:18-bookworm-slim AS scanservjs-build
+ENV APP_DIR=/app
+WORKDIR "$APP_DIR"
 
 COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
-COPY app-assets/* "$APP_DIR/app-assets/"
 
-RUN npm install .
+RUN npm clean-install .
 
 COPY app-server/ "$APP_DIR/app-server/"
 COPY app-ui/ "$APP_DIR/app-ui/"
 
-RUN npm run build && npm run package
+RUN npm run build
 
-RUN ls -al /app/release/
+COPY makedeb.sh "$APP_DIR/"
+RUN ./makedeb.sh
 ```
 
 Run the dockerfile:
@@ -173,22 +174,6 @@ If you want, you can copy the files out again:
 
 ```sh
 id=$(docker create scanservjs-release-node18)
-docker cp $id:/app/release ./release
+docker cp $id:/app/debian ./
 docker rm -v $id
-```
-
-You can take this a step further and run a release - although it won't run
-successfully to completion.
-
-```Docker
-# Deploy
-FROM debian:11.7-slim AS debian11
-
-COPY --from=release-node18 /app/release/* /tmp/
-
-RUN ls -al /tmp/
-
-RUN mkdir -p /tmp/scanserv-install \
-  && tar -xvf /tmp/scanservjs*.tar.gz -C /tmp/scanserv-install \
-  && /tmp/scanserv-install/installer.sh --install
 ```

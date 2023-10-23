@@ -1,17 +1,16 @@
 #!/bin/bash
 
-# scanservjs installer script for Debian and Ubuntu
+# scanservjs installer script for Debian based distros
 # Usage:
 #   curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s --
 #
 # This script is not packaged with the distribution. It is designed to be run
-# online or in a development environmet only. The actual install script is
-# contained in the root of the package.
+# online or in a development environmet only.
 
 # Be sure we're root
 if [ "$(id -u)" -ne "0" ]; then
-    echo "Error: This script must be executed with root privileges. Try sudo."
-    exit 1
+  echo "Error: This script must be executed with root privileges. Try sudo."
+  exit 1
 fi
 
 # Create a temporary directory and store its name in a variable.
@@ -19,8 +18,8 @@ TEMPD=$(mktemp -d)
 
 # Exit if the temp directory wasn't created successfully.
 if [ ! -e "$TEMPD" ]; then
-    >&2 echo "Failed to create temp directory"
-    exit 1
+  >&2 echo "Failed to create temp directory"
+  exit 1
 fi
 
 # Make sure the temp directory gets removed on script exit.
@@ -52,10 +51,24 @@ EOF
   fi
 
   echo "Found asset: $url"
+  cd $TEMPD
   echo "Downloading to $TEMPD/..."
-  curl -L $url | tar -zxf - -C "$TEMPD/"
-  ls $TEMPD
-  $TEMPD/installer.sh -i
+  curl -O -L $url
+  local filename=$(ls)
+
+  # Old versions are packaged as tarballs which contain `installer.sh`
+  if echo $filename | grep -q '.tar.gz$'; then
+    echo "Found .tar.gz ($filename)"
+    mkdir inflated
+    tar -zxf $filename -C inflated
+    inflated/installer.sh -i
+  fi
+
+  # Newer releases are packaged as deb packages which can be installed with apt
+  if echo $filename | grep -q '.deb$'; then
+    echo "Found .deb ($filename)"
+    apt-get install "./$filename"
+  fi
 }
 
 print_help() {
@@ -65,12 +78,7 @@ scanservjs: https://github.com/sbs20/scanservjs
 
 # Overview
 ==========
-  This script will download scanservjs and execute the install script for it.
-  
-  The install script varies per version but typically it installs the bare
-  minimum for it to work. It will add sane-utils but not sane, as you may have
-  your sane backend running on another server. For further information look at
-  the install script of the version you're intending to install.
+  This script will download scanservjs and install it.
 
 # Arguments
 ===========
