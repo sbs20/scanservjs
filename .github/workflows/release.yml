@@ -35,18 +35,16 @@ jobs:
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
     # Install packages and build
-    - run: npm install .
+    - run: npm clean-install .
     - run: npm run lint
     - run: npm run test
     - run: npm run build
-      env:
-        CI: true
-    - run: npm run package
+    - run: ./makedeb.sh
 
     # We may need the package name for a release later (if not the dev branch and it's node 12)
     - name: Retrieve package name
       run: |
-        echo "PACKAGE_NAME=$(ls ./release/)" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=$(ls ./debian/scanservjs_*.deb)" >> $GITHUB_ENV
 
     # Create a draft release if there's a package
     - name: Create Release
@@ -72,4 +70,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./release/${{ env.PACKAGE_NAME }}
         asset_name: ${{ env.PACKAGE_NAME }}
-        asset_content_type: application/gzip
+        asset_content_type: application/vnd.debian.binary-package

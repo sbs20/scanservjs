@@ -10,7 +10,7 @@ on:
       - 'LICENSE'
       - '**/*.md'
       - 'Dockerfile'
-      - 'run.sh'
+      - 'entrypoint.sh'
 
     branches:
       - master
@@ -47,9 +47,8 @@ jobs:
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
     # Install packages and build
-    - run: npm install .
+    - run: npm clean-install .
     - run: npm run lint
     - run: npm run test
     - run: npm run build
-      env:
-        CI: true
+    - run: ./makedeb.sh

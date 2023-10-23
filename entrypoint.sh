@@ -2,7 +2,7 @@
 set -xve
 
 # Test using the following form:
-# export SANED_NET_HOSTS="a|b" AIRSCAN_DEVICES="c|d" DELIMITER="|"; ./run.sh
+# export SANED_NET_HOSTS="a|b" AIRSCAN_DEVICES="c|d" DELIMITER="|"; ./entrypoint.sh
 
 # turn off globbing
 set -f

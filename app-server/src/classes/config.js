@@ -49,7 +49,7 @@ module.exports = class Config {
       convert: '/usr/bin/convert',
       tesseract: '/usr/bin/tesseract',
 
-      devicesPath: path.join(BASE_PATH, 'config/devices.json'),
+      devicesPath: path.join(BASE_PATH, 'data/devices.json'),
       outputDirectory: path.join(BASE_PATH, 'data/output'),
       thumbnailDirectory: path.join(BASE_PATH, 'data/thumbnail'),
       previewDirectory: path.join(BASE_PATH, 'data/preview'),

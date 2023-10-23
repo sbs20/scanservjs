@@ -1,32 +1,41 @@
 # Builder image
 #
-# The builder image simply builds the core javascript app and nothing else
+# The builder image builds the core javascript app and debian package
 # ==============================================================================
-FROM node:18-alpine AS scanservjs-build
+FROM node:18-bookworm-slim AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
 COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
-COPY app-assets/* "$APP_DIR/app-assets/"
 
-RUN npm install .
+RUN npm clean-install .
 
 COPY app-server/ "$APP_DIR/app-server/"
 COPY app-ui/ "$APP_DIR/app-ui/"
 
 RUN npm run build
 
+COPY makedeb.sh "$APP_DIR/"
+RUN ./makedeb.sh
+
 # Sane image
 #
 # This is the minimum bookworm/node/sane image required which is used elsewhere.
+# Dependencies are installed here in order to anticipate and cache what will
+# be required by the deb package. It would all still work perfectly well if this
+# layer did not exist but testing would be slower and more painful.
 # ==============================================================================
-FROM node:18-bookworm-slim AS scanservjs-base
+FROM debian:bookworm-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
+    nodejs \
+    npm \
+    adduser \
     imagemagick \
-    sane \
+    ipp-usb \
+    sane-airscan \
     sane-utils \
     tesseract-ocr \
     tesseract-ocr-ces \
@@ -41,16 +50,7 @@ RUN apt-get update \
     tesseract-ocr-rus \
     tesseract-ocr-tur \
     tesseract-ocr-chi-sim \
-    sane-airscan \
-    ipp-usb \
-  && rm -rf /var/lib/apt/lists/* \
-  && sed -i \
-    's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ \
-    /etc/ImageMagick-6/policy.xml \
-  && sed -i \
-    's/policy domain="resource" name="disk" value="1GiB"/policy domain="resource" name="disk" value="8GiB"'/ \
-    /etc/ImageMagick-6/policy.xml \
-  && npm cache clean --force;
+  && rm -rf /var/lib/apt/lists/*;
 
 # Core image
 #
@@ -59,10 +59,6 @@ RUN apt-get update \
 # own image with drivers then this is likely the image to start from.
 # ==============================================================================
 FROM scanservjs-base AS scanservjs-core
-
-ENV APP_DIR=/app
-WORKDIR "$APP_DIR"
-
 ENV \
   # This goes into /etc/sane.d/net.conf
   SANED_NET_HOSTS="" \
@@ -78,14 +74,16 @@ ENV \
   OCR_LANG=""
 
 # Copy entry point
-COPY run.sh /run.sh
-RUN ["chmod", "+x", "/run.sh"]
-ENTRYPOINT [ "/run.sh" ]
+COPY entrypoint.sh /entrypoint.sh
+RUN ["chmod", "+x", "/entrypoint.sh"]
+ENTRYPOINT [ "/entrypoint.sh" ]
 
 # Copy the code and install
-COPY --from=scanservjs-build "$APP_DIR/dist/core" "$APP_DIR/"
-RUN npm install --omit=dev \
-  && npm cache clean --force;
+COPY --from=scanservjs-build "/app/debian/scanservjs_*.deb" "/"
+RUN apt-get install ./scanservjs_*.deb \
+  && rm -f ./scanservjs_*.deb
+
+WORKDIR /usr/lib/scanservjs
 
 EXPOSE 8080
 
@@ -98,7 +96,8 @@ EXPOSE 8080
 # ==============================================================================
 FROM scanservjs-core AS scanservjs-user2001
 
-# Make it possible to override the UID/GID/username of the user running scanservjs
+# Make it possible to override the UID/GID/username of the user running
+# scanservjs
 ARG UID=2001
 ARG GID=2001
 ARG UNAME=scanservjs
@@ -108,7 +107,7 @@ ARG UNAME=scanservjs
 # config files need write access).
 RUN groupadd -g $GID -o $UNAME \
   && useradd -o -u $UID -g $GID -m -s /bin/bash $UNAME \
-  && chown -R $UID:$GID /run.sh "$APP_DIR" /etc/sane.d/net.conf /etc/sane.d/airscan.conf
+  && chown -R $UID:$GID /entrypoint.sh /srv/scanservjs /etc/sane.d/net.conf /etc/sane.d/airscan.conf
 USER $UNAME
 
 # default build
