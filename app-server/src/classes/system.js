@@ -1,5 +1,4 @@
 const os = require('os');
-const Process = require('./process');
 const FileInfo = require('./file-info');
 
 const ContainerTypes = {
@@ -8,18 +7,6 @@ const ContainerTypes = {
   PODMAN: 'podman',
   SYSTEMD_NSPAWN: 'systemd-nspawn'
 };
-
-/**
- * @returns {Promise<string>} The detected npm version
- */
-async function getNpmVersion() {
-  try {
-    const buffer = await Process.spawn('npm -v');
-    return buffer.toString().trim();
-  } catch (error) {
-    return 'Failed to determine';
-  }
-}
 
 /**
  * @returns {'docker' | 'podman' | 'systemd-nspawn' | null>} The used container technology, or null if no container was detected.
@@ -44,7 +31,6 @@ function getContainerType() {
 module.exports = new class System {
 
   constructor() {
-    this.npmVersion = null;
     this.containerType = null;
   }
 
@@ -56,10 +42,6 @@ module.exports = new class System {
       this.containerType = getContainerType();
     }
 
-    if (this.npmVersion === null) {
-      this.npmVersion = await getNpmVersion();
-    }
-
     const info = {
       os: {
         arch: os.arch(),
@@ -69,7 +51,6 @@ module.exports = new class System {
         type: os.type()
       },
       node: process.version,
-      npm: this.npmVersion,
       containerType: this.containerType,
     };
 

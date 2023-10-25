@@ -128,7 +128,6 @@
  * @typedef {Object} SystemInfo
  * @property {OsInfo} os
  * @property {string} node
- * @property {string} npm
  * @property {boolean} docker
  */
 
