@@ -5,7 +5,7 @@ BASE="./debian"
 APP_NAME="scanservjs"
 PATH_ETC="/etc/$APP_NAME"
 PATH_SYSTEMD="/lib/systemd/system"
-PATH_RUNTIME="/srv/$APP_NAME"
+PATH_RUNTIME="/usr/share/$APP_NAME"
 PATH_LIB="/usr/lib/$APP_NAME"
 PATH_DOC="/usr/share/doc/$APP_NAME"
 DIR_DEBIAN="$BASE/DEBIAN"
@@ -35,6 +35,9 @@ cp -rv dist/* $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
+
+# Get rid of map files
+find $DIR_LIB -name "*.map" -type f -delete
 
 # Move and tidy up files
 mv -v $DIR_LIB/data/preview/* $DIR_RUNTIME/preview/
