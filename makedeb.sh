@@ -33,6 +33,9 @@ mkdir -pv $DIR_DOC
 # Copy distribution
 cp -rv dist/* $DIR_LIB
 
+# Install node deps
+npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
+
 # Move and tidy up files
 mv -v $DIR_LIB/data/preview/* $DIR_RUNTIME/preview/
 mv -v $DIR_LIB/config/* $DIR_ETC/
@@ -73,8 +76,8 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: all
-Depends: adduser, nodejs (>= 12), imagemagick, sane-utils
-Recommends: npm (>= 7.5), sane-airscan, ipp-usb, tesseract-ocr, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
+Depends: adduser, nodejs, imagemagick, sane-utils
+Recommends: sane-airscan, ipp-usb, tesseract-ocr, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
 Maintainer: Sam Strachan <info@sbs20.com>
 Description: Web-based UI for SANE
   scanservjs allows you to share a scanner on a network without the need for
@@ -111,9 +114,6 @@ if [ "\$1" = "configure" ] ; then
   # Set permissions
   chown -R $USER:$GROUP $PATH_RUNTIME
 
-  # Install node deps
-  npm clean-install --omit=dev --only=prod --loglevel=error --prefix $PATH_LIB
-
   # Enable PDF
   sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
@@ -145,8 +145,8 @@ if [ "\$1" = "configure" ] ; then
     echo "From version 3, the file locations have changed. If you want to maintain "
     echo "your old settings then you can do the following:"
     echo
-    echo "  cp -v /var/www/scanservjs/data/output/* /srv/scanservjs/output/"
-    echo "  sudo cp -v /var/www/scanservjs/config/*.local.js /etc/scanservjs/"
+    echo "  cp -v /var/www/scanservjs/data/output/* $PATH_RUNTIME/output/"
+    echo "  sudo cp -v /var/www/scanservjs/config/*.local.js $PATH_ETC/"
     echo
     echo "If you wish to go further then:"
     echo
@@ -190,7 +190,7 @@ fi
 # Let the user know about deleting other stuff
 if [ "\$1" = "purge" ]; then
   echo "Consider removing the following. You will need root privileges:"
-  echo "  userdel -r scanservjs"
+  echo "  userdel -r $USER"
   echo "  rf -rf $PATH_ETC $PATH_RUNTIME"
 fi
 
