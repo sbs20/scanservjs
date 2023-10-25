@@ -60,12 +60,6 @@ npm run lint && npm run test && npm run build
 npm run util:missing-translations
 ```
 
-## Updating node dependencies
-
-* `npm audit fix` or `npm update`. This won't remove old packages; to do so,
-  delete node_modules and reinstall
-* `cd packages/client/ && npx browserslist@latest --update-db`
-
 ## References
 
 * [i18n](https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n)

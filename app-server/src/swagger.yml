@@ -489,9 +489,6 @@ definitions:
       node:
         type: string
         example: "v12.22.12"
-      npm:
-        type: string
-        example: "8.3.0"
       docker:
         type: boolean
 

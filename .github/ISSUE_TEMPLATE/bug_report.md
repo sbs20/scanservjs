@@ -41,9 +41,6 @@ This may be useful
 # Node version
 echo "node: $(node -v)"
 
-# NPM version
-echo "npm: $(npm -v)"
-
 # Docker version
 echo "docker: $(docker -v)"
 

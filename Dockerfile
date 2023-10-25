@@ -31,7 +31,6 @@ FROM debian:bookworm-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
     nodejs \
-    npm \
     adduser \
     imagemagick \
     ipp-usb \
