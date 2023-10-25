@@ -216,7 +216,7 @@ module.exports = class ExpressConfigurer {
   }
 
   /**
-   * Configures swagger
+   * Configures statics
    * @returns {ExpressConfigurer}
    */
   statics() {
