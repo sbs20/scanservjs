@@ -23,7 +23,7 @@
                 :disabled="selectedFiles.length === 0"
                 color="primary"
                 v-bind="props">
-              <v-icon v-if="smAndDown">mdi-dots-vertical</v-icon>
+              <v-icon v-if="smAndDown" :icon="mdiDotsVertical" />
               <span v-if="!smAndDown">{{ $t('files.button:action-selected') }}</span>
             </v-btn>
           </template>
@@ -64,15 +64,9 @@
       {{ $d(new Date(item.columns.lastModified), 'long') }}
     </template>
     <template #[`item.actions`]="{ item }">
-      <v-icon class="mr-2" @click="open(item.columns)">
-        mdi-download
-      </v-icon>
-      <v-icon class="mr-2" @click="fileRename(item.columns)">
-        mdi-pencil
-      </v-icon>
-      <v-icon class="mr-2" @click="fileRemove(item.columns)">
-        mdi-delete
-      </v-icon>
+      <v-icon class="mr-2" :icon="mdiDownload" @click="open(item.columns)" />
+      <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item.columns)" />
+      <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item.columns)" />
     </template>
     <template #[`footer.page-text`]="items">
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
@@ -83,6 +77,7 @@
 <script>
 import Common from '../classes/common';
 import Storage from '../classes/storage';
+import { mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
 import { VDataTable } from 'vuetify/labs/VDataTable';
 import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
@@ -99,6 +94,10 @@ export default {
   setup() {
     const { smAndDown } = useDisplay();
     return {
+      mdiDelete,
+      mdiDotsVertical,
+      mdiDownload,
+      mdiPencil,
       smAndDown
     };
   },

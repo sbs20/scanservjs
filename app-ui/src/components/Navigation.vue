@@ -5,10 +5,10 @@
       <v-toolbar-title class="unselectable">{{ $t('global.application-name') }}</v-toolbar-title>
       <v-spacer />
       <v-toolbar-items class="d-none d-md-block">
-        <v-btn class="transparent" elevation="0" @click="go('/scan')"><v-icon class="mr-2">mdi-camera</v-icon>{{ $t('navigation.scan') }}</v-btn>
-        <v-btn class="transparent" elevation="0" @click="go('/files')"><v-icon class="mr-2">mdi-file-document-multiple</v-icon>{{ $t('navigation.files') }}</v-btn>
-        <v-btn class="transparent" elevation="0" @click="go('/settings')"><v-icon class="mr-2">mdi-cog</v-icon>{{ $t('navigation.settings') }}</v-btn>
-        <v-btn class="transparent" elevation="0" @click="go('/about')"><v-icon class="mr-2">mdi-information</v-icon>{{ $t('navigation.about') }}</v-btn>
+        <v-btn class="transparent" elevation="0" @click="go('/scan')"><v-icon class="mr-2" :icon="mdiCamera" />{{ $t('navigation.scan') }}</v-btn>
+        <v-btn class="transparent" elevation="0" @click="go('/files')"><v-icon class="mr-2" :icon="mdiFileDocumentMultiple" />{{ $t('navigation.files') }}</v-btn>
+        <v-btn class="transparent" elevation="0" @click="go('/settings')"><v-icon class="mr-2" :icon="mdiCog" />{{ $t('navigation.settings') }}</v-btn>
+        <v-btn class="transparent" elevation="0" @click="go('/about')"><v-icon class="mr-2" :icon="mdiInformation" />{{ $t('navigation.about') }}</v-btn>
       </v-toolbar-items>
     </v-app-bar>
 
@@ -16,25 +16,25 @@
       <v-list nav>
         <v-list-item :title="$t('navigation.scan')" @click="go('/scan')">
           <template #prepend>
-            <v-icon icon="mdi-camera" />
+            <v-icon :icon="mdiCamera" />
           </template>
         </v-list-item>
 
         <v-list-item :title="$t('navigation.files')" @click="go('/files')">
           <template #prepend>
-            <v-icon icon="mdi-file-document-multiple" />
+            <v-icon :icon="mdiFileDocumentMultiple" />
           </template>
         </v-list-item>
 
         <v-list-item :title="$t('navigation.settings')" @click="go('/settings')">
           <template #prepend>
-            <v-icon icon="mdi-cog" />
+            <v-icon :icon="mdiCog" />
           </template>
         </v-list-item>
 
         <v-list-item :title="$t('navigation.about')" @click="go('/about')">
           <template #prepend>
-            <v-icon icon="mdi-information" />
+            <v-icon :icon="mdiInformation" />
           </template>
         </v-list-item>
 
@@ -43,7 +43,7 @@
         <v-list-item>
           <v-list-item-title class="unselectable">{{ $t('navigation.version') }} {{ version }}</v-list-item-title>
           <template #prepend>
-            <v-icon icon="mdi-tools" />
+            <v-icon :icon="mdiTools" />
           </template>
         </v-list-item>
       </v-list>
@@ -61,7 +61,7 @@
 
 <script>
 import Constants from '../classes/constants';
-
+import { mdiCamera, mdiCog, mdiFileDocumentMultiple, mdiInformation, mdiTools } from '@mdi/js';
 export default {
   name: 'Navigation',
 
@@ -70,6 +70,16 @@ export default {
       type: String,
       default: 'accent-4'
     }
+  },
+
+  setup() {
+    return {
+      mdiCamera,
+      mdiCog,
+      mdiFileDocumentMultiple,
+      mdiInformation,
+      mdiTools
+    };
   },
 
   data() {

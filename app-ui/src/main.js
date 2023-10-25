@@ -6,7 +6,7 @@ import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import messages from '@intlify/unplugin-vue-i18n/messages';
-import '@mdi/font/css/materialdesignicons.css';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import '@/styles/main.scss';
 import { VueToastr } from 'vue-toastr';
 import 'vue-toastr/dist/style.css';
@@ -47,6 +47,13 @@ const vuetify = createVuetify({
     }
   },
   directives,
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    }
+  },
   locale: {
     adapter: createVueI18nAdapter({ i18n, useI18n })
   },
