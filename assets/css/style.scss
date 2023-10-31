@@ -1,0 +1,29 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+a:hover, a:focus {
+  font-weight: unset;
+  background-color: lightblue;
+}
+
+@media print, screen and (max-width: 960px) {
+  header {
+    padding-right: unset;
+  }
+}
+
+@media print, screen and (min-width: 960px) {
+  .wrapper {
+    max-width: 1152px;
+    min-width: 860px;
+    width: unset;
+  }
+
+  section {
+    float: none;
+    margin-left: 350px;
+    width: unset;
+  }
+}

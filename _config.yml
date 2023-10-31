@@ -1,0 +1,37 @@
+domain: sbs20.github.io
+url: https://sbs20.github.io
+baseurl: /scanservjs
+theme: jekyll-theme-minimal
+exclude: [debian, var, node_modules, dist]
+header_pages:
+  - about.md
+  - portfolio.md
+
+description: |-
+  SANE scanner nodejs web ui
+
+  <h3><a href="/scanservjs/">Getting started</a></h3>
+
+  <h3>Installation and setup</h3>
+  <ol>
+    <li><a href="/scanservjs/docs/01-install.html">Standard install</a></li>
+    <li><a href="/scanservjs/docs/02-docker.html">Docker install</a></li>
+    <li><a href="/scanservjs/docs/03-sane.html">SANE setup install</a></li>
+    <li><a href="/scanservjs/docs/04-troubleshooting.html">Troubleshooting</a></li>
+  </ol>
+
+  <h3>Configuration</h3>
+  <ol>
+    <li><a href="/scanservjs/docs/10-configuration.html">Configuration</a></li>
+    <li><a href="/scanservjs/docs/11-integration.html">Integration</a></li>
+    <li><a href="/scanservjs/docs/12-recipes.html">Recipes</a></li>
+    <li><a href="/scanservjs/docs/13-proxy.html">Using a proxy</a></li>
+  </ol>
+
+  <h3>Developing</h3>
+  <ol>
+    <li><a href="/scanservjs/docs/90-development.html">Development</a></li>
+    <li><a href="/scanservjs/docs/91-localisation.html">Localisation</a></li>
+    <li><a href="/scanservjs/docs/92-references.html">References</a></li>
+    <li><a href="/scanservjs/docs/93-qnap.html">QNAP</a></li>
+  </ol>

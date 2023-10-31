@@ -1,135 +1,7 @@
-# Configuration and integration
 
-Sometimes scanners don't return quite what you want them to. Likewise, perhaps
-scanservjs doesn't provide the defaults you want. And maybe you want to do your
-own thing after a scan. Furtunately it's possible to override most things you
-might want to.
+# Recipes
 
-There are various hooks where you can customise behaviour:
-* `afterConfig`: This provides a reference to the config where you can apply
-  your own changes to global settings which include things like:
-  * Server port
-  * Log level
-  * Preview resolution
-  * Output filename
-  * Pipelines (output format)
-* `afterDevices`: You can alter the device definitions which are reported by
-  SANE which include scanner dimensions and geometry, modes, resolutions and
-  sources.
-* `afterScan`: You receive a reference to the file which has just been scanned;
-  copy it somewhere, call a script or write some code.
-* `actions`: You can define custom actions which can be applied to files either
-  in the UI or referenced in a pipeline. An action object must have a name and
-  async execute method taking a `FileInfo`:
-  ```javascript
-  {
-    name: 'Copy file to home directory',
-    async execute(fileInfo) {
-      await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
-    }
-  }
-  ```
-
-TL;DR; copy `./config/config.default.js` to `config/config.local.js`, override
-the sections you want and then restart the app
-`sudo systemctl restart scanservjs.service`
-
-If you are using docker, then you will want to map the configuration directory
-e.g. `-v /my/local/path:/app/config`.
-
-## How it works
-
-scanservjs looks for a file called `config/config.local.js` and attempts to call
-three functions at different stages in the processing:
-* `afterConfig(config)`: whenever a config is read, the result is passed to this
-  function before being either used or sent down to the browser.
-* `afterDevices(devices)`: whenever the devices are read, the result is passed
-  to this function before being used.
-* `afterScan(fileInfo)`: whenever any scan completes, the resultant file is
-  passed to this function.
-* `actions`: Either at the end of a specific pipeline or on user request. If it
-  runs at the end of the scan, then it's just prior to the `afterScan` event.
-* See [example source](../packages/server/config/config.default.js) for more
-  options.
-* Please note that the config file only gets read at start-up - so if you make
-  changes, you will need to restart.
-
-## Example file
-
-```javascript
-const Process = require('../server/classes/process');
-
-module.exports = {
-  /**
-   * @param {Configuration} config 
-   */
-  afterConfig(config) {
-    // Set default preview resolution
-    config.previewResolution = 150;
-
-    // Add a custom print pipeline
-    config.pipelines.push({
-      extension: 'pdf',
-      description: 'Print PDF',
-      commands: [
-        'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
-        'convert @- scan-0000.pdf',
-        'lp -d MY_PRINTER scan-0000.pdf',
-        'ls scan-*.*'
-      ]
-    });
-  },
-
-  /**
-   * @param {ScanDevice[]} devices 
-   */
-  afterDevices(devices) {
-    // Override the defaults for plustek scanners
-    devices
-      .filter(d => d.id.includes('plustek'))
-      .forEach(device => {
-        device.features['--mode'].default = 'Color';
-        device.features['--resolution'].default = 150;
-        device.features['--resolution'].options = [75, 150, 300, 600];
-        device.features['--brightness'].default = 0;
-        device.features['--contrast'].default = 5;
-        device.features['-x'].default = 215;
-        device.features['-y'].default = 297;
-        device.settings.batchMode.options = ['none'];
-      });
-  }
-
-  /**
-   * @param {FileInfo} fileInfo 
-   * @returns {Promise.<Buffer>}
-   */
-  async afterScan(fileInfo) {
-    // Copy the scan to my home directory
-    return await Process.spawn(`cp '${fileInfo.fullname}' ~/`);
-  }
-
-  /**
-   * @type {Action[]}
-   */
-  actions: [
-    {
-      name: 'Echo',
-      /**
-       * @param {FileInfo} fileInfo
-       * @returns {Promise.<any>}
-       */
-      async execute(fileInfo) {
-        // Output the filepath (relative to the present working direectory)
-        return await Process.spawn(`echo '${fileInfo.fullname}'`);
-      }
-    }
-  ]
-};
-```
-
-## Recipes
-
-### Override default width, height and resolution
+## Override default width, height and resolution
 
 You have an old Canon flatbed but it returns daft default values for width and
 height. You also want to change the default resolution and limit the resolution
@@ -152,7 +24,7 @@ options.
   }
 ```
 
-### Override scanner dimensions
+## Override scanner dimensions
 
 Some scanners (I'm looking at you, Brother) report their dimensions
 [incorrectly](https://github.com/sbs20/scanservjs/issues/103). This throws off
@@ -173,7 +45,7 @@ the cropping logic because scanservjs incorrectly trusts the SANE output.
   }
 ```
 
-### Friendly device name
+## Friendly device name
 
 If you have many scanners available then you may wish to give devices friendly
 names as per [#212](https://github.com/sbs20/scanservjs/issues/212).
@@ -193,7 +65,7 @@ can be anything you want it to be. You just need to override it.
   }
 ```
 
-### Insert your own pipelines
+## Insert your own pipelines
 
 You may wish to add your own custom pipelines. Pipelines are arrays of shell
 commands which run after scans.
@@ -245,7 +117,7 @@ your own pipelines at the top of the list.
   },
 ```
 
-#### Pipeline using "ocrmypdf"
+### Pipeline using `ocrmypdf`
 [ocrmypdf](https://github.com/jbarlow83/OCRmyPDF) is a tool which deskews
 crooked scans, automatically fixes incorrectly rotated pages and performs OCR
 with tesseract. It needs to be installed separately, see the
@@ -267,7 +139,7 @@ Then, add the following pipeline:
   });
 ```
 
-### Change the log level and default scan filename
+## Change the log level and default scan filename
 
 ```javascript
 const dayjs = require('dayjs');
@@ -282,7 +154,7 @@ module.exports = {
 }
 ```
 
-### Change default output directory
+## Change default output directory
 
 Exercise caution with this recipe - the app is designed not to allow unsafe
 paths by default. If you are happy to disable this check, then go ahead.
@@ -296,7 +168,7 @@ module.exports = {
 }
 ```
 
-### Only show ISO paper sizes
+## Only show ISO paper sizes
 
 You can use a filter to include only the paper sizes you want. To only show ISO
 sizes do something like the following. You can obviously extend or reverse the
@@ -310,7 +182,7 @@ module.exports = {
 }
 ```
 
-### Handling `--page-width` and `--page-height`
+## Handling `--page-width` and `--page-height`
 
 Some scanners need
 [additional arguments](https://github.com/sbs20/scanservjs/issues/401) for
@@ -338,7 +210,7 @@ module.exports = {
 }
 ```
 
-### Override batchMode, filters and pipelines
+## Override batchMode, filters and pipelines
 
 Devices also have their own batch modes, filters and pipelines. By default, each
 device inherits the settings in `config`.
@@ -379,10 +251,10 @@ specific device or change the default. So just as with other device overrides:
   }
 ```
 
-### Add actions and call after a specific pipeline
+## Add actions and call after a specific pipeline
 
-Create a file action to do wwhatever you like - this might be useful for
-integrating with paperless-ng. The example below defines a pipeline which
+Create a file action to do whatever you like - this might be useful for
+integrating with `paperless-ng`. The example below defines a pipeline which
 creates a PDF and then copies it to the home directory on completion.
 
 ```javascript
@@ -420,7 +292,7 @@ module.exports = {
 };
 ```
 
-### Add Basic Authentication
+## Add Basic Authentication
 
 This is not meaningfully secure. There is no transport security by default, and
 the credentials are stored in plain text. But it may offer some peace of mind to
@@ -439,3 +311,77 @@ module.exports = {
   }
 }
 ```
+
+## Recipe for Scan2Cloud 
+
+This recipe covers all major cloud providers such as Amazon, Dropbox, Google
+(Drive/Photos), Microsoft (Azure Blob Storage, OneDrive), Nextcloud (via
+WebDav), a network share of your choice (S/FTP) and many
+[more](https://rclone.org/overview/) by using [Rclone](https://rclone.org/).
+
+1. Install [Rclone](https://rclone.org/) as described
+   [here](https://rclone.org/install/)
+2. Configure your [Cloud Provider or Remote](https://rclone.org/overview/)
+   accordingly, for example [Nextcloud via Webdav](https://rclone.org/webdav/)
+   or [Google Drive](https://rclone.org/drive/)
+
+Now you have a choice. If you want the update to occur on the scan itself then
+you need to integrate into the pipeline. Alternatively, sync the output
+directory itself and use either inotify or cron. If you want to embed into the
+pipeline then something like the following may help:
+
+```javascript
+  /**
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<Buffer>}
+   */
+  async afterScan(fileInfo) {
+    // Copy the scan to my home directory
+    return await Process.spawn(`rclone copy '${fileInfo.fullname}' YOUR_PROVIDER:/path/to/folder`);
+  }
+```
+
+## Scan2Mail
+
+1. Setup and configure [msmtp](https://wiki.debian.org/msmtp) and msmtp-mta as
+   described
+   [here](https://decatec.de/linux/linux-einfach-e-mails-versenden-mit-msmtp/)
+2. Install the MIME packer [mpack](https://linux.die.net/man/1/mpack) with
+   `sudo apt install mpack` to send the scanned files
+3. Setup [OCRmyPDF](https://github.com/jbarlow83/OCRmyPDF) as described
+   [here](https://ocrmypdf.readthedocs.io/en/latest/installation.html)
+
+Now create the following pipeline in your `config/config.local.js`
+
+```javascript
+const Process = require('../server/classes/process');
+
+module.exports = {
+  afterConfig(config) {
+    config.pipelines.push({
+      extension: 'pdf',
+      description: 'ocrmypdf',
+      get commands() {
+        return [
+          'convert @- -quality 92 tmp-%04d.jpg && ls tmp-*.jpg',
+          'convert @- pdf:-',
+          `ocrmypdf -l ${config.ocrLanguage} --deskew --rotate-pages --force-ocr - "scan_0.pdf"`,
+          'ls scan_*.*'
+        ];
+      }
+    });
+  },
+
+  /**
+   * @param {FileInfo} fileInfo 
+   * @returns {Promise.<Buffer>}
+   */
+  async afterScan(fileInfo) {
+    return await Process.spawn(`mpack -s "Document from Scanner@Office" "${fileInfo.fullname}" email@address.tld`);
+  }
+};
+```
+
+## Other recipes?
+
+If you have other recipes then please share them.

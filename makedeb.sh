@@ -68,10 +68,6 @@ WorkingDirectory=$PATH_LIB
 WantedBy=multi-user.target
 EOF
 
-# NPM is just recommended. The reason is that if it's required, then it fails in
-# Debian Buster, where the only sensible way to install a modern nodejs is to
-# use nodesource. Making it recommended but >= 7.5 keeps it off buster.
-
 # DEBIAN/control
 cat > $DIR_DEBIAN/control << EOF
 Package: scanservjs
@@ -90,7 +86,7 @@ Size: $(($(tar -Jcf - $BASE/* | wc -c) / 1024))
 Homepage: https://github.com/sbs20/scanservjs
 EOF
 
-# DEBIAN/preint
+# DEBIAN/preinst
 cat > $DIR_DEBIAN/preinst << EOF
 #!/bin/sh
 if [ -d /var/www/scanservjs ] && grep -q '/var/www/scanservjs' /etc/systemd/system/scanservjs.service; then

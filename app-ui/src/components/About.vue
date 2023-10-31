@@ -6,6 +6,11 @@
     <div class="text-body-1 mb-4">
       {{ $t('about.main') }}
     </div>
+
+    <div class="text-body-1 mb-4">
+      <a target="_blank" href="https://sbs20.github.io/scanservjs/">https://sbs20.github.io/scanservjs/</a>
+    </div>
+
     <div class="text-body-1 mb-4">
       {{ $t('about.issue') }}
       <a target="_blank" href="https://github.com/sbs20/scanservjs">https://github.com/sbs20/scanservjs</a>
@@ -13,7 +18,7 @@
 
     <div class="text-body-1 mb-4">
       {{ $t('about.api') }}
-      <a target="_blank" href="api-docs">Swagger /api-docs</a>
+      <a target="_blank" href="api-docs">/api-docs</a>
     </div>
 
     <v-btn @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>

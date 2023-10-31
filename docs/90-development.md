@@ -1,12 +1,14 @@
 # Development
 
-## Install and setup
+## Summary
+
+* Development requires at least Node 16 in order to support the UI build.
+* All code in `app-server` must run under Node 10
+* Any commit must pass `npm run lint && npm run test && npm run build`
+
+## Getting started
 
 ```shell
-# Setup any nodejs requirements
-# https://github.com/nodesource/distributions#installation-instructions
-# curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-
 # Install dependencies
 sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
 
@@ -23,26 +25,25 @@ cd scanservjs && npm install .
 npm run dev
 ```
 
-`npm run dev` will simultanesouly run the server (see package.json and
-vite.config.js).
+`npm run dev` will simultanesouly run the server (see [package.json](../package.json) and [vite.config.js](../app-ui/vite.config.js)).
 
 If you run into the following error, then you may need to increase your inotify
 limit:
 
-```
+```log
 [nodemon] Internal watch failed: ENOSPC: System limit for number of file watchers reached, watch '/.../scanservjs/packages/server/src'
 ```
 
 To incease it temporarily:
 
-```
+```sh
 sudo sysctl fs.inotify.max_user_watches=131072
 ```
 
 To update it permanently will depend on your distribution - but this will work
 with Debian:
 
-```
+```sh
 echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.conf; sudo sysctl -p
 ```
 
@@ -50,24 +51,20 @@ echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.c
 
 Before committing please verify and build
 
-```
-npm run lint && npm run test && npm run build
+```sh
+npm run lint && npm run test && npm run build && ./makedeb.sh
 ```
 
 ## Find missing translations
 
-```
+```sh
 npm run util:missing-translations
 ```
-
-## References
-
-* [i18n](https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n)
 
 ## Docker
 
 Install docker
-```
+```sh
 sudo apt install docker.io
 sudo systemctl unmask docker
 sudo systemctl start docker
@@ -79,46 +76,16 @@ sudo chmod 666 /var/run/docker.sock
 Useful commands
 ```sh
 # Build
-docker build -t scanservjs-image .
+docker build --tag scanservjs-image .
 
 # Build the core image
-docker build --target scanservjs-core -t scanservjs-image .
+docker build --target scanservjs-core --tag scanservjs-image .
 
 # Remove any existing containers
 docker rm --force scanservjs-container 2> /dev/null
 
 # Different run options
 docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
-docker run -d -p 8080:8080 -e SANED_NET_HOSTS="10.0.100.30" --name scanservjs-container --privileged scanservjs-image
-docker run -d -p 8080:8080 -v /var/run/dbus:/var/run/dbus --name scanservjs-container --privileged scanservjs-image
-docker run -d -p 8080:8080 -v $HOME/scan-data:/app/data/output --name scanservjs-container --privileged scanservjs-image
-
-# Copy image
-docker save -o scanservjs-image.tar scanservjs-image
-docker load -i scanservjs-image.tar
-
-# Shell inside image
-docker run -it --entrypoint=/bin/bash scanservjs-image
-
-# Shell inside running container
-docker exec -it scanservjs-container /bin/bash
-
-docker logs scanservjs-container
-
-# Start and stop
-docker container rm scanservjs-container
-docker container start scanservjs-container
-docker container stop scanservjs-container
-docker container restart scanservjs-container
-
-# Maintenance
-docker ps -a
-docker image prune
-docker image rm -f $(docker image ls --filter dangling=true -q)
-docker builder prune
-
-# Danger
-docker image rm -f $(docker image ls -a -q)
 ```
 
 ## Mount map configuration files
@@ -137,7 +104,7 @@ docker run -d \
 You may wish to attempt building with a different version of node. There are
 various ways to achieve this but Docker works well.
 
-```Docker
+```dockerfile
 # build.Dockerfile
 FROM node:18-bookworm-slim AS scanservjs-build
 ENV APP_DIR=/app
@@ -170,4 +137,19 @@ If you want, you can copy the files out again:
 id=$(docker create scanservjs-release-node18)
 docker cp $id:/app/debian ./
 docker rm -v $id
+```
+
+## Pages
+
+```sh
+sudo apt-get install -y ruby-full
+gem install bundler --user-install
+
+# First time only
+bundle config set --local path ~/.gem
+bundle install
+
+bundle exec jekyll serve --incremental
+
+sudo touch /usr/bin/Gemfile
 ```
