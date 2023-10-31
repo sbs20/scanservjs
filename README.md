@@ -11,6 +11,10 @@
 
 Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20)
 
+## Current version
+
+* [v2.27.0](/sbs20/scanservjs/tree/v2.27.0)
+
 ## What people are saying
 
 > I've decided to switch to using only this, I find using this in a browser is
@@ -54,7 +58,7 @@ complicated installation.
 * Light and dark mode
 * Responsive design
 * Docker images for `amd64`, `arm64` and `armv7`
-* Swagger API documentation
+* OpenAPI documentation
 
 It supports any
 [SANE compatible devices](http://www.sane-project.org/sane-supported-devices.html).
@@ -63,18 +67,50 @@ It supports any
 
 * SANE Scanner
 * Linux host (or VM with necessary pass-through e.g. USB)
-* Software sane-utils, ImageMagick, Tesseract (optional) and nodejs
+* Software sane-utils, ImageMagick, Tesseract and nodejs
+
+## Install
+
+* Debian:
+  ```sh
+  curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v latest
+  ```
+* Arch:
+  ```sh
+  yay -S scanservjs
+  ```
+* Docker:
+  ```sh
+  docker run -d \
+    -p 8080:8080 \
+    -v /var/run/dbus:/var/run/dbus \
+    --restart unless-stopped \
+    --name scanservjs-container \
+    --privileged sbs20/scanservjs:latest
+  ```
 
 ## Documentation
 
-* [Manual installation](docs/install.md)
-* [Docker installation](docs/docker.md)
-* [Scanner and SANE setup](docs/sane.md)
-* [Proxy setup](docs/proxy.md)
-* [Troubleshooting](docs/troubleshooting.md)
-* [Development notes](docs/development.md)
-* [Configuration and device override](docs/config.md)
-* [Integration](docs/integration.md)
+### Installation and setup
+
+* [Standard install](docs/01-install.md)
+* [Docker install](docs/02-docker.md)
+* [SANE setup](docs/03-sane.md)
+* [Troubleshooting](docs/04-troubleshooting.md)
+
+### Configuration
+
+* [Configuration](docs/10-configuration.md)
+* [Integration](docs/11-integration.md)
+* [Recipes](docs/12-recipes.md)
+* [Using a proxy](docs/13-proxy.md)
+
+### Developing
+
+* [Development](docs/90-development.md)
+* [Localisation](docs/91-localisation.md)
+* [References](docs/92-references.md)
+* [QNAP](docs/93-qnap.md)
 
 ## Running scanservjs
 
@@ -91,9 +127,9 @@ Once the scanner is detected then you have a number of pages.
 This page gives access to the controls for your scanner. The app will generally
 find the settings available automatically, although some scanners mis-report
 their abilities. (If this is the case, then you can override what's detected,
-see [Configuration and device override](docs/config.md) for more). If geometry
-is available (selecting scan size and position) then you will have cropping
-available to you.
+see [Configuration and device override](docs/10-configuration.md) for more). If
+geometry is available (selecting scan size and position) then you will have
+cropping available to you.
 
 There is also the ability to perform batch scanning. If you have a document
 feeder, then just use the `Auto` option. If not then use `Manual` and the app
@@ -118,6 +154,9 @@ Furthermore, users in real life will want to store their scans with their own
 names, directory structures and cloud services or NAS devices. The permutations
 and possibilities are endless and are beyond the scope of the app.
 
+scanservjs can integrate files either through pipeline automation or file
+actions. See [integration documentation](docs/11-integration.md) for more.
+
 ### Settings
 
 The settings page allows you to change the appearance and locale / language.
@@ -126,12 +165,12 @@ The settings page allows you to change the appearance and locale / language.
 
 Copyright information and system info.
 
-## Swagger API documentation
+## OpenAPI documentation
 
-There is built in swagger documentation with an API explorer. Access it direct
+There is built in OpenAPI documentation with an API explorer. Access it direct
 using `/api-docs` or navigate from the `About` page.
 
-![swagger](https://github.com/sbs20/scanservjs/raw/master/docs/swagger.png)
+![OpenAPI](https://github.com/sbs20/scanservjs/raw/master/docs/swagger.png)
 
 ## Why?
 
@@ -152,4 +191,4 @@ and it's been a labour of love ever since.
 
 ## More about SANE
 
- * http://www.sane-project.org/
+ * <http://www.sane-project.org/>

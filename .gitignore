@@ -63,3 +63,9 @@ app-server/data/preview/*.tif
 **/config.local.js
 var
 debian
+
+# Jekyll
+.bundle
+_site
+.jekyll-metadata
+Gemfile.lock

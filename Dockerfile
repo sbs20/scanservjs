@@ -106,7 +106,7 @@ ARG UNAME=scanservjs
 # config files need write access).
 RUN groupadd -g $GID -o $UNAME \
   && useradd -o -u $UID -g $GID -m -s /bin/bash $UNAME \
-  && chown -R $UID:$GID /entrypoint.sh /srv/scanservjs /etc/sane.d/net.conf /etc/sane.d/airscan.conf
+  && chown -R $UID:$GID /entrypoint.sh /usr/share/scanservjs /etc/sane.d/net.conf /etc/sane.d/airscan.conf
 USER $UNAME
 
 # default build
