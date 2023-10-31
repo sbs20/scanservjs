@@ -13,7 +13,7 @@ Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20)
 
 ## Current version
 
-* [v2.27.0](/sbs20/scanservjs/tree/v2.27.0)
+* [v2.27.0](https://github.com/sbs20/scanservjs/tree/v2.27.0)
 
 ## What people are saying
 
