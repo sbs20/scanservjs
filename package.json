@@ -5,14 +5,16 @@
   "scripts": {
     "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
     "build": "npm run build:version && npm run build --workspaces && node build.js --assemble",
-    "clean": "npm run clean:dist && npm run clean:modules && npm run clean:debian",
+    "clean": "npm run clean:dist && npm run clean:modules && npm run clean:debian && npm run clean:jekyll",
     "clean:debian": "rm -rf ./debian",
     "clean:dist": "rm -rf ./dist && npm run clean:dist --workspaces",
+    "clean:jekyll": "rm -rf ./.bundle ./.jekyll-cache ./_site .jekyll-metadata",
     "clean:modules": "rm -rf ./node_modules && npm run clean:modules --workspaces",
     "dev": "concurrently 'npm run dev --workspace app-ui' 'npm run dev --workspace app-server'",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspace=app-server",
     "util:docker-build": "docker build --target scanservjs-core --tag scanservjs-image .",
+    "util:jekyll-serve": "bundle config set --local path ~/.gem && bundle install && bundle exec jekyll serve",
     "util:missing-translations": "npm run missing-translations --workspace=app-ui"
   },
   "devDependencies": {
