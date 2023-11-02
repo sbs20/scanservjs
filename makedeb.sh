@@ -89,6 +89,8 @@ EOF
 # DEBIAN/preinst
 cat > $DIR_DEBIAN/preinst << EOF
 #!/bin/sh
+# set -x
+# echo preinst
 if [ -d /var/www/scanservjs ] && grep -q '/var/www/scanservjs' /etc/systemd/system/scanservjs.service; then
   deb-systemd-invoke stop 'scanservjs.service' >/dev/null || true
   rm -f /etc/systemd/system/scanservjs.service
@@ -98,7 +100,8 @@ EOF
 # DEBIAN/postinst
 cat > $DIR_DEBIAN/postinst << EOF
 #!/bin/sh
-
+# set -x
+# echo postinst
 # Core installation
 if [ "\$1" = "configure" ] ; then
   # Create new user one time only. Add to the scanner group (created by SANE) and
@@ -162,6 +165,8 @@ EOF
 # DEBIAN/prerm
 cat > $DIR_DEBIAN/prerm << EOF
 #!/bin/sh
+# set -x
+# echo prerm
 if [ -d /run/systemd/system ] && [ "\$1" = remove ]; then
   deb-systemd-invoke stop 'scanservjs.service' >/dev/null || true
 fi
@@ -170,45 +175,38 @@ EOF
 # DEBIAN/postrm
 cat > $DIR_DEBIAN/postrm << EOF
 #!/bin/sh
+# set -x
+# echo postrm
+case "\$1" in
+  failed-upgrade|abort-install|abort-upgrade|disappear)
+    echo "$1: please reinstall previous version"
+    echo ""
+    exit 2
+  ;;
 
-# Remove all data
-rm -rf $PATH_LIB
-rm -rf $PATH_SYSTEMD/scanservjs.service
+  remove|upgrade)
+    deb-systemd-helper mask 'scanservjs.service' >/dev/null || true
+  ;;
 
-# Purge systemd
-rm -f /etc/systemd/system/scanservjs.service
-rm -f /var/lib/systemd/deb-systemd-helper-enabled/scanservjs.service.dsh-also
-rm -f /var/lib/systemd/deb-systemd-helper-masked/scanservjs.service
-if [ -d /var/lib/systemd/deb-systemd-helper-enabled ]; then
-  rmdir --ignore-fail-on-non-empty /var/lib/systemd/deb-systemd-helper-enabled
-fi
-if [ -d /var/lib/systemd/deb-systemd-helper-masked ]; then
-  rmdir --ignore-fail-on-non-empty /var/lib/systemd/deb-systemd-helper-masked
-fi
+  purge)
+    deb-systemd-helper purge 'scanservjs.service' >/dev/null || true
+    deb-systemd-helper unmask 'scanservjs.service' >/dev/null || true
 
-# Let the user know about deleting other stuff
-if [ "\$1" = "purge" ]; then
-  echo "Consider removing the following. You will need root privileges:"
-  echo "  userdel -r $USER"
-  echo "  rf -rf $PATH_ETC $PATH_RUNTIME"
-fi
+    # Remove all data
+    rm -rf $PATH_LIB
 
-# systemctl daemon-reload
-if [ -d /run/systemd/system ] && [ "\$1" = "remove" ]; then
-  systemctl --system daemon-reload >/dev/null || true
-fi
+    # Let the user know about deleting other stuff
+    echo "Consider removing the following. You will need root privileges:"
+    echo "  userdel -r $USER"
+    echo "  rf -rf $PATH_ETC $PATH_RUNTIME"
+  ;;
 
-# Check we can deal with systemd
-[ -x "/usr/bin/deb-systemd-helper" ] || exit 0
-
-if [ "\$1" = "remove" ]; then
-  deb-systemd-helper mask 'scanservjs.service' >/dev/null || true
-fi
-
-if [ "\$1" = "purge" ]; then
-  deb-systemd-helper purge 'scanservjs.service' >/dev/null || true
-  deb-systemd-helper unmask 'scanservjs.service' >/dev/null || true
-fi
+  *)
+    echo "postrm called with unknown argument '\$1'" >&2
+    exit 1
+  ;;
+esac
+exit 0
 EOF
 
 # DEBIAN/conffiles
