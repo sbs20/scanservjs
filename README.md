@@ -81,9 +81,10 @@ It supports any
   ```
 * Docker:
   ```sh
-  docker run -d \
-    -p 8080:8080 \
-    -v /var/run/dbus:/var/run/dbus \
+  docker run \
+    --detach \
+    --publish 8080:8080 \
+    --volume /var/run/dbus:/var/run/dbus \
     --restart unless-stopped \
     --name scanservjs-container \
     --privileged sbs20/scanservjs:latest
