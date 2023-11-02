@@ -142,14 +142,12 @@ docker rm -v $id
 ## Pages
 
 ```sh
+# Install and setup
 sudo apt-get install -y ruby-full
 gem install bundler --user-install
 
-# First time only
+# Run
 bundle config set --local path ~/.gem
 bundle install
-
 bundle exec jekyll serve --incremental
-
-sudo touch /usr/bin/Gemfile
 ```
