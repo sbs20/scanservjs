@@ -27,8 +27,9 @@ description: |-
 
   <h3>Developing</h3>
   <ol>
-    <li><a href="/scanservjs/docs/90-development.html">Development</a></li>
-    <li><a href="/scanservjs/docs/91-localisation.html">Localisation</a></li>
-    <li><a href="/scanservjs/docs/92-references.html">References</a></li>
-    <li><a href="/scanservjs/docs/93-qnap.html">QNAP</a></li>
+    <li><a href="/scanservjs/docs/50-development.html">Development</a></li>
+    <li><a href="/scanservjs/docs/51-localisation.html">Localisation</a></li>
+    <li><a href="/scanservjs/docs/60-testing.html">Testing</a></li>
+    <li><a href="/scanservjs/docs/90-references.html">References</a></li>
+    <li><a href="/scanservjs/docs/91-qnap.html">QNAP</a></li>
   </ol>

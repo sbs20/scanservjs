@@ -108,10 +108,11 @@ It supports any
 
 ### Developing
 
-* [Development](docs/90-development.md)
-* [Localisation](docs/91-localisation.md)
-* [References](docs/92-references.md)
-* [QNAP](docs/93-qnap.md)
+* [Development](docs/50-development.md)
+* [Localisation](docs/51-localisation.md)
+* [Testing](docs/60-testing.md)
+* [References](docs/90-references.md)
+* [QNAP](docs/91-qnap.md)
 
 ## Running scanservjs
 
