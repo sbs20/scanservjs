@@ -13,7 +13,7 @@ ready for localisation) and localisation (l10n, implementing specific locales).
 * Copy an existing locale, name it according to the iso 639 and sub region; see
   [w3c](https://www.w3.org/International/articles/language-tags/)
 * Update the translations
-* If possible, test it works (see [development](./90-development.md))
+* If possible, test it works (see [development](./50-development.md))
 * Raise a PR or attach it to a new issue or #154
 * Add the locale name to the fallback locale
   [en](../app-ui/src/locales/en.json) under the "locales" key.
@@ -31,6 +31,6 @@ Either an existing translation could be improved or is missing altogether.
 
 ## Finding missing translations
 
-* Configure [development](./90-development.md)
+* Configure [development](./50-development.md)
 * Run `npm run util:missing-translations`
 * This will output JSON with all the missing keys
