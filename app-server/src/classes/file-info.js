@@ -86,6 +86,7 @@ module.exports = class FileInfo {
    * Used to create FileInfo objects when the path is known and controlled by
    * the app
    * @param {string} fullpath
+   * @returns {FileInfo}
    */
   static create(fullpath) {
     return new FileInfo(fullpath);
@@ -96,6 +97,7 @@ module.exports = class FileInfo {
    * therefore untrusted source
    * @param {string} fullpath
    * @param {string} filename
+   * @returns {FileInfo}
    */
   static unsafe(fullpath, filename) {
     return new FileInfo(fullpath, filename);
@@ -136,7 +138,11 @@ module.exports = class FileInfo {
    */
   async rename(filename) {
     assertFilenameIsSafe(filename);
-    return this.move(`${this.path}/${filename}`);
+    const destinationFilepath = `${this.path}/${filename}`;
+    if (FileInfo.unsafe(destinationFilepath).exists()) {
+      throw new Error(`${destinationFilepath} already exists`);
+    }
+    return this.move(destinationFilepath);
   }
 
   /**
