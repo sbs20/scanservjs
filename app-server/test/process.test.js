@@ -32,9 +32,9 @@ describe('Process', () => {
   });
 
   it('error', async () => {
-    assert.rejects(async () => {
-      await Process.spawn('hello');
-    }, Error, '/bin/sh: 1: hello');
+    await assert.rejects(
+      async () => await Process.spawn('hello'),
+      /.*\/bin\/sh: 1: hello/);
   });
 
   it('ignore error', async () => {

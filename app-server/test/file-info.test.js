@@ -89,10 +89,19 @@ describe('FileInfo', () => {
     file.save('Hello world');
     file = await file.move('./test/resource/~temp');
 
+    let file2 = FileInfo.create('./test/resource/~tmp2');
+    file2.save('Goodbye cruel world');
+    await assert.rejects(
+      async () => await file2.rename('~temp'),
+      /Error: .*~temp already exists/);
+    file2.delete();
+
     assert.strictEqual(FileInfo.create('./test/resource/~tmp').exists(), false);
     assert.strictEqual(FileInfo.create('./test/resource/~temp').exists(), true);
 
-    assert.rejects(async () => await file.rename('../thing'), /Error: Name .* illegal char.*/);
+    await assert.rejects(
+      async () => await file.rename('../thing'),
+      /Error: Name .* illegal char.*/);
     file = await file.rename('~temporary');
 
     assert.strictEqual(FileInfo.create('./test/resource/~temp').exists(), false);
