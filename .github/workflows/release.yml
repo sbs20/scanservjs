@@ -44,7 +44,7 @@ jobs:
     # We may need the package name for a release later (if not the dev branch and it's node 12)
     - name: Retrieve package name
       run: |
-        echo "PACKAGE_NAME=$(ls ./debian/scanservjs_*.deb)" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=$(ls ./debian/ | grep .*\.deb)" >> $GITHUB_ENV
 
     # Create a draft release if there's a package
     - name: Create Release
@@ -68,6 +68,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./release/${{ env.PACKAGE_NAME }}
+        asset_path: ./debian/${{ env.PACKAGE_NAME }}
         asset_name: ${{ env.PACKAGE_NAME }}
         asset_content_type: application/vnd.debian.binary-package
