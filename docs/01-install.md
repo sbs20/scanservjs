@@ -19,6 +19,45 @@ Since v3.0.0, the oneline install is actually just downloading a `.deb` file.
 You can do this yourself from the releases and then install it:
 `sudo apt-get install ./scanservjs_3.0.0-1.deb`
 
+### Note for users of `v2.x`
+
+If you have `v2.x` of the application installed, then while you _can_ just
+install `v3.x` over the top, it is strongly recommended to remove the old
+version completely first. The main reason is that it will let debian keep track
+of dependencies more effectively. Further, `v2.x` installs a version of npm
+which is not only non-standard but now outdated. Sorry about that.
+
+There is no automation for this because it's too invasive to do automatically
+and it's a one-off process. Further, you may be using some of the packages that
+this script proposes removing.
+
+```sh
+# backup scans to home directory
+sudo mv /var/www/scanservjs/data/output ~/scanservjs-scans
+sudo chown $USER:$USER ~/scanservjs-scans
+
+# Stop and remove service
+sudo systemctl stop scanservjs > /dev/null
+sudo rm -vf /etc/systemd/system/scanservjs.service
+sudo systemctl daemon-reload
+
+# Remove all old application files
+sudo rm -rvf /var/www/scanservjs
+
+# Get rid of npm version update (prior to uninstalling npm)
+sudo npm uninstall -g npm
+
+# remove dependencies
+sudo apt-get remove -yq \
+  nodejs \
+  npm \
+  imagemagick \
+  sane-utils \
+  tesseract-ocr
+
+sudo apt-get autoremove
+```
+
 ## Arch
 
 If you're using Arch, then [@dadosch](https://github.com/dadosch) created a

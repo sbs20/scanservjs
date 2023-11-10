@@ -232,9 +232,9 @@ chmod +x -v $DIR_DEBIAN/prerm
 chmod +x -v $DIR_LIB/server/server.js
 
 # Build
-dpkg-deb --root-owner-group --build ./debian ./debian/scanservjs_$VERSION-1.deb
+dpkg-deb --root-owner-group --build ./debian ./debian/scanservjs_$VERSION-1_all.deb
 
 # Optional linting
 if [ "$1" = "--lint" ]; then
-  lintian --suppress-tags dir-or-file-in-srv,no-changelog ./debian/scanservjs_$VERSION-1.deb
+  lintian --suppress-tags dir-or-file-in-srv,no-changelog ./debian/scanservjs_$VERSION-1_all.deb
 fi
