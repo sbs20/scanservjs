@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 import path from "path";
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import packageJson from './package.json'
@@ -14,6 +15,7 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    vuetify(),
     VueI18nPlugin({
       include: [path.resolve(__dirname, './src/locales/**')],
       compositionOnly: false
