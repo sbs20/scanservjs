@@ -15,22 +15,22 @@
   },
   "main": "server/server.js",
   "dependencies": {
-    "@intlify/unplugin-vue-i18n": "1.2.0",
-    "@mdi/js": "7.2.96",
-    "@vitejs/plugin-vue": "4.3.4",
-    "vue": "3.3.4",
+    "@intlify/unplugin-vue-i18n": "1.5.0",
+    "@mdi/js": "7.3.67",
+    "@vitejs/plugin-vue": "4.4.1",
+    "vue": "3.3.8",
     "vue-advanced-cropper": "2.8.8",
-    "vue-i18n": "9.4.1",
+    "vue-i18n": "9.6.5",
     "vue-router": "4.2.5",
     "vue-toastr": "3.0.5",
-    "vuetify": "3.3.17"
+    "vuetify": "3.4.0"
   },
   "devDependencies": {
-    "eslint": "8.50.0",
-    "eslint-plugin-vue": "9.17.0",
+    "eslint": "8.53.0",
+    "eslint-plugin-vue": "9.18.1",
     "nodemon": "3.0.1",
-    "sass": "1.68.0",
-    "vite": "4.4.9"
+    "sass": "1.69.5",
+    "vite": "4.5.0"
   },
   "license": "GPL-2.0",
   "nodemonConfig": {

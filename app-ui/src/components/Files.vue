@@ -55,18 +55,18 @@
     </template>
 
     <template v-if="thumbnails.show" #[`item.thumb`]="{ item }">
-      <v-img :src="`api/v1/files/${item.columns.name}/thumbnail`"
+      <v-img :src="`api/v1/files/${item.name}/thumbnail`"
         width="128"
         :max-height="thumbnails.size" :max-width="thumbnails.size"
         :contain="true" />
     </template>
     <template #[`item.lastModified`]="{ item }">
-      {{ $d(new Date(item.columns.lastModified), 'long') }}
+      {{ $d(new Date(item.lastModified), 'long') }}
     </template>
     <template #[`item.actions`]="{ item }">
-      <v-icon class="mr-2" :icon="mdiDownload" @click="open(item.columns)" />
-      <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item.columns)" />
-      <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item.columns)" />
+      <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
+      <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item)" />
+      <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
     </template>
     <template #[`footer.page-text`]="items">
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
@@ -78,16 +78,11 @@
 import Common from '../classes/common';
 import Storage from '../classes/storage';
 import { mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
-import { VDataTable } from 'vuetify/labs/VDataTable';
 import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
 
 export default {
   name: 'Files',
-
-  components: {
-    VDataTable
-  },
 
   emits: ['mask', 'notify'],
 
@@ -162,7 +157,6 @@ export default {
       if (this.smAndDown) {
         headers.splice(2, 2);
       }
-      console.log(headers);
       return headers;
     }
   },
