@@ -18,7 +18,7 @@
     "url": "https://github.com/sbs20/scanservjs"
   },
   "devDependencies": {
-    "eslint": "8.51.0",
+    "eslint": "8.53.0",
     "fs-extra": "11.1.1",
     "mocha": "10.2.0",
     "nodemon": "3.0.1"
@@ -35,7 +35,7 @@
     "mv": "2.1.1",
     "semver": "7.5.4",
     "swagger-jsdoc": "6.2.8",
-    "swagger-ui-express": "4.6.3"
+    "swagger-ui-express": "5.0.0"
   },
   "nodemonConfig": {
     "watch": [
