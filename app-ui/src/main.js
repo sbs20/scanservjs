@@ -3,8 +3,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import { createI18n, useI18n } from 'vue-i18n';
 import { createVuetify } from 'vuetify';
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
 import messages from '@intlify/unplugin-vue-i18n/messages';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import '@/styles/main.scss';
@@ -34,7 +32,6 @@ const i18n = createI18n({
 });
 
 const vuetify = createVuetify({
-  components,
   defaults: {
     VBtn: {
       variant: 'tonal',
@@ -46,7 +43,6 @@ const vuetify = createVuetify({
       variant: 'plain',
     }
   },
-  directives,
   icons: {
     defaultSet: 'mdi',
     aliases,
