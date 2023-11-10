@@ -232,7 +232,7 @@ chmod +x -v $DIR_DEBIAN/prerm
 chmod +x -v $DIR_LIB/server/server.js
 
 # Build
-dpkg-deb --root-owner-group --build ./debian ./debian/scanservjs_$VERSION-1_all.deb
+dpkg-deb --root-owner-group -Zxz --build ./debian ./debian/scanservjs_$VERSION-1_all.deb
 
 # Optional linting
 if [ "$1" = "--lint" ]; then
