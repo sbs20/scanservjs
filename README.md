@@ -11,10 +11,6 @@
 
 Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20)
 
-## Current version
-
-* [v2.27.0](https://github.com/sbs20/scanservjs/tree/v2.27.0)
-
 ## What people are saying
 
 > I've decided to switch to using only this, I find using this in a browser is
