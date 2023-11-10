@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="text-h4"><a target="_blank" href="https://sbs20.github.io/scanservjs/">{{ $t('global.application-name') }}</a></div>
-    <div class="text-h6">v{{ version }}</div>
+    <div class="text-h5"><a target="_blank" href="https://sbs20.github.io/scanservjs/">{{ $t('global.application-name') }}</a></div>
+    <div class="text-caption">v{{ version }}</div>
     <div class="text-caption mb-4">&copy; 2016 - {{ new Date().getFullYear() }} Sam Strachan</div>
     <div class="text-body-1 mb-4">
       {{ $t('about.main') }}
