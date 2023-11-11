@@ -1,3 +1,4 @@
+const Process = require('../server/classes/process');
 /* eslint-disable no-unused-vars */
 
 /**
