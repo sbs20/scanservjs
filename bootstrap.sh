@@ -70,7 +70,7 @@ EOF
   # Newer releases are packaged as deb packages which can be installed with apt
   if echo $filename | grep -q '.deb$'; then
     echo "Found .deb ($filename)"
-    apt-get install "./$filename"
+    apt-get install -y "./$filename"
   fi
 }
 
