@@ -22,6 +22,9 @@ if [ ! -e "$TEMPD" ]; then
   exit 1
 fi
 
+# APT installs as the _apt user - it needs access
+chmod +rx $TEMPD
+
 # Make sure the temp directory gets removed on script exit.
 trap "exit 1"           HUP INT PIPE QUIT TERM
 trap 'rm -rf "$TEMPD"'  EXIT
@@ -90,9 +93,9 @@ scanservjs: https://github.com/sbs20/scanservjs
 # Running via curl
 ==================
   If you just ran this from curl and want to install, then just append
-  
+
     '-v latest'
-    
+
   to your previous command so it looks like:
 
     curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v latest
