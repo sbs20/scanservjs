@@ -7,6 +7,7 @@ import packageJson from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '',
   server: {
     proxy: {
       '/api': 'http://localhost:8080',
