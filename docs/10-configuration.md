@@ -67,7 +67,8 @@ action object must have a name and async execute method taking a `FileInfo`:
 ## Example file
 
 ```javascript
-const Process = require('../server/classes/process');
+const options = { paths: ['/usr/lib/scanservjs'] };
+const Process = require(require.resolve('./server/classes/process', options));
 
 module.exports = {
   /**
