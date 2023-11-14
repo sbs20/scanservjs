@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+const options = { paths: ['/usr/lib/scanservjs'] };
+const Process = require(require.resolve('./server/classes/process', options));
+const dayjs = require(require.resolve('dayjs', options));
 
 /**
  * This file is ignored. If you want to apply overrides, make a copy in this

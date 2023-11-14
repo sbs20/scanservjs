@@ -32,14 +32,15 @@ and it's a one-off process. Further, you may be using some of the packages that
 this script proposes removing.
 
 ```sh
-# backup scans to home directory
-sudo mv /var/www/scanservjs/data/output ~/scanservjs-scans
-sudo chown $USER:$USER ~/scanservjs-scans
-
 # Stop and remove service
 sudo systemctl stop scanservjs > /dev/null
 sudo rm -vf /etc/systemd/system/scanservjs.service
 sudo systemctl daemon-reload
+
+# backup scans to home directory
+mkdir -p /tmp/scanservjs.bkp
+sudo mv -v /var/www/scanservjs/data /tmp/scanservjs.bkp
+sudo mv -v /var/www/scanservjs/config /tmp/scanservjs.bkp
 
 # Remove all old application files
 sudo rm -rvf /var/www/scanservjs
@@ -57,6 +58,18 @@ sudo apt-get remove -yq \
 
 sudo apt-get autoremove
 ```
+
+To restore backed up files after install:
+
+```sh
+sudo cp -v /tmp/scanservjs.bkp/data/output/* /usr/lib/scanservjs/data/output
+sudo cp -v /tmp/scanservjs.bkp/config/*.local.js /usr/lib/scanservjs/config
+sudo chown $USER:$USER /usr/lib/scanservjs/data/output/*
+```
+
+Note that if you have a `config.local.js` then you may need to amend it to work
+in `v3.x`. Please refer to the updated `config.default.js` or documentation to
+reference the recommended pattern for using node `require(...)`.
 
 ## Arch
 

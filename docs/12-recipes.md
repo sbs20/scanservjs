@@ -142,7 +142,8 @@ Then, add the following pipeline:
 ## Change the log level and default scan filename
 
 ```javascript
-const dayjs = require('dayjs');
+const options = { paths: ['/usr/lib/scanservjs'] };
+const dayjs = require(require.resolve('dayjs', options));
 module.exports = {
   afterConfig(config) {
     config.filename = () => {
@@ -258,7 +259,8 @@ integrating with `paperless-ng`. The example below defines a pipeline which
 creates a PDF and then copies it to the home directory on completion.
 
 ```javascript
-const Process = require('../src/classes/process');
+const options = { paths: ['/usr/lib/scanservjs'] };
+const Process = require(require.resolve('./server/classes/process', options));
 
 module.exports = {
   /**
@@ -354,7 +356,8 @@ pipeline then something like the following may help:
 Now create the following pipeline in your `config/config.local.js`
 
 ```javascript
-const Process = require('../server/classes/process');
+const options = { paths: ['/usr/lib/scanservjs'] };
+const Process = require(require.resolve('./server/classes/process', options));
 
 module.exports = {
   afterConfig(config) {
