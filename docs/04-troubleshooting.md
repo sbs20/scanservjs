@@ -49,7 +49,7 @@ sudo su --shell /bin/bash - scanservjs --command 'scanimage --format tiff > test
 ```
 
 which should output a tif file in the scanservjs home directory
-(`/usr/share/scanservjs/`). If you can get this to work then scanservjs should
+(`/var/lib/scanservjs/`). If you can get this to work then scanservjs should
 be working fine.
 
 ## Permissions; `scanimage` works with `sudo` but not without
