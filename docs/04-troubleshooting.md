@@ -12,6 +12,15 @@ does not work, then neither does `scanimage`.
   permissions and `udev` rules or
 * a network device, in which case you need a network route
 
+## Getting logs
+
+Use `journalctl`. See the journalctl manpage for details but the following
+should be enough to get you started.
+
+```sh
+sudo journalctl -e -u scanservjs
+```
+
 ## Verify connectivity
 
 * Try running `scanimage -L`. You should see something like:
@@ -66,11 +75,6 @@ Most likely you need a udev rule, but also verify group membership.
   Unplug / replug the scanner (don't skip this!).
 
 * Verify `scanservjs` is in the `scanner` group: `groups scanservjs`.
-
-## Getting logs
-
-Getting logs: use `journalctl`. See the journalctl manpage for details but
-`sudo journalctl -e -u scanservjs` should be enough to get you started.
 
 ## scanimage: sane_read: Invalid argument
 
