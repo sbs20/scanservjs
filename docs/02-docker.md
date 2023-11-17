@@ -217,7 +217,7 @@ To access data from outside the docker container, there are two volumes you may
 wish to map:
 
 * The scanned images: use
-  `--volume /local/path/scans:/usr/share/scanservjs/output`
+  `--volume /local/path/scans:/var/lib/scanservjs/output`
 * Configuration overrides: use `--volume /local/path/cfg:/etc/scanservjs`
 
 ## User and group mapping
@@ -323,7 +323,7 @@ docker run --detach --publish 8080:8080 \
 
 ```sh
 docker run --detach --publish 8080:8080 \
-  --volume $HOME/scan-data:/usr/share/scanservjs/output \
+  --volume $HOME/scan-data:/var/lib/scanservjs/output \
   --volume $HOME/scan-cfg:/etc/scanservjs \
   --device /dev/bus/usb/001/003:/dev/bus/usb/001/003 \
   --name scanservjs-container sbs20/scanservjs:latest
