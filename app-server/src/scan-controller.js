@@ -81,7 +81,7 @@ class ScanController {
     // Apply filters
     if (this.request.filters.length > 0) {
       const stdin = files.map(f => `${f.name}\n`).join('');
-      const cmd = `convert @- ${this.application.filterBuilder().build(this.request.filters)} f-%04d.tif`;
+      const cmd = `${this.application.config.convert} @- ${this.application.filterBuilder().build(this.request.filters)} f-%04d.tif`;
       await Process.spawn(cmd, stdin, { cwd: this.application.config.tempDirectory });
       files = (await this.listFiles()).filter(f => f.name.match(/f-\d{4}\.tif/));
     }

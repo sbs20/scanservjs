@@ -101,7 +101,7 @@ module.exports = class Api {
       const cmds = [...this.application.config.previewPipeline.commands];
       if (filters && filters.length) {
         const params = this.application.filterBuilder().build(filters, true);
-        cmds.splice(0, 0, `convert - ${params} tif:-`);
+        cmds.splice(0, 0, `${this.application.config.convert} - ${params} tif:-`);
       }
 
       return await Process.chain(cmds, buffer, { ignoreErrors: true });
@@ -126,7 +126,7 @@ module.exports = class Api {
         const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
         const width = 868;
         const height = Math.round(width * heightByWidth);
-        return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+        return await Process.spawn(`${this.application.config.convert} - -resize ${width}x${height}! jpg:-`, buffer);
       } catch (e) {
         return Promise.resolve(buffer);
       }
@@ -144,7 +144,7 @@ module.exports = class Api {
       if (thumbnail.exists()) {
         return thumbnail.toBuffer();
       } else {
-        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+        const buffer = await Process.spawn(`${this.application.config.convert} '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
         thumbnail.save(buffer);
         return buffer;
       }
