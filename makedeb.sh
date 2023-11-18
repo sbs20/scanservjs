@@ -47,7 +47,6 @@ rmdir $DIR_LIB/config \
 
 # Create symlinks
 ln -sv $PATH_RUNTIME $DIR_LIB/data
-ln -sv $PATH_ETC $DIR_LIB/config
 
 # systemd
 cat > $DIR_SYSTEMD/scanservjs.service << EOF

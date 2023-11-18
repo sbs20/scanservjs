@@ -5,7 +5,6 @@ const Context = require('../src/classes/context');
 const UserOptions = require('../src/classes/user-options');
 
 const application = new Application();
-application.userOptions = new UserOptions();
 
 const config = application.config;
 

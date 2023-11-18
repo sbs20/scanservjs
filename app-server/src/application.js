@@ -11,8 +11,8 @@ const System = require('./classes/system');
 const UserOptions = require('./classes/user-options');
 
 module.exports = class Application {
-  constructor() {
-    this.userOptions = new UserOptions('../../config/config.local.js');
+  constructor(configPath) {
+    this.userOptions = new UserOptions(configPath);
     this.config = new Config(this.userOptions);
 
     // We need to apply logging setting prior to anything else using a logger
