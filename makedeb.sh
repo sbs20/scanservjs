@@ -42,8 +42,8 @@ find $DIR_LIB -name "*.map" -type f -delete
 # Move and tidy up files
 mv -v $DIR_LIB/data/preview/* $DIR_RUNTIME/preview/
 mv -v $DIR_LIB/config/* $DIR_ETC/
-rm -rfv $DIR_LIB/data \
-  $DIR_LIB/config
+rmdir $DIR_LIB/config \
+  $DIR_LIB/data/preview $DIR_LIB/data
 
 # Create symlinks
 ln -sv $PATH_RUNTIME $DIR_LIB/data

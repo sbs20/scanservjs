@@ -7,29 +7,26 @@ const Process = require('./classes/process');
 const Request = require('./classes/request');
 const Zip = require('./classes/zip');
 
-const application = require('./application');
-const userOptions = application.userOptions();
-const config = application.config();
-const scanimageCommand = application.scanimageCommand();
-
 class ScanController {
-  constructor() {
+  constructor(application) {
+    this.application = application;
+
     /** @type {Context} */
     this.context = null;
 
     /** @type {ScanRequest} */
     this.request = null;
 
-    this.dir = FileInfo.create(config.tempDirectory);
+    this.dir = FileInfo.create(this.application.config.tempDirectory);
   }
 
   /**
    * @param {ScanRequest} req
    */
   async init(req) {
-    this.context = await application.context();
+    this.context = await this.application.context();
     this.request = new Request(this.context, req);
-    this.pipeline = config.pipelines
+    this.pipeline = this.application.config.pipelines
       .filter(p => p.description === this.request.pipeline)[0];
     if (this.pipeline === undefined) {
       throw Error('No matching pipeline');
@@ -63,7 +60,7 @@ class ScanController {
    */
   async scan() {
     log.info('Scanning');
-    await Process.spawn(scanimageCommand.scan(this.request));
+    await Process.spawn(this.application.scanimageCommand.scan(this.request));
   }
 
   /**
@@ -84,14 +81,14 @@ class ScanController {
     // Apply filters
     if (this.request.filters.length > 0) {
       const stdin = files.map(f => `${f.name}\n`).join('');
-      const cmd = `convert @- ${application.filterBuilder().build(this.request.filters)} f-%04d.tif`;
-      await Process.spawn(cmd, stdin, { cwd: config.tempDirectory });
+      const cmd = `convert @- ${this.application.filterBuilder().build(this.request.filters)} f-%04d.tif`;
+      await Process.spawn(cmd, stdin, { cwd: this.application.config.tempDirectory });
       files = (await this.listFiles()).filter(f => f.name.match(/f-\d{4}\.tif/));
     }
 
     const stdin = files.map(f => `${f.name}\n`).join('');
     log.debug('Executing cmds:', this.pipeline.commands);
-    const stdout = await Process.chain(this.pipeline.commands, stdin, { cwd: config.tempDirectory });
+    const stdout = await Process.chain(this.pipeline.commands, stdin, { cwd: this.application.config.tempDirectory });
     let filenames = stdout.toString().split('\n').filter(f => f.length > 0);
 
     let filename = filenames[0];
@@ -99,13 +96,13 @@ class ScanController {
     if (filenames.length > 1) {
       filename = 'archive.zip';
       extension = 'zip';
-      Zip.file(`${config.tempDirectory}/${filename}`)
-        .deflate(filenames.map(f => `${config.tempDirectory}/${f}`));
+      Zip.file(`${this.application.config.tempDirectory}/${filename}`)
+        .deflate(filenames.map(f => `${this.application.config.tempDirectory}/${f}`));
     }
 
-    const destination = `${config.outputDirectory}/${config.filename()}.${extension}`;
+    const destination = `${this.application.config.outputDirectory}/${this.application.config.filename()}.${extension}`;
     await FileInfo
-      .create(`${config.tempDirectory}/${filename}`)
+      .create(`${this.application.config.tempDirectory}/${filename}`)
       .move(destination);
 
     log.debug({output: destination});
@@ -113,7 +110,7 @@ class ScanController {
 
     const fileInfo = FileInfo.create(destination);
     if ('afterAction' in this.pipeline) {
-      userOptions.action(this.pipeline.afterAction).execute(fileInfo);
+      this.application.userOptions.action(this.pipeline.afterAction).execute(fileInfo);
     }
 
     return fileInfo;
@@ -123,9 +120,9 @@ class ScanController {
    * @returns {Promise.<Buffer>}
    */
   async imageAsBuffer() {
-    const filepath = scanimageCommand.filename(this.request.index);
+    const filepath = this.application.scanimageCommand.filename(this.request.index);
     let buffer = FileInfo.create(filepath).toBuffer();
-    buffer = await Process.chain(config.previewPipeline.commands, buffer, { ignoreErrors: true });
+    buffer = await Process.chain(this.application.config.previewPipeline.commands, buffer, { ignoreErrors: true });
     return buffer;
   }
 
@@ -137,8 +134,8 @@ class ScanController {
    */
   async updatePreview(filename) {
     const device = this.context.getDevice(this.request.params.deviceId);
-    const cmdBuilder = new CommandBuilder(config.convert)
-      .arg(`${config.tempDirectory}/${filename}`);
+    const cmdBuilder = new CommandBuilder(this.application.config.convert)
+      .arg(`${this.application.config.tempDirectory}/${filename}`);
 
     const width = 868;
     if (device.geometry) {
@@ -154,7 +151,7 @@ class ScanController {
       cmdBuilder.arg('-scale', width);
     }
 
-    cmdBuilder.arg(`${config.previewDirectory}/preview.tif`);
+    cmdBuilder.arg(`${this.application.config.previewDirectory}/preview.tif`);
 
     await Process.spawn(cmdBuilder.build());
   }
@@ -176,7 +173,7 @@ class ScanController {
 
     if (this.finishUp) {
       const file = await this.finish();
-      await userOptions.afterScan(file);
+      await this.application.userOptions.afterScan(file);
       return {
         file
       };
@@ -198,8 +195,8 @@ module.exports = {
    * @param {ScanRequest} req
    * @returns {Promise.<ScanResponse>}
    */
-  async run(req) {
-    const scan = new ScanController();
+  async run(application, req) {
+    const scan = new ScanController(application);
     return await scan.execute(req);
   }
 };

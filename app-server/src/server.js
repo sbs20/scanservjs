@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 const express = require('express');
-const application = require('./application');
-const config = application.config();
-const app = express();
+const Application = require('./application');
 const ExpressConfigurer = require('./express-configurer');
 
-ExpressConfigurer.with(app)
+const application = new Application();
+const config = application.config;
+const app = express();
+
+ExpressConfigurer.with(app, application)
   .encoding()
   .statics()
   .basicAuth()

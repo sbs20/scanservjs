@@ -1,12 +1,13 @@
 /* eslint-env mocha */
 const assert = require('assert');
+const Application = require('../src/application');
 const Context = require('../src/classes/context');
 const UserOptions = require('../src/classes/user-options');
 
-const application = require('../src/application');
-application._userOptions = new UserOptions();
+const application = new Application();
+application.userOptions = new UserOptions();
 
-const config = application.config();
+const config = application.config;
 
 describe('Context', () => {
   it('missing files', () => {

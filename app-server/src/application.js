@@ -1,52 +1,28 @@
+const prefix = require('loglevel-plugin-prefix');
+const rootLog = require('loglevel');
 const Config = require('./classes/config');
 const Context = require('./classes/context');
 const DeviceIdParser = require('./classes/device-id-parser');
 const Device = require('./classes/device');
 const FileInfo = require('./classes/file-info');
 const FilterBuilder = require('./classes/filter-builder');
+const ScanimageCommand = require('./classes/scanimage-command');
 const System = require('./classes/system');
 const UserOptions = require('./classes/user-options');
 
-module.exports = new class Application {
+module.exports = class Application {
   constructor() {
-    this._log = null;
-    this._userOptions = null;
-    /** @type {Configuration} */
-    this._config = null;
-    /** @type {ScanimageCommand} */
-    this._scanimageCommand = null;
-  }
+    this.userOptions = new UserOptions('../../config/config.local.js');
+    this.config = new Config(this.userOptions);
 
-  log() {
-    if (this._log === null) {
-      this._log = require('loglevel').getLogger('Application');
-    }
-    return this._log;
-  }
+    // We need to apply logging setting prior to anything else using a logger
+    prefix.reg(rootLog);
+    rootLog.enableAll();
+    rootLog.setLevel(this.config.log.level);
+    prefix.apply(rootLog, this.config.log.prefix);
 
-  userOptions() {
-    if (this._userOptions === null) {
-      this._userOptions = new UserOptions('../../config/config.local.js');
-    }
-    return this._userOptions;
-  }
-
-  /**
-   * @returns {Configuration}
-   */
-  config() {
-    if (this._config === null) {
-      this._config = new Config(this.userOptions());
-    }
-    return this._config;
-  }
-
-  scanimageCommand() {
-    if (this._scanimageCommand === null) {
-      const ScanimageCommand = require('./classes/scanimage-command');
-      this._scanimageCommand = new ScanimageCommand(this.config());
-    }
-    return this._scanimageCommand;
+    this.log = rootLog.getLogger('Application');
+    this.scanimageCommand = new ScanimageCommand(this.config);
   }
 
   /**
@@ -56,9 +32,7 @@ module.exports = new class Application {
    */
   async deviceList() {
     const Process = require('./classes/process');
-    const config = this.config();
-    const scanimageCommand = this.scanimageCommand();
-    const file = FileInfo.create(config.devicesPath);
+    const file = FileInfo.create(this.config.devicesPath);
     let devices = null;
 
     if (file.exists()) {
@@ -72,7 +46,7 @@ module.exports = new class Application {
             }
           }
         } catch (exception) {
-          this.log().warn(exception);
+          this.log.warn(exception);
           devices = [];
         }
       } else {
@@ -80,19 +54,19 @@ module.exports = new class Application {
       }
 
       if (devices.length === 0) {
-        this.log().debug('devices.json contains no devices. Reloading');
+        this.log.debug('devices.json contains no devices. Reloading');
         devices = null;
       }
     } else {
-      this.log().info('devices.json does not exist. Reloading');
+      this.log.info('devices.json does not exist. Reloading');
     }
 
     if (devices === null) {
-      let deviceIds = config.devices;
-      this.log().debug({'Config.devices': deviceIds});
-      if (config.devicesFind) {
-        const data = await Process.execute(scanimageCommand.devices());
-        this.log().debug({'devices': data});
+      let deviceIds = this.config.devices;
+      this.log.debug({'Config.devices': deviceIds});
+      if (this.config.devicesFind) {
+        const data = await Process.execute(this.scanimageCommand.devices());
+        this.log.debug({'devices': data});
         const localDevices = new DeviceIdParser(data).ids();
         deviceIds = deviceIds.concat(localDevices);
       }
@@ -101,11 +75,11 @@ module.exports = new class Application {
       devices = [];
       for (let deviceId of deviceIds) {
         try {
-          const data = await Process.execute(scanimageCommand.features(deviceId));
-          this.log().debug(`features: ${data}`);
+          const data = await Process.execute(this.scanimageCommand.features(deviceId));
+          this.log.debug(`features: ${data}`);
           devices.push(Device.from(data));
         } catch (error) {
-          this.log().error(`Ignoring ${deviceId}. Error: ${error}`);
+          this.log.error(`Ignoring ${deviceId}. Error: ${error}`);
         }
       }
       file.save(JSON.stringify(devices.map(d => d.string), null, 2));
@@ -118,7 +92,7 @@ module.exports = new class Application {
    * @returns {void}
    */
   deviceReset() {
-    const file = FileInfo.create(this.config().devicesPath);
+    const file = FileInfo.create(this.config.devicesPath);
     if (file.exists()) {
       file.delete();
     }
@@ -129,7 +103,7 @@ module.exports = new class Application {
    */
   async context() {
     const devices = await this.deviceList();
-    return new Context(this.config(), devices, this.userOptions());
+    return new Context(this.config, devices, this.userOptions);
   }
 
   async systemInfo() {
@@ -137,6 +111,6 @@ module.exports = new class Application {
   }
 
   filterBuilder() {
-    return new FilterBuilder(this.config());
+    return new FilterBuilder(this.config);
   }
 };

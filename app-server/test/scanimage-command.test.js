@@ -1,13 +1,14 @@
 /* eslint-env mocha */
 const assert = require('assert');
+const Application = require('../src/application');
 const Context = require('../src/classes/context');
 const Device = require('../src/classes/device');
 const FileInfo = require('../src/classes/file-info');
 const Request = require('../src/classes/request');
 const UserOptions = require('../src/classes/user-options');
 
-const application = require('../src/application');
-const scanimageCommand = application.scanimageCommand();
+const application = new Application();
+const scanimageCommand = application.scanimageCommand;
 
 const requestScan = {
   params: {
@@ -69,7 +70,7 @@ describe('ScanimageCommand', () => {
   it('scanimage-a10.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a10.txt');
     const device = Device.from(file.toText());
-    const context = new Context(application.config(), [device], new UserOptions());
+    const context = new Context(application.config, [device], new UserOptions());
     const request = new Request(context, {
       params: {
         mode: 'Color'
@@ -84,7 +85,7 @@ describe('ScanimageCommand', () => {
   it('scanimage-a14.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a14.txt');
     const device = Device.from(file.toText());
-    const context = new Context(application.config(), [device], new UserOptions());
+    const context = new Context(application.config, [device], new UserOptions());
     const request = new Request(context, {
       params: {
         ald: 'yes'
@@ -98,7 +99,7 @@ describe('ScanimageCommand', () => {
   it('scanimage-batch.txt', () => {
     const file = FileInfo.create('test/resource/scanimage-a5.txt');
     const device = Device.from(file.toText());
-    const context = new Context(application.config(), [device], new UserOptions());
+    const context = new Context(application.config, [device], new UserOptions());
     const request = new Request(context, {
       params: {
         source: 'Automatic Document Feeder'
