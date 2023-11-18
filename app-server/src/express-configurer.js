@@ -157,6 +157,7 @@ module.exports = class ExpressConfigurer {
 
     try {
       fs.mkdirSync(application.config.outputDirectory, { recursive: true });
+      fs.mkdirSync(application.config.previewDirectory, { recursive: true });
       fs.mkdirSync(application.config.thumbnailDirectory, { recursive: true });
       fs.mkdirSync(application.config.tempDirectory, { recursive: true });
     } catch (exception) {
@@ -212,7 +213,7 @@ module.exports = class ExpressConfigurer {
    * @returns {ExpressConfigurer}
    */
   statics() {
-    this.app.use(express.static('client'));
+    this.app.use(express.static(path.join(path.dirname(__dirname), 'client')));
     return this;
   }
 

@@ -1,4 +1,5 @@
 const log = require('loglevel').getLogger('Api');
+const path = require('path');
 
 const FileInfo = require('./classes/file-info');
 const LogFormatter = require('./classes/log-formatter');
@@ -107,18 +108,28 @@ module.exports = class Api {
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
-    const buffer = FileInfo.create(`${this.application.config.previewDirectory}/default.jpg`).toBuffer();
+    const paths = [
+      `${this.application.config.previewDirectory}/default.jpg`,
+      `${path.dirname(__dirname)}/data/preview/default.jpg`,
+    ];
 
-    try {
-      // We need to know the correct aspect ratio from the device
-      const context = await this.application.context();
-      const device = context.getDevice();
-      const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
-      const width = 868;
-      const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
-    } catch (e) {
-      return Promise.resolve(buffer);
+    for (const path of paths) {
+      const source = FileInfo.create(path);
+      if (!source.exists()) continue;
+
+      const buffer = source.toBuffer();
+
+      try {
+        // We need to know the correct aspect ratio from the device
+        const context = await this.application.context();
+        const device = context.getDevice();
+        const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
+        const width = 868;
+        const height = Math.round(width * heightByWidth);
+        return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+      } catch (e) {
+        return Promise.resolve(buffer);
+      }
     }
   }
 
