@@ -29,9 +29,9 @@ docker run \
 
 ## General notes
 
-⚠ By default, configuration and scanned images are stored within the container
-and will be lost if you recreate it. If you want to map your scanned images then
-see mapping section below
+:warning: By default, configuration and scanned images are stored within the
+container and will be lost if you recreate it. If you want to map your scanned
+images then see mapping section below
 
 ✅ The docker image supports arm as well as amd64.
 
@@ -40,8 +40,95 @@ see mapping section below
 Docker is great for certain tasks. But it's less ideal for situations where the
 container needs to access the host hardware. The simple solution is to run with
 `--privileged` but that gives your container full root access to the host which
-means you're putting a lot of trust in the container. It's better not to do
-this, but it can be painful to avoid. The best solution in my view is to use [SANE over Network](./03-sane.md#defining-network-scanners).
+means you're putting a lot of trust in the container and it's often still not
+sufficient for a working system. It's better not to do this, but it can be
+painful to avoid. The cleanest solution is to use
+[SANE over Network](./03-sane.md#defining-network-scanners).
+
+## Using SANE over Network
+
+The best overall implementation with Docker if you can manage it is to
+[share the scanner over the network](./03-sane.md#configuring-the-server) on the
+host (where the scanner is connected) and then update `net.conf` in the
+container; either using a volume map or setting the `SANED_NET_HOSTS`
+[environment variable](#environment-variables) on the docker container.
+
+[This](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
+user uses docker compose instead. See examples below.
+
+## Configuring SANE
+
+Sometimes you will need to configure SANE within the container. The best way to
+achieve this is just volume mapping.
+
+Example to [configure `airscan.conf`](https://github.com/sbs20/scanservjs/issues/628):
+
+```sh
+# Create your airscan config
+cat > ./airscan.host.conf << EOF
+[devices]
+HP = http://192.168.1.150/eSCL, eSCL
+
+[options]
+discovery = disable
+EOF
+
+# Now map it
+docker run -d \
+  --publish 8080:8080 \
+  --volume ./airscan.host.conf:/etc/sane.d/airscan.conf \
+  --restart unless-stopped \
+  --name scanservjs-container \
+  --privileged \
+  sbs20/scanservjs:latest
+```
+
+Example to [configure `pixma.conf`](https://github.com/sbs20/scanservjs/issues/594):
+
+```sh
+# Create your pixma config
+echo "bjnp://192.168.1.5" > ./pixma.host.conf
+
+# Now map it
+docker run -d \
+  --publish 8080:8080 \
+  --volume ./pixma.host.conf:/etc/sane.d/pixma.conf \
+  --restart unless-stopped \
+  --name scanservjs-container \
+  --privileged \
+  sbs20/scanservjs:latest
+```
+
+## Environment variables
+
+There are some shortcuts available to volume mapping above by using environment
+variables:
+
+* `SANED_NET_HOSTS`: If you want to use a
+  [SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration)
+  scanner then to perform the equivalent of adding hosts to
+  `/etc/sane.d/net.conf` specify a list of ip addresses separated by semicolons
+  in the `SANED_NET_HOSTS` environment variable.
+* `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
+  your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
+  variable (semicolon delimited).
+* `PIXMA_HOSTS`: If you want to use a PIXMA scanner which uses the bjnp protocol
+  then to perform the equivalent of adding hosts to `/etc/sane.d/pixma.conf`
+  specify a list of ip addresses separated by semicolons in the `PIXMA_HOSTS`
+  environment variable.
+* `DELIMITER`: if you need to include semi-colons (`;`) in your environment
+  variables, this allows you to choose an alternative delimiter.
+* `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
+* `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
+
+## Mapping volumes
+
+To access data from outside the docker container, there are two volumes you may
+wish to map:
+
+* The scanned images: use
+  `--volume /local/path/scans:/var/lib/scanservjs/output`
+* Configuration overrides: use `--volume /local/path/cfg:/etc/scanservjs`
 
 ## Host attached scanner
 
@@ -201,25 +288,6 @@ RUN apt install -yq "$APP_DIR/brscan4-0.4.10-1.amd64.deb" \
 Note: The addition of more backends to the docker container is not planned
 since it would mostly add cruft for most users who don't need it.
 
-## Using SANE over Network
-
-The best overall implementation with Docker if you can manage it is to
-[share the host scanner over the network](./03-sane.md#configuring-the-server)
-on the host (where the scanner is connected) and then set the `SANED_NET_HOSTS`
-[environment variable](#environment-variables) on the docker container.
-
-[This](https://github.com/sbs20/scanservjs/issues/129#issuecomment-800226184)
-user uses docker compose instead. See examples below.
-
-## Mapping volumes
-
-To access data from outside the docker container, there are two volumes you may
-wish to map:
-
-* The scanned images: use
-  `--volume /local/path/scans:/var/lib/scanservjs/output`
-* Configuration overrides: use `--volume /local/path/cfg:/etc/scanservjs`
-
 ## User and group mapping
 
 When mapping volumes, special attention must be paid to users and file systems
@@ -245,70 +313,6 @@ Your alternatives are:
    `docker run scanservjs_custom`).
 3. as a last resort, changing the host volume permissions e.g.
    `chmod 777 local-volume`
-
-## Configuring SANE
-
-Sometimes you will need to configure SANE within the container. The best way to
-achieve this is just volume mapping.
-
-Example to [configure `airscan.conf`](https://github.com/sbs20/scanservjs/issues/628):
-
-```sh
-# Create your airscan config
-cat > ./airscan.host.conf << EOF
-[devices]
-HP = http://192.168.1.150/eSCL, eSCL
-
-[options]
-discovery = disable
-EOF
-
-# Now map it
-docker run -d \
-  --publish 8080:8080 \
-  --volume ./airscan.host.conf:/etc/sane.d/airscan.conf \
-  --restart unless-stopped \
-  --name scanservjs-container \
-  --privileged sbs20/scanservjs:latest
-```
-
-Example to [configure `pixma.conf`](https://github.com/sbs20/scanservjs/issues/594):
-
-```sh
-# Create your pixma config
-cat > ./pixma.host.conf << EOF
-bjnp://192.168.1.5
-EOF
-
-# Now map it
-docker run -d \
-  --publish 8080:8080 \
-  --volume ./pixma.host.conf:/etc/sane.d/pixma.conf \
-  --restart unless-stopped \
-  --name scanservjs-container \
-  --privileged sbs20/scanservjs:latest
-```
-
-## Environment variables
-
-There are some shortcuts available to volume mapping above by using environment variables:
-
-* `SANED_NET_HOSTS`: If you want to use a
-  [SaneOverNetwork](https://wiki.debian.org/SaneOverNetwork#Server_Configuration)
-  scanner then to perform the equivalent of adding hosts to
-  `/etc/sane.d/net.conf` specify a list of ip addresses separated by semicolons
-  in the `SANED_NET_HOSTS` environment variable.
-* `AIRSCAN_DEVICES`: If you want to specifically add `sane-airscan` devices to
-  your `/etc/sane.d/airscan.conf` then use the `AIRSCAN_DEVICES` environment
-  variable (semicolon delimited).
-* `PIXMA_HOSTS`: If you want to use a PIXMA scanner which uses the bjnp protocol
-  then to perform the equivalent of adding hosts to `/etc/sane.d/pixma.conf`
-  specify a list of ip addresses separated by semicolons in the `PIXMA_HOSTS`
-  environment variable.
-* `DELIMITER`: if you need to include semi-colons (`;`) in your environment
-  variables, this allows you to choose an alternative delimiter.
-* `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
-* `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
 
 ## Examples
 

@@ -3,8 +3,12 @@
 ## Summary
 
 * Development requires at least Node 16 in order to support the UI build.
-* All code in `app-server` must run under Node 10
-* Any commit must pass `npm run lint && npm run test && npm run build`
+* All code in `app-server` must be able to run under Node 10; no modern
+  features.
+* Any commit must pass the following;
+  ```sh
+  npm run lint && npm run test && npm run build && ./makedeb.sh
+  ```
 
 ## Getting started
 
@@ -25,7 +29,9 @@ cd scanservjs && npm install .
 npm run dev
 ```
 
-`npm run dev` will simultanesouly run the server (see [package.json](../package.json) and [vite.config.js](../app-ui/vite.config.js)).
+`npm run dev` will simultanesouly run the server (see
+[package.json](../package.json) and
+[vite.config.js](../app-ui/vite.config.js)).
 
 If you run into the following error, then you may need to increase your inotify
 limit:
@@ -60,6 +66,32 @@ npm run lint && npm run test && npm run build && ./makedeb.sh
 ```sh
 npm run util:missing-translations
 ```
+
+## Packaging
+
+The installation is achieved with a debian binary package. The package is
+created by `makedeb.sh`; doing so with a source package seemed too big a step.
+
+The installation structure is:
+
+```
+/etc/scanservjs/ -> config directory
+/usr/lib/scanservjs/ -> code
+/var/lib/scanservjs/ -> runtime data directory
+```
+
+The `makdeb.sh` packager:
+
+* Creates the directory structure
+* Moves all build assets into the correct place
+* Runs `npm clean-install`
+* Creates symlinks so that the app can access config and runtime data
+* Dynamically creates things like `control`, `preinst`, `postint`, `prerm`,
+  `postrm` and the systemd service file.
+
+The Docker build creates its own deb package which somewhat unifies the
+installation process (and testing). Note that Docker containers do not typically
+support systemd.
 
 ## Docker
 
