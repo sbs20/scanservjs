@@ -49,7 +49,7 @@ All you need is to define the subnets to which you want to grant access in
 about subnets and CIDR notation.
 
 `/etc/sane.d/saned.conf`
-```ini
+```sh
 # This is equivalent to 192.168.0.0/255.255.255.0
 192.168.0.0/24
 
@@ -64,9 +64,9 @@ Make your changes to the file and restart the saned socket.
 
 ```sh
 ## Local network
-echo "192.168.0.0/24" >> /etc/sane.d/saned.conf
+sudo echo "192.168.0.0/24" >> /etc/sane.d/saned.conf
 ## Default docker network
-echo "172.17.0.0/16" >> /etc/sane.d/saned.conf
+sudo echo "172.17.0.0/16" >> /etc/sane.d/saned.conf
 
 sudo systemctl enable saned.socket
 sudo systemctl start saned.socket
@@ -77,7 +77,7 @@ sudo systemctl start saned.socket
 Add the server host (let's assume it is `192.168.0.10`) to the client.
 
 ```sh
-echo "192.168.0.10" >> /etc/sane.d/net.conf
+sudo echo "192.168.0.10" >> /etc/sane.d/net.conf
 ```
 
 Now if you run `scanimage -L` on the client you should see the scanner on the
@@ -119,7 +119,7 @@ supporting newer eSCL and WSD devices. Once installed you should just find that
 it works with a simple `scanimage -L`. You can also specify a specific name for
 the device in `/etc/sane.d/airscan.conf`
 
-```console
+```ini
 [devices]
 "My scanner" = "http://10.0.111.4/eSCL"
 ```
@@ -144,6 +144,6 @@ subnet, the autodiscovery won't work. You have two options:
    You may also need to add the full device name to the devices list in the
    config e.g.
    ```javascript
-   //config.devices.push('net:${bridge}:${device});
-   config.devices.push('net:10.0.100.171:airscan:e0:Canon TR8500 series-5);
+   //config.devices.push('net:${bridge}:${device}');
+   config.devices.push('net:10.0.100.171:airscan:e0:Canon TR8500 series-5');
    ```
