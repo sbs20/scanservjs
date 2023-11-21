@@ -3,6 +3,8 @@ url: https://sbs20.github.io
 baseurl: /scanservjs
 theme: jekyll-theme-minimal
 exclude: [debian, var, node_modules, dist]
+plugins:
+  - jemoji
 
 description: |-
   SANE scanner nodejs web ui
