@@ -14,7 +14,7 @@
   "about": {
     "main": "scanservjs je jednoduché webové uživatelské rozhraní pro váš skener. Umožňuje vám sdílet jeden nebo více skenerů (s využitím SANE) bez ovladačů nebo komplikované instalace. Umí ukládat do TIF, JPG, PNG, PDF a TXT (využívá Tesseract OCR) s různými nastaveními komprese, vše je možné konfigurovat. Podporuje vícestránkové skenování a všechna zařízení kompatibilní se SANE.",
     "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:",
-    "api": "Swagger API dokumentace:",
+    "api": "OpenAPI dokumentace:",
     "system-info": "Informace o systému"
   },
 
