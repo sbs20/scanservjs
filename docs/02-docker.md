@@ -126,8 +126,7 @@ variables:
 To access data from outside the docker container, there are two volumes you may
 wish to map:
 
-* The scanned images: use
-  `--volume /local/path/scans:/var/lib/scanservjs/output`
+* The scanned images: use `--volume /local/path/scans:/var/lib/scanservjs/output`
 * Configuration overrides: use `--volume /local/path/cfg:/etc/scanservjs`
 
 ## Host attached scanner
@@ -239,8 +238,8 @@ container whenever your scanner is hot-plugged. This is suggested in
       --rm \
       --publish 8080:8080 \
       --volume /var/run/dbus:/var/run/dbus \
-      --volume /path/to/the/optional/scan/folder:/app/data/output \
-      --volume /path/to/the/optional/custom/config:/app/config \
+      --volume /path/to/the/optional/scan/folder:/var/lib/scanservjs/output \
+      --volume /path/to/the/optional/custom/config:/etc/scanservjs \
       --name "$CONTAINER_NAME" \
       --device=/dev/bus/usb/001/"$device_nb":/dev/bus/usb/001/"$device_nb" \
       --device-cgroup-rule="c $MAJOR_NUMBER:* rmw" \
@@ -400,8 +399,8 @@ Synology NAS:
           - SANED_NET_HOSTS="10.0.100.30"
         volumes:
           # ---- enter your target location for scans before the ':' character -----
-          - /volume1/scans:/app/data/output
-          - ./config:/app/config
+          - /volume1/scans:/var/lib/scanservjs/output
+          - ./config:/etc/scanservjs
         ports:
           - 8080:8080
         restart: unless-stopped
