@@ -34,7 +34,7 @@ describe('Process', () => {
   it('error', async () => {
     await assert.rejects(
       async () => await Process.spawn('hello'),
-      /.*\/bin\/sh: 1: hello/);
+      /.*\/bin\/sh: .*1: hello/);
   });
 
   it('ignore error', async () => {
