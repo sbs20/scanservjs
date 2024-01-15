@@ -64,9 +64,9 @@ Make your changes to the file and restart the saned socket.
 
 ```sh
 ## Local network
-sudo echo "192.168.0.0/24" >> /etc/sane.d/saned.conf
+sudo su -c 'echo "192.168.0.0/24" >> /etc/sane.d/saned.conf'
 ## Default docker network
-sudo echo "172.17.0.0/16" >> /etc/sane.d/saned.conf
+sudo su -c 'echo "172.17.0.0/16" >> /etc/sane.d/saned.conf'
 
 sudo systemctl enable saned.socket
 sudo systemctl start saned.socket
@@ -77,7 +77,7 @@ sudo systemctl start saned.socket
 Add the server host (let's assume it is `192.168.0.10`) to the client.
 
 ```sh
-sudo echo "192.168.0.10" >> /etc/sane.d/net.conf
+sudo su -c 'echo "192.168.0.10" >> /etc/sane.d/net.conf'
 ```
 
 Now if you run `scanimage -L` on the client you should see the scanner on the
