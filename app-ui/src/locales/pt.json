@@ -11,7 +11,7 @@
   },
 
   "about": {
-    "main": "scanservjs é uma interface web para o seu scanner/digitalizador. Permite partilhar um ou mais scanners (através do SANE) em rede sem necessidade para drivers ou instalações complicadas. Permite guardar como TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com variadas definições de compressão, os quais podem ser configurados. Suporta digitalização multipágina e todos os dispositivos compatíveis com SANE.",
+    "main": "scanservjs é uma interface web para o seu scanner/digitalizador. Permite partilhar um ou mais scanners (através do SANE) em rede sem necessidade de drivers ou de instalações complicadas. Permite guardar como TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com variadas definições de compressão, as quais podem ser configuradas. Suporta digitalização multipágina e todos os dispositivos compatíveis com SANE.",
     "issue": "Submeter um problema ou visualizar código-fonte:",
     "system-info": "Informação de sistema"
   },
@@ -59,8 +59,8 @@
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
     "actions": "Ações",
-    "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-show": "Mostrar miniatura",
+    "thumbnail-size": "Tamanho da miniatura"
   },
 
   "navigation": {
@@ -73,7 +73,7 @@
 
   "batch-mode": {
     "none": "Nenhum",
-    "manual": "Manual (com intervação)",
+    "manual": "Manual (com intervenção)",
     "auto": "Auto (Alimentador de documentos)",
     "auto-collate-standard": "Auto (Ordenado 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (Reverso 1, 3... 2, 4)"
@@ -82,14 +82,14 @@
   "filter": {
     "auto-level": "Nivel automático",
     "threshold": "Limiar",
-    "blur": "Esbater"
+    "blur": "Desfocar"
   },
 
   "mode": {
-    "color": "Color",
+    "color": "Cor",
     "halftone": "Meio tom",
     "gray": "Cinza",
-    "lineart": "Arte de linha",
+    "lineart": "Contornos",
 
     "24bitcolor":"@:mode.color",
     "black & white": "@:mode.lineart",
@@ -140,13 +140,13 @@
     "source": "Fonte",
     "resolution": "Resolução",
     "mode": "Modo",
-    "dynamic-lineart": "Arte de linha Dinâmico",
+    "dynamic-lineart": "Contornos Dinâmicos",
     "dynamic-lineart:enabled": "Ativado",
     "dynamic-lineart:disabled": "Desativado",
     "batch": "Lote",
     "filters": "Filtros",
     "format": "Formato",
-    "btn-preview": "Pré-visualziar",
+    "btn-preview": "Pré-visualizar",
     "btn-clear": "Limpar",
     "btn-scan": "Digitalizar",
     "top": "Topo",
@@ -156,9 +156,9 @@
     "paperSize": "Tamanho do papel",
     "brightness": "Brilho",
     "contrast": "Contraste",
-    "message:loading-devices": "Carregando dispositivos...",
+    "message:loading-devices": "A carregar dispositivos...",
     "message:no-devices": "Nenhum dispositivo encontrado",
-    "message:deleted-preview": "Eliminada pré-visualização",
+    "message:deleted-preview": "Pré-visualização eliminada",
     "message:turn-documents": "Virar documentos",
     "message:preview-of-page": "Pré-visualização de página"
   },
@@ -174,12 +174,12 @@
     "theme:light": "Claro",
     "theme:dark": "Escuro",
     "color": "Cor",
-    "color:description": "Cor. Esta opção irá alterar a corra da barra de navegação.",
-    "show-files-after-scan:description": "Show files after scan completes",
+    "color:description": "Cor. Esta opção irá alterar a cor da barra de navegação.",
+    "show-files-after-scan:description": "Mostrar ficheiros após concluir digitalização",
     "devices": "Dispositivos e armazenamento",
-    "reset:description": "Limpa dispositivos guardados e força um recarregamento",
+    "reset:description": "Limpa os dispositivos guardados e força um recarregamento",
     "reset": "Redefinir",
-    "clear-storage:description": "Limpa a local storage de qualquer parâmetro cacheado",
+    "clear-storage:description": "Limpa o armazenamento local de qualquer parâmetro em cache",
     "clear-storage": "Limpar"
   },
 
