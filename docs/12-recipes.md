@@ -407,10 +407,9 @@ module.exports = {
 };
 ```
 
-The --page-height option will default to --page-height, if neither specific option is set.
-Even if the default option is set, it will try to use the the specific option first before falling back to the default. if you dont want to set the option for the flatbet for example you calso must not set the default option, as it will fall abck to this value instead.
+The --page-height option will default to --page-height if neither specific option is set. Even if the default option is set, it will try to use the specific option first before falling back to the default. If you don't want to set the option for the flatbed, for example, you must not set the default option, as it will fall back to this value instead.
 
-If the page height option should only be set for a ADF scan do this:
+If the page height option should only be set for an ADF scan, do this:
 
 ```javascript
 module.exports = {
