@@ -83,6 +83,10 @@ module.exports = class Request {
       this.params.adfMode = data.params.adfMode || features['--adf-mode'].default;
       assertContains(features['--adf-mode'].options, this.params.adfMode, 'Invalid --adf-mode');
     }
+    if ('--depth' in features) {
+      this.params.depth = data.params.depth || features['--depth'].default;
+      assertContains(features['--depth'].options, this.params.depth, 'Invalid --depth');
+    }
     if ('--source' in features) {
       this.params.source = data.params.source || features['--source'].default;
       assertContains(features['--source'].options, this.params.source, 'Invalid --source');

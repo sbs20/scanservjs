@@ -150,6 +150,7 @@
     "resolution": "Resolution",
     "mode": "Mode",
     "adf-mode": "ADF Mode",
+    "depth": "Color Depth",
     "dynamic-lineart": "Dynamic Lineart",
     "dynamic-lineart:enabled": "Enabled",
     "dynamic-lineart:disabled": "Disabled",

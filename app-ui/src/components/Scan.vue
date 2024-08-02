@@ -23,6 +23,11 @@
           :no-data-text="$t('global.no-data-text')" :label="$t('scan.adf-mode')"
           :items="adfModes" item-value="value" item-title="text" />
 
+        <v-select v-if="'--depth' in device.features"
+          v-model="request.params.depth"
+          :no-data-text="$t('global.no-data-text')" :label="$t('scan.depth')"
+          :items="device.features['--depth']['options']" />
+
         <v-select
           v-model="request.params.resolution"
           :no-data-text="$t('global.no-data-text')" :label="$t('scan.resolution')"

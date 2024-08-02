@@ -44,6 +44,9 @@ export default class Request {
     if ('--adf-mode' in device.features) {
       this.params.adfMode = request.params.adfMode || device.features['--adf-mode'].default;
     }
+    if ('--depth' in device.features) {
+      this.params.depth = request.params.depth || device.features['--depth'].default;
+    }
     if ('--mode' in device.features) {
       this.params.mode = request.params.mode || device.features['--mode'].default;
     }

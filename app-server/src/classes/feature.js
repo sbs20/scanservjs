@@ -83,6 +83,7 @@ module.exports = class Feature {
     if (this.enabled) {
       switch (this.name) {
         case '--adf-mode':
+        case '--depth':
         case '--mode':
         case '--source':
           this.options = this.parameters.split('|');
