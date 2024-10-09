@@ -1,0 +1,198 @@
+{
+  "$vuetify": {
+    "dataFooter": {
+      "pageText": "{0} - {1} / {2}",
+      "itemsPerPageAll": "@:files.items-per-page-all"
+    },
+    "noDataText": "@:global.no-data-text"
+  },
+
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "無可用資料"
+  },
+
+  "about": {
+    "main": "scanservjs 是一款用來操作掃描器的簡單網頁介面。它讓你可以不需要驅動程式或複雜的安裝流程，就在網路上分享一或多台掃描器（透過 SANE）。它可以根據設定，儲存成各種不同壓縮設定下的 TIF、JPG、PNG、PDF 以及 TXT（配合 Tesseract OCR）格式。它支援多頁面掃描以及所有相容於 SANE 的裝置。",
+    "issue": "提出問題或檢視原始碼：",
+    "api": "OpenAPI 文件：",
+    "system-info": "系統資訊"
+  },
+
+  "colors": {
+    "accent-4": "預設",
+    "red": "紅",
+    "pink": "粉紅",
+    "purple": "紫",
+    "deep-purple": "深紫",
+    "indigo": "靛藍",
+    "blue": "藍",
+    "light-blue": "淺藍",
+    "cyan": "青綠",
+    "teal": "鴨綠",
+    "green": "綠",
+    "light-green": "亮綠",
+    "lime": "草綠",
+    "yellow": "黃",
+    "amber": "橘黃",
+    "orange": "橘",
+    "deep-orange": "深橘",
+    "brown": "棕",
+    "blue-grey": "藍灰",
+    "grey": "灰"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "取消",
+    "btn-finish": "完成",
+    "btn-rescan": "重新掃描",
+    "btn-next": "下一張"
+  },
+
+  "files": {
+    "filename": "檔案名稱",
+    "date": "日期",
+    "size": "大小",
+    "items-per-page": "每頁檔案數",
+    "items-per-page-all": "全部",
+    "message:action": "對 {1} 執行 {0}",
+    "message:deleted": "已刪除 {0}",
+    "message:renamed": "檔案已重新命名",
+    "button:action-selected": "執行操作...",
+    "button:delete-selected": "刪除選取項目",
+    "dialog:rename": "修改檔案名稱",
+    "dialog:rename-cancel": "取消",
+    "dialog:rename-save": "儲存",
+    "actions": "操作",
+    "thumbnail-show": "顯示縮圖",
+    "thumbnail-size": "縮圖大小"
+  },
+
+  "navigation": {
+    "scan": "掃描",
+    "files": "檔案",
+    "settings": "設定",
+    "about": "關於",
+    "version": "版本"
+  },
+
+  "batch-mode": {
+    "none": "無",
+    "manual": "手動（提供提示）",
+    "auto": "自動（進紙器）",
+    "auto-collate-standard": "自動（標準分頁 1、3...4、2）",
+    "auto-collate-reverse": "自動（反向分頁1、3...2、4）"
+  },
+
+  "filter": {
+    "auto-level": "自動調整",
+    "auto-contrast": "自動對比",
+    "more-contrast": "加強對比",
+    "threshold": "二值化",
+    "blur": "模糊化"
+  },
+
+  "mode": {
+    "color": "彩色",
+    "halftone": "半色調",
+    "gray": "灰階",
+    "lineart": "線條藝術",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "單面",
+    "duplex": "雙面"
+  },
+
+  "source": {
+    "flatbed": "進紙匣",
+    "adf": "ADF",
+    "auto": "自動",
+    "left-aligned": "靠左對齊",
+    "centrally-aligned": "置中對齊",
+    "duplex": "雙面",
+    "transparency unit": "透明膠片",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "高畫值",
+    "medium-quality": "中畫值",
+    "low-quality": "低畫質",
+    "uncompressed": "無壓縮",
+    "lzw-compressed": "LZW 壓縮",
+    "ocr": "OCR",
+    "text-file": "文字檔"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Portrait",
+    "landscape": "Landscape"
+  },
+
+  "scan": {
+    "device": "裝置",
+    "source": "來源",
+    "resolution": "解析度",
+    "mode": "模式",
+    "adf-mode": "自動進紙模式",
+    "dynamic-lineart": "動態線條藝術",
+    "dynamic-lineart:enabled": "啟用",
+    "dynamic-lineart:disabled": "停用",
+    "batch": "批次處理",
+    "filters": "特效",
+    "format": "格式",
+    "btn-preview": "預覽",
+    "btn-clear": "清除",
+    "btn-scan": "掃描",
+    "top": "上邊距",
+    "left": "左邊距",
+    "width": "寬度",
+    "height": "高度",
+    "paperSize": "紙張大小",
+    "brightness": "亮度",
+    "contrast": "對比",
+    "message:loading-devices": "正在載入裝置...",
+    "message:no-devices": "未發現任何裝置",
+    "message:deleted-preview": "已刪除預覽圖",
+    "message:turn-documents": "將文件翻面",
+    "message:preview-of-page": "頁面預覽"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "行為與使用者介面",
+    "locale": "語言",
+    "locale:description": "選擇語言",
+    "theme": "主題",
+    "theme:description": "主題。從系統主題切換到其它主題會需要重新載入。",
+    "theme:system": "系統",
+    "theme:light": "淺色",
+    "theme:dark": "深色",
+    "color": "色彩",
+    "color:description": "色彩。修改頂端列的顏色。",
+    "show-files-after-scan:description": "掃描完成後顯示檔案",
+    "devices": "裝置與儲存空間",
+    "reset:description": "清除已儲存的掃描器裝置並強制重新載入",
+    "reset": "重設",
+    "clear-storage:description": "清除所有暫存於本地端的參數",
+    "clear-storage": "清除"
+  }
+}
