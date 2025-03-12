@@ -8,6 +8,10 @@ on:
   release:
     types: [published]
 
+env:
+  BUILD_TARGET: scanservjs-core
+  BUILD_PLATFORMS: linux/amd64,linux/arm64,linux/arm/v7
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -27,31 +31,44 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs
+          tags: |
+            type=schedule,pattern=staging
+            type=semver,pattern={{raw}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
       - name: New commit count
         run: echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> $GITHUB_ENV
- 
+
       - name: Push nightly staging
         if: github.ref == 'refs/heads/master' && env.NEW_COMMIT_COUNT > 0
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:staging
-          target: scanservjs-core
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
-
-      - name: Get version
-        id: get_version
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          target: ${{ env.BUILD_TARGET }}
+          platforms: ${{ env.BUILD_PLATFORMS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Push release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/build-push-action@v5
         with:
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:release-${{ steps.get_version.outputs.VERSION }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:${{ steps.get_version.outputs.VERSION }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
-          target: scanservjs-core
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          target: ${{ env.BUILD_TARGET }}
+          platforms: ${{ env.BUILD_PLATFORMS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
