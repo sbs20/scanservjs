@@ -1,6 +1,6 @@
 {
   "name": "scanservjs",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
     "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
