@@ -21,6 +21,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    # Ensure that ImageMagick is installed
+    - name: Install imagemagick
+      run: sudo apt-get install -y imagemagick
+
     # Enable conversion to PDF
     - run: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
