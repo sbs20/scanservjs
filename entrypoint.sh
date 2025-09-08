@@ -41,4 +41,6 @@ fi
 unset IFS
 set +f
 
+/scripts/hpaio.sh || true
+
 node ./server/server.js

@@ -284,6 +284,14 @@ RUN apt install -yq "$APP_DIR/brscan4-0.4.10-1.amd64.deb" \
   && brsaneconfig4 -a name=ADS-2600W model=ADS-2600W nodename=10.0.100.30
 ```
 
+### HP Printers
+
+Many HP printers require installing [an additional driver and plugin](sane.md#hp-printers) that can be automated during docker installation.
+
+* Include env `HP_AIO=true` to install the `libsane-hpaio` driver
+* Include env `HP_PLUGIN=true` to install the driver and automatically detect/install the required plugin binary
+  * NOTE: This binary is closed-source and requries accepting a license which is printed to docker logs on installation. You should read the license after installation.
+
 Note: The addition of more backends to the docker container is not planned
 since it would mostly add cruft for most users who don't need it.
 
