@@ -1,13 +1,9 @@
 const fs = require('fs');
-const path = require('path');
 
 module.exports = class UserOptions {
   constructor(localConfigPath) {
-    if (localConfigPath) {
-      const localPath = path.join(__dirname, localConfigPath);
-      if (fs.existsSync(localPath)) {
-        this.local = require(localPath);
-      }
+    if (localConfigPath && fs.existsSync(localConfigPath)) {
+      this.local = require(localConfigPath);
     }
   }
 

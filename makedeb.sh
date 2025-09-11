@@ -40,14 +40,8 @@ npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
 find $DIR_LIB -name "*.map" -type f -delete
 
 # Move and tidy up files
-mv -v $DIR_LIB/data/preview/* $DIR_RUNTIME/preview/
 mv -v $DIR_LIB/config/* $DIR_ETC/
-rm -rfv $DIR_LIB/data \
-  $DIR_LIB/config
-
-# Create symlinks
-ln -sv $PATH_RUNTIME $DIR_LIB/data
-ln -sv $PATH_ETC $DIR_LIB/config
+rmdir $DIR_LIB/config
 
 # systemd
 cat > $DIR_SYSTEMD/scanservjs.service << EOF
@@ -62,7 +56,8 @@ User=$USER
 Group=$GROUP
 Environment=PATH=/usr/local/bin:/usr/bin:/bin
 Environment=NODE_ENV=production
-WorkingDirectory=$PATH_LIB
+StateDirectory=$APP_NAME
+WorkingDirectory=$PATH_RUNTIME
 
 [Install]
 WantedBy=multi-user.target
@@ -107,7 +102,7 @@ if [ "\$1" = "configure" ] ; then
   # Create new user one time only. Add to the scanner group (created by SANE) and
   # lp group too (for Ubuntu)
   if ! id scanservjs >/dev/null 2>&1; then
-    adduser --system --home $PATH_RUNTIME --no-create-home --disabled-password --quiet $USER
+    adduser --system --home $PATH_RUNTIME --create-home --disabled-password --quiet $USER
     adduser $USER $GROUP
     adduser $USER scanner
     adduser $USER lp 

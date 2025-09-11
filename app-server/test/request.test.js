@@ -7,7 +7,8 @@ const FileInfo = require('../src/classes/file-info');
 const Request = require('../src/classes/request');
 const UserOptions = require('../src/classes/user-options');
 
-const config = Application.config();
+const application = new Application();
+const config = application.config;
 
 describe('Request', () => {
   it('scanimage-a1.txt', () => {
