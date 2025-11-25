@@ -79,11 +79,6 @@ export default {
   mounted() {
     this.$vuetify.rtl = Constants.RtlLocales.includes(storage.settings.locale);    
     this.$i18n.locale = storage.settings.locale;
-
-    // Default route if connected
-    if (this.$route.matched.length === 0) {
-      this.$router.replace('/scan');
-    }
   },
 
   methods: {

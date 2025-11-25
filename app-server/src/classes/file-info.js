@@ -36,13 +36,15 @@ function assertPathIsSafe(path) {
   }
 }
 
+const ILLEGAL_FILENAME_CHARS = /[/\\?%*:|"<>;=]/;
+
 /**
  * @param {string} filename
  * @returns {void}
  */
 function assertFilenameIsSafe(filename) {
-  if (/[/\\?%*:|"<>;=]/.test(filename)) {
-    throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+  if (ILLEGAL_FILENAME_CHARS.test(filename)) {
+    throw new Error(`Name cannot contain illegal characters: ${ILLEGAL_FILENAME_CHARS}`);
   }
 }
 
@@ -111,6 +113,7 @@ module.exports = class FileInfo {
       fs.unlinkSync(this.fullname);
       this.deleted = true;
     } catch (e) {
+      console.error(e);
       this.deleted = false;
     }
 

@@ -28,7 +28,7 @@ function getContainerType() {
   return ContainerTypes.NONE;
 }
 
-module.exports = new class System {
+module.exports = new (class System {
 
   constructor() {
     this.containerType = null;
@@ -58,8 +58,9 @@ module.exports = new class System {
       info.os.version = os.version();
     } catch (e) {
       info.os.version = 'Unavailable';
+      console.error(e);
     }
 
     return info;
   }
-};
+});

@@ -78,7 +78,7 @@ const router = createRouter({
     { path: '/files', component: Files },
     { path: '/settings', component: Settings },
     { path: '/scan', component: Scan },
-    { path: '/', component: Scan }
+    { path: '/', redirect: '/scan' }
   ]
 });
 

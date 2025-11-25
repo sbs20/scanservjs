@@ -10,8 +10,8 @@ function deepMerge(...objects) {
   });
 }
 
-module.exports = new class ObjectMerger {
+module.exports = new (class ObjectMerger {
   deepMerge(...objects) {
     return deepMerge(...objects);
   }
-};
+});

@@ -10,7 +10,7 @@ const application = require('./application');
 const config = application.config();
 const scanimageCommand = application.scanimageCommand();
 
-module.exports = new class Api {
+module.exports = new (class Api {
 
   /**
    * @returns {Promise.<FileInfo[]>}
@@ -129,7 +129,7 @@ module.exports = new class Api {
    */
   async readThumbnail(name) {
     const source = FileInfo.unsafe(config.outputDirectory, name);
-    if (source.extension !== '.zip') {
+    if (source.extension !== '.zip' && source.extension !== '.txt') {
       const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, name);
       if (thumbnail.exists()) {
         return thumbnail.toBuffer();
@@ -175,4 +175,4 @@ module.exports = new class Api {
     log.debug(LogFormatter.format().full(systemInfo));
     return systemInfo;
   }
-};
+});

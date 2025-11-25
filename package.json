@@ -18,8 +18,12 @@
     "util:missing-translations": "npm run missing-translations --workspace=app-ui"
   },
   "devDependencies": {
-    "concurrently": "8.2.1",
-    "fs-extra": "11.1.1"
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
+    "concurrently": "~9.2.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-vue": "^10.6.0",
+    "fs-extra": "~11.3.2"
   },
   "repository": {
     "type": "git",

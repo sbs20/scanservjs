@@ -15,23 +15,27 @@
   },
   "main": "server/server.js",
   "dependencies": {
-    "@intlify/unplugin-vue-i18n": "1.5.0",
-    "@mdi/js": "7.3.67",
-    "@vitejs/plugin-vue": "4.4.1",
-    "vite-plugin-vuetify": "1.0.2",
-    "vue": "3.3.8",
-    "vue-advanced-cropper": "2.8.8",
-    "vue-i18n": "9.6.5",
-    "vue-router": "4.2.5",
-    "vue-toastr": "3.0.5",
-    "vuetify": "3.4.0"
+    "@intlify/unplugin-vue-i18n": "~11.0.1",
+    "@mdi/js": "~7.4.47",
+    "@vitejs/plugin-vue": "~6.0.2",
+    "@vuesimple/vs-toast": "~3.1.3",
+    "vite-plugin-vuetify": "~2.1.0",
+    "vue": "~3.5.25",
+    "vue-advanced-cropper": "~2.8.9",
+    "vue-i18n": "~11.2.1",
+    "vue-router": "~4.6.3",
+    "vue-toastr": "^3.0.5",
+    "vuetify": "~3.11.0"
   },
   "devDependencies": {
-    "eslint": "8.53.0",
-    "eslint-plugin-vue": "9.18.1",
-    "nodemon": "3.0.1",
-    "sass": "1.69.5",
-    "vite": "4.5.0"
+    "@eslint/eslintrc": "^2.1.4",
+    "eslint": "~9.39.1",
+    "eslint-plugin-storybook": "^10.0.8",
+    "eslint-plugin-vue": "^9.33.0",
+    "nodemon": "~3.1.11",
+    "sass": "~1.94.2",
+    "storybook": "^10.0.8",
+    "vite": "~7.2.4"
   },
   "license": "GPL-2.0",
   "nodemonConfig": {

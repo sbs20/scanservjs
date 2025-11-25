@@ -3,7 +3,7 @@ const exec = util.promisify(require('child_process').exec);
 const execSync = require('child_process').execSync;
 const spawn = require('child_process').spawn;
 
-module.exports = new class Process {
+module.exports = new (class Process {
 
   /**
    * @returns {log.Logger}
@@ -109,4 +109,4 @@ module.exports = new class Process {
     }
     return stdout;
   }
-};
+});

@@ -37,7 +37,12 @@
             <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
             <v-card-text>
               <v-container>
-                <v-text-field v-model="editedItem.newName" :label="$t('files.filename')" />
+                  <v-text-field 
+                    v-model="editedItem.newName" 
+                    :label="$t('files.filename')"
+                    autofocus
+                    @keyup.enter="renameFileConfirm"
+                  />
               </v-container>
             </v-card-text>
             <v-card-actions>
@@ -59,6 +64,28 @@
         width="128"
         :max-height="thumbnails.size" :max-width="thumbnails.size"
         :contain="true" />
+    </template>
+    <template #[`item.name`]="{ item }">
+      <div v-if="editedItem.name === item.name" class="primary lighten-5 pa-1 rounded" style="display: flex; align-items: center; gap: 8px; border: 2px solid rgba(var(--v-theme-primary), 0.5);">
+        <v-text-field
+          v-model="editedItem.newName"
+          style="flex: 1;"
+          clearable
+          hide-details
+          autofocus
+          @click:clear="cancelInlineRename"
+          @blur="saveInlineRename"
+          @keyup.enter="saveInlineRename"
+          @keyup.esc="cancelInlineRename"
+        />
+      </div>
+      <span 
+        v-else
+        style="cursor: pointer;" 
+        @click="startInlineRename(item)"
+      >
+        {{ item.name }}
+      </span>
     </template>
     <template #[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long') }}
@@ -181,6 +208,27 @@ export default {
   },
 
   methods: {
+    startInlineRename(item) {
+      this.editedItem = {
+        name: item.name,
+        newName: item.name
+      };
+    },
+    
+    cancelInlineRename() {
+      this.editedItem = Object.assign({}, this.defaultItem);
+    },
+    
+    async saveInlineRename() {
+      if (!this.editedItem.newName || this.editedItem.newName === this.editedItem.name) {
+        this.cancelInlineRename();
+        return;
+      }
+      
+      // Call your existing rename logic
+      await this.renameFileConfirm();
+      this.cancelInlineRename();
+    },
     actionList() {
       this.$emit('mask', 1);
       Common.fetch('api/v1/context').then(context => {

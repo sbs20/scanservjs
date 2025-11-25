@@ -30,7 +30,7 @@ jobs:
       - name: New commit count
         run: echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> $GITHUB_ENV
  
-      - name: Push nightly staging
+      - name: Push core nightly staging
         if: github.ref == 'refs/heads/master' && env.NEW_COMMIT_COUNT > 0
         uses: docker/build-push-action@v5
         with:
@@ -39,12 +39,30 @@ jobs:
           target: scanservjs-core
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
+      - name: Push hplip nightly staging
+        if: github.ref == 'refs/heads/master' && env.NEW_COMMIT_COUNT > 0
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:hplip-staging
+          target: scanservjs-hplip
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+
+      - name: Push brscan4 nightly staging
+        if: github.ref == 'refs/heads/master' && env.NEW_COMMIT_COUNT > 0
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:brscan4-staging
+          target: scanservjs-brscan4
+          platforms: linux/amd64
+
       - name: Get version
         id: get_version
         if: startsWith(github.ref, 'refs/tags/v')
         run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-      - name: Push release
+      - name: Push core release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/build-push-action@v5
         with:
@@ -55,3 +73,25 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:latest
           target: scanservjs-core
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+
+      - name: Push hplip release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: docker/build-push-action@v5
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:hplip-release-${{ steps.get_version.outputs.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:hplip-latest
+          target: scanservjs-hplip
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+
+      - name: Push brscan4 release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: docker/build-push-action@v5
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:brscan4-release-${{ steps.get_version.outputs.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/scanservjs:brscan4-latest
+          target: scanservjs-brscan4
+          platforms: linux/amd64

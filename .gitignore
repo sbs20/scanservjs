@@ -69,3 +69,5 @@ debian
 _site
 .jekyll-metadata
 Gemfile.lock
+
+app-server/data

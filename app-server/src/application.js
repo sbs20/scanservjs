@@ -7,7 +7,7 @@ const FilterBuilder = require('./classes/filter-builder');
 const System = require('./classes/system');
 const UserOptions = require('./classes/user-options');
 
-module.exports = new class Application {
+module.exports = new (class Application {
   constructor() {
     this._log = null;
     this._userOptions = null;
@@ -139,4 +139,4 @@ module.exports = new class Application {
   filterBuilder() {
     return new FilterBuilder(this.config());
   }
-};
+});

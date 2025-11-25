@@ -55,106 +55,106 @@ function formatForLog(req) {
 }
 
 /**
- * Definition of all endpoints
+ * Middleware to wrap async route handlers and catch errors
  */
-const EndpointSpecs = [
-  {
-    method: 'delete',
-    path: '/api/v1/context',
-    callback: async (req, res) => {
-      api.deleteContext();
-      res.send({});
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(error => {
+    sendError(res, 500, error);
+  });
+};
+
+/**
+ * Logging middleware
+ */
+const loggingMiddleware = (req, res, next) => {
+  log.info(formatForLog(req));
+  next();
+};
+
+/**
+ * Create API router with all endpoints
+ */
+function createApiRouter() {
+  const router = express.Router();
+
+  // Context routes
+  router.delete('/context', asyncHandler(async (req, res) => {
+    api.deleteContext();
+    res.send({});
+  }));
+
+  router.get('/context', asyncHandler(async (req, res) => {
+    res.send(await api.readContext());
+  }));
+
+  // Files routes
+  router.get('/files', asyncHandler(async (req, res) => {
+    res.send(await api.fileList());
+  }));
+
+  router.post('/files/:fileName/actions/:actionName', asyncHandler(async (req, res) => {
+    const { fileName, actionName } = req.params;
+    await api.fileAction(actionName, fileName);
+    res.send('200');
+  }));
+
+  router.get('/files/:fileName/thumbnail', asyncHandler(async (req, res) => {
+    const { fileName } = req.params;
+    const buffer = await api.readThumbnail(fileName);
+    res.type('jpg');
+    res.send(buffer);
+  }));
+
+  router.get('/files/:fileName', asyncHandler(async (req, res) => {
+    const { fileName } = req.params;
+    const file = FileInfo.unsafe(config.outputDirectory, fileName);
+    res.download(file.fullname);
+  }));
+
+  router.delete('/files/:fileName', asyncHandler(async (req, res) => {
+    const { fileName } = req.params;
+    res.send(api.fileDelete(fileName));
+  }));
+
+  router.put('/files/:fileName', asyncHandler(async (req, res) => {
+    const { fileName } = req.params;
+    const { newName } = req.body;
+    await FileInfo.unsafe(config.outputDirectory, fileName).rename(newName);
+    const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, fileName);
+    if (thumbnail.exists()) {
+      thumbnail.rename(newName);
     }
-  },
-  {
-    method: 'get',
-    path: '/api/v1/context',
-    callback: async (req, res) => res.send(await api.readContext())
-  },
-  {
-    method: 'get',
-    path: '/api/v1/files',
-    callback: async (req, res) => res.send(await api.fileList())
-  },
-  {
-    method: 'post',
-    path: /\/api\/v1\/files\/([^/]+)\/actions\/([^/]+)/,
-    callback: async (req, res) => {
-      const fileName = req.params[0];
-      const actionName = req.params[1];
-      await api.fileAction(actionName, fileName);
-      res.send('200');
-    }
-  },
-  {
-    method: 'get',
-    path: /\/api\/v1\/files\/([^/]+)\/thumbnail/,
-    callback: async (req, res) => {
-      const name = req.params[0];
-      const buffer = await api.readThumbnail(name);
-      res.type('jpg');
-      res.send(buffer);
-    }
-  },
-  {
-    method: 'get',
-    path: /\/api\/v1\/files\/([^/]+)/,
-    callback: async (req, res) => {
-      const name = req.params[0];
-      const file = FileInfo.unsafe(config.outputDirectory, name);
-      res.download(file.fullname);
-    }
-  },
-  {
-    method: 'delete',
-    path: '/api/v1/files/*',
-    callback: async (req, res) => res.send(api.fileDelete(req.params[0]))
-  },
-  {
-    method: 'put',
-    path: '/api/v1/files/*',
-    callback: async (req, res) => {
-      const name = req.params[0];
-      const newName = req.body.newName;
-      await FileInfo.unsafe(config.outputDirectory, name).rename(newName);
-      const thumbnail = FileInfo.unsafe(config.thumbnailDirectory, name);
-      if (thumbnail.exists()) {
-        thumbnail.rename(newName);
-      }
-      res.send('200');
-    }
-  },
-  {
-    method: 'get',
-    path: '/api/v1/preview',
-    callback: async (req, res) => {
-      const buffer = await api.readPreview(req.query.filter);
-      res.send({
-        content: buffer.toString('base64')
-      });
-    }
-  },
-  {
-    method: 'delete',
-    path: '/api/v1/preview',
-    callback: async (req, res) => res.send(api.deletePreview())
-  },
-  {
-    method: 'post',
-    path: '/api/v1/preview',
-    callback: async (req, res) => res.send(await api.createPreview(req.body))
-  },
-  {
-    method: 'post',
-    path: '/api/v1/scan',
-    callback: async (req, res) => res.send(await api.scan(req.body))
-  },
-  {
-    method: 'get',
-    path: '/api/v1/system',
-    callback: async (req, res) => res.send(await api.readSystem())
-  }
-];
+    res.send('200');
+  }));
+
+  // Preview routes
+  router.get('/preview', asyncHandler(async (req, res) => {
+    const buffer = await api.readPreview(req.query.filter);
+    res.send({
+      content: buffer.toString('base64')
+    });
+  }));
+
+  router.delete('/preview', asyncHandler(async (req, res) => {
+    res.send(api.deletePreview());
+  }));
+
+  router.post('/preview', asyncHandler(async (req, res) => {
+    res.send(await api.createPreview(req.body));
+  }));
+
+  // Scan route
+  router.post('/scan', asyncHandler(async (req, res) => {
+    res.send(await api.scan(req.body));
+  }));
+
+  // System route
+  router.get('/system', asyncHandler(async (req, res) => {
+    res.send(await api.readSystem());
+  }));
+
+  return router;
+}
 
 module.exports = class ExpressConfigurer {
   /**
@@ -203,16 +203,9 @@ module.exports = class ExpressConfigurer {
    * @returns {ExpressConfigurer}
    */
   endpoints() {
-    EndpointSpecs.forEach(spec => {
-      this.app[spec.method](spec.path, async (req, res) => {
-        log.info(formatForLog(req));
-        try {
-          await spec.callback(req, res);
-        } catch (error) {
-          sendError(res, 500, error);
-        }
-      });
-    });
+    const apiRouter = createApiRouter();
+    this.app.use('/api/v1', loggingMiddleware, apiRouter);
+    return this;
   }
 
   /**

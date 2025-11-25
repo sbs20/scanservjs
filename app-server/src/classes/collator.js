@@ -1,4 +1,4 @@
-module.exports = new class Collator {
+module.exports = new (class Collator {
   /**
    * @param {FileInfo[]} files
    * @param {boolean} standard
@@ -25,4 +25,4 @@ module.exports = new class Collator {
     }
     return files;
   }
-};
+});
