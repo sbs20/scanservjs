@@ -71,6 +71,14 @@
       </v-col>
 
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+        <div class="d-flex justify-center mb-2">
+          <v-btn-group density="comfortable" variant="outlined">
+            <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-v')" :color="transformations.flipV ? 'primary' : undefined" @click="toggleFlipVertical"><v-icon :icon="mdiFlipVertical" /></v-btn>
+          </v-btn-group>
+        </div>
         <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCropperChange" />
@@ -132,7 +140,7 @@
 </template>
 
 <script>
-import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh } from '@mdi/js';
+import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh, mdiRotateLeft, mdiRotateRight, mdiFlipHorizontal, mdiFlipVertical } from '@mdi/js';
 import { Cropper } from 'vue-advanced-cropper';
 import { useI18n } from 'vue-i18n';
 import BatchDialog from './BatchDialog.vue';
@@ -173,6 +181,10 @@ export default {
       mdiDelete,
       mdiMagnify,
       mdiRefresh,
+      mdiRotateLeft,
+      mdiRotateRight,
+      mdiFlipHorizontal,
+      mdiFlipVertical,
       te
     };
   },
@@ -197,6 +209,11 @@ export default {
         timer: 0,
         width: 400,
         key: 0
+      },
+      transformations: {
+        rotation: 0,
+        flipH: false,
+        flipV: false
       }
     };
   },
@@ -328,6 +345,32 @@ export default {
   },
 
   methods: {
+    rotateClockwise() {
+      this.transformations.rotation = (this.transformations.rotation + 90) % 360;
+      this.readPreview();
+    },
+
+    rotateCounterClockwise() {
+      this.transformations.rotation = (this.transformations.rotation - 90 + 360) % 360;
+      this.readPreview();
+    },
+
+    toggleFlipHorizontal() {
+      this.transformations.flipH = !this.transformations.flipH;
+      this.readPreview();
+    },
+
+    toggleFlipVertical() {
+      this.transformations.flipV = !this.transformations.flipV;
+      this.readPreview();
+    },
+
+    resetTransformations() {
+      this.transformations.rotation = 0;
+      this.transformations.flipH = false;
+      this.transformations.flipV = false;
+    },
+
     _resizePreview() {
       const paperRatio = this.geometry
         ? this.deviceSize.width / this.deviceSize.height
@@ -522,8 +565,13 @@ export default {
 
     readPreview() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      const uri = 'api/v1/preview?' + new URLSearchParams(
-        this.request.filters.map(e => ['filter', e]));
+      const params = [
+        ...this.request.filters.map(e => ['filter', e]),
+        ['rotation', this.transformations.rotation],
+        ['flipH', this.transformations.flipH],
+        ['flipV', this.transformations.flipV]
+      ];
+      const uri = 'api/v1/preview?' + new URLSearchParams(params);
 
       this._fetch(uri, {
         cache: 'no-store',
@@ -548,6 +596,7 @@ export default {
     clear() {
       storage.request = null;
       this.request = this.buildRequest();
+      this.resetTransformations();
     },
 
     scan(index) {
@@ -556,6 +605,7 @@ export default {
       }
 
       const data = Common.clone(this.request);
+      data.transformations = Common.clone(this.transformations);
       this._fetch('api/v1/scan', {
         method: 'POST',
         body: JSON.stringify(data),

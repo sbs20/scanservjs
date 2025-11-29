@@ -89,10 +89,11 @@ module.exports = new class Api {
 
   /**
    * @param {string[]} filters
+   * @param {Object} transformations
    * @returns {Promise.<Buffer>}
    */
-  async readPreview(filters) {
-    log.trace('readPreview()', filters);
+  async readPreview(filters, transformations) {
+    log.trace('readPreview()', filters, transformations);
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it.
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
@@ -102,6 +103,12 @@ module.exports = new class Api {
       if (filters && filters.length) {
         const params = application.filterBuilder().build(filters, true);
         cmds.splice(0, 0, `convert - ${params} tif:-`);
+      }
+
+      // Apply transformations (rotation, flip)
+      const transformParams = this._buildTransformParams(transformations);
+      if (transformParams) {
+        cmds.splice(0, 0, `convert - ${transformParams} tif:-`);
       }
 
       return await Process.chain(cmds, buffer, { ignoreErrors: true });
@@ -121,6 +128,37 @@ module.exports = new class Api {
     } catch (e) {
       return Promise.resolve(buffer);
     }
+  }
+
+  /**
+   * Build ImageMagick transformation parameters
+   * @param {Object} transformations
+   * @returns {string}
+   */
+  _buildTransformParams(transformations) {
+    if (!transformations) {
+      return '';
+    }
+
+    const params = [];
+    
+    // Handle rotation
+    const rotation = parseInt(transformations.rotation, 10) || 0;
+    if (rotation !== 0) {
+      params.push(`-rotate ${rotation}`);
+    }
+
+    // Handle horizontal flip
+    if (transformations.flipH === 'true' || transformations.flipH === true) {
+      params.push('-flop');
+    }
+
+    // Handle vertical flip
+    if (transformations.flipV === 'true' || transformations.flipV === true) {
+      params.push('-flip');
+    }
+
+    return params.join(' ');
   }
 
   /**
