@@ -59,6 +59,7 @@
     "message:renamed": "File renamed",
     "button:action-selected": "Run action...",
     "button:delete-selected": "Delete Selected",
+    "button:zip-selected": "Zip Selected",
     "dialog:rename": "Change file name",
     "dialog:rename-cancel": "Cancel",
     "dialog:rename-save": "Save",

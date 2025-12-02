@@ -18,6 +18,8 @@
     "@intlify/unplugin-vue-i18n": "1.5.0",
     "@mdi/js": "7.3.67",
     "@vitejs/plugin-vue": "4.4.1",
+    "dayjs": "^1.11.10",
+    "jszip": "^3.10.1",
     "vite-plugin-vuetify": "1.0.2",
     "vue": "3.3.8",
     "vue-advanced-cropper": "2.8.8",
@@ -31,7 +33,8 @@
     "eslint-plugin-vue": "9.18.1",
     "nodemon": "3.0.1",
     "sass": "1.69.5",
-    "vite": "4.5.0"
+    "vite": "4.5.0",
+    "vite-plugin-node-polyfills": "^0.24.0"
   },
   "license": "GPL-2.0",
   "nodemonConfig": {

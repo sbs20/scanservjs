@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import path from "path";
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import packageJson from './package.json'
 
 // https://vitejs.dev/config/
@@ -21,6 +22,7 @@ export default defineConfig({
       include: [path.resolve(__dirname, './src/locales/**')],
       compositionOnly: false
     }),
+    nodePolyfills(),
   ],
   resolve: {
     alias: {

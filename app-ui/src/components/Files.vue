@@ -14,10 +14,13 @@
           step="16" :inverse-label="true"
           :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`" />
         <v-spacer />
+        <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleZip">
+          {{ $t('files.button:zip-selected') }}
+        </v-btn>
         <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
-        <v-menu v-if="actions.length > 0" bottom :offset-y="true">
+        <v-menu bottom :offset-y="true">
           <template #activator="{ props }">
             <v-btn
                 :disabled="selectedFiles.length === 0"
@@ -29,6 +32,7 @@
           </template>
           <v-list>
             <v-list-item v-if="smAndDown" :title="$t('files.button:delete-selected')" @click="multipleDelete" />
+            <v-list-item v-if="smAndDown" :title="$t('files.button:zip-selected')" @click="multipleZip" />
             <v-list-item v-for="(action, index) in actions" :key="index" :title="action" @click="multipleAction(action)" />
           </v-list>
         </v-menu>
@@ -75,6 +79,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import JSZip from 'jszip';
 import Common from '../classes/common';
 import Storage from '../classes/storage';
 import { mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
@@ -270,6 +276,29 @@ export default {
       if (refresh) {
         this.fileList();
       }
+    },
+
+    async multipleZip() {
+      const zip = new JSZip();
+
+      while (this.selectedFiles.length > 0) {
+        const name = this.selectedFiles[0].name;
+        try {
+          const res = await fetch(`api/v1/files/${name}`);
+          const arrayBuffer = await res.arrayBuffer();
+          zip.file(name, arrayBuffer);
+        } catch (error) {
+          this.$emit('notify', {type: 'e', message: error});
+        }
+        this.selectedFiles.splice(0, 1);
+      }
+      const blob = await zip.generateAsync({type:"blob"})
+      const filename = `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}.zip`;
+
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = URL.createObjectURL(blob);
+      a.click();
     },
 
     async multipleAction(actionName) {
