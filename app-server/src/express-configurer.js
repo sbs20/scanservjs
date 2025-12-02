@@ -133,9 +133,10 @@ const EndpointSpecs = [
         flipH: req.query.flipH,
         flipV: req.query.flipV
       };
-      const buffer = await api.readPreview(req.query.filter, transformations);
+      const result = await api.readPreview(req.query.filter, transformations);
       res.send({
-        content: buffer.toString('base64')
+        content: result.buffer.toString('base64'),
+        isDefault: result.isDefault
       });
     }
   },

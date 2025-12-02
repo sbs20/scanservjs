@@ -90,7 +90,7 @@ module.exports = new class Api {
   /**
    * @param {string[]} filters
    * @param {Object} transformations
-   * @returns {Promise.<Buffer>}
+   * @returns {Promise.<{buffer: Buffer, isDefault: boolean}>}
    */
   async readPreview(filters, transformations) {
     log.trace('readPreview()', filters, transformations);
@@ -111,7 +111,10 @@ module.exports = new class Api {
         cmds.splice(0, 0, `convert - ${transformParams} tif:-`);
       }
 
-      return await Process.chain(cmds, buffer, { ignoreErrors: true });
+      return {
+        buffer: await Process.chain(cmds, buffer, { ignoreErrors: true }),
+        isDefault: false
+      };
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -124,9 +127,15 @@ module.exports = new class Api {
       const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
       const width = 868;
       const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+      return {
+        buffer: await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer),
+        isDefault: true
+      };
     } catch (e) {
-      return Promise.resolve(buffer);
+      return {
+        buffer: buffer,
+        isDefault: true
+      };
     }
   }
 

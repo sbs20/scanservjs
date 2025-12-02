@@ -577,7 +577,12 @@ export default {
         cache: 'no-store',
         method: 'GET'
       }).then(data => {
-        this.img = 'data:image/jpeg;base64,' + data.content;
+        if (data.isDefault) {
+          this.img = null;
+          this.resetTransformations();
+        } else {
+          this.img = 'data:image/jpeg;base64,' + data.content;
+        }
         this._resizePreview();
       });
     },
