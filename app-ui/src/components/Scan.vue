@@ -445,14 +445,14 @@ export default {
 
     pixelsPerMm() {
       const scanner = this.deviceSize;
-
-      // The preview image may not have perfectly scaled dimensions
-      // because pixel counts are integers. So we report a horizontal
-      // and vertical resolution
       const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // After 90° or 270° rotation, image dimensions are swapped
+      const isRotated = rotation === 90 || rotation === 270;
       return {
-        x: image.width / scanner.width,
-        y: image.height / scanner.height
+        x: image.width / (isRotated ? scanner.height : scanner.width),
+        y: image.height / (isRotated ? scanner.width : scanner.height)
       };
     },
 
@@ -465,28 +465,88 @@ export default {
       };
     },
 
-    cropperDefaultPosition() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+    transformCoordinates(coords, origWidth, origHeight, toDisplay = true) {
+      const { rotation, flipH, flipV } = this.transformations;
+      let { left, top, width, height } = coords;
 
-      return {
-        left: adjusted.left,
-        top: adjusted.top
+      // Calculate current dimensions based on rotation
+      const rotated = rotation === 90 || rotation === 270;
+      const w = rotated ? origHeight : origWidth;
+      const h = rotated ? origWidth : origHeight;
+
+      if (!toDisplay) {
+        // Converting from display back to original: undo flips first
+        if (flipV) top = h - top - height;
+        if (flipH) left = w - left - width;
+      }
+
+      // Rotate coordinates
+      if (rotation === 90) {
+        [left, top, width, height] = toDisplay
+          ? [origHeight - top - height, left, height, width]
+          : [top, origHeight - left - width, height, width];
+      } else if (rotation === 180) {
+        left = origWidth - left - width;
+        top = origHeight - top - height;
+      } else if (rotation === 270) {
+        [left, top, width, height] = toDisplay
+          ? [top, origWidth - left - width, height, width]
+          : [origWidth - top - height, left, height, width];
+      }
+
+      if (toDisplay) {
+        // Converting to display: apply flips after rotation
+        if (flipH) left = w - left - width;
+        if (flipV) top = h - top - height;
+      }
+
+      return { left, top, width, height };
+    },
+
+    cropperDefaultPosition() {
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
       };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+
+      // Transform to displayed coordinates
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      return { left: transformed.left, top: transformed.top };
     },
 
     cropperDefaultSize() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
 
-      return {
-        width: adjusted.width,
-        height: adjusted.height
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
       };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+
+      // Transform to displayed coordinates
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      return { width: transformed.width, height: transformed.height };
     },
 
     mask(add) {
@@ -498,26 +558,45 @@ export default {
     },
 
     onCoordinatesChange() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
 
-      this.$refs.cropper.setCoordinates(adjusted);
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels and transform
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
+      };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      this.$refs.cropper.setCoordinates(transformed);
     },
 
     onCropperChange({ coordinates }) {
-      const adjusted = this.scaleCoordinates(
-        coordinates,
-        1 / this.pixelsPerMm().x,
-        1 / this.pixelsPerMm().y);
-
-      // The cropper changes even when coordinates are set manually. This will
-      // result in manually set values being overwritten because of rounding.
-      // If someone is taking the trouble to set values manually then they
-      // should be preserved. We should only update the values if they breach
-      // a threshold or the scanner dimensions
       const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Reverse transform and scale back to mm
+      const reversed = this.transformCoordinates(coordinates, origWidth, origHeight, false);
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
+      };
+      const adjusted = this.scaleCoordinates(reversed, 1 / pxPerMm.x, 1 / pxPerMm.y);
+
+      // Preserve manually-set values if they're close enough
       const params = this.request.params;
       const threshold = 0.4;
       const boundAndRound = (n, min, max) => round(Math.min(Math.max(min, n), max), 1);
