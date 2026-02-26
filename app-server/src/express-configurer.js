@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const basicAuth = require('express-basic-auth');
 const fs = require('fs');
 const path = require('path');
@@ -163,7 +164,8 @@ module.exports = class ExpressConfigurer {
    */
   constructor(app) {
     this.app = app;
-
+    this.app.use(cors());
+    
     try {
       fs.mkdirSync(config.outputDirectory, { recursive: true });
       fs.mkdirSync(config.thumbnailDirectory, { recursive: true });
