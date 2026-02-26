@@ -28,6 +28,7 @@
   "dependencies": {
     "adm-zip": "0.5.10",
     "dayjs": "1.11.10",
+    "cors": "2.8.6",
     "express": "4.18.2",
     "express-basic-auth": "1.2.1",
     "loglevel": "1.8.1",
