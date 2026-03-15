@@ -18,7 +18,11 @@
             {{ $t('document-dialog.edit') }}
           </v-btn>
         </template>
-        <v-toolbar-title class="text-truncate text-subtitle-1 ml-4">{{ fileName }}</v-toolbar-title>
+        <inline-edit v-if="files.length === 1"
+          :model-value="fileName" :suffix="fileSuffix" :dark="true"
+          class="ml-4 text-subtitle-1"
+          @rename="onRenameFile" />
+        <v-toolbar-title v-else class="text-truncate text-subtitle-1 ml-4">{{ fileName }}</v-toolbar-title>
         <v-spacer />
         <v-tooltip location="bottom" :text="$t('files.download')">
           <template #activator="{ props }">
@@ -86,11 +90,12 @@
 <script>
 import Common from '../classes/common';
 import Editor from './Editor.vue';
+import InlineEdit from './InlineEdit.vue';
 import { mdiAlertCircle, mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil } from '@mdi/js';
 
 export default {
   name: 'DocumentDialog',
-  components: { Editor },
+  components: { Editor, InlineEdit },
   emits: ['mask', 'notify', 'close', 'saved', 'download'],
 
   setup() {
@@ -126,6 +131,12 @@ export default {
       if (this.files.length === 1) return this.files[0].name || this.files[0];
       if (this.files.length > 1) return `${this.files.length} files`;
       return '';
+    },
+    fileSuffix() {
+      if (this.files.length !== 1) return '';
+      const name = this.files[0].name || this.files[0];
+      const dot = name.lastIndexOf('.');
+      return dot >= 0 ? name.slice(dot) : '';
     },
     canEdit() {
       if (this.files.length > 1) return true;
@@ -270,6 +281,36 @@ export default {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
         this.assemblingPreview = false;
+      }
+    },
+
+    async onRenameFile({ oldName, newName }) {
+      if (this.fileList.some(f => (f.name || f) === newName)) {
+        if (!confirm(this.$t('editor.confirm-overwrite', [newName]))) return;
+      }
+      this.$emit('mask', 1);
+      try {
+        await Common.fetch(`api/v1/files/${oldName}`, {
+          method: 'PUT',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ newName })
+        });
+        // Update the file reference in-place so the dialog reflects the new name
+        if (this.files.length === 1) {
+          if (this.files[0].name) {
+            this.files[0].name = newName;
+          }
+        }
+        // Update the editor's save filename to match
+        if (this.$refs.editor) {
+          this.$refs.editor.saveFilename = newName.replace(/\.[^.]+$/, '') + '.pdf';
+        }
+        this.$emit('notify', { type: 'i', message: this.$t('files.message:renamed') });
+        this.$emit('saved'); // refresh the file list
+      } catch (error) {
+        this.$emit('notify', { type: 'e', message: String(error) });
+      } finally {
+        this.$emit('mask', -1);
       }
     },
 

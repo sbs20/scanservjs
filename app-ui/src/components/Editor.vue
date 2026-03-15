@@ -22,7 +22,7 @@
         @click="save">
         {{ $t('editor.save') }}
       </v-btn>
-      <v-btn variant="tonal" size="small" class="mr-2"
+      <v-btn v-if="files.length > 1" variant="tonal" size="small" class="mr-2"
         @click="saveAs">
         {{ $t('editor.save-as') }}
       </v-btn>

@@ -41,26 +41,6 @@
             <v-list-item v-for="(action, index) in actions" :key="index" :title="action" @click="multipleAction(action)" />
           </v-list>
         </v-menu>
-
-        <v-dialog v-model="dialogEdit" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-text-field v-model="editedItem.newName" :label="$t('files.filename')" />
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn small @click="closeRename">
-                {{ $t('files.dialog:rename-cancel') }}
-              </v-btn>
-              <v-btn small color="primary" @click="renameFileConfirm">
-                {{ $t('files.dialog:rename-save') }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-toolbar>
     </template>
 
@@ -72,6 +52,9 @@
         class="cursor-pointer"
         @click="filePreview(item)" />
     </template>
+    <template #[`item.name`]="{ item }">
+      <inline-edit :model-value="item.name" @rename="onInlineRename(item, $event)" />
+    </template>
     <template #[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long') }}
     </template>
@@ -80,7 +63,6 @@
         @click="editFile(item)" />
       <v-icon v-if="isPreviewable(item)" class="mr-2" :icon="mdiEye" @click="filePreview(item)" />
       <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
-      <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item)" />
       <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
     </template>
     <template #[`footer.page-text`]="items">
@@ -106,13 +88,14 @@ import JSZip from 'jszip';
 import Common from '../classes/common';
 import Storage from '../classes/storage';
 import DocumentDialog from './DocumentDialog.vue';
-import { mdiBookEdit, mdiClose, mdiDelete, mdiDotsVertical, mdiDownload, mdiEye, mdiEyeOff, mdiFileImage, mdiPencil } from '@mdi/js';
+import InlineEdit from './InlineEdit.vue';
+import { mdiBookEdit, mdiClose, mdiDelete, mdiDotsVertical, mdiDownload, mdiEye, mdiEyeOff, mdiFileImage } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
 
 export default {
   name: 'Files',
-  components: { DocumentDialog },
+  components: { DocumentDialog, InlineEdit },
 
   emits: ['mask', 'notify'],
 
@@ -127,24 +110,13 @@ export default {
       mdiEye,
       mdiEyeOff,
       mdiFileImage,
-      mdiPencil,
       smAndDown
     };
   },
 
   data() {
     return {
-      dialogDelete: false,
-      dialogEdit: false,
       files: [],
-      editedItem: {
-        name: '',
-        newName: ''
-      },
-      defaultItem: {
-        name: '',
-        newName: ''
-      },
       selectedFiles: [],
       thumbnails: {
         show: storage.settings.thumbnails.show,
@@ -200,9 +172,6 @@ export default {
   },
 
   watch: {
-    dialogEdit(val) {
-      val || this.closeRename();
-    },
     thumbnails: {
       handler(thumbnails) {
         const settings = storage.settings;
@@ -255,40 +224,24 @@ export default {
       });
     },
 
-    fileRename(file) {
-      this.editedIndex = this.files.indexOf(file);
-      this.editedItem = Object.assign({}, file);
-      this.editedItem.newName = this.editedItem.name;
-      this.dialogEdit = true;
-    },
-
-    renameFileConfirm() {
+    async onInlineRename(item, { oldName, newName }) {
+      if (this.files.some(f => f.name === newName && f !== item)) {
+        if (!confirm(this.$t('editor.confirm-overwrite', [newName]))) return;
+      }
       this.$emit('mask', 1);
-      Common.fetch(`api/v1/files/${this.editedItem.name}`, {
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({newName: this.editedItem.newName})
-      }).then(() => {
-        this.$emit('notify', {type: 'i', message: `${this.$t('files.message:renamed')}`});
+      try {
+        await Common.fetch(`api/v1/files/${oldName}`, {
+          method: 'PUT',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ newName })
+        });
+        this.$emit('notify', {type: 'i', message: this.$t('files.message:renamed')});
         this.fileList();
-        this.$emit('mask', -1);
-      }).catch(error => {
+      } catch (error) {
         this.$emit('notify', {type: 'e', message: error});
+      } finally {
         this.$emit('mask', -1);
-      }).finally(() => {
-        this.closeRename();
-      });
-    },
-
-    closeRename() {
-      this.dialogEdit = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+      }
     },
 
     async multipleDelete() {
