@@ -525,14 +525,17 @@ provides all needed operations with 3-10× lower memory overhead (no JVM).
 | Merge pages | Append pages from multiple sources | ~20-50 MB |
 | Split PDF | Iterate pages, save each | sequential, ~10 MB peak |
 
-**Availability:**
-- Debian Bookworm (stable): `python3-pikepdf` 6.0.0 — arm64, armhf, armel
-- Debian Bullseye (oldstable): `python3-pikepdf` — available
-- Ubuntu 24.04: `python3-pikepdf` 8.7.1 — available
-- Depends on `libqpdf` (C++ library, already installed on this system)
+**Installation:** Installed via `pip` into the project's isolated `.venv/` at
+the server root. This keeps the Debian package architecture-independent (`all`)
+and ensures a consistent, modern version regardless of what the distro ships.
+The Debian package depends on `python3, python3-venv, python3-pip`; the
+`postinst` script creates the venv and installs all requirements. In
+development, `dev/setup.sh` creates the venv in each relevant worktree.
 
-**Installation:** Added as a dependency in the Debian package, or installed
-via `pip install pikepdf` into the project's `.venv/`.
+System `python3-pikepdf` packages are deliberately NOT used: they are often
+outdated on stable/LTS releases and on embedded ARM devices, and they would
+require architecture-specific Debian packages, breaking the `Architecture: all`
+guarantee.
 
 **Lossless guarantees:** pikepdf/qpdf operates on PDF structure (object
 graphs) without interpreting or re-rendering page content. All OCR text layers,
@@ -659,10 +662,10 @@ class PikepdfTool extends PdfTool { ... }  // preferred
 class PdftkTool extends PdfTool { ... }    // fallback
 ```
 
-**Tool detection at startup:** Try `python3 -c "import pikepdf"`. If it
-succeeds, use pikepdf. Otherwise, try `pdftk --version`. If neither is
-available, the editor feature is disabled (with a helpful message about
-installing dependencies).
+**Tool detection at startup:** Try `.venv/bin/python3 -c "import pikepdf"`
+(CWD-relative, matching the server's `WorkingDirectory`). If it succeeds, use
+pikepdf. Otherwise, try `pdftk --version`. If neither is available, the editor
+feature is disabled (with a helpful message about installing dependencies).
 
 **JVM memory limit for pdftk fallback:** When using pdftk-java, set
 `_JAVA_OPTIONS=-Xmx128m` in the process environment to cap JVM heap.
@@ -850,7 +853,9 @@ not for a polished public history.
 
 | Package | Purpose | Debian `main`? | ARM? | Required? |
 |---------|---------|---------------|------|-----------|
-| python3-pikepdf | PDF manipulation (via libqpdf C++) | Yes (Bookworm+) | arm64, armhf | **Preferred** |
+| python3 | Python runtime | Yes | all | Yes |
+| python3-venv | venv creation | Yes | all | Yes |
+| python3-pip | pip for venv setup | Yes | all | Yes |
 | pdftk-java | PDF manipulation (fallback) | Yes | all | Fallback only |
 | ghostscript (gs) | PDF content scaling | Yes | all | Only for fit/scale |
 | imagemagick (convert) | Images, thumbnails | Yes | all | Yes |
@@ -859,11 +864,14 @@ not for a polished public history.
 
 ### Python packages (in project .venv)
 
-| Package | Purpose | Already available? |
-|---------|---------|-------------------|
-| pikepdf | PDF operations | System package or pip install |
-| reportlab | N-up grid layout (Phase 2) | System-wide (4.1.0) |
-| Pillow | Image dimensions (used by reportlab) | System-wide (10.2.0) |
+Installed by `postinst` (production) or `dev/setup.sh` (development) into
+`.venv/` at the server root. Never installed system-wide.
+
+| Package | Purpose | Source |
+|---------|---------|--------|
+| pikepdf | PDF operations | `editor/requirements.txt` |
+| reportlab | N-up grid layout (Phase 2) | `editor/requirements.txt` (when added) |
+| Pillow | Image dimensions (used by reportlab) | pulled in as pikepdf dependency |
 
 ### npm packages
 

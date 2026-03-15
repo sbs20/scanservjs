@@ -1,4 +1,3 @@
-const path = require('path');
 const log = require('loglevel').getLogger('EditorApi');
 
 const EditorSession = require('./classes/editor-session');
@@ -7,9 +6,6 @@ const PdftkTool = require('./classes/pdftk-tool');
 
 const application = require('./application');
 const config = application.config();
-
-// Project root is two levels up from app-server/src/
-const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 module.exports = new class EditorApi {
   constructor() {
@@ -27,9 +23,9 @@ module.exports = new class EditorApi {
   async _getPdfTool() {
     if (this._pdfTool) return this._pdfTool;
 
-    if (await PikepdfTool.isAvailable(PROJECT_ROOT)) {
+    if (await PikepdfTool.isAvailable()) {
       log.info('Using pikepdf for PDF operations');
-      this._pdfTool = new PikepdfTool(PROJECT_ROOT);
+      this._pdfTool = new PikepdfTool();
     } else if (await PdftkTool.isAvailable()) {
       log.info('Using pdftk-java fallback for PDF operations');
       this._pdfTool = new PdftkTool();

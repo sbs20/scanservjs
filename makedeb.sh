@@ -32,6 +32,7 @@ mkdir -pv $DIR_DOC
 
 # Copy distribution
 cp -rv dist/* $DIR_LIB
+cp -rv editor $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
@@ -75,7 +76,7 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: all
-Depends: adduser, nodejs, imagemagick, sane-utils
+Depends: adduser, nodejs, imagemagick, sane-utils, python3, python3-venv, python3-pip
 Recommends: sane-airscan, ipp-usb, tesseract-ocr, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
 Maintainer: Sam Strachan <info@sbs20.com>
 Description: Web-based UI for SANE
@@ -115,6 +116,13 @@ if [ "\$1" = "configure" ] ; then
 
   # Set permissions
   chown -R $USER:$GROUP $PATH_RUNTIME
+
+  # Setup the isolated Python environment
+  echo "Setting up isolated Python environment..."
+  python3 -m venv $PATH_LIB/.venv
+  $PATH_LIB/.venv/bin/pip install --upgrade pip
+  $PATH_LIB/.venv/bin/pip install -r $PATH_LIB/editor/requirements.txt
+  chown -R $USER:$GROUP $PATH_LIB/.venv
 
   if [ -d /etc/ImageMagick-6 ]; then
     # Enable PDF

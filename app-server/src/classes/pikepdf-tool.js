@@ -1,19 +1,18 @@
-const path = require('path');
 const PdfTool = require('./pdf-tool');
 const Process = require('./process');
 const log = require('loglevel').getLogger('PikepdfTool');
 
 /**
  * PDF operations using pikepdf via a Python helper script.
+ * Uses CWD-relative paths so the same code works both in development
+ * (CWD = project worktree root) and when installed (CWD = /usr/lib/scanservjs,
+ * set by WorkingDirectory in the systemd unit).
  */
 module.exports = class PikepdfTool extends PdfTool {
-  /**
-   * @param {string} projectRoot - absolute path to the project root
-   */
-  constructor(projectRoot) {
+  constructor() {
     super();
-    this.python = path.join(projectRoot, '.venv/bin/python3');
-    this.script = path.join(projectRoot, 'editor/pdf_ops.py');
+    this.python = '.venv/bin/python3';
+    this.script = 'editor/pdf_ops.py';
   }
 
   /**
@@ -66,14 +65,12 @@ module.exports = class PikepdfTool extends PdfTool {
   }
 
   /**
-   * Test whether pikepdf is available.
-   * @param {string} projectRoot
+   * Test whether pikepdf is available via the project venv.
    * @returns {Promise<boolean>}
    */
-  static async isAvailable(projectRoot) {
+  static async isAvailable() {
     try {
-      const python = path.join(projectRoot, '.venv/bin/python3');
-      await Process.spawn(`'${python}' -c "import pikepdf"`);
+      await Process.spawn(`'.venv/bin/python3' -c "import pikepdf"`);
       return true;
     } catch (e) {
       return false;
