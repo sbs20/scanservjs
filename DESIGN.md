@@ -1501,7 +1501,7 @@ Independent grid enhancements. No server changes.
 
 #### Batch C — Touch Support
 
-- [ ] Long-press on page enters "selection mode"
-- [ ] In selection mode, taps toggle page selection
-- [ ] "Selection mode" indicator in toolbar
-- [ ] Tap outside pages or press a "Done" button exits selection mode
+- [x] Long-press on page enters "selection mode"
+- [x] In selection mode, taps toggle page selection
+- [x] "Selection mode" indicator in toolbar
+- [x] Tap outside pages or press a "Done" button exits selection mode
