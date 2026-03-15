@@ -20,21 +20,23 @@
       <v-spacer />
     </v-toolbar>
 
-    <div class="pa-4 overflow-y-auto flex-grow-1">
+    <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
+      tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick">
       <draggable
         v-model="pages"
         item-key="id"
         class="editor-grid"
         ghost-class="editor-ghost"
-        @end="onDragEnd">
+        @end="onDragEnd"
+        @click.self="onBackgroundClick">
         <template #item="{ element, index }">
           <div
             class="editor-page"
-            :class="{ 'editor-page-selected': isSelected(element.id) }"
-            @click.exact="selectOne(element.id)"
+            :class="pageClasses(element, index)"
+            @click.exact="selectOne(element.id, index)"
             @click.ctrl.exact="toggleSelect(element.id)"
             @click.meta.exact="toggleSelect(element.id)"
-            @click.shift.exact="selectRange(element.id)">
+            @click.shift.exact="selectRange(element.id, index)">
             <div class="editor-thumb-wrap">
               <v-img
                 v-if="sessionId && !element.isBlank"
@@ -151,7 +153,9 @@ export default {
     return {
       pages: [],
       selected: [],
-      lastSelected: null,
+      anchor: null,
+      focusIndex: -1,
+      cursorPosition: 0,
       undoStack: new UndoStack(),
       showSaveAs: false,
       showAddPages: false,
@@ -200,14 +204,11 @@ export default {
       if (!this.sessionId) return;
       this.$emit('mask', 1);
       try {
-        // Fetch file list for "Add Pages" dialog
         const fileList = await Common.fetch('api/v1/files');
         this.availableFiles = fileList;
 
-        // Get session data
         const result = await Common.fetch(`api/v1/editor/sessions/${this.sessionId}`);
 
-        // Build page list with stable IDs
         this.pages = assignIds(result.pages.map((p, i) => ({
           ...p,
           _originalIndex: i
@@ -216,16 +217,21 @@ export default {
         this.undoStack.clear();
         this.undoStack.push(this.pages);
         this.selected = [];
-        this.lastSelected = null;
+        this.anchor = null;
+        this.focusIndex = -1;
+        this.cursorPosition = this.pages.length;
         this.initialHash = JSON.stringify(this.pages);
 
-        // Default save filename
         if (this.files.length === 1) {
           const name = this.files[0].name || this.files[0];
           this.saveFilename = name.replace(/\.[^.]+$/, '') + '.pdf';
         } else {
           this.saveFilename = 'merged.pdf';
         }
+
+        this.$nextTick(() => {
+          this.$refs.scrollArea?.focus({ preventScroll: true });
+        });
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
@@ -233,10 +239,6 @@ export default {
       }
     },
 
-    /**
-     * Get the current edit list for preview assembly.
-     * @returns {Array}
-     */
     getEditList() {
       return this.pages.map(p => ({
         source: p.source,
@@ -249,10 +251,6 @@ export default {
       }));
     },
 
-    /**
-     * Get a hash of the current edit list for change detection.
-     * @returns {string}
-     */
     getEditListHash() {
       return JSON.stringify(this.pages);
     },
@@ -261,6 +259,9 @@ export default {
       this.pages = [];
       this.undoStack.clear();
       this.selected = [];
+      this.anchor = null;
+      this.focusIndex = -1;
+      this.cursorPosition = 0;
       this.initialHash = null;
     },
 
@@ -272,14 +273,46 @@ export default {
       }
     },
 
-    // Selection
-    isSelected(id) {
-      return this.selected.includes(id);
+    // --- Grid layout helpers ---
+
+    getColumnsPerRow() {
+      const el = this.$refs.scrollArea;
+      if (!el) return 1;
+      const available = el.clientWidth - 32;
+      return Math.max(1, Math.floor((available + 12) / 188));
     },
 
-    selectOne(id) {
+    scrollToPage(index) {
+      if (index < 0 || index >= this.pages.length) return;
+      this.$nextTick(() => {
+        const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page');
+        if (cards && cards[index]) {
+          cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    },
+
+    // --- Page classes ---
+
+    pageClasses(element, index) {
+      return {
+        'editor-page-selected': this.selected.includes(element.id),
+        'editor-page-anchor': this.selected.length > 1 && element.id === this.anchor,
+        'editor-cursor-before': this.cursorPosition === index
+          && this.cursorPosition < this.pages.length,
+        'editor-cursor-after': this.cursorPosition === this.pages.length
+          && index === this.pages.length - 1
+      };
+    },
+
+    // --- Selection ---
+
+    selectOne(id, index) {
       this.selected = [id];
-      this.lastSelected = id;
+      this.anchor = id;
+      this.focusIndex = index;
+      this.cursorPosition = index + 1;
+      this.$refs.scrollArea?.focus({ preventScroll: true });
     },
 
     toggleSelect(id) {
@@ -289,22 +322,217 @@ export default {
       } else {
         this.selected.push(id);
       }
-      this.lastSelected = id;
+      this.$refs.scrollArea?.focus({ preventScroll: true });
     },
 
-    selectRange(id) {
-      if (!this.lastSelected) {
-        this.selectOne(id);
+    selectRange(id, index) {
+      if (!this.anchor) {
+        this.selectOne(id, index);
         return;
       }
-      const ids = this.pages.map(p => p.id);
-      const from = ids.indexOf(this.lastSelected);
-      const to = ids.indexOf(id);
-      const [start, end] = from < to ? [from, to] : [to, from];
-      this.selected = ids.slice(start, end + 1);
+      const anchorIdx = this.pages.findIndex(p => p.id === this.anchor);
+      if (anchorIdx < 0) {
+        this.selectOne(id, index);
+        return;
+      }
+      const [start, end] = anchorIdx < index
+        ? [anchorIdx, index] : [index, anchorIdx];
+      this.selected = this.pages.slice(start, end + 1).map(p => p.id);
+      this.focusIndex = index;
+      this.cursorPosition = index + 1;
+      this.$refs.scrollArea?.focus({ preventScroll: true });
     },
 
-    // Operations
+    selectAll() {
+      this.selected = this.pages.map(p => p.id);
+    },
+
+    deselectAll() {
+      this.selected = [];
+      this.focusIndex = -1;
+    },
+
+    // --- Keyboard navigation ---
+
+    onKeydown(e) {
+      if (this.showSaveAs || this.showAddPages) return;
+
+      const { key, ctrlKey, metaKey, shiftKey } = e;
+      const mod = ctrlKey || metaKey;
+
+      switch (key) {
+        case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'ArrowUp':
+        case 'ArrowDown':
+          e.preventDefault();
+          this.navigateArrow(key, shiftKey);
+          break;
+
+        case 'Home':
+          if (mod) {
+            e.preventDefault();
+            this.navigateTo(0, shiftKey);
+          }
+          break;
+
+        case 'End':
+          if (mod) {
+            e.preventDefault();
+            this.navigateTo(this.pages.length - 1, shiftKey);
+          }
+          break;
+
+        case 'PageUp':
+          e.preventDefault();
+          this.$refs.scrollArea?.scrollBy({
+            top: -this.$refs.scrollArea.clientHeight,
+            behavior: 'smooth'
+          });
+          break;
+
+        case 'PageDown':
+          e.preventDefault();
+          this.$refs.scrollArea?.scrollBy({
+            top: this.$refs.scrollArea.clientHeight,
+            behavior: 'smooth'
+          });
+          break;
+
+        case 'a':
+          if (mod) {
+            e.preventDefault();
+            this.selectAll();
+          }
+          break;
+
+        case 'Escape':
+          e.preventDefault();
+          this.deselectAll();
+          break;
+
+        case 'Delete':
+        case 'Backspace':
+          if (this.selected.length > 0) {
+            e.preventDefault();
+            this.deleteSelected();
+          }
+          break;
+
+        case 'z':
+          if (mod && !shiftKey) {
+            e.preventDefault();
+            this.undo();
+          } else if (mod && shiftKey) {
+            e.preventDefault();
+            this.redo();
+          }
+          break;
+
+        case 'Z':
+          if (mod) {
+            e.preventDefault();
+            this.redo();
+          }
+          break;
+
+        case 'y':
+          if (mod) {
+            e.preventDefault();
+            this.redo();
+          }
+          break;
+      }
+    },
+
+    navigateArrow(key, extend) {
+      if (this.pages.length === 0) return;
+
+      const cols = this.getColumnsPerRow();
+      const current = this.focusIndex >= 0 ? this.focusIndex : -1;
+      let next;
+
+      switch (key) {
+        case 'ArrowRight':
+          next = current < this.pages.length - 1 ? current + 1 : current;
+          break;
+        case 'ArrowLeft':
+          next = current > 0 ? current - 1 : 0;
+          break;
+        case 'ArrowDown':
+          next = current + cols;
+          if (next >= this.pages.length) next = this.pages.length - 1;
+          break;
+        case 'ArrowUp':
+          next = current >= cols ? current - cols : 0;
+          break;
+        default:
+          return;
+      }
+
+      if (current < 0) next = 0;
+      this.navigateTo(next, extend);
+    },
+
+    navigateTo(index, extend) {
+      if (index < 0 || index >= this.pages.length) return;
+
+      this.focusIndex = index;
+      this.cursorPosition = index + 1;
+
+      const page = this.pages[index];
+      if (extend && this.anchor) {
+        const anchorIdx = this.pages.findIndex(p => p.id === this.anchor);
+        if (anchorIdx >= 0) {
+          const [start, end] = anchorIdx < index
+            ? [anchorIdx, index] : [index, anchorIdx];
+          this.selected = this.pages.slice(start, end + 1).map(p => p.id);
+        }
+      } else {
+        this.selected = [page.id];
+        this.anchor = page.id;
+      }
+
+      this.scrollToPage(index);
+    },
+
+    // --- Background click ---
+
+    onBackgroundClick(e) {
+      this.selected = [];
+      this.focusIndex = -1;
+
+      const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page');
+      if (!cards || !cards.length) {
+        this.cursorPosition = 0;
+        return;
+      }
+
+      const x = e.clientX;
+      const y = e.clientY;
+      let closestIdx = 0;
+      let closestDist = Infinity;
+
+      for (let i = 0; i < cards.length; i++) {
+        const rect = cards[i].getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(x - cx, y - cy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIdx = i;
+        }
+      }
+
+      const rect = cards[closestIdx].getBoundingClientRect();
+      this.cursorPosition = x < rect.left + rect.width / 2
+        ? closestIdx : closestIdx + 1;
+
+      this.$refs.scrollArea?.focus({ preventScroll: true });
+    },
+
+    // --- Operations ---
+
     pushState() {
       this.undoStack.push(this.pages);
     },
@@ -314,6 +542,7 @@ export default {
       if (state) {
         this.pages = state;
         this.selected = [];
+        this.clampCursor();
       }
     },
 
@@ -322,10 +551,22 @@ export default {
       if (state) {
         this.pages = state;
         this.selected = [];
+        this.clampCursor();
       }
     },
 
-    onDragEnd() {
+    clampCursor() {
+      if (this.cursorPosition > this.pages.length) {
+        this.cursorPosition = this.pages.length;
+      }
+      if (this.focusIndex >= this.pages.length) {
+        this.focusIndex = this.pages.length - 1;
+      }
+    },
+
+    onDragEnd(evt) {
+      this.focusIndex = evt.newIndex;
+      this.cursorPosition = evt.newIndex + 1;
       this.pushState();
     },
 
@@ -339,8 +580,14 @@ export default {
     },
 
     deleteSelected() {
+      if (this.selected.length === 0) return;
+      const firstDeletedIdx = this.pages.findIndex(p => this.selected.includes(p.id));
       this.pages = this.pages.filter(p => !this.selected.includes(p.id));
       this.selected = [];
+      this.cursorPosition = Math.min(firstDeletedIdx, this.pages.length);
+      this.focusIndex = this.cursorPosition > 0
+        ? this.cursorPosition - 1
+        : (this.pages.length > 0 ? 0 : -1);
       this.pushState();
     },
 
@@ -356,8 +603,13 @@ export default {
         isBlank: true,
         originalIndex: -1
       };
-      this.pages.push(blank);
+      this.pages.splice(this.cursorPosition, 0, blank);
+      this.cursorPosition++;
+      this.focusIndex = this.cursorPosition - 1;
+      this.selected = [blank.id];
+      this.anchor = blank.id;
       this.pushState();
+      this.scrollToPage(this.focusIndex);
     },
 
     async confirmAddPages() {
@@ -375,9 +627,12 @@ export default {
           ...p,
           _originalIndex: result.pages.length - result.added.length + i
         })));
-        this.pages.push(...newPages);
+        this.pages.splice(this.cursorPosition, 0, ...newPages);
+        this.cursorPosition += newPages.length;
+        this.focusIndex = this.cursorPosition - 1;
         this.pushState();
         this.addPagesFile = null;
+        this.scrollToPage(this.focusIndex);
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
@@ -401,13 +656,11 @@ export default {
     async confirmSaveAs() {
       let filename = this.saveFilename.trim();
       if (!filename) return;
-      // Strip any .pdf the user typed (handles double-ext and wrong case), then re-append
       while (filename.toLowerCase().endsWith('.pdf')) {
         filename = filename.slice(0, -4);
       }
       filename += '.pdf';
 
-      // Check for overwrite — warn if file exists and isn't the original
       const originalName = this.files.length === 1
         ? (this.files[0].name || this.files[0]).replace(/\.[^.]+$/, '') + '.pdf'
         : null;
@@ -456,6 +709,10 @@ export default {
 </script>
 
 <style scoped>
+.editor-scroll:focus {
+  outline: none;
+}
+
 .editor-grid {
   display: flex;
   flex-wrap: wrap;
@@ -479,6 +736,43 @@ export default {
 .editor-page-selected {
   border-color: rgb(var(--v-theme-primary));
   background: rgba(var(--v-theme-primary), 0.08);
+}
+
+.editor-page-anchor::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-primary));
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.editor-cursor-before::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgb(var(--v-theme-primary));
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.editor-cursor-after::before {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgb(var(--v-theme-primary));
+  border-radius: 1px;
+  pointer-events: none;
 }
 
 .editor-ghost {

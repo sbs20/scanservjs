@@ -1410,30 +1410,98 @@ the browser to reload without needing cache-control headers.
 
 ### 17.5 Implementation Checklist
 
-**Shared dialog refactor:**
-- [ ] Extract `DocumentDialog.vue` component with View/Edit mode switcher
-- [ ] Move iframe logic from `Files.vue` into `DocumentDialog.vue`
-- [ ] Move editor grid from `Editor.vue` into `DocumentDialog.vue` (or keep
-  `Editor.vue` as a slot/child with the dialog as the outer frame)
-- [ ] Update `Files.vue` to use `DocumentDialog.vue` for both preview and edit
+**Shared dialog refactor:** ✅ COMPLETE
+- [x] Extract `DocumentDialog.vue` component with View/Edit mode switcher
+- [x] Move iframe logic from `Files.vue` into `DocumentDialog.vue`
+- [x] Keep `Editor.vue` as child with `DocumentDialog.vue` as outer frame
+- [x] Update `Files.vue` to use `DocumentDialog.vue` for both preview and edit
   entry points
-- [ ] Lazy session creation on first Edit tab click
+- [x] Lazy session creation on first Edit tab click
+- [x] Inline filename editing in dialog toolbar
+- [x] Save button in dialog toolbar (dirty-aware)
+- [x] Download button (assembles preview for edited files)
 
-**Server: preview endpoint:**
-- [ ] Add `POST /sessions/:id/preview` to `express-configurer.js`
-- [ ] Add `assemblePreview(editList)` method to `EditorSession`
-- [ ] Add `GET /sessions/:id/preview` to serve the file
-- [ ] Add `previewEtag` field to session for hash-based skip logic
+**Server: preview endpoint:** ✅ COMPLETE
+- [x] Add `POST /sessions/:id/preview` to `express-configurer.js`
+- [x] Add `assemblePreview(editList)` method to `EditorSession`
+- [x] Add `GET /sessions/:id/preview` to serve the file
+- [x] Client-side hash-based skip logic (editListHash comparison)
 
-**Large document UX:**
-- [ ] Add cursor-position state to editor component; render gap highlights
-- [ ] Update "Add Pages" and "Add Blank" to insert at cursor position
-- [ ] Implement Ctrl+click, Shift+click, anchor tracking
-- [ ] Implement rubber-band selection (mouse drag on grid background)
-- [ ] Add context menu (right-click) with page operations
-- [ ] Implement IntersectionObserver with request queue and AbortController
-- [ ] Add skeleton loading placeholders
-- [ ] Add "Go to page" input in status bar
-- [ ] Add source section dividers (initial load only)
-- [ ] Implement keyboard navigation (arrow keys, PgUp/Dn, Ctrl+Home/End)
-- [ ] Long-press → selection mode on touch devices
+**Selection basics:** ✅ COMPLETE
+- [x] Click to select one, Ctrl+click to toggle, Shift+click for range
+- [x] Anchor tracking (`lastSelected`)
+
+---
+
+### 17.6 Phase 2 Milestone 2: Large Document UX
+
+All remaining Phase 2 work. Commits from this point forward will be squashed.
+
+#### Batch A — Keyboard Navigation + Insertion Cursor
+
+Tightly coupled: arrow keys move both selection and cursor.
+
+**Keyboard navigation** (in `Editor.vue`):
+- [ ] Capture keydown on editor root (tabindex, @keydown)
+- [ ] Arrow keys: grid-aware movement (← → move by 1, ↑ ↓ move by row width)
+- [ ] Shift+Arrow: extend selection from anchor
+- [ ] Ctrl+A: select all; Escape: deselect all
+- [ ] Delete / Backspace: delete selected pages
+- [ ] Ctrl+Z / Ctrl+Shift+Z: undo / redo
+- [ ] Ctrl+Home / Ctrl+End: jump to first / last page
+- [ ] PgUp / PgDn: scroll by one viewport height
+- [ ] `event.preventDefault()` to suppress browser defaults (Ctrl+Z, Ctrl+A)
+
+**Insertion cursor:**
+- [ ] `cursorPosition` state (gap index: 0 = before page 1, N = after page N)
+- [ ] Render visible gap indicators (CSS 2px accent-color vertical bar)
+- [ ] Click on gap between thumbnails places cursor
+- [ ] Cursor follows selection: selecting page N moves cursor to after N
+- [ ] `addBlank()` and `confirmAddPages()` insert at cursor instead of appending
+- [ ] Arrow keys move cursor along with selection
+- [ ] Default cursor position: after last page
+
+#### Batch B — Virtualized Thumbnails, Context Menu, Rubber-Band, Navigation
+
+Independent grid enhancements. No server changes.
+
+**Virtualized thumbnails** (IntersectionObserver):
+- [ ] Observer on each page card with `rootMargin: '200px'`
+- [ ] Request queue: max 4 concurrent fetches, ordered by viewport proximity
+- [ ] AbortController: cancel in-flight requests for pages scrolled out of range
+- [ ] Thumbnail cache: Map keyed by `originalIndex`, reused across reorders
+- [ ] Skeleton placeholders (`v-skeleton-loader type="image"`) while loading
+- [ ] Threshold: eager loading below 50 pages, observer above 50
+
+**Context menu** (right-click):
+- [ ] `v-menu` attached to grid, positioned at click coordinates
+- [ ] Actions: Rotate CW, Rotate CCW, Delete, Insert blank before, Insert blank
+  after, Select all, Deselect all
+- [ ] Right-click on unselected page selects it first, then shows menu
+- [ ] Enabled/disabled states per action based on selection
+
+**Rubber-band selection:**
+- [ ] Mousedown on grid background (not on page card) starts rubber-band
+- [ ] Semi-transparent rect overlay (`position: absolute`) follows mouse
+- [ ] On mouseup, select all pages whose cards intersect the rect
+- [ ] Ctrl+drag: additive (union with existing selection)
+- [ ] Plain drag: replaces selection
+
+**Jump-to-page:**
+- [ ] Number input in the status bar: "Go to: [___]"
+- [ ] Enter or click arrow scrolls grid to center that page
+- [ ] `scrollIntoView({ behavior: 'smooth', block: 'center' })`
+- [ ] Brief pulse animation on the target page to orient the user
+
+**Source section dividers:**
+- [ ] Render `v-divider` with label chip between source file groups
+- [ ] Computed by scanning for runs of consecutive pages from same source
+- [ ] Disappear after user reorders pages (source structure broken)
+- [ ] Non-interactive cosmetic elements
+
+#### Batch C — Touch Support
+
+- [ ] Long-press on page enters "selection mode"
+- [ ] In selection mode, taps toggle page selection
+- [ ] "Selection mode" indicator in toolbar
+- [ ] Tap outside pages or press a "Done" button exits selection mode
