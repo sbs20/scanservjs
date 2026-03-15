@@ -138,12 +138,19 @@ export default {
       set() { this.requestClose(); }
     },
     fileName() {
-      if (this.files.length === 1) return this.files[0].name || this.files[0];
+      if (this.files.length === 1) {
+        const name = this.files[0].name || this.files[0];
+        // When editing, output is always PDF — show the PDF output name
+        if (this.canEdit) return name.replace(/\.[^.]+$/, '') + '.pdf';
+        return name;
+      }
       if (this.files.length > 1) return `${this.files.length} files`;
       return '';
     },
     fileSuffix() {
       if (this.files.length !== 1) return '';
+      // When editing, output is always PDF regardless of source format
+      if (this.canEdit) return '.pdf';
       const name = this.files[0].name || this.files[0];
       const dot = name.lastIndexOf('.');
       return dot >= 0 ? name.slice(dot) : '';
@@ -176,6 +183,9 @@ export default {
       return name.endsWith('.txt');
     },
     downloadFilename() {
+      // Prefer editor's current saveFilename (tracks toolbar renames for non-PDF sources)
+      const editor = this.$refs.editor;
+      if (editor && editor.saveFilename) return editor.saveFilename;
       if (this.files.length === 1) {
         const name = this.files[0].name || this.files[0];
         return name.replace(/\.[^.]+$/, '') + '.pdf';
@@ -341,34 +351,39 @@ export default {
       }
     },
 
-    async onRenameFile({ oldName, newName }) {
-      if (this.fileList.some(f => (f.name || f) === newName)) {
-        if (!confirm(this.$t('editor.confirm-overwrite', [newName]))) return;
+    async onRenameFile({ newName }) {
+      // newName is the desired PDF output name (e.g. "invoice.pdf")
+      const sourceName = this.files[0].name || this.files[0];
+      const sourceIsPdf = sourceName.toLowerCase().endsWith('.pdf');
+
+      if (sourceIsPdf) {
+        // Source and output are the same file — rename it on disk
+        if (this.fileList.some(f => (f.name || f) === newName)) {
+          if (!confirm(this.$t('editor.confirm-overwrite', [newName]))) return;
+        }
+        this.$emit('mask', 1);
+        try {
+          await Common.fetch(`api/v1/files/${sourceName}`, {
+            method: 'PUT',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newName })
+          });
+          this.files[0].name = newName;
+          if (this.$refs.editor) this.$refs.editor.updateSource(sourceName, newName);
+          this.$emit('notify', { type: 'i', message: this.$t('files.message:renamed') });
+          this.$emit('saved');
+        } catch (error) {
+          this.$emit('notify', { type: 'e', message: String(error) });
+          return;
+        } finally {
+          this.$emit('mask', -1);
+        }
       }
-      this.$emit('mask', 1);
-      try {
-        await Common.fetch(`api/v1/files/${oldName}`, {
-          method: 'PUT',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ newName })
-        });
-        // Update the file reference in-place so the dialog reflects the new name
-        if (this.files.length === 1) {
-          if (this.files[0].name) {
-            this.files[0].name = newName;
-          }
-        }
-        // Update the editor's page sources and save filename to match
-        if (this.$refs.editor) {
-          this.$refs.editor.updateSource(oldName, newName);
-          this.$refs.editor.saveFilename = newName.replace(/\.[^.]+$/, '') + '.pdf';
-        }
-        this.$emit('notify', { type: 'i', message: this.$t('files.message:renamed') });
-        this.$emit('saved'); // refresh the file list
-      } catch (error) {
-        this.$emit('notify', { type: 'e', message: String(error) });
-      } finally {
-        this.$emit('mask', -1);
+
+      // For non-PDF sources (e.g. .jpg → .pdf conversion): only update save target,
+      // the source file on disk is left untouched
+      if (this.$refs.editor) {
+        this.$refs.editor.saveFilename = newName;
       }
     },
 
