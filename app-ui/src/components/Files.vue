@@ -53,7 +53,7 @@
         @click="filePreview(item)" />
     </template>
     <template #[`item.name`]="{ item }">
-      <inline-edit :model-value="item.name" @rename="onInlineRename(item, $event)" />
+      <inline-edit :model-value="item.name" :suffix="fileExtension(item)" @rename="onInlineRename(item, $event)" />
     </template>
     <template #[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long') }}
@@ -331,6 +331,11 @@ export default {
     isPreviewable(file) {
       const name = file.name.toLowerCase();
       return name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png') || name.endsWith('.pdf') || name.endsWith('.tif') || name.endsWith('.tiff') || name.endsWith('.txt');
+    },
+
+    fileExtension(file) {
+      const dot = file.name.lastIndexOf('.');
+      return dot >= 0 ? file.name.slice(dot) : '';
     },
 
     selectToggle(value) {

@@ -55,7 +55,11 @@ export default {
       this.editing = false;
       let newName = this.editValue.trim();
       if (!newName) return; // empty — revert silently
-      if (this.suffix && !newName.toLowerCase().endsWith(this.suffix.toLowerCase())) {
+      if (this.suffix) {
+        // Strip any extension the user may have typed (handles double-ext and wrong case)
+        while (newName.toLowerCase().endsWith(this.suffix.toLowerCase())) {
+          newName = newName.slice(0, -this.suffix.length);
+        }
         newName += this.suffix;
       }
       if (newName === this.modelValue) return; // unchanged

@@ -172,8 +172,9 @@ export default {
     },
     saveAsTargetName() {
       let name = (this.saveFilename || '').trim();
-      if (name && !name.endsWith('.pdf')) name += '.pdf';
-      return name;
+      if (!name) return name;
+      while (name.toLowerCase().endsWith('.pdf')) name = name.slice(0, -4);
+      return name + '.pdf';
     },
     saveAsWillOverwrite() {
       if (!this.saveAsTargetName) return false;
@@ -400,7 +401,11 @@ export default {
     async confirmSaveAs() {
       let filename = this.saveFilename.trim();
       if (!filename) return;
-      if (!filename.endsWith('.pdf')) filename += '.pdf';
+      // Strip any .pdf the user typed (handles double-ext and wrong case), then re-append
+      while (filename.toLowerCase().endsWith('.pdf')) {
+        filename = filename.slice(0, -4);
+      }
+      filename += '.pdf';
 
       // Check for overwrite — warn if file exists and isn't the original
       const originalName = this.files.length === 1
