@@ -14,6 +14,9 @@
           step="16" :inverse-label="true"
           :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`" />
         <v-spacer />
+        <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleZip">
+          {{ $t('files.button:zip-selected') }}
+        </v-btn>
         <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
@@ -29,9 +32,51 @@
           </template>
           <v-list>
             <v-list-item v-if="smAndDown" :title="$t('files.button:delete-selected')" @click="multipleDelete" />
+            <v-list-item v-if="smAndDown" :title="$t('files.button:zip-selected')" @click="multipleZip" />
             <v-list-item v-for="(action, index) in actions" :key="index" :title="action" @click="multipleAction(action)" />
           </v-list>
         </v-menu>
+        <v-dialog v-model="dialogPreview" width="95vw" max-width="1400px">
+          <v-card height="92vh" class="d-flex flex-column overflow-hidden">
+            <v-toolbar flat color="grey-darken-4" theme="dark" density="comfortable">
+              <v-toolbar-title class="text-truncate text-subtitle-1">{{ previewItem.name }}</v-toolbar-title>
+              <v-spacer />
+              <v-tooltip location="bottom" :text="$t('files.download')">
+                <template #activator="{ props }">
+                  <v-btn v-bind="props" icon color="white" variant="text" class="mr-2" @click="open(previewItem)">
+                    <v-icon :icon="mdiDownload" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
+              <v-tooltip location="bottom" :text="$t('files.close')">
+                <template #activator="{ props }">
+                  <v-btn v-bind="props" icon color="white" variant="text" @click="dialogPreview = false">
+                    <v-icon :icon="mdiClose" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
+            </v-toolbar>
+            <v-card-text class="pa-0 flex-grow-1 overflow-hidden d-flex justify-center align-center bg-grey-darken-3">
+              <iframe v-if="previewItem.name && previewItem.name.toLowerCase().endsWith('.pdf')"
+                :src="`api/v1/files/${previewItem.name}?preview=true`"
+                width="100%" height="100%" frameborder="0"></iframe>
+
+              <v-img v-else-if="previewItem.name && isPreviewable(previewItem) && !previewItem.name.toLowerCase().endsWith('.txt')"
+                :src="`api/v1/files/${previewItem.name}?preview=true`"
+                max-width="100%" max-height="100%" />
+
+              <pre v-else-if="previewContent"
+                class="text-white text-left ma-0 pa-4 flex-grow-1 w-100 h-100 overflow-auto"
+                style="white-space: pre-wrap; font-family: monospace;">{{ previewContent }}</pre>
+
+              <div v-else class="text-h6 text-white text-center">
+                <v-icon size="48" :icon="mdiEyeOff" class="mb-2" />
+                <div>{{ $t('files.no-preview') }}</div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
         <v-dialog v-model="dialogEdit" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">{{ $t('files.dialog:rename') }}</v-card-title>
@@ -58,12 +103,15 @@
       <v-img :src="`api/v1/files/${item.name}/thumbnail`"
         width="128"
         :max-height="thumbnails.size" :max-width="thumbnails.size"
-        :contain="true" />
+        :contain="true" 
+        class="cursor-pointer"
+        @click="filePreview(item)" />
     </template>
     <template #[`item.lastModified`]="{ item }">
       {{ $d(new Date(item.lastModified), 'long') }}
     </template>
     <template #[`item.actions`]="{ item }">
+      <v-icon v-if="isPreviewable(item)" class="mr-2" :icon="mdiEye" @click="filePreview(item)" />
       <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
       <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item)" />
       <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
@@ -75,9 +123,11 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import JSZip from 'jszip';
 import Common from '../classes/common';
 import Storage from '../classes/storage';
-import { mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
+import { mdiClose, mdiDelete, mdiDotsVertical, mdiDownload, mdiEye, mdiEyeOff, mdiFileImage, mdiPencil } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
 
@@ -89,9 +139,13 @@ export default {
   setup() {
     const { smAndDown } = useDisplay();
     return {
+      mdiClose,
       mdiDelete,
       mdiDotsVertical,
       mdiDownload,
+      mdiEye,
+      mdiEyeOff,
+      mdiFileImage,
       mdiPencil,
       smAndDown
     };
@@ -101,11 +155,16 @@ export default {
     return {
       dialogDelete: false,
       dialogEdit: false,
+      dialogPreview: false,
       files: [],
       editedItem: {
         name: '',
         newName: ''
       },
+      previewItem: {
+        name: ''
+      },
+      previewContent: '',
       defaultItem: {
         name: '',
         newName: ''
@@ -272,6 +331,29 @@ export default {
       }
     },
 
+    async multipleZip() {
+      const zip = new JSZip();
+
+      while (this.selectedFiles.length > 0) {
+        const name = this.selectedFiles[0].name;
+        try {
+          const res = await fetch(`api/v1/files/${name}`);
+          const arrayBuffer = await res.arrayBuffer();
+          zip.file(name, arrayBuffer);
+        } catch (error) {
+          this.$emit('notify', {type: 'e', message: error});
+        }
+        this.selectedFiles.splice(0, 1);
+      }
+      const blob = await zip.generateAsync({type:"blob"})
+      const filename = `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}.zip`;
+
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = URL.createObjectURL(blob);
+      a.click();
+    },
+
     async multipleAction(actionName) {
       let refresh = false;
       while (this.selectedFiles.length > 0) {
@@ -295,6 +377,24 @@ export default {
       window.location.href = `api/v1/files/${file.name}`;
     },
 
+    filePreview(file) {
+      this.previewItem = file;
+      this.previewContent = '';
+      if (file.name.toLowerCase().endsWith('.txt')) {
+        fetch(`api/v1/files/${file.name}?preview=true`)
+          .then(res => res.text())
+          .then(text => {
+            this.previewContent = text;
+          });
+      }
+      this.dialogPreview = true;
+    },
+
+    isPreviewable(file) {
+      const name = file.name.toLowerCase();
+      return name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png') || name.endsWith('.pdf') || name.endsWith('.tif') || name.endsWith('.tiff') || name.endsWith('.txt');
+    },
+
     selectToggle(value) {
       this.selectedFiles = value ? this.files.map(f => f.name) : [];
     }
@@ -309,5 +409,8 @@ tbody > tr > td {
 }
 div.v-input.v-input__slider {
   max-width: 250px;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

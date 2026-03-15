@@ -5,19 +5,16 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Sem informação disponível"
   },
-
   "about": {
     "main": "scanservjs é uma interface via web simples. Permite compartilhar via rede um ou mais scanners (via SANE) sem precisar instalação local. Permite gravar nos formatos TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com diversas configurações de compressão. Suporta digitalização multipágina e todos dispositivos SANE compatíveis.",
     "issue": "Relatar um problema ou ver código fonte:",
     "api": "Documentação Swagger da API:",
     "system-info": "Informação do sistema"
   },
-
   "colors": {
     "accent-4": "Padrão",
     "red": "Vermelho",
@@ -40,14 +37,12 @@
     "blue-grey": "Azul acinzentado",
     "grey": "Cinza"
   },
-
   "batch-dialog": {
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
     "btn-rescan": "Reescanear página",
     "btn-next": "Próxima"
   },
-
   "files": {
     "filename": "Nome do arquivo",
     "date": "Data",
@@ -64,17 +59,20 @@
     "dialog:rename-save": "Guardar",
     "actions": "Ações",
     "thumbnail-show": "Mostrar previsualizações",
-    "thumbnail-size": "Tamanho da previsualização"
+    "thumbnail-size": "Tamanho da previsualização",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
   },
-
   "navigation": {
     "scan": "Escanear",
     "files": "Arquivos",
     "settings": "Configuração",
     "about": "Sobre",
-    "version": "Versão"  
+    "version": "Versão"
   },
-
   "batch-mode": {
     "none": "Nenhum",
     "manual": "Manual (com aviso)",
@@ -82,30 +80,26 @@
     "auto-collate-standard": "Auto (ordenação 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "Autonivelar",
     "threshold": "Nível",
     "blur": "Borrar"
   },
-
   "mode": {
     "color": "Cor",
     "halftone": "Meio-tom",
     "gray": "Cinza",
     "lineart": "Arte linear",
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Apenas 1 lado da folha",
     "duplex": "Dois lados da folha"
   },
-
   "source": {
     "flatbed": "Vidro",
     "adf": "Alimentador Automático de Documento",
@@ -120,7 +114,6 @@
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Alta qualidade",
     "medium-quality": "Qualidade média",
@@ -129,8 +122,7 @@
     "lzw-compressed": "Compressão LZW",
     "ocr": "OCR",
     "text-file": "Arquivo de texto"
-  },  
-
+  },
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -141,7 +133,6 @@
     "portrait": "Retrato",
     "landscape": "Paisagem"
   },
-
   "scan": {
     "device": "Dispositivo",
     "source": "Origem",
@@ -168,9 +159,8 @@
     "message:no-devices": "Nenhum dispositivo encontrado",
     "message:deleted-preview": "Prévisualização excluída",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Previsualização de página"  
+    "message:preview-of-page": "Previsualização de página"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Comportamento e interface gráfica",
