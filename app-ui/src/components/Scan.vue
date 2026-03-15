@@ -96,7 +96,7 @@
                  suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.top, 'y')" type="text"
+              <v-text-field :model-value="toPixels(request.params.top)" type="text"
                  @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
                  suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
@@ -109,7 +109,7 @@
                  suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.left, 'x')" type="text"
+              <v-text-field :model-value="toPixels(request.params.left)" type="text"
                  @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
                  suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
@@ -122,7 +122,7 @@
                  suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.width, 'x')" type="text"
+              <v-text-field :model-value="toPixels(request.params.width)" type="text"
                  @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
                  suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
@@ -148,7 +148,7 @@
                  suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.height, 'y')" type="text"
+              <v-text-field :model-value="toPixels(request.params.height)" type="text"
                  @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
                  suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
@@ -1017,12 +1017,7 @@ export default {
       }
     },
 
-    toPixels(mm, axis) {
-      if (this.$refs.cropper && this.$refs.cropper.imageSize.width) {
-        const scale = this.pixelsPerMm()[axis];
-        return Math.round(mm * scale);
-      }
-      // No preview loaded yet — fall back to resolution-based calculation
+    toPixels(mm) {
       const ppi = parseFloat(this.request.params.resolution) || 300;
       return Math.round((mm / 25.4) * ppi);
     },
@@ -1047,11 +1042,22 @@ export default {
     commitPixel(field, event) {
       let val = parseInt(event.target.value);
       if (isNaN(val)) val = 0;
-      const axis = (field === 'left' || field === 'width') ? 'x' : 'y';
-      const mm = round(val / this.pixelsPerMm()[axis], 1);
+      const ppi = parseFloat(this.request.params.resolution) || 300;
+      const mm = round((val / ppi) * 25.4, 1);
       const scanner = this.deviceSize;
       const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
-      this.request.params[field] = Math.min(Math.max(0, mm), max);
+
+      const params = this.request.params;
+      params[field] = Math.min(Math.max(0, mm), max);
+
+      if (this.aspectRatioLocked) {
+        if (field === 'width') {
+          params.height = round(params[field] / this.lockedAspectRatio, 1);
+        } else if (field === 'height') {
+          params.width = round(params[field] * this.lockedAspectRatio, 1);
+        }
+      }
+
       this.onCoordinatesChange();
     },
 
