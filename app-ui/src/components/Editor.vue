@@ -38,10 +38,11 @@
       </template>
     </v-toolbar>
 
-    <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
+    <div ref="scrollArea"
+      :class="['pa-4', 'overflow-y-auto', 'flex-grow-1', 'editor-scroll',
+               { 'editor-touch-select-active': touchSelectMode }]"
       tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick"
-      @mousedown="onScrollAreaMousedown"
-      @touchstart="onScrollAreaTouchStart">
+      @mousedown="onScrollAreaMousedown">
 
       <!-- Positioning context for the source-divider overlay -->
       <div class="editor-content-wrapper">
@@ -50,6 +51,8 @@
           item-key="id"
           class="editor-grid"
           ghost-class="editor-ghost"
+          :delay="150"
+          :delay-on-touch-only="true"
           @start="onDragStart"
           @end="onDragEnd"
           @click.self="onBackgroundClick">
@@ -376,6 +379,19 @@ export default {
     },
     showDividers() {
       this.$nextTick(() => this.updateDividerPositions());
+    },
+    contextMenuVisible(visible) {
+      // Vuetify's click-outside directive may not fire from touch events.
+      // Manually listen for any touch to dismiss the context menu.
+      if (visible) {
+        this._dismissContextMenu = () => { this.contextMenuVisible = false; };
+        setTimeout(() => {
+          document.addEventListener('touchstart', this._dismissContextMenu, { once: true });
+        }, 0);
+      } else if (this._dismissContextMenu) {
+        document.removeEventListener('touchstart', this._dismissContextMenu);
+        this._dismissContextMenu = null;
+      }
     }
   },
 
@@ -386,6 +402,13 @@ export default {
     });
     if (this.$refs.scrollArea) {
       this._resizeObserver.observe(this.$refs.scrollArea);
+      // Register touchstart with { passive: false } so preventDefault() works
+      // in touch rubber-band selection mode. Vue's @touchstart always registers
+      // as passive, which silently ignores preventDefault().
+      this._boundScrollAreaTouchStart = this.onScrollAreaTouchStart.bind(this);
+      this.$refs.scrollArea.addEventListener(
+        'touchstart', this._boundScrollAreaTouchStart, { passive: false }
+      );
     }
   },
 
@@ -394,8 +417,18 @@ export default {
     this.thumbnailObserver = null;
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
+    if (this.$refs.scrollArea && this._boundScrollAreaTouchStart) {
+      this.$refs.scrollArea.removeEventListener(
+        'touchstart', this._boundScrollAreaTouchStart
+      );
+      this._boundScrollAreaTouchStart = null;
+    }
     this._removeRubberListeners();
     this._cancelLongPress();
+    if (this._dismissContextMenu) {
+      document.removeEventListener('touchstart', this._dismissContextMenu);
+      this._dismissContextMenu = null;
+    }
   },
 
   methods: {
@@ -874,8 +907,14 @@ export default {
       const rLeft = Math.min(x1, x2), rRight = Math.max(x1, x2);
       const rTop = Math.min(y1, y2), rBottom = Math.max(y1, y2);
 
-      // Ignore tiny drags (treat as a click)
-      if (rRight - rLeft < 4 && rBottom - rTop < 4) return;
+      // Ignore tiny drags (treat as a click/tap)
+      if (rRight - rLeft < 4 && rBottom - rTop < 4) {
+        // Touch tap on background in selection mode → exit selection mode
+        if (this.touchSelectMode) {
+          this.exitTouchSelectMode();
+        }
+        return;
+      }
 
       this._suppressNextClick = true;
 
@@ -959,6 +998,7 @@ export default {
     },
 
     onPageTouchStart(element, index, e) {
+      this._isTouching = true;
       this._cancelLongPress();
       this._longPressId = element.id;
       this._longPressIdx = index;
@@ -994,6 +1034,9 @@ export default {
 
     onPageTouchEnd() {
       this._cancelLongPress();
+      // Clear _isTouching after a microtask so the contextmenu event
+      // (which fires between touchend and click) still sees it as true.
+      setTimeout(() => { this._isTouching = false; }, 0);
     },
 
     exitTouchSelectMode() {
@@ -1005,6 +1048,9 @@ export default {
     // --- Context menu ---
 
     openContextMenu(element, index, e) {
+      // Don't open the context menu from touch — long-press is used for
+      // selection mode, and the menu is hard to dismiss on touch devices.
+      if (this._isTouching || this.touchSelectMode) return;
       // Right-click on an unselected page selects it first
       if (!this.selected.includes(element.id)) {
         this.selectOne(element.id, index);
@@ -1063,7 +1109,11 @@ export default {
       }
     },
 
+    // --- Drag-and-drop ---
+
     onDragStart(evt) {
+      // Snapshot the full page array before vuedraggable's single-item splice
+      // runs in onDragUpdate. We need this to reconstruct multi-item moves.
       this._dragStartPages = [...this.pages];
       this._dragStartSelected = [...this.selected];
       this.isDragging = true;
@@ -1071,12 +1121,11 @@ export default {
 
     onDragEnd(evt) {
       this.isDragging = false;
-      this.focusIndex = evt.newIndex;
-      this.cursorPosition = evt.newIndex + 1;
       this.hasReordered = true;
+      // Suppress the click that fires after a touch drag ends, which would
+      // otherwise toggle the dragged item out of the selection.
+      this._longPressSuppressClick = true;
 
-      // Multi-item drag: when a selected item is dragged, group the whole
-      // selection at the drop position, preserving original relative order.
       const dragStartPages = this._dragStartPages;
       const dragStartSelected = this._dragStartSelected;
       this._dragStartPages = null;
@@ -1084,27 +1133,34 @@ export default {
 
       const selectedIds = new Set(dragStartSelected || []);
       const draggedId = dragStartPages?.[evt.oldIndex]?.id;
+
       if (draggedId && selectedIds.has(draggedId) && selectedIds.size > 1) {
+        // Multi-item drag: vuedraggable already moved the dragged item to
+        // evt.newIndex via its single-item splice. The other selected items
+        // are still at their original positions. Reconstruct the array by
+        // removing all selected items except the dragged one (which is at
+        // its new position), then replacing it with the full group in
+        // original relative order.
         const pageById = Object.fromEntries(this.pages.map(p => [p.id, p]));
-        // Group in original relative order, mapped to current page objects
-        const group = (dragStartPages || [])
+        const group = dragStartPages
           .filter(p => selectedIds.has(p.id))
           .map(p => pageById[p.id])
           .filter(Boolean);
 
-        // Remove all other selected items; keep only the dragged one as placeholder
         const withoutOthers = this.pages.filter(
           p => !selectedIds.has(p.id) || p.id === draggedId
         );
         const draggedPos = withoutOthers.findIndex(p => p.id === draggedId);
-        // Replace the placeholder with the full group
         withoutOthers.splice(draggedPos, 1, ...group);
         this.pages = withoutOthers;
 
-        // Move cursor to the dragged item within the group
         const draggedGroupIdx = group.findIndex(p => p.id === draggedId);
         this.focusIndex = draggedPos + draggedGroupIdx;
         this.cursorPosition = this.focusIndex + 1;
+      } else {
+        // Single-item drag: vuedraggable already handled the splice correctly
+        this.focusIndex = evt.newIndex;
+        this.cursorPosition = evt.newIndex + 1;
       }
 
       this.pushState();
@@ -1262,6 +1318,14 @@ export default {
   outline: none;
 }
 
+/* Suppress native long-press behaviors (context menu, text selection) on touch
+   so our long-press-to-select and rubber-band handlers get full control. */
+.editor-scroll {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Positioning context for the source-divider overlay */
 .editor-content-wrapper {
   position: relative;
@@ -1381,6 +1445,13 @@ export default {
   opacity: 0.55;
   border-color: rgb(var(--v-theme-primary));
   border-style: dashed;
+}
+
+/* In touch selection mode, disable browser touch gestures on the scroll area
+   so our touch handlers get full control (prevents scroll, pinch, long-press
+   context menu from interfering with rubber-band selection). */
+.editor-touch-select-active {
+  touch-action: none;
 }
 
 .editor-thumb-wrap {

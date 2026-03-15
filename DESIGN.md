@@ -1505,3 +1505,43 @@ Independent grid enhancements. No server changes.
 - [x] In selection mode, taps toggle page selection
 - [x] "Selection mode" indicator in toolbar
 - [x] Tap outside pages or press a "Done" button exits selection mode
+
+### 17.7 Multi-Item Drag-and-Drop
+
+Snapshot-based array reconstruction after vuedraggable's single-item drag.
+
+**Why not SortableJS MultiDrag?** MultiDrag removes selected DOM elements
+during the drag (the "folding" animation) and re-inserts them at drop time.
+vuedraggable's `onDragUpdate` fires between these steps and calculates array
+indices from DOM children — which are missing. This causes corrupted splices,
+disappearing items during drag, and wrong final order. The conflict is
+architectural and cannot be worked around without patching vuedraggable.
+
+**Approach:** Use vuedraggable's normal single-item drag. On `@start`, snapshot
+the full page array and selected IDs. On `@end`, detect multi-item drag
+(dragged item was in the selection, selection has >1 item) and reconstruct:
+
+1. vuedraggable has already moved the dragged item to `evt.newIndex` via its
+   single-item splice. Other selected items remain at their original positions.
+2. Build the selected group in original relative order (from the snapshot).
+3. Filter `this.pages` to remove all selected items except the dragged one
+   (which acts as a positional anchor).
+4. Replace the anchor with the full group via `splice()`.
+
+This yields correct final order. The trade-off: only one ghost is visible
+during drag. Visual feedback for the other selected items is provided via
+`editor-page-drag-peer` CSS (dashed border + reduced opacity).
+
+### 17.8 Touch Rubber-Band Fix
+
+**Problem:** Vue's `@touchstart="handler"` registers a passive event listener.
+Calling `e.preventDefault()` inside the handler is silently ignored by the
+browser, so native gestures (scroll, context menu, text selection) fire on top
+of our rubber-band selection.
+
+**Fix:** Remove the template `@touchstart` binding from the scroll area. In
+`mounted()`, manually register via `addEventListener('touchstart', handler,
+{ passive: false })`, and clean up in `beforeUnmount()`. Additionally, when
+`touchSelectMode` is active, the scroll area gets a dynamic class
+`editor-touch-select-active` with `touch-action: none`, telling the browser
+to not interpret any touch gestures on that element.
