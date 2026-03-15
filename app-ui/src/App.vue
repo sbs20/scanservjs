@@ -13,7 +13,7 @@
     <v-main>
       <v-container fluid>
         <router-view v-slot="{ Component }" @mask="mask" @notify="notify">
-          <transition name="fade" mode="out-in" :duration="150">
+          <transition name="fade">
             <component :is="Component" />
           </transition>
         </router-view>
@@ -125,9 +125,13 @@ input[type=number] {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity .15s;
 }
-.fade-enter, .fade-leave-to {
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+}
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 
