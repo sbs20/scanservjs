@@ -215,7 +215,12 @@
     "op-interleave-reverse": "Combiner recto et verso (inversé)",
     "op-interleave-reverse-hint": "Le plus courant pour la numérisation recto-verso avec ADF simplex",
     "op-swap-pairs": "Permuter chaque paire de pages",
-    "op-deinterleave": "Séparer recto et verso"
+    "op-deinterleave": "Séparer recto et verso",
+    "paper-size": "Format de papier",
+    "fit-mode": "Appliquer comme",
+    "fit-set-size": "Définir uniquement la taille de page (compatible OCR)",
+    "fit-fit": "Adapter le contenu à la page",
+    "fit-ocr-warning": "La mise à l'échelle du contenu peut affecter le texte indexable dans les documents OCR"
   },
   "settings": {
     "title": "@:navigation.settings",

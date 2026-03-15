@@ -234,15 +234,36 @@
     </v-menu>
 
     <!-- Save-As dialog -->
-    <v-dialog v-model="showSaveAs" max-width="400">
+    <v-dialog v-model="showSaveAs" max-width="420">
       <v-card>
         <v-card-title>{{ $t('editor.save-as') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="saveFilename" :label="$t('files.filename')"
             autofocus @keyup.enter="confirmSaveAs" />
-          <v-alert v-if="saveAsWillOverwrite" type="warning" density="compact" class="mt-2">
+          <v-alert v-if="saveAsWillOverwrite" type="warning" density="compact" class="mb-2">
             {{ $t('editor.overwrite-warning', [saveAsTargetName]) }}
           </v-alert>
+          <v-select
+            v-if="paperSizeItems.length"
+            v-model="paperSize"
+            :items="paperSizeItems"
+            :label="$t('editor.paper-size')"
+            item-title="title"
+            item-value="value"
+            clearable
+            density="compact"
+            class="mt-2" />
+          <template v-if="paperSize">
+            <div class="text-body-2 mt-3 mb-1">{{ $t('editor.fit-mode') }}</div>
+            <v-radio-group v-model="fitMode" density="compact" hide-details>
+              <v-radio value="set-size" :label="$t('editor.fit-set-size')" />
+              <v-radio value="fit" :label="$t('editor.fit-fit')" />
+            </v-radio-group>
+            <v-alert v-if="fitMode === 'fit'" type="warning" density="compact"
+              variant="tonal" class="mt-2">
+              {{ $t('editor.fit-ocr-warning') }}
+            </v-alert>
+          </template>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -360,7 +381,12 @@ export default {
       touchSelectMode: false,
 
       // Multi-item drag state
-      isDragging: false
+      isDragging: false,
+
+      // Paper size adjustment (applied at save time)
+      paperSizes: [],
+      paperSize: null,
+      fitMode: 'set-size'
     };
   },
 
@@ -461,6 +487,18 @@ export default {
       return r.scope === 'selection'
         ? this.$t('editor.scope-selection', [n])
         : this.$t('editor.scope-all', [n]);
+    },
+
+    paperSizeItems() {
+      return this.paperSizes.map(ps => {
+        // Resolve @:key i18n references embedded in paper size names
+        let name = ps.name;
+        const refs = (name.match(/@:[a-z.-]+/ig) || []).map(s => s.slice(2));
+        refs.forEach(key => {
+          name = name.replaceAll(`@:${key}`, this.$t(key));
+        });
+        return { title: name, value: ps.dimensions };
+      });
     }
   },
 
@@ -586,8 +624,12 @@ export default {
       if (!this.sessionId) return;
       this.$emit('mask', 1);
       try {
-        const fileList = await Common.fetch('api/v1/files');
+        const [fileList, context] = await Promise.all([
+          Common.fetch('api/v1/files'),
+          Common.fetch('api/v1/context')
+        ]);
         this.availableFiles = fileList;
+        this.paperSizes = context.paperSizes || [];
 
         const result = await Common.fetch(`api/v1/editor/sessions/${this.sessionId}`);
 
@@ -666,6 +708,8 @@ export default {
       this.loadedThumbs = {};
       this.hasReordered = false;
       this.dividerPositions = [];
+      this.paperSize = null;
+      this.fitMode = 'set-size';
     },
 
     updateSource(oldName, newName) {
@@ -1448,11 +1492,16 @@ export default {
       this.$emit('mask', 1);
       try {
         const editList = this.getEditList();
+        const body = { pages: editList, filename };
+        if (this.paperSize && this.fitMode) {
+          body.paperSize = this.paperSize;
+          body.fitMode = this.fitMode;
+        }
         await Common.fetch(
           `api/v1/editor/sessions/${this.sessionId}/save`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pages: editList, filename })
+            body: JSON.stringify(body)
           });
 
         this.initialHash = JSON.stringify(this.pages);

@@ -213,7 +213,12 @@
     "op-interleave-reverse": "Ön ve arka sayfaları birleştir (tersine)",
     "op-interleave-reverse-hint": "Simpleks ADF ile dupleks tarama için en yaygın yöntem",
     "op-swap-pairs": "Her sayfa çiftini değiştir",
-    "op-deinterleave": "Ön ve arka sayfaları ayır"
+    "op-deinterleave": "Ön ve arka sayfaları ayır",
+    "paper-size": "Kağıt boyutu",
+    "fit-mode": "Uygulama şekli",
+    "fit-set-size": "Yalnızca sayfa boyutunu ayarla (OCR güvenli)",
+    "fit-fit": "İçeriği sayfaya sığdır",
+    "fit-ocr-warning": "İçerik ölçeklendirme, OCR'li belgelerdeki aranabilir metni etkileyebilir"
   },
   "settings": {
     "title": "@:navigation.settings",

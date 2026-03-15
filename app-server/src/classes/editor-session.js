@@ -265,15 +265,48 @@ class EditorSession {
   }
 
   /**
+   * Apply paper size adjustment to an assembled PDF.
+   * @param {string} inputPath - path to assembled PDF
+   * @param {{x: number, y: number}} paperSize - target dimensions in mm
+   * @param {'set-size'|'fit'} fitMode
+   * @returns {Promise<string>} path to adjusted PDF
+   */
+  async _applyPaperSize(inputPath, paperSize, fitMode) {
+    const MM_TO_PT = 72 / 25.4;
+    const w = Math.round(paperSize.x * MM_TO_PT);
+    const h = Math.round(paperSize.y * MM_TO_PT);
+    const outputPath = path.join(this.dir, 'paper-adjusted.pdf');
+
+    if (fitMode === 'set-size') {
+      await this.pdfTool.resizeMediaBox(inputPath, w, h, outputPath);
+    } else {
+      // 'fit': scale content proportionally to fit within target dimensions
+      await Process.spawn(
+        `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4` +
+        ` -dFIXEDMEDIA -dPDFFitPage` +
+        ` -dDEVICEWIDTHPOINTS=${w} -dDEVICEHEIGHTPOINTS=${h}` +
+        ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`
+      );
+    }
+    return outputPath;
+  }
+
+  /**
    * Save the final document from an edit list.
    * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height}
    * @param {string} filename - output filename
+   * @param {{x: number, y: number}|null} [paperSize] - target paper size in mm, or null
+   * @param {'set-size'|'fit'|null} [fitMode] - how to apply the paper size
    * @returns {Promise<string>} path to saved file
    */
-  async save(editList, filename) {
+  async save(editList, filename, paperSize = null, fitMode = null) {
     this.touch();
     FileInfo.unsafe(this.config.outputDirectory, filename);
-    const assembledPath = await this._assemblePages(editList);
+    let assembledPath = await this._assemblePages(editList);
+
+    if (paperSize && fitMode) {
+      assembledPath = await this._applyPaperSize(assembledPath, paperSize, fitMode);
+    }
 
     // Atomic write to output directory
     const tempOutputPath = path.join(this.config.outputDirectory, `.tmp-${this.id}.pdf`);

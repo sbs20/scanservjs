@@ -222,7 +222,12 @@
     "op-interleave-reverse": "Combinar frente e verso (invertido)",
     "op-interleave-reverse-hint": "Mais comum para digitalização duplex com ADF simplex",
     "op-swap-pairs": "Trocar cada par de páginas",
-    "op-deinterleave": "Separar frente e verso"
+    "op-deinterleave": "Separar frente e verso",
+    "paper-size": "Tamanho do papel",
+    "fit-mode": "Aplicar como",
+    "fit-set-size": "Definir apenas o tamanho da página (seguro para OCR)",
+    "fit-fit": "Ajustar conteúdo à página",
+    "fit-ocr-warning": "O redimensionamento do conteúdo pode afetar o texto pesquisável em documentos OCR"
   },
   "settings": {
     "title": "@:navigation.settings",

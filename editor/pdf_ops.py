@@ -88,12 +88,33 @@ def cmd_blank(args):
     pdf.save(out_path)
 
 
+def cmd_resize_mediabox(args):
+    """Set MediaBox of all pages to target dimensions (OCR-safe, no content scaling).
+
+    Adjusts only page metadata — content streams, fonts, and OCR layers are
+    untouched.  Any existing CropBox is removed so it does not constrain the
+    new MediaBox.
+    """
+    if len(args) != 4:
+        print('Usage: resize-mediabox <input> <width_pts> <height_pts> <output>',
+              file=sys.stderr)
+        sys.exit(1)
+    in_path, width, height, out_path = args[0], float(args[1]), float(args[2]), args[3]
+    pdf = pikepdf.Pdf.open(in_path)
+    for page in pdf.pages:
+        page.mediabox = pikepdf.Array([0, 0, width, height])
+        if '/CropBox' in page:
+            del page['/CropBox']
+    pdf.save(out_path)
+
+
 COMMANDS = {
     'info': cmd_info,
     'extract': cmd_extract,
     'extract-rotate': cmd_extract_rotate,
     'merge': cmd_merge,
     'blank': cmd_blank,
+    'resize-mediabox': cmd_resize_mediabox,
 }
 
 

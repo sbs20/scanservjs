@@ -213,7 +213,12 @@
     "op-interleave-reverse": "Combinar anverso y reverso (invertido)",
     "op-interleave-reverse-hint": "Más común para escaneo dúplex con ADF símplex",
     "op-swap-pairs": "Intercambiar cada par de páginas",
-    "op-deinterleave": "Separar anverso y reverso"
+    "op-deinterleave": "Separar anverso y reverso",
+    "paper-size": "Tamaño de papel",
+    "fit-mode": "Aplicar como",
+    "fit-set-size": "Establecer solo el tamaño de página (seguro para OCR)",
+    "fit-fit": "Ajustar contenido a la página",
+    "fit-ocr-warning": "El escalado de contenido puede afectar el texto buscable en documentos con OCR"
   },
   "settings": {
     "title": "@:navigation.settings",

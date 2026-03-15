@@ -338,7 +338,8 @@ const EndpointSpecs = [
     path: /\/api\/v1\/editor\/sessions\/([^/]+)\/save/,
     callback: async (req, res) => {
       const result = await editorApi.save(
-        req.params[0], req.body.pages, req.body.filename);
+        req.params[0], req.body.pages, req.body.filename,
+        req.body.paperSize || null, req.body.fitMode || null);
       res.send(result);
     }
   },

@@ -77,6 +77,18 @@ module.exports = class PdftkTool extends PdfTool {
     await Process.spawn(cmd);
   }
 
+  /** @override */
+  async resizeMediaBox(inputPath, widthPts, heightPts, outputPath) {
+    // pdftk cannot adjust page dimensions; delegate to Ghostscript.
+    // Without -dPDFFitPage the content is rendered at its original scale,
+    // which matches the Tier 1 "set size only" behaviour.
+    const cmd = `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dFIXEDMEDIA` +
+      ` -dDEVICEWIDTHPOINTS=${widthPts} -dDEVICEHEIGHTPOINTS=${heightPts}` +
+      ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`;
+    log.debug('resizeMediaBox:', cmd);
+    await Process.spawn(cmd);
+  }
+
   /**
    * Test whether pdftk is available.
    * @returns {Promise<boolean>}

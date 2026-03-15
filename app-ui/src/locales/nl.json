@@ -213,7 +213,12 @@
     "op-interleave-reverse": "Voor- en achterkanten samenvoegen (omgekeerd)",
     "op-interleave-reverse-hint": "Meest gebruikelijk voor dubbelzijdig scannen met simplex ADF",
     "op-swap-pairs": "Elk paginapaar verwisselen",
-    "op-deinterleave": "Voor- en achterkanten scheiden"
+    "op-deinterleave": "Voor- en achterkanten scheiden",
+    "paper-size": "Papierformaat",
+    "fit-mode": "Toepassen als",
+    "fit-set-size": "Alleen paginaformaat instellen (OCR-veilig)",
+    "fit-fit": "Inhoud passend maken",
+    "fit-ocr-warning": "Inhoud schalen kan de doorzoekbare tekst in OCR-documenten beïnvloeden"
   },
   "settings": {
     "title": "@:navigation.settings",

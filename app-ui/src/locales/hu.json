@@ -222,7 +222,12 @@
     "op-interleave-reverse": "Elő- és hátoldalak összefésülése (fordított)",
     "op-interleave-reverse-hint": "Leggyakoribb duplex szkennelésnél simplex ADF-fel",
     "op-swap-pairs": "Oldalak páronkénti cseréje",
-    "op-deinterleave": "Elő- és hátoldalak szétválasztása"
+    "op-deinterleave": "Elő- és hátoldalak szétválasztása",
+    "paper-size": "Papírméret",
+    "fit-mode": "Alkalmazás módja",
+    "fit-set-size": "Csak az oldalméret beállítása (OCR-biztonságos)",
+    "fit-fit": "Tartalom méretezése az oldalhoz",
+    "fit-ocr-warning": "A tartalom átméretezése befolyásolhatja az OCR-rel feldolgozott dokumentumok kereshető szövegét"
   },
   "settings": {
     "title": "@:navigation.settings",

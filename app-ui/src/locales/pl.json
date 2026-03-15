@@ -213,7 +213,12 @@
     "op-interleave-reverse": "Połącz strony przednie i tylne (odwrócone)",
     "op-interleave-reverse-hint": "Najczęstsza metoda dla skanowania dupleksowego z ADF simplex",
     "op-swap-pairs": "Zamień każdą parę stron",
-    "op-deinterleave": "Rozdziel strony przednie i tylne"
+    "op-deinterleave": "Rozdziel strony przednie i tylne",
+    "paper-size": "Format papieru",
+    "fit-mode": "Zastosuj jako",
+    "fit-set-size": "Ustaw tylko rozmiar strony (bezpieczne dla OCR)",
+    "fit-fit": "Dopasuj treść do strony",
+    "fit-ocr-warning": "Skalowanie treści może wpłynąć na przeszukiwalny tekst w dokumentach OCR"
   },
   "settings": {
     "title": "@:navigation.settings",
