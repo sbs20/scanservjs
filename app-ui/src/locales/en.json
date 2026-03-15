@@ -212,7 +212,9 @@
     "insert-blank-after": "Insert blank page after",
     "select-all": "Select all",
     "deselect-all": "Deselect all",
-    "jump-to": "Go to page"
+    "jump-to": "Go to page",
+    "selection-mode": "Selection mode",
+    "done": "Done"
   },
 
   "settings": {

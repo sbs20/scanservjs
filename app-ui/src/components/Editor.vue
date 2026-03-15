@@ -1,23 +1,41 @@
 <template>
   <div class="editor-root d-flex flex-column" style="height: 100%;">
     <v-toolbar density="compact" flat>
-      <v-btn :disabled="!undoStack.canUndo" :icon="mdiUndo" size="small"
-        :title="$t('editor.undo')" @click="undo" />
-      <v-btn :disabled="!undoStack.canRedo" :icon="mdiRedo" size="small"
-        :title="$t('editor.redo')" @click="redo" />
-      <v-divider vertical class="mx-2" />
-      <v-btn :icon="mdiFilePlus" size="small"
-        :title="$t('editor.add-pages')" @click="showAddPages = true" />
-      <v-btn :icon="mdiFileDocumentPlus" size="small"
-        :title="$t('editor.add-blank')" @click="addBlank" />
-      <v-divider vertical class="mx-2" />
-      <v-btn :disabled="selected.length === 0" :icon="mdiRotateLeft" size="small"
-        :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
-      <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
-        :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
-      <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
-        :title="$t('editor.delete')" @click="deleteSelected" />
-      <v-spacer />
+      <template v-if="touchSelectMode">
+        <v-chip size="small" color="primary" class="ml-2 mr-1" label>
+          {{ $t('editor.selection-mode') }}
+        </v-chip>
+        <v-spacer />
+        <v-btn :disabled="selected.length === 0" :icon="mdiRotateLeft" size="small"
+          :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
+        <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
+          :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
+        <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
+          :title="$t('editor.delete')" @click="deleteSelected" />
+        <v-divider vertical class="mx-2" />
+        <v-btn size="small" variant="tonal" @click="exitTouchSelectMode">
+          {{ $t('editor.done') }}
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn :disabled="!undoStack.canUndo" :icon="mdiUndo" size="small"
+          :title="$t('editor.undo')" @click="undo" />
+        <v-btn :disabled="!undoStack.canRedo" :icon="mdiRedo" size="small"
+          :title="$t('editor.redo')" @click="redo" />
+        <v-divider vertical class="mx-2" />
+        <v-btn :icon="mdiFilePlus" size="small"
+          :title="$t('editor.add-pages')" @click="showAddPages = true" />
+        <v-btn :icon="mdiFileDocumentPlus" size="small"
+          :title="$t('editor.add-blank')" @click="addBlank" />
+        <v-divider vertical class="mx-2" />
+        <v-btn :disabled="selected.length === 0" :icon="mdiRotateLeft" size="small"
+          :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
+        <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
+          :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
+        <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
+          :title="$t('editor.delete')" @click="deleteSelected" />
+        <v-spacer />
+      </template>
     </v-toolbar>
 
     <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
@@ -45,7 +63,10 @@
               @click.ctrl.exact="toggleSelect(element.id)"
               @click.meta.exact="toggleSelect(element.id)"
               @click.shift.exact="selectRange(element.id, index)"
-              @contextmenu.prevent="openContextMenu(element, index, $event)">
+              @contextmenu.prevent="openContextMenu(element, index, $event)"
+              @touchstart="onPageTouchStart(element, index, $event)"
+              @touchmove="onPageTouchMove"
+              @touchend="onPageTouchEnd">
               <div class="editor-thumb-wrap">
                 <v-img
                   v-if="sessionId && !element.isBlank && loadedThumbs[element.originalIndex]"
@@ -272,7 +293,10 @@ export default {
       hasReordered: false,
 
       // Source divider overlay positions (computed after DOM update)
-      dividerPositions: []
+      dividerPositions: [],
+
+      // Touch long-press selection mode
+      touchSelectMode: false
     };
   },
 
@@ -366,6 +390,7 @@ export default {
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
     this._removeRubberListeners();
+    this._cancelLongPress();
   },
 
   methods: {
@@ -549,6 +574,16 @@ export default {
     // --- Selection ---
 
     selectOne(id, index) {
+      // Suppress the click that fires immediately after a long-press
+      if (this._longPressSuppressClick) {
+        this._longPressSuppressClick = false;
+        return;
+      }
+      // In touch select mode, taps toggle rather than select-one
+      if (this.touchSelectMode) {
+        this.toggleSelect(id);
+        return;
+      }
       this.selected = [id];
       this.anchor = id;
       this.focusIndex = index;
@@ -765,6 +800,10 @@ export default {
         this._suppressNextClick = false;
         return;
       }
+      if (this.touchSelectMode) {
+        this.exitTouchSelectMode();
+        return;
+      }
       this.selected = [];
       this.focusIndex = -1;
 
@@ -873,6 +912,49 @@ export default {
         document.removeEventListener('mouseup', this._onRubberUp);
         this._onRubberUp = null;
       }
+    },
+
+    // --- Touch long-press selection mode ---
+
+    _cancelLongPress() {
+      if (this._longPressTimer) {
+        clearTimeout(this._longPressTimer);
+        this._longPressTimer = null;
+      }
+    },
+
+    onPageTouchStart(element, index, e) {
+      this._cancelLongPress();
+      this._longPressId = element.id;
+      this._longPressIdx = index;
+      this._longPressTimer = setTimeout(() => {
+        this._longPressTimer = null;
+        if (!this.touchSelectMode) {
+          this.touchSelectMode = true;
+          // Select the long-pressed page without waiting for the subsequent click
+          this.selected = [element.id];
+          this.anchor = element.id;
+          this.focusIndex = index;
+          this.cursorPosition = index + 1;
+          // Suppress the click that fires right after touchend
+          this._longPressSuppressClick = true;
+        }
+      }, 500);
+    },
+
+    onPageTouchMove() {
+      // Finger moved — user is scrolling, not long-pressing
+      this._cancelLongPress();
+    },
+
+    onPageTouchEnd() {
+      this._cancelLongPress();
+    },
+
+    exitTouchSelectMode() {
+      this.touchSelectMode = false;
+      this.selected = [];
+      this.focusIndex = -1;
     },
 
     // --- Context menu ---
