@@ -91,7 +91,8 @@
           @mask="$emit('mask', $event)"
           @notify="$emit('notify', $event)"
           @saved="onSaved"
-          @dirty="editorDirty = $event" />
+          @dirty="editorDirty = $event"
+          @close="requestClose" />
       </div>
     </v-card>
   </v-dialog>

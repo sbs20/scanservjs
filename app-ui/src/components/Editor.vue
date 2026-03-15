@@ -134,7 +134,7 @@ function assignIds(pages) {
 export default {
   name: 'Editor',
   components: { draggable },
-  emits: ['mask', 'notify', 'saved', 'dirty'],
+  emits: ['mask', 'notify', 'saved', 'dirty', 'close'],
 
   setup() {
     return {
@@ -216,10 +216,17 @@ export default {
 
         this.undoStack.clear();
         this.undoStack.push(this.pages);
-        this.selected = [];
-        this.anchor = null;
-        this.focusIndex = -1;
-        this.cursorPosition = this.pages.length;
+        if (this.pages.length > 0) {
+          this.selected = [this.pages[0].id];
+          this.anchor = this.pages[0].id;
+          this.focusIndex = 0;
+          this.cursorPosition = 1;
+        } else {
+          this.selected = [];
+          this.anchor = null;
+          this.focusIndex = -1;
+          this.cursorPosition = 0;
+        }
         this.initialHash = JSON.stringify(this.pages);
 
         if (this.files.length === 1) {
@@ -408,7 +415,11 @@ export default {
 
         case 'Escape':
           e.preventDefault();
-          this.deselectAll();
+          if (this.selected.length > 0) {
+            this.deselectAll();
+          } else {
+            this.$emit('close');
+          }
           break;
 
         case 'Delete':
@@ -450,14 +461,32 @@ export default {
 
       const cols = this.getColumnsPerRow();
       const current = this.focusIndex >= 0 ? this.focusIndex : -1;
-      let next;
 
+      // When no page is focused, start from the nearest edge based on direction.
+      if (current < 0) {
+        const start = (key === 'ArrowLeft' || key === 'ArrowUp')
+          ? this.pages.length - 1 : 0;
+        this.navigateTo(start, extend);
+        return;
+      }
+
+      let next;
       switch (key) {
         case 'ArrowRight':
+          if (current === 0 && this.cursorPosition === 0) {
+            // Move cursor from before first page to after first page.
+            this.cursorPosition = 1;
+            return;
+          }
           next = current < this.pages.length - 1 ? current + 1 : current;
           break;
         case 'ArrowLeft':
-          next = current > 0 ? current - 1 : 0;
+          if (current === 0) {
+            // Move insertion cursor before the first page without changing selection.
+            this.cursorPosition = 0;
+            return;
+          }
+          next = current - 1;
           break;
         case 'ArrowDown':
           next = current + cols;
@@ -470,7 +499,6 @@ export default {
           return;
       }
 
-      if (current < 0) next = 0;
       this.navigateTo(next, extend);
     },
 
