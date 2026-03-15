@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="visible" width="90vw" persistent>
-    <v-card height="90vh" class="d-flex flex-column overflow-hidden">
+  <v-dialog v-model="visible" width="95vw" persistent>
+    <v-card height="95vh" class="docdlg-card">
       <v-toolbar flat color="grey-darken-4" theme="dark" density="comfortable">
         <template v-if="canEdit">
           <v-btn size="small" class="ml-2"
@@ -37,8 +37,7 @@
       </v-toolbar>
 
       <!-- View mode content -->
-      <v-card-text v-show="mode === 'view'"
-        class="pa-0 flex-grow-1 overflow-hidden d-flex justify-center align-center bg-grey-darken-3">
+      <div v-show="mode === 'view'" class="docdlg-content docdlg-view">
         <v-progress-circular v-if="assemblingPreview" indeterminate color="white" size="48" />
 
         <iframe v-else-if="viewSrc && isPdf"
@@ -50,25 +49,26 @@
           max-width="100%" max-height="100%" />
 
         <pre v-else-if="textContent"
-          class="text-white text-left ma-0 pa-4 flex-grow-1 w-100 h-100 overflow-auto"
-          style="white-space: pre-wrap; font-family: monospace;">{{ textContent }}</pre>
+          class="text-white text-left ma-0 pa-4"
+          style="white-space: pre-wrap; font-family: monospace; width: 100%; height: 100%; overflow: auto;">{{ textContent }}</pre>
 
         <div v-else class="text-h6 text-white text-center">
           <v-icon size="48" :icon="mdiEyeOff" class="mb-2" />
           <div>{{ $t('files.no-preview') }}</div>
         </div>
-      </v-card-text>
+      </div>
 
       <!-- Edit mode content -->
-      <editor v-show="mode === 'edit'"
-        ref="editor"
-        :files="files"
-        :session-id="sessionId"
-        class="flex-grow-1 overflow-hidden"
-        @mask="$emit('mask', $event)"
-        @notify="$emit('notify', $event)"
-        @saved="onSaved"
-        @dirty="editorDirty = $event" />
+      <div v-show="mode === 'edit'" class="docdlg-content">
+        <editor
+          ref="editor"
+          :files="files"
+          :session-id="sessionId"
+          @mask="$emit('mask', $event)"
+          @notify="$emit('notify', $event)"
+          @saved="onSaved"
+          @dirty="editorDirty = $event" />
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -273,3 +273,25 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.docdlg-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.docdlg-content {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.docdlg-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(var(--v-theme-grey-darken-3, 66, 66, 66));
+  background: #424242;
+}
+</style>
