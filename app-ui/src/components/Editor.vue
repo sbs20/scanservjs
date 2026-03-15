@@ -23,29 +23,23 @@
     <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
       tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick"
       @mousedown="onScrollAreaMousedown">
-      <draggable
-        v-model="pages"
-        item-key="id"
-        class="editor-grid"
-        ghost-class="editor-ghost"
-        handle=".editor-page"
-        filter=".source-divider"
-        @end="onDragEnd"
-        @click.self="onBackgroundClick">
-        <template #item="{ element, index }">
-          <div style="display: contents">
-            <!-- Source section divider before first page of each new source group -->
-            <div v-if="showDividers && sourceBreaks.has(index)"
-              class="source-divider d-flex align-center my-1">
-              <v-divider />
-              <v-chip class="mx-2" size="x-small" label>{{ element.source }}</v-chip>
-              <v-divider />
-            </div>
 
-            <!-- Page card -->
+      <!-- Positioning context for the source-divider overlay -->
+      <div class="editor-content-wrapper">
+        <draggable
+          v-model="pages"
+          item-key="id"
+          class="editor-grid"
+          ghost-class="editor-ghost"
+          @end="onDragEnd"
+          @click.self="onBackgroundClick">
+          <template #item="{ element, index }">
+            <!-- Page card is the direct sortable item — no wrapper div so
+                 SortableJS can correctly compute its position and build a ghost. -->
             <div
               class="editor-page"
-              :class="pageClasses(element, index)"
+              :class="[pageClasses(element, index),
+                       { 'editor-page-source-break': showDividers && sourceBreaks.has(index) }]"
               :data-orig-idx="element.originalIndex"
               @click.exact="selectOne(element.id, index)"
               @click.ctrl.exact="toggleSelect(element.id)"
@@ -73,14 +67,30 @@
               <div v-if="element.rotation" class="editor-rotation-badge text-caption">
                 {{ element.rotation }}°
               </div>
-              <div class="editor-source-badge text-caption text-truncate"
+              <!-- Source badge: only shown for multi-source docs after reordering,
+                   when section dividers are no longer present. -->
+              <div v-if="showSourceBadge && !element.isBlank"
+                class="editor-source-badge text-caption text-truncate"
                 :title="element.source">
                 {{ element.source }}
               </div>
             </div>
+          </template>
+        </draggable>
+
+        <!-- Source section dividers rendered as an absolutely-positioned overlay so
+             they don't interfere with SortableJS's DOM-based item tracking. -->
+        <div v-if="showDividers && dividerPositions.length"
+          class="source-dividers-overlay" aria-hidden="true">
+          <div v-for="d in dividerPositions" :key="d.source"
+            class="source-divider d-flex align-center"
+            :style="{ top: d.top + 'px' }">
+            <v-divider />
+            <v-chip class="mx-2" size="x-small" label>{{ d.source }}</v-chip>
+            <v-divider />
           </div>
-        </template>
-      </draggable>
+        </div>
+      </div>
     </div>
 
     <!-- Status bar -->
@@ -100,15 +110,19 @@
           variant="underlined"
           min="1"
           :max="pages.length"
-          style="width: 56px; flex-shrink: 0;"
+          :placeholder="`1–${pages.length}`"
+          style="width: 64px; flex-shrink: 0;"
           @keyup.enter="doJumpToPage" />
         <v-btn :icon="mdiArrowRightCircle" size="x-small" variant="text"
           :title="$t('editor.jump-to')" @click="doJumpToPage" />
       </template>
     </div>
 
-    <!-- Rubber-band selection overlay -->
-    <div v-if="rubberBand" class="rubber-band-rect" :style="rubberBandStyle" />
+    <!-- Rubber-band selection rect — teleported to <body> so that position:fixed is
+         relative to the viewport, not to any CSS-transformed ancestor (v-dialog). -->
+    <teleport to="body">
+      <div v-if="rubberBand" class="rubber-band-rect" :style="rubberBandStyle" />
+    </teleport>
 
     <!-- Context menu -->
     <v-menu v-model="contextMenuVisible" :target="[contextMenuX, contextMenuY]">
@@ -255,7 +269,10 @@ export default {
       pulsePageIndex: -1,
 
       // Source tracking
-      hasReordered: false
+      hasReordered: false,
+
+      // Source divider overlay positions (computed after DOM update)
+      dividerPositions: []
     };
   },
 
@@ -282,7 +299,7 @@ export default {
         && this.fileList.some(f => (f.name || f) === this.saveAsTargetName);
     },
 
-    // Source section dividers
+    // Source section dividers: shown only before any reordering on multi-source docs
     showDividers() {
       return !this.hasReordered && this.sourceFiles.length > 1;
     },
@@ -295,6 +312,11 @@ export default {
         }
       }
       return breaks;
+    },
+
+    // Source badge: visible only for multi-source docs after reordering (dividers gone)
+    showSourceBadge() {
+      return !this.showDividers && this.sourceFiles.length > 1;
     },
 
     // Rubber-band overlay style (viewport coordinates)
@@ -318,19 +340,31 @@ export default {
       this.$emit('dirty', val);
     },
     pages() {
-      if (this.thumbnailObserver) {
-        this.$nextTick(this.observeCards);
-      }
+      this.$nextTick(() => {
+        this.observeCards();
+        this.updateDividerPositions();
+      });
+    },
+    showDividers() {
+      this.$nextTick(() => this.updateDividerPositions());
     }
   },
 
   mounted() {
     this.setupThumbnailObserver();
+    this._resizeObserver = new ResizeObserver(() => {
+      if (this.showDividers) this.updateDividerPositions();
+    });
+    if (this.$refs.scrollArea) {
+      this._resizeObserver.observe(this.$refs.scrollArea);
+    }
   },
 
   beforeUnmount() {
     this.thumbnailObserver?.disconnect();
     this.thumbnailObserver = null;
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
     this._removeRubberListeners();
   },
 
@@ -363,6 +397,24 @@ export default {
           this.loadedThumbs[page.originalIndex] = true;
         }
       }
+    },
+
+    // --- Source divider overlay ---
+
+    updateDividerPositions() {
+      if (!this.showDividers) { this.dividerPositions = []; return; }
+      const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page');
+      if (!cards) { this.dividerPositions = []; return; }
+      const positions = [];
+      for (const idx of this.sourceBreaks) {
+        const card = cards[idx];
+        if (card) {
+          // offsetTop is relative to .editor-content-wrapper (position: relative).
+          // The divider (height: 28px) is centered in the 36px margin-top above the card.
+          positions.push({ top: card.offsetTop - 32, source: this.pages[idx].source });
+        }
+      }
+      this.dividerPositions = positions;
     },
 
     // --- Session ---
@@ -415,6 +467,7 @@ export default {
           if (this.pages.length >= EAGER_LOAD_THRESHOLD) {
             this.observeCards();
           }
+          this.updateDividerPositions();
         });
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
@@ -449,6 +502,7 @@ export default {
       this.initialHash = null;
       this.loadedThumbs = {};
       this.hasReordered = false;
+      this.dividerPositions = [];
     },
 
     updateSource(oldName, newName) {
@@ -840,6 +894,10 @@ export default {
       const n = parseInt(this.jumpToPage);
       if (isNaN(n)) return;
       const idx = Math.max(0, Math.min(n - 1, this.pages.length - 1));
+      const page = this.pages[idx];
+      if (!page) return;
+      // Select the target page so it is highlighted even if no scrolling occurs.
+      this.selectOne(page.id, idx);
       this.scrollToPage(idx, 'center');
       this.pulsePageIndex = idx;
       setTimeout(() => { this.pulsePageIndex = -1; }, 700);
@@ -1037,6 +1095,11 @@ export default {
   outline: none;
 }
 
+/* Positioning context for the source-divider overlay */
+.editor-content-wrapper {
+  position: relative;
+}
+
 .editor-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1109,11 +1172,28 @@ export default {
   animation: editorPulse 0.7s ease-out;
 }
 
+/* Extra top margin on the first card of each new source group,
+   leaving room for the source-divider overlay to render into. */
+.editor-page-source-break {
+  margin-top: 36px;
+}
+
+/* Source-divider overlay: absolutely positioned relative to
+   .editor-content-wrapper; scrolls with the flex grid content. */
+.source-dividers-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
 .source-divider {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28px;
 }
 
 .rubber-band-rect {
