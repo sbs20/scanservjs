@@ -235,7 +235,15 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const previewPath = editorApi.getPreviewPath(req.params[0]);
       if (req.query.download === 'true') {
-        const filename = req.query.filename || 'document.pdf';
+        let filename = 'document.pdf';
+        if (req.query.filename) {
+          try {
+            FileInfo.assertFilenameIsSafe(req.query.filename);
+            filename = req.query.filename;
+          } catch (e) {
+            // Invalid filename chars — use safe default
+          }
+        }
         res.download(path.resolve(previewPath), filename);
       } else {
         res.type('pdf');
