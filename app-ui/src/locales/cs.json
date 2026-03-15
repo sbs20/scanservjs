@@ -11,9 +11,12 @@
   },
   "about": {
     "main": "scanservjs je jednoduché webové uživatelské rozhraní pro váš skener. Umožňuje vám sdílet jeden nebo více skenerů (s využitím SANE) bez ovladačů nebo komplikované instalace. Umí ukládat do TIF, JPG, PNG, PDF a TXT (využívá Tesseract OCR) s různými nastaveními komprese, vše je možné konfigurovat. Podporuje vícestránkové skenování a všechna zařízení kompatibilní se SANE.",
-    "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:",
+    "fork": "Používáte komunitní fork s dalšími funkcemi a opravami. Nahlašujte prosím problémy do repozitáře forku, nikoli do původního projektu.",
+    "fork-upstream": "Původní projekt Sama Strackana:",
+    "fork-issue": "Tento fork – nahlašujte problémy a prohlédněte si zdrojový kód zde:",
     "api": "OpenAPI dokumentace:",
-    "system-info": "Informace o systému"
+    "system-info": "Informace o systému",
+    "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:"
   },
   "colors": {
     "accent-4": "Výchozí",

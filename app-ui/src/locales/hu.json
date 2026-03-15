@@ -11,9 +11,12 @@
   },
   "about": {
     "main": "A scanservjs egy egyszerű webes felhasználói felület a szkenneréhez. Lehetővé teszi egy vagy több szkenner (SANE használatával) megosztását egy hálózaton, illesztőprogramok vagy bonyolult telepítés nélkül. TIF, JPG, PNG, PDF és TXT formátumba (Tesseract OCR segítségével) tud menteni, különböző tömörítési beállításokkal, amelyek mindegyike konfigurálható. Támogatja a többoldalas szkennelést és az összes SANE-kompatibilis eszközt.",
-    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
+    "fork": "Egy közösségi forkot használ, amely extra funkciókat és hibajavításokat tartalmaz. Kérjük, a problémákat a fork tárolójában jelezze, ne az eredeti projektben.",
+    "fork-upstream": "Az eredeti projekt Sam Strackantól:",
+    "fork-issue": "Ez a fork — problémák jelzése és forráskód megtekintése:",
     "api": "Swagger API dokumentáció:",
-    "system-info": "Rendszer információ"
+    "system-info": "Rendszer információ",
+    "issue": "Hiba bejelentése vagy a forráskód megtekintése:"
   },
   "colors": {
     "accent-4": "Alapértelmezett",

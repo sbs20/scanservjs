@@ -10,8 +10,11 @@
   },
   "about": {
     "main": "scanservjs to prosty interfejs internetowy dla Twojego skanera. Pozwala ci udostępnić skaner lub kilka (używając SANE) w sieci bez sterowników lub skompilowanych konfiguracji oprogramowania. Zapisuje do formatów TIF, JPG, PNG, PDF i TXT (używając Tesseract OCR) z różnymi ustawieniami kompresji, zgodnie z Twoimi ustawieniami. Wspiera skanowanie wielu stron i wszystkie urządzenia kompatybilne z SANE.",
-    "issue": "Zgłoś problem lub zobacz kod źródłowy:",
-    "system-info": "Informacje o systemie"
+    "fork": "Korzystasz z forka społeczności z dodatkowymi funkcjami i poprawkami. Zgłaszaj problemy w repozytorium forka, nie w oryginalnym projekcie.",
+    "fork-upstream": "Oryginalny projekt autorstwa Sama Strackana:",
+    "fork-issue": "Ten fork — zgłaszaj problemy i wyświetlaj kod źródłowy tutaj:",
+    "system-info": "Informacje o systemie",
+    "issue": "Zgłoś problem lub zobacz kod źródłowy:"
   },
   "colors": {
     "accent-4": "Domyślny",

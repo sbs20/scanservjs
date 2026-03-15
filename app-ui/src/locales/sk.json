@@ -11,9 +11,12 @@
   },
   "about": {
     "main": "scanservjs je jednoduché webové užívateľské rozhranie pre váš skener. Umožňuje vám zdieľať jeden alebo viac skenerov (s využitím SANE) bez ovládačov či komplikovanej inštalácie. Dokáže ukladať do formátov TIF, JPG, PNG, PDF a TXT (pre rozpoznávanie znakov využíva Tesseract OCR) spolu s nastavením úrovne kompresie. Podporuje viacstránkové skenovanie a všetky zariadenia kompatibilné so SANE.",
-    "issue": "Nahláste chybu alebo si prezrite zdrojový kód:",
+    "fork": "Používate komunitný fork s ďalšími funkciami a opravami. Nahlasujte problémy do repozitára forku, nie do pôvodného projektu.",
+    "fork-upstream": "Pôvodný projekt od Sama Strackana:",
+    "fork-issue": "Tento fork – nahlasujte problémy a zobrazujte zdrojový kód tu:",
     "api": "Swagger API dokumentácia:",
-    "system-info": "Informácie o systéme"
+    "system-info": "Informácie o systéme",
+    "issue": "Nahláste chybu alebo si prezrite zdrojový kód:"
   },
   "colors": {
     "accent-4": "Predvolená",

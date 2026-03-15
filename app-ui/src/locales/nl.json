@@ -10,8 +10,11 @@
   },
   "about": {
     "main": "scanservjs is een simpel web-based UI voor je scanner. Hiermee kun je een of meer scanners (met behulp van SANE) op een netwerk delen zonder dat er stuurprogramma's of een ingewikkelde installatie nodig is. Het kan in TIF, JPG, PNG, PDF en TXT (met Tesseract OCR) opslaan met verschillende compressie-instellingen, wat allemaal kan worden geconfigureerd. Het ondersteunt scannen van meerdere pagina's en alle SANE-compatibele apparaten.",
-    "issue": "Probleem indienen of bekijk de broncode:",
-    "system-info": "Systeem informatie"
+    "fork": "U gebruikt een community-fork met extra functies en bugfixes. Meld problemen in de fork-repository, niet in het originele project.",
+    "fork-upstream": "Origineel project van Sam Strachan:",
+    "fork-issue": "Deze fork — meld problemen en bekijk de broncode hier:",
+    "system-info": "Systeem informatie",
+    "issue": "Probleem indienen of bekijk de broncode:"
   },
   "colors": {
     "accent-4": "Standaard",

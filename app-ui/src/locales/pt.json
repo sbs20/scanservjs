@@ -10,8 +10,11 @@
   },
   "about": {
     "main": "scanservjs é uma interface web para o seu scanner/digitalizador. Permite partilhar um ou mais scanners (através do SANE) em rede sem necessidade para drivers ou instalações complicadas. Permite guardar como TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com variadas definições de compressão, os quais podem ser configurados. Suporta digitalização multipágina e todos os dispositivos compatíveis com SANE.",
-    "issue": "Submeter um problema ou visualizar código-fonte:",
-    "system-info": "Informação de sistema"
+    "fork": "Está a utilizar um fork da comunidade com funcionalidades e correções adicionais. Comunique problemas no repositório do fork, não no projeto original.",
+    "fork-upstream": "Projeto original de Sam Strachan:",
+    "fork-issue": "Este fork — reporte problemas e veja o código-fonte aqui:",
+    "system-info": "Informação de sistema",
+    "issue": "Submeter um problema ou visualizar código-fonte:"
   },
   "colors": {
     "accent-4": "Predefinição",

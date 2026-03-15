@@ -10,8 +10,11 @@
   },
   "about": {
     "main": "scanservjs tarayıcınız için basit bir web arayüzüdür. Bir veya birden fazla tarayıcıyı ağ üzerinden (SANE kullanarak), kolay kurulum ve sürücü gerektirmeden paylaşmanızı sağlar. TIF, JPG, PNG, PDF ve TXT (Tesseract OCR ile) dosya uzantıları ile çeşitli sıkıştırma ayarlarıyla kaydedebilir ve tümü ayarlanabilir. Çoklu sayfa taramasını ve tüm SANE uyumlu cihazları destekler.",
-    "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:",
-    "system-info": "Sistem bilgisi"
+    "fork": "Ek özellikler ve düzeltmeler içeren bir topluluk fork'u çalıştırıyorsunuz. Lütfen sorunları orijinal proje yerine fork deposuna bildirin.",
+    "fork-upstream": "Orijinal proje — Sam Strachan:",
+    "fork-issue": "Bu fork — sorunları bildirin ve kaynak kodunu burada görüntüleyin:",
+    "system-info": "Sistem bilgisi",
+    "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:"
   },
   "colors": {
     "accent-4": "Varsayılan",
