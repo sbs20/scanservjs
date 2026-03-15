@@ -24,6 +24,7 @@
     "vue-i18n": "9.6.5",
     "vue-router": "4.2.5",
     "vue-toastr": "3.0.5",
+    "vuedraggable": "^4.1.0",
     "vuetify": "3.4.0"
   },
   "devDependencies": {

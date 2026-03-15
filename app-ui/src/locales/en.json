@@ -176,6 +176,26 @@
     "message:preview-of-page": "Preview of page"
   },
 
+  "editor": {
+    "title": "Editor",
+    "undo": "Undo",
+    "redo": "Redo",
+    "add-pages": "Add pages from file",
+    "add-blank": "Add blank page",
+    "rotate-cw": "Rotate clockwise",
+    "rotate-ccw": "Rotate counter-clockwise",
+    "delete": "Delete selected",
+    "save": "Save",
+    "save-as": "Save as...",
+    "cancel": "Cancel",
+    "add": "Add",
+    "select-file": "Select file",
+    "status": "{0} pages",
+    "sources": "Source: {0}",
+    "button:edit": "Edit",
+    "button:edit-selected": "Edit selected"
+  },
+
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Behaviour and UI",

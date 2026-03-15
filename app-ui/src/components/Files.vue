@@ -14,6 +14,10 @@
           step="16" :inverse-label="true"
           :label="`${$t('files.thumbnail-size')} (${thumbnails.size})`" />
         <v-spacer />
+        <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="primary" class="mr-2"
+          @click="editSelected">
+          {{ $t('editor.button:edit-selected') }}
+        </v-btn>
         <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
@@ -28,6 +32,7 @@
             </v-btn>
           </template>
           <v-list>
+            <v-list-item v-if="smAndDown" :title="$t('editor.button:edit-selected')" @click="editSelected" />
             <v-list-item v-if="smAndDown" :title="$t('files.button:delete-selected')" @click="multipleDelete" />
             <v-list-item v-for="(action, index) in actions" :key="index" :title="action" @click="multipleAction(action)" />
           </v-list>
@@ -64,6 +69,8 @@
       {{ $d(new Date(item.lastModified), 'long') }}
     </template>
     <template #[`item.actions`]="{ item }">
+      <v-icon class="mr-2" :icon="mdiBookEdit" :title="$t('editor.button:edit')"
+        @click="editFile(item)" />
       <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
       <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item)" />
       <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
@@ -72,23 +79,34 @@
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
     </template>
   </v-data-table>
+
+  <editor
+    v-model="editorVisible"
+    :files="editorFiles"
+    @mask="$emit('mask', $event)"
+    @notify="$emit('notify', $event)"
+    @close="editorVisible = false"
+    @saved="fileList()" />
 </template>
 
 <script>
 import Common from '../classes/common';
 import Storage from '../classes/storage';
-import { mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
+import Editor from './Editor.vue';
+import { mdiBookEdit, mdiDelete, mdiDotsVertical, mdiDownload, mdiPencil } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 const storage = Storage.instance();
 
 export default {
   name: 'Files',
+  components: { Editor },
 
   emits: ['mask', 'notify'],
 
   setup() {
     const { smAndDown } = useDisplay();
     return {
+      mdiBookEdit,
       mdiDelete,
       mdiDotsVertical,
       mdiDownload,
@@ -115,7 +133,9 @@ export default {
         show: storage.settings.thumbnails.show,
         size: storage.settings.thumbnails.size
       },
-      actions: []
+      actions: [],
+      editorVisible: false,
+      editorFiles: []
     };
   },
 
@@ -289,6 +309,17 @@ export default {
       if (refresh) {
         this.fileList();
       }
+    },
+
+    editFile(file) {
+      this.editorFiles = [file];
+      this.editorVisible = true;
+    },
+
+    editSelected() {
+      if (this.selectedFiles.length === 0) return;
+      this.editorFiles = [...this.selectedFiles];
+      this.editorVisible = true;
     },
 
     open(file) {
