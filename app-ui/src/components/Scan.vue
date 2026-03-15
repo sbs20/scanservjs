@@ -93,12 +93,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.top" :label="$t('scan.top')" type="text"
                  @input="onDimensionInput($event, 'top')" @blur="commitDimension('top', $event)" @keyup.enter="$event.target.blur()"
-                 prefix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
+              <v-text-field :model-value="toPixels(request.params.top, 'y')" type="text"
                  @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
-                 hide-details="auto" class="centered-input" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" />
             </v-col>
             <v-col cols="2" />
           </v-row>
@@ -106,12 +106,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.left" :label="$t('scan.left')" type="text"
                  @input="onDimensionInput($event, 'left')" @blur="commitDimension('left', $event)" @keyup.enter="$event.target.blur()"
-                 prefix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
+              <v-text-field :model-value="toPixels(request.params.left, 'x')" type="text"
                  @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
-                 hide-details="auto" class="centered-input" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" />
             </v-col>
             <v-col cols="2" />
           </v-row>
@@ -119,12 +119,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.width" :label="$t('scan.width')" type="text"
                  @input="onDimensionInput($event, 'width')" @blur="commitDimension('width', $event)" @keyup.enter="$event.target.blur()"
-                 prefix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
+              <v-text-field :model-value="toPixels(request.params.width, 'x')" type="text"
                  @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
-                 hide-details="auto" class="centered-input" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" />
             </v-col>
             <v-col cols="2" class="lock-arm lock-arm-top" />
           </v-row>
@@ -145,12 +145,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.height" :label="$t('scan.height')" type="text"
                  @input="onDimensionInput($event, 'height')" @blur="commitDimension('height', $event)" @keyup.enter="$event.target.blur()"
-                 prefix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
+              <v-text-field :model-value="toPixels(request.params.height, 'y')" type="text"
                  @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
-                 hide-details="auto" class="centered-input" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" />
             </v-col>
             <v-col cols="2" class="lock-arm lock-arm-bottom" />
           </v-row>
@@ -1163,22 +1163,22 @@ export default {
   content: '';
   position: absolute;
   top: 50%;
-  right: 4px;
+  left: calc(50% - 8px);
   bottom: 0;
   width: 8px;
-  border-top: 1.5px solid rgba(128, 128, 128, 0.35);
-  border-right: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-top: 2px solid rgba(128, 128, 128, 0.35);
+  border-right: 2px solid rgba(128, 128, 128, 0.35);
   border-top-right-radius: 4px;
 }
 .lock-arm-bottom::after {
   content: '';
   position: absolute;
   top: 0;
-  right: 4px;
+  left: calc(50% - 8px);
   bottom: 50%;
   width: 8px;
-  border-bottom: 1.5px solid rgba(128, 128, 128, 0.35);
-  border-right: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-bottom: 2px solid rgba(128, 128, 128, 0.35);
+  border-right: 2px solid rgba(128, 128, 128, 0.35);
   border-bottom-right-radius: 4px;
 }
 </style>
