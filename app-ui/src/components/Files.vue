@@ -91,6 +91,7 @@
   <document-dialog
     v-model="docDialogVisible"
     :files="docDialogFiles"
+    :file-list="files"
     :initial-mode="docDialogMode"
     @mask="$emit('mask', $event)"
     @notify="$emit('notify', $event)"

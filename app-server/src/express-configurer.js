@@ -235,7 +235,7 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const previewPath = editorApi.getPreviewPath(req.params[0]);
       res.type('pdf');
-      res.sendFile(previewPath);
+      res.sendFile(path.resolve(previewPath));
     }
   },
   {

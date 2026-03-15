@@ -82,6 +82,9 @@
         <v-card-text>
           <v-text-field v-model="saveFilename" :label="$t('files.filename')"
             autofocus @keyup.enter="confirmSaveAs" />
+          <v-alert v-if="saveAsWillOverwrite" type="warning" density="compact" class="mt-2">
+            {{ $t('editor.overwrite-warning', [saveAsTargetName]) }}
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -148,7 +151,8 @@ export default {
 
   props: {
     files: { type: Array, default: () => [] },
-    sessionId: { type: String, default: null }
+    sessionId: { type: String, default: null },
+    fileList: { type: Array, default: () => [] }
   },
 
   data() {
@@ -173,6 +177,19 @@ export default {
     },
     isDirty() {
       return this.initialHash !== null && this.initialHash !== JSON.stringify(this.pages);
+    },
+    saveAsTargetName() {
+      let name = (this.saveFilename || '').trim();
+      if (name && !name.endsWith('.pdf')) name += '.pdf';
+      return name;
+    },
+    saveAsWillOverwrite() {
+      if (!this.saveAsTargetName) return false;
+      const originalName = this.files.length === 1
+        ? (this.files[0].name || this.files[0]).replace(/\.[^.]+$/, '') + '.pdf'
+        : null;
+      return this.saveAsTargetName !== originalName
+        && this.fileList.some(f => (f.name || f) === this.saveAsTargetName);
     }
   },
 
@@ -381,11 +398,24 @@ export default {
     },
 
     async confirmSaveAs() {
-      this.showSaveAs = false;
       let filename = this.saveFilename.trim();
       if (!filename) return;
       if (!filename.endsWith('.pdf')) filename += '.pdf';
+
+      // Check for overwrite — warn if file exists and isn't the original
+      const originalName = this.files.length === 1
+        ? (this.files[0].name || this.files[0]).replace(/\.[^.]+$/, '') + '.pdf'
+        : null;
+      if (filename !== originalName && this._fileExists(filename)) {
+        if (!confirm(this.$t('editor.confirm-overwrite', [filename]))) return;
+      }
+
+      this.showSaveAs = false;
       await this._doSave(filename);
+    },
+
+    _fileExists(filename) {
+      return this.fileList.some(f => (f.name || f) === filename);
     },
 
     async _doSave(filename) {

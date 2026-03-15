@@ -168,7 +168,9 @@
   "document-dialog": {
     "view": "View",
     "edit": "Edit",
-    "discard-changes": "You have unsaved changes. Discard them?"
+    "discard-changes": "You have unsaved changes. Discard them?",
+    "preview-failed": "Preview could not be generated",
+    "back-to-editor": "Back to editor"
   },
   "editor": {
     "title": "Editor",
@@ -186,6 +188,8 @@
     "select-file": "Select file",
     "status": "{0} pages",
     "sources": "Source: {0}",
+    "confirm-overwrite": "A file named \"{0}\" already exists. Overwrite it?",
+    "overwrite-warning": "\"{0}\" already exists and will be overwritten",
     "button:edit": "Edit",
     "button:edit-selected": "Edit selected"
   },

@@ -40,6 +40,15 @@
       <div v-show="mode === 'view'" class="docdlg-content docdlg-view">
         <v-progress-circular v-if="assemblingPreview" indeterminate color="white" size="48" />
 
+        <div v-else-if="previewError" class="text-h6 text-white text-center">
+          <v-icon size="48" :icon="mdiAlertCircle" class="mb-2" color="error" />
+          <div>{{ $t('document-dialog.preview-failed') }}</div>
+          <v-btn class="mt-4" variant="tonal" color="white" size="small"
+            @click="switchMode('edit')">
+            {{ $t('document-dialog.back-to-editor') }}
+          </v-btn>
+        </div>
+
         <iframe v-else-if="viewSrc && isPdf"
           :src="viewSrc"
           width="100%" height="100%" frameborder="0"></iframe>
@@ -64,6 +73,7 @@
           ref="editor"
           :files="files"
           :session-id="sessionId"
+          :file-list="fileList"
           @mask="$emit('mask', $event)"
           @notify="$emit('notify', $event)"
           @saved="onSaved"
@@ -76,7 +86,7 @@
 <script>
 import Common from '../classes/common';
 import Editor from './Editor.vue';
-import { mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil } from '@mdi/js';
+import { mdiAlertCircle, mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil } from '@mdi/js';
 
 export default {
   name: 'DocumentDialog',
@@ -84,12 +94,13 @@ export default {
   emits: ['mask', 'notify', 'close', 'saved', 'download'],
 
   setup() {
-    return { mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil };
+    return { mdiAlertCircle, mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil };
   },
 
   props: {
     modelValue: { type: Boolean, default: false },
     files: { type: Array, default: () => [] },
+    fileList: { type: Array, default: () => [] },
     initialMode: { type: String, default: 'view' }
   },
 
@@ -99,6 +110,7 @@ export default {
       sessionId: null,
       editorDirty: false,
       assemblingPreview: false,
+      previewError: false,
       lastPreviewHash: null,
       previewUrl: null,
       textContent: ''
@@ -166,6 +178,7 @@ export default {
       this.sessionId = null;
       this.editorDirty = false;
       this.assemblingPreview = false;
+      this.previewError = false;
       this.lastPreviewHash = null;
       this.previewUrl = null;
       this.textContent = '';
@@ -200,6 +213,7 @@ export default {
       if (newMode === this.mode) return;
       const oldMode = this.mode;
       this.mode = newMode;
+      this.previewError = false;
       if (newMode === 'edit' && !this.sessionId) {
         await this.createSession();
       }
@@ -240,6 +254,7 @@ export default {
       if (hash === this.lastPreviewHash) return;
 
       this.assemblingPreview = true;
+      this.previewError = false;
       try {
         const editList = editor.getEditList();
         await Common.fetch(
@@ -249,8 +264,9 @@ export default {
             body: JSON.stringify({ pages: editList })
           });
         this.lastPreviewHash = hash;
-        this.previewUrl = `api/v1/editor/sessions/${this.sessionId}/preview?v=${encodeURIComponent(hash)}`;
+        this.previewUrl = `api/v1/editor/sessions/${this.sessionId}/preview?v=${Date.now()}`;
       } catch (error) {
+        this.previewError = true;
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
         this.assemblingPreview = false;
@@ -291,7 +307,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgb(var(--v-theme-grey-darken-3, 66, 66, 66));
   background: #424242;
 }
 </style>

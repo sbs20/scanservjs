@@ -128,11 +128,11 @@ class EditorSession {
       // Extract the page first if not yet extracted
       const extractedPath = await this._ensurePageExtracted(pageIdx);
       buffer = await Process.spawn(
-        `convert '${extractedPath}[0]' -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
+        `convert '${extractedPath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     } else {
       // Image: generate thumbnail directly from source
       buffer = await Process.spawn(
-        `convert '${sourcePath}[0]' -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
+        `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     }
 
     fs.writeFileSync(thumbPath, buffer);
