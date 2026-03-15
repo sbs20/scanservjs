@@ -67,7 +67,10 @@
     "no-preview": "No preview available for this file type",
     "button:download": "下载",
     "button:delete": "删除",
-    "button:rename": "重命名"
+    "button:rename": "重命名",
+    "close": "关闭",
+    "download": "下载",
+    "tiff-browser-unsupported": "大多数浏览器不原生支持 TIFF 文件"
   },
   "navigation": {
     "scan": "扫描",
