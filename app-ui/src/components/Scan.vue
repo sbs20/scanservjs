@@ -90,56 +90,73 @@
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <template v-if="geometry">
           <v-row no-gutters class="mb-2">
-            <v-col cols="7">
+            <v-col cols="6">
               <v-text-field :model-value="request.params.top" :label="$t('scan.top')" type="text"
                  @input="onDimensionInput($event, 'top')" @blur="commitDimension('top', $event)" @keyup.enter="$event.target.blur()"
                  prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+            <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
                  @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
+            <v-col cols="2" />
           </v-row>
           <v-row no-gutters class="mb-2">
-            <v-col cols="7">
+            <v-col cols="6">
               <v-text-field :model-value="request.params.left" :label="$t('scan.left')" type="text"
                  @input="onDimensionInput($event, 'left')" @blur="commitDimension('left', $event)" @keyup.enter="$event.target.blur()"
                  prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+            <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
                  @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
+            <v-col cols="2" />
           </v-row>
-          <v-row no-gutters class="mb-2">
-            <v-col cols="7">
+          <v-row no-gutters class="mb-0" align="stretch">
+            <v-col cols="6">
               <v-text-field :model-value="request.params.width" :label="$t('scan.width')" type="text"
                  @input="onDimensionInput($event, 'width')" @blur="commitDimension('width', $event)" @keyup.enter="$event.target.blur()"
                  prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+            <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
                  @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
+            <v-col cols="2" class="lock-arm lock-arm-top" />
           </v-row>
-          <v-row no-gutters class="mb-2">
-            <v-col cols="7">
+          <v-row no-gutters style="height: 24px;">
+            <v-col cols="10" />
+            <v-col cols="2" class="d-flex align-center justify-center">
+              <v-btn
+                :icon="aspectRatioLocked ? mdiLock : mdiLockOpenOutline"
+                variant="text"
+                size="x-small"
+                density="compact"
+                :color="aspectRatioLocked ? 'primary' : undefined"
+                @click="toggleAspectRatioLock"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="mb-2" align="stretch">
+            <v-col cols="6">
               <v-text-field :model-value="request.params.height" :label="$t('scan.height')" type="text"
                  @input="onDimensionInput($event, 'height')" @blur="commitDimension('height', $event)" @keyup.enter="$event.target.blur()"
                  prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+            <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
                  @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
+            <v-col cols="2" class="lock-arm lock-arm-bottom" />
           </v-row>
 
           <v-row no-gutters class="mb-4">
-            <v-col cols="7">
+            <v-col>
               <v-menu offset-y>
                 <template #activator="{ props }">
                   <v-btn color="primary" block v-bind="props">{{ $t('scan.paperSize') }}</v-btn>
@@ -153,15 +170,6 @@
                   </v-list-item>
                 </v-list>
               </v-menu>
-            </v-col>
-            <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-btn
-                :icon="aspectRatioLocked ? mdiLock : mdiLockOpenOutline"
-                variant="text"
-                density="comfortable"
-                :color="aspectRatioLocked ? 'primary' : undefined"
-                @click="toggleAspectRatioLock"
-              />
             </v-col>
           </v-row>
         </template>
@@ -1147,5 +1155,30 @@ export default {
 }
 .cropper {
   max-width: 100%;
+}
+.lock-arm {
+  position: relative;
+}
+.lock-arm-top::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  bottom: 0;
+  width: 8px;
+  border-top: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-right: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-top-right-radius: 4px;
+}
+.lock-arm-bottom::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 4px;
+  bottom: 50%;
+  width: 8px;
+  border-bottom: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-right: 1.5px solid rgba(128, 128, 128, 0.35);
+  border-bottom-right-radius: 4px;
 }
 </style>
