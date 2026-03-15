@@ -768,22 +768,40 @@ Ghostscript content scaling may damage OCR layers — clearly warned in UI.
 
 ---
 
-## 10. Implementation Plan
+## 10. Development Workflow
+
+### Commit Strategy
+
+Use **incremental commits** during initial development. The history will be
+squashed before the first public release / upstream PR submission. Commit
+messages should be concise and descriptive of the change (not conversational),
+but they're primarily for developer orientation during active development —
+not for a polished public history.
+
+**Pattern:** `feat(editor): <what changed>` for features,
+`fix(editor): <what>` for fixes, `refactor(editor): <what>` for restructuring.
+
+> **TODO (pre-release):** Before the first full public announcement, squash
+> the commit history into clean, reviewable commits and update this section
+> to reflect the final commit policy.
+
+---
+
+## 11. Implementation Plan
 
 ### Phase 1: Core Infrastructure + Minimal UI
 
 **Goal:** End-to-end working editor with basic operations.
 
-**Server (app-server):**
-1. Create `classes/editor-session.js` — session lifecycle, page extraction,
+**Server (app-server):** ✅ Complete
+1. ✅ `editor/pdf_ops.py` — pikepdf wrapper (info, extract, extract-rotate, merge, blank)
+2. ✅ `classes/pdf-tool.js` — abstract PDF operations interface
+3. ✅ `classes/pikepdf-tool.js` — pikepdf implementation (Python child process)
+4. ✅ `classes/pdftk-tool.js` — pdftk fallback implementation
+5. ✅ `classes/editor-session.js` — session lifecycle, page extraction,
    manifest management, cleanup
-2. Create `classes/pdf-tool.js` — abstract PDF operations interface
-3. Create `classes/pikepdf-tool.js` — pikepdf implementation (Python child
-   process)
-4. Create `classes/pdftk-tool.js` — pdftk fallback implementation
-5. Create `editor-api.js` — editor API methods
-6. Modify `express-configurer.js` — register editor endpoints
-7. Add session cleanup on startup + 5-minute interval
+6. ✅ `editor-api.js` — editor API methods, tool detection, single-session
+7. ✅ `express-configurer.js` — 6 editor endpoints + startup/TTL cleanup
 
 **Client (app-ui):**
 1. Create `components/Editor.vue` — editor dialog with thumbnail grid
@@ -826,7 +844,7 @@ Ghostscript content scaling may damage OCR layers — clearly warned in UI.
 
 ---
 
-## 11. Dependencies
+## 12. Dependencies
 
 ### System packages
 
@@ -857,16 +875,16 @@ Session IDs use Node.js built-in `crypto.randomUUID()` — no additional package
 
 ---
 
-## 12. Alternatives Considered
+## 13. Alternatives Considered
 
-### 12.1 Client-Side PDF Processing (pdf-lib / pdf.js)
+### 13.1 Client-Side PDF Processing (pdf-lib / pdf.js)
 
 **Pros:** No server round-trips, works offline, no temp files.
 **Cons:** Memory unbounded (entire PDF in browser), can't use system tools,
 OCR preservation harder, adds 600+ KB of JS (pdf.js for rendering).
 **Verdict:** Hybrid server-side approach is better for constrained devices.
 
-### 12.2 pdftk-java as Primary Tool
+### 13.2 pdftk-java as Primary Tool
 
 **Pros:** Already installed, well-known.
 **Cons:** JVM startup ~50-80 MB overhead, heap can reach 200 MB, slow startup
@@ -874,21 +892,21 @@ OCR preservation harder, adds 600+ KB of JS (pdf.js for rendering).
 **Verdict:** Kept as fallback. pikepdf is superior in every dimension for this
 use case.
 
-### 12.3 qpdf CLI as Primary Tool
+### 13.3 qpdf CLI as Primary Tool
 
 **Pros:** C++, lightweight, all needed operations.
 **Cons:** Not installed (pikepdf wraps the same libqpdf but as a Python API,
 giving us more flexibility for complex operations like N-up).
 **Verdict:** pikepdf gives us qpdf's engine plus Python's flexibility.
 
-### 12.4 Pre-Building a Master PDF at Session Creation
+### 13.4 Pre-Building a Master PDF at Session Creation
 
 **Pros:** Simpler assembly at save time.
 **Cons:** Forces upfront extraction + merge + image→PDF conversion. More disk
 I/O, slower session creation, wastes work on pages that get deleted.
 **Verdict:** Lazy extraction with edit-list model is strictly better.
 
-### 12.5 ImageMagick `montage` for N-up
+### 13.5 ImageMagick `montage` for N-up
 
 **Pros:** Already installed, single command.
 **Cons:** Loads all images into RAM simultaneously. With Q16 (Debian default),
@@ -897,7 +915,7 @@ I/O, slower session creation, wastes work on pages that get deleted.
 
 ---
 
-## 13. File Structure (New/Modified)
+## 14. File Structure (New/Modified)
 
 ```
 app-server/src/
@@ -929,7 +947,7 @@ package.json                    # MODIFIED — add vuedraggable dependency
 
 ---
 
-## 14. Testing Strategy
+## 15. Testing Strategy
 
 ### Unit Tests
 - `UndoStack` class — push/undo/redo/truncation
@@ -957,7 +975,7 @@ package.json                    # MODIFIED — add vuedraggable dependency
 
 ---
 
-## 15. Open Items for Future Discussion
+## 16. Open Items for Future Discussion
 
 1. **Page annotations (out of scope for v1):** Adding text, checkmarks,
    signatures. Requires a fundamentally different UI (page-level canvas editor
