@@ -50,6 +50,7 @@
     "message:deleted": "已删除 {0}",
     "message:renamed": "文件已更名",
     "button:delete-selected": "删除所选",
+    "button:zip-selected": "压缩选定的文件",
     "dialog:rename": "更改文件名称",
     "dialog:rename-cancel": "取消",
     "dialog:rename-save": "保存",

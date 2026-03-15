@@ -51,6 +51,7 @@
     "message:deleted": "تم محي {0}",
     "message:renamed": "تم تبديل إسم الملف",
     "button:delete-selected": "حذف الملفات المختارة",
+    "button:zip-selected": "ضغط المحدد",
     "dialog:rename": "تغيير الإسم",
     "dialog:rename-cancel": "إلغاء",
     "dialog:rename-save": "حفظ",

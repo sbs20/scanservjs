@@ -50,6 +50,7 @@
     "message:deleted": "Usunięto {0}",
     "message:renamed": "Nazwa pliku została zmieniona",
     "button:delete-selected": "Usuń zaznaczone",
+    "button:zip-selected": "Spakuj zaznaczone",
     "dialog:rename": "Zmień nazwę pliku",
     "dialog:rename-cancel": "Anuluj",
     "dialog:rename-save": "Zapis",

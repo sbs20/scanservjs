@@ -52,6 +52,7 @@
     "message:deleted": "Soubor {0} byl odstraněn",
     "message:renamed": "Soubor byl přejmenován",
     "button:delete-selected": "Odstranit vybrané",
+    "button:zip-selected": "Zabalit vybrané",
     "dialog:rename": "Změnit název souboru",
     "dialog:rename-cancel": "Zrušit",
     "dialog:rename-save": "Uložit",

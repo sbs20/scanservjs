@@ -54,6 +54,7 @@
     "message:renamed": "File rinominato",
     "button:action-selected": "Esegui azione...",
     "button:delete-selected": "Elimina selezionati",
+    "button:zip-selected": "Comprimi selezionati",
     "dialog:rename": "Rinomina file",
     "dialog:rename-cancel": "Annulla",
     "dialog:rename-save": "Salva",

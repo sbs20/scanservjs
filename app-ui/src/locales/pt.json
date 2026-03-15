@@ -50,6 +50,7 @@
     "message:deleted": "Eliminados {0}",
     "message:renamed": "Ficheiro renomeado",
     "button:delete-selected": "Eliminar seleccionados",
+    "button:zip-selected": "Comprimir selecionados",
     "dialog:rename": "Mudar nome de ficheiro",
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",

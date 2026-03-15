@@ -50,6 +50,7 @@
     "message:deleted": "Silindi {0}",
     "message:renamed": "İsimlendirilen dosya",
     "button:delete-selected": "Seçileni Sil",
+    "button:zip-selected": "Seçilenleri Ziple",
     "dialog:rename": "Dosya adını değiştir",
     "dialog:rename-cancel": "İptal",
     "dialog:rename-save": "Kaydet",

@@ -50,6 +50,7 @@
     "message:deleted": "Gelöscht {0}",
     "message:renamed": "Datei umbenannt",
     "button:delete-selected": "Auswahl löschen",
+    "button:zip-selected": "ZIP Archiv",
     "dialog:rename": "Datei umbennen",
     "dialog:rename-cancel": "Abbruch",
     "dialog:rename-save": "Speichern",

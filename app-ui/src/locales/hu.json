@@ -54,6 +54,7 @@
     "message:renamed": "Fájl átnevezve",
     "button:action-selected": "Feladat futtatása...",
     "button:delete-selected": "Kijelöltek törlése",
+    "button:zip-selected": "Kiválasztottak tömörítése",
     "dialog:rename": "Fájl átnevezése",
     "dialog:rename-cancel": "Mégsem",
     "dialog:rename-save": "Mentés",

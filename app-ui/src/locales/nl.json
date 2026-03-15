@@ -50,6 +50,7 @@
     "message:deleted": "Verwijderd {0}",
     "message:renamed": "Bestand hernoemd",
     "button:delete-selected": "Verwijderen geselecteerde bestanden",
+    "button:zip-selected": "Selectie zippen",
     "dialog:rename": "Pas bestandsnaam aan",
     "dialog:rename-cancel": "Annuleren",
     "dialog:rename-save": "Opslaan",

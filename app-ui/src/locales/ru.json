@@ -50,6 +50,7 @@
     "message:deleted": "Удален {0}",
     "message:renamed": "Файл переименован",
     "button:delete-selected": "Удалить выбранное",
+    "button:zip-selected": "Архивировать выбранные",
     "dialog:rename": "Переименовать",
     "dialog:rename-cancel": "Отмена",
     "dialog:rename-save": "Сохранить",
