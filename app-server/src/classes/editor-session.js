@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const FileInfo = require('./file-info');
 const Process = require('./process');
 const log = require('loglevel').getLogger('EditorSession');
 
@@ -45,6 +46,7 @@ class EditorSession {
 
     const pages = [];
     for (const file of files) {
+      FileInfo.unsafe(config.outputDirectory, file);
       const filePath = path.join(config.outputDirectory, file);
       if (!fs.existsSync(filePath)) {
         throw new Error(`File not found: ${file}`);
@@ -162,6 +164,7 @@ class EditorSession {
    */
   async addPages(file) {
     this.touch();
+    FileInfo.unsafe(this.config.outputDirectory, file);
     const filePath = path.join(this.config.outputDirectory, file);
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${file}`);
@@ -238,9 +241,10 @@ class EditorSession {
       } else {
         // Image: convert to PDF, with optional rotation
         const sourcePath = path.join(this.config.outputDirectory, entry.source);
-        if (entry.rotation && entry.rotation !== 0) {
+        const rotation = parseInt(entry.rotation, 10) || 0;
+        if (rotation !== 0) {
           await Process.spawn(
-            `convert '${sourcePath}' -rotate ${entry.rotation} '${prepPath}'`);
+            `convert '${sourcePath}' -rotate ${rotation} '${prepPath}'`);
         } else {
           await Process.spawn(`convert '${sourcePath}' '${prepPath}'`);
         }
@@ -268,6 +272,7 @@ class EditorSession {
    */
   async save(editList, filename) {
     this.touch();
+    FileInfo.unsafe(this.config.outputDirectory, filename);
     const assembledPath = await this._assemblePages(editList);
 
     // Atomic write to output directory
