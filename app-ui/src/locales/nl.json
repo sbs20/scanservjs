@@ -5,17 +5,14 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs is een simpel web-based UI voor je scanner. Hiermee kun je een of meer scanners (met behulp van SANE) op een netwerk delen zonder dat er stuurprogramma's of een ingewikkelde installatie nodig is. Het kan in TIF, JPG, PNG, PDF en TXT (met Tesseract OCR) opslaan met verschillende compressie-instellingen, wat allemaal kan worden geconfigureerd. Het ondersteunt scannen van meerdere pagina's en alle SANE-compatibele apparaten.",
     "issue": "Probleem indienen of bekijk de broncode:",
     "system-info": "Systeem informatie"
   },
-
   "colors": {
     "accent-4": "Standaard",
     "red": "Rood",
@@ -38,14 +35,12 @@
     "blue-grey": "Blauwgrijs",
     "grey": "Grijs"
   },
-
   "batch-dialog": {
     "btn-cancel": "Annuleren",
     "btn-finish": "Afronden",
     "btn-rescan": "Pagina opnieuw scannen",
     "btn-next": "Volgende"
   },
-
   "files": {
     "filename": "Bestandsnaam",
     "date": "Datum",
@@ -60,9 +55,13 @@
     "dialog:rename-save": "Opslaan",
     "actions": "Acties",
     "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-size": "Thumbnail size",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
   },
-
   "navigation": {
     "scan": "Scan",
     "files": "Bestanden",
@@ -70,7 +69,6 @@
     "about": "Over",
     "version": "Versie"
   },
-
   "batch-mode": {
     "none": "Geen",
     "manual": "Handmatig (met bevestiging)",
@@ -78,26 +76,22 @@
     "auto-collate-standard": "Auto (Sorteren 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (Omgedraaid 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Auto nivelleren",
     "threshold": "Threshold",
     "blur": "Vervagen"
   },
-
   "mode": {
     "color": "Kleur",
     "halftone": "Halftoon",
     "gray": "Grijswaarde",
     "lineart": "Lijntekening",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Flatbed",
     "adf": "ADF",
@@ -106,14 +100,12 @@
     "centrally-aligned": "Centraal uitgelijnd",
     "duplex": "Duplex",
     "transparency unit": "Transparantie-eenheid",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Hoge kwaliteit",
     "medium-quality": "Gemiddelde kwaliteit",
@@ -123,7 +115,6 @@
     "ocr": "OCR",
     "text-file": "Text bestand"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +125,6 @@
     "portrait": "Portret",
     "landscape": "Landschap"
   },
-
   "scan": {
     "device": "Apparaat",
     "source": "Bron",
@@ -162,7 +152,6 @@
     "message:turn-documents": "Draai document om",
     "message:preview-of-page": "Voorbeeld van pagina"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Werking en UI",

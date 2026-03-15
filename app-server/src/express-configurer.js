@@ -8,6 +8,7 @@ const prefix = require('loglevel-plugin-prefix');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const FileInfo = require('./classes/file-info');
+const Process = require('./classes/process');
 const application = require('./application');
 const config = application.config();
 
@@ -104,7 +105,38 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const name = req.params[0];
       const file = FileInfo.unsafe(config.outputDirectory, name);
-      res.download(file.fullname);
+      const ext = path.extname(name).toLowerCase();
+      
+      if (req.query.preview === 'true') {
+        const mimeTypes = {
+          '.pdf': 'application/pdf',
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.png': 'image/png',
+          '.tif': 'image/tiff',
+          '.tiff': 'image/tiff',
+          '.txt': 'text/plain'
+        };
+
+        if (ext === '.tif' || ext === '.tiff') {
+          try {
+            const buffer = await Process.spawn(`convert '${file.fullname}'[0] jpg:-`);
+            res.setHeader('Content-Type', 'image/jpeg');
+            res.setHeader('Content-Disposition', `inline; filename="${name}.jpg"`);
+            res.send(buffer);
+            return;
+          } catch (e) {
+            log.error(`TIFF preview failed for ${name}: ${e.message}`);
+          }
+        }
+
+        const contentType = mimeTypes[ext] || 'application/octet-stream';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Disposition', `inline; filename="${name}"`);
+        res.sendFile(path.resolve(file.fullname));
+      } else {
+        res.download(file.fullname);
+      }
     }
   },
   {
@@ -135,6 +167,7 @@ const EndpointSpecs = [
         content: buffer.toString('base64')
       });
     }
+  },
   },
   {
     method: 'delete',

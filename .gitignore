@@ -64,6 +64,9 @@ app-server/data/preview/*.tif
 var
 debian
 
+# Python virtual environment
+.venv/
+
 # Jekyll
 .bundle
 _site
