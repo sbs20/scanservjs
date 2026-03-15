@@ -235,7 +235,8 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const previewPath = editorApi.getPreviewPath(req.params[0]);
       if (req.query.download === 'true') {
-        res.download(path.resolve(previewPath), 'document.pdf');
+        const filename = req.query.filename || 'document.pdf';
+        res.download(path.resolve(previewPath), filename);
       } else {
         res.type('pdf');
         res.sendFile(path.resolve(previewPath));

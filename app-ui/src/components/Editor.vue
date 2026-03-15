@@ -263,6 +263,14 @@ export default {
       this.initialHash = null;
     },
 
+    updateSource(oldName, newName) {
+      for (const page of this.pages) {
+        if (page.source === oldName) {
+          page.source = newName;
+        }
+      }
+    },
+
     // Selection
     isSelected(id) {
       return this.selected.includes(id);

@@ -175,6 +175,13 @@ export default {
       const name = (this.files[0].name || this.files[0]).toLowerCase();
       return name.endsWith('.txt');
     },
+    downloadFilename() {
+      if (this.files.length === 1) {
+        const name = this.files[0].name || this.files[0];
+        return name.replace(/\.[^.]+$/, '') + '.pdf';
+      }
+      return 'merged.pdf';
+    },
     showSave() {
       // In edit mode: always show (disabled when not dirty)
       // In view mode: only show when there are unsaved edits
@@ -324,8 +331,9 @@ export default {
             body: JSON.stringify({ pages: editList })
           });
         this.lastPreviewHash = editor.getEditListHash();
-        // Trigger download of the assembled preview
-        window.location.href = `api/v1/editor/sessions/${this.sessionId}/preview?download=true`;
+        // Trigger download of the assembled preview with the proper filename
+        const dlName = this.downloadFilename;
+        window.location.href = `api/v1/editor/sessions/${this.sessionId}/preview?download=true&filename=${encodeURIComponent(dlName)}`;
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
@@ -350,8 +358,9 @@ export default {
             this.files[0].name = newName;
           }
         }
-        // Update the editor's save filename to match
+        // Update the editor's page sources and save filename to match
         if (this.$refs.editor) {
+          this.$refs.editor.updateSource(oldName, newName);
           this.$refs.editor.saveFilename = newName.replace(/\.[^.]+$/, '') + '.pdf';
         }
         this.$emit('notify', { type: 'i', message: this.$t('files.message:renamed') });
