@@ -37,7 +37,7 @@
             @click.shift.exact="selectRange(element.id)">
             <div class="editor-thumb-wrap">
               <v-img
-                v-if="sessionId"
+                v-if="sessionId && !element.isBlank"
                 :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
                 :class="thumbRotationClass(element.rotation)"
                 width="160"
