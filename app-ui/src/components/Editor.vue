@@ -40,7 +40,8 @@
 
     <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
       tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick"
-      @mousedown="onScrollAreaMousedown">
+      @mousedown="onScrollAreaMousedown"
+      @touchstart="onScrollAreaTouchStart">
 
       <!-- Positioning context for the source-divider overlay -->
       <div class="editor-content-wrapper">
@@ -49,6 +50,7 @@
           item-key="id"
           class="editor-grid"
           ghost-class="editor-ghost"
+          @start="onDragStart"
           @end="onDragEnd"
           @click.self="onBackgroundClick">
           <template #item="{ element, index }">
@@ -296,7 +298,10 @@ export default {
       dividerPositions: [],
 
       // Touch long-press selection mode
-      touchSelectMode: false
+      touchSelectMode: false,
+
+      // Multi-item drag state
+      isDragging: false
     };
   },
 
@@ -567,7 +572,8 @@ export default {
           && this.cursorPosition < this.pages.length,
         'editor-cursor-after': this.cursorPosition === this.pages.length
           && index === this.pages.length - 1,
-        'editor-page-pulse': this.pulsePageIndex === index
+        'editor-page-pulse': this.pulsePageIndex === index,
+        'editor-page-drag-peer': this.isDragging && this.selected.includes(element.id)
       };
     },
 
@@ -914,6 +920,35 @@ export default {
       }
     },
 
+    // Touch rubber-band: available in touchSelectMode on background swipes
+    onScrollAreaTouchStart(e) {
+      if (!this.touchSelectMode) return;
+      if (e.target.closest('.editor-page')) return;
+      if (e.touches.length !== 1) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      this.rubberBand = {
+        x1: touch.clientX, y1: touch.clientY,
+        x2: touch.clientX, y2: touch.clientY,
+        additive: false
+      };
+      this._onRubberTouchMove = (ev) => {
+        if (!this.rubberBand || ev.touches.length !== 1) return;
+        ev.preventDefault();
+        const t = ev.touches[0];
+        this.rubberBand = { ...this.rubberBand, x2: t.clientX, y2: t.clientY };
+      };
+      this._onRubberTouchEnd = () => {
+        document.removeEventListener('touchmove', this._onRubberTouchMove);
+        document.removeEventListener('touchend', this._onRubberTouchEnd);
+        this._onRubberTouchMove = null;
+        this._onRubberTouchEnd = null;
+        this._endRubberBand({});
+      };
+      document.addEventListener('touchmove', this._onRubberTouchMove, { passive: false });
+      document.addEventListener('touchend', this._onRubberTouchEnd);
+    },
+
     // --- Touch long-press selection mode ---
 
     _cancelLongPress() {
@@ -927,6 +962,8 @@ export default {
       this._cancelLongPress();
       this._longPressId = element.id;
       this._longPressIdx = index;
+      this._longPressStartX = e.touches[0]?.clientX ?? 0;
+      this._longPressStartY = e.touches[0]?.clientY ?? 0;
       this._longPressTimer = setTimeout(() => {
         this._longPressTimer = null;
         if (!this.touchSelectMode) {
@@ -942,9 +979,17 @@ export default {
       }, 500);
     },
 
-    onPageTouchMove() {
-      // Finger moved — user is scrolling, not long-pressing
-      this._cancelLongPress();
+    onPageTouchMove(e) {
+      // Cancel long-press only if the finger moved more than ~10px (ignore tremor)
+      if (!this._longPressTimer) return;
+      const t = e.touches[0];
+      if (t) {
+        const dx = t.clientX - this._longPressStartX;
+        const dy = t.clientY - this._longPressStartY;
+        if (dx * dx + dy * dy > 100) this._cancelLongPress();
+      } else {
+        this._cancelLongPress();
+      }
     },
 
     onPageTouchEnd() {
@@ -1018,10 +1063,50 @@ export default {
       }
     },
 
+    onDragStart(evt) {
+      this._dragStartPages = [...this.pages];
+      this._dragStartSelected = [...this.selected];
+      this.isDragging = true;
+    },
+
     onDragEnd(evt) {
+      this.isDragging = false;
       this.focusIndex = evt.newIndex;
       this.cursorPosition = evt.newIndex + 1;
       this.hasReordered = true;
+
+      // Multi-item drag: when a selected item is dragged, group the whole
+      // selection at the drop position, preserving original relative order.
+      const dragStartPages = this._dragStartPages;
+      const dragStartSelected = this._dragStartSelected;
+      this._dragStartPages = null;
+      this._dragStartSelected = null;
+
+      const selectedIds = new Set(dragStartSelected || []);
+      const draggedId = dragStartPages?.[evt.oldIndex]?.id;
+      if (draggedId && selectedIds.has(draggedId) && selectedIds.size > 1) {
+        const pageById = Object.fromEntries(this.pages.map(p => [p.id, p]));
+        // Group in original relative order, mapped to current page objects
+        const group = (dragStartPages || [])
+          .filter(p => selectedIds.has(p.id))
+          .map(p => pageById[p.id])
+          .filter(Boolean);
+
+        // Remove all other selected items; keep only the dragged one as placeholder
+        const withoutOthers = this.pages.filter(
+          p => !selectedIds.has(p.id) || p.id === draggedId
+        );
+        const draggedPos = withoutOthers.findIndex(p => p.id === draggedId);
+        // Replace the placeholder with the full group
+        withoutOthers.splice(draggedPos, 1, ...group);
+        this.pages = withoutOthers;
+
+        // Move cursor to the dragged item within the group
+        const draggedGroupIdx = group.findIndex(p => p.id === draggedId);
+        this.focusIndex = draggedPos + draggedGroupIdx;
+        this.cursorPosition = this.focusIndex + 1;
+      }
+
       this.pushState();
     },
 
@@ -1288,6 +1373,14 @@ export default {
 
 .editor-ghost {
   opacity: 0.4;
+}
+
+/* During multi-item drag: non-ghost selected items show a dashed border to
+   signal they will move together with the dragged item. */
+.editor-page-drag-peer:not(.editor-ghost) {
+  opacity: 0.55;
+  border-color: rgb(var(--v-theme-primary));
+  border-style: dashed;
 }
 
 .editor-thumb-wrap {
