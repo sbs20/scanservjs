@@ -17,7 +17,7 @@
         <v-btn v-if="!smAndDown" :disabled="selectedFiles.length === 0" color="warning" @click="multipleDelete">
           {{ $t('files.button:delete-selected') }}
         </v-btn>
-        <v-menu v-if="actions.length > 0" bottom :offset-y="true">
+        <v-menu v-if="smAndDown || actions.length > 0" bottom :offset-y="true">
           <template #activator="{ props }">
             <v-btn
                 :disabled="selectedFiles.length === 0"
