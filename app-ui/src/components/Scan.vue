@@ -518,7 +518,7 @@ export default {
         const availableWidth = window.innerWidth - 30;
         const availableHeight = window.innerHeight - appbarHeight;
         const desiredWidth = availableHeight * paperRatio;
-        this.preview.width = Math.min(availableWidth * 0.4, desiredWidth);
+        this.preview.width = Math.min(availableWidth * 0.45, desiredWidth);
         this.preview.key += 1;
       }
     },
