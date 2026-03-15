@@ -38,18 +38,23 @@
       </template>
     </v-toolbar>
 
-    <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
+    <div ref="scrollArea"
+      :class="['pa-4', 'overflow-y-auto', 'flex-grow-1', 'editor-scroll',
+               { 'editor-touch-select-active': touchSelectMode }]"
       tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick"
-      @mousedown="onScrollAreaMousedown"
-      @touchstart="onScrollAreaTouchStart">
+      @mousedown="onScrollAreaMousedown">
 
       <!-- Positioning context for the source-divider overlay -->
       <div class="editor-content-wrapper">
         <draggable
+          ref="draggable"
           v-model="pages"
           item-key="id"
           class="editor-grid"
           ghost-class="editor-ghost"
+          :multi-drag="true"
+          selected-class="sortable-multidrag-selected"
+          multi-drag-key="NONEXISTENT"
           @start="onDragStart"
           @end="onDragEnd"
           @click.self="onBackgroundClick">
@@ -221,12 +226,16 @@
 
 <script>
 import draggable from 'vuedraggable';
+import Sortable from 'sortablejs';
+import { MultiDrag } from 'sortablejs';
 import Common from '../classes/common';
 import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
   mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
 } from '@mdi/js';
+
+Sortable.mount(new MultiDrag());
 
 const EAGER_LOAD_THRESHOLD = 50;
 const THUMB_OBSERVER_MARGIN = '200px';
@@ -374,6 +383,9 @@ export default {
         this.updateDividerPositions();
       });
     },
+    selected() {
+      this.$nextTick(() => this._syncMultiDragSelection());
+    },
     showDividers() {
       this.$nextTick(() => this.updateDividerPositions());
     }
@@ -386,6 +398,13 @@ export default {
     });
     if (this.$refs.scrollArea) {
       this._resizeObserver.observe(this.$refs.scrollArea);
+      // Register touchstart with { passive: false } so preventDefault() works
+      // in touch rubber-band selection mode. Vue's @touchstart always registers
+      // as passive, which silently ignores preventDefault().
+      this._boundScrollAreaTouchStart = this.onScrollAreaTouchStart.bind(this);
+      this.$refs.scrollArea.addEventListener(
+        'touchstart', this._boundScrollAreaTouchStart, { passive: false }
+      );
     }
   },
 
@@ -394,6 +413,12 @@ export default {
     this.thumbnailObserver = null;
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
+    if (this.$refs.scrollArea && this._boundScrollAreaTouchStart) {
+      this.$refs.scrollArea.removeEventListener(
+        'touchstart', this._boundScrollAreaTouchStart
+      );
+      this._boundScrollAreaTouchStart = null;
+    }
     this._removeRubberListeners();
     this._cancelLongPress();
   },
@@ -1063,51 +1088,91 @@ export default {
       }
     },
 
-    onDragStart(evt) {
-      this._dragStartPages = [...this.pages];
-      this._dragStartSelected = [...this.selected];
+    // --- MultiDrag selection sync ---
+
+    _syncMultiDragSelection() {
+      const sortable = this.$refs.draggable?._sortable;
+      if (!sortable || !Sortable.utils.select) return;
+
+      const container = sortable.el;
+      if (!container) return;
+
+      const children = container.children;
+      const selectedSet = new Set(this.selected);
+
+      for (let i = 0; i < children.length; i++) {
+        const el = children[i];
+        const page = this.pages[i];
+        if (!page) continue;
+
+        const isVueSelected = selectedSet.has(page.id);
+        const isMultiDragSelected = el.classList.contains('sortable-multidrag-selected');
+
+        if (isVueSelected && !isMultiDragSelected) {
+          Sortable.utils.select(el);
+        } else if (!isVueSelected && isMultiDragSelected) {
+          Sortable.utils.deselect(el);
+        }
+      }
+    },
+
+    // --- Drag-and-drop ---
+
+    onDragStart() {
+      // Snapshot page IDs and objects before vuedraggable's single-item splice
+      this._dragSnapshot = this.pages.map(p => p.id);
+      this._dragSnapshotPages = new Map(this.pages.map(p => [p.id, p]));
       this.isDragging = true;
     },
 
     onDragEnd(evt) {
       this.isDragging = false;
-      this.focusIndex = evt.newIndex;
-      this.cursorPosition = evt.newIndex + 1;
       this.hasReordered = true;
 
-      // Multi-item drag: when a selected item is dragged, group the whole
-      // selection at the drop position, preserving original relative order.
-      const dragStartPages = this._dragStartPages;
-      const dragStartSelected = this._dragStartSelected;
-      this._dragStartPages = null;
-      this._dragStartSelected = null;
+      const isMultiDrag = evt.oldIndicies && evt.oldIndicies.length > 1;
 
-      const selectedIds = new Set(dragStartSelected || []);
-      const draggedId = dragStartPages?.[evt.oldIndex]?.id;
-      if (draggedId && selectedIds.has(draggedId) && selectedIds.size > 1) {
-        const pageById = Object.fromEntries(this.pages.map(p => [p.id, p]));
-        // Group in original relative order, mapped to current page objects
-        const group = (dragStartPages || [])
-          .filter(p => selectedIds.has(p.id))
-          .map(p => pageById[p.id])
-          .filter(Boolean);
-
-        // Remove all other selected items; keep only the dragged one as placeholder
-        const withoutOthers = this.pages.filter(
-          p => !selectedIds.has(p.id) || p.id === draggedId
-        );
-        const draggedPos = withoutOthers.findIndex(p => p.id === draggedId);
-        // Replace the placeholder with the full group
-        withoutOthers.splice(draggedPos, 1, ...group);
-        this.pages = withoutOthers;
-
-        // Move cursor to the dragged item within the group
-        const draggedGroupIdx = group.findIndex(p => p.id === draggedId);
-        this.focusIndex = draggedPos + draggedGroupIdx;
-        this.cursorPosition = this.focusIndex + 1;
+      if (isMultiDrag) {
+        this._handleMultiDragDrop(evt);
+      } else {
+        // Single-item drag: vuedraggable already moved the item correctly
+        this.focusIndex = evt.newIndex;
+        this.cursorPosition = evt.newIndex + 1;
       }
 
+      this._dragSnapshot = null;
+      this._dragSnapshotPages = null;
       this.pushState();
+    },
+
+    _handleMultiDragDrop(evt) {
+      const snapshot = this._dragSnapshot;
+      const snapshotPages = this._dragSnapshotPages;
+      if (!snapshot || !snapshotPages) return;
+
+      // Dragged IDs from pre-drag snapshot, using oldIndicies
+      const draggedIds = new Set(
+        evt.oldIndicies.map(o => snapshot[o.index]).filter(Boolean)
+      );
+
+      // Insertion point: the minimum of the new positions
+      const insertAt = Math.min(...evt.newIndicies.map(n => n.index));
+
+      // Build new array: remove dragged IDs from snapshot order,
+      // re-insert them (in original relative order) at the insertion point
+      const remaining = snapshot.filter(id => !draggedIds.has(id));
+      const dragged = snapshot.filter(id => draggedIds.has(id));
+
+      remaining.splice(insertAt, 0, ...dragged);
+
+      // Map IDs back to page objects from snapshot (vuedraggable has mangled this.pages)
+      this.pages = remaining.map(id => snapshotPages.get(id)).filter(Boolean);
+
+      // Focus on the first dragged item in its new position
+      const firstDraggedIdx = this.pages.findIndex(p => draggedIds.has(p.id));
+      if (firstDraggedIdx >= 0) {
+        this.focusIndex = firstDraggedIdx;
+        this.cursorPosition = firstDraggedIdx + 1;
+      }
     },
 
     rotateSelected(degrees) {
@@ -1377,10 +1442,17 @@ export default {
 
 /* During multi-item drag: non-ghost selected items show a dashed border to
    signal they will move together with the dragged item. */
-.editor-page-drag-peer:not(.editor-ghost) {
+.editor-page-drag-peer:not(.editor-ghost):not(.sortable-multidrag-selected) {
   opacity: 0.55;
   border-color: rgb(var(--v-theme-primary));
   border-style: dashed;
+}
+
+/* In touch selection mode, disable browser touch gestures on the scroll area
+   so our touch handlers get full control (prevents scroll, pinch, long-press
+   context menu from interfering with rubber-band selection). */
+.editor-touch-select-active {
+  touch-action: none;
 }
 
 .editor-thumb-wrap {
