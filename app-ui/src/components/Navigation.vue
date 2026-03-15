@@ -2,7 +2,7 @@
   <div>
     <v-app-bar class="elevation-0" :color="appColor" app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="unselectable">{{ $t('global.application-name') }}</v-toolbar-title>
+      <v-toolbar-title class="unselectable">{{ appTitle }}</v-toolbar-title>
       <v-spacer />
       <v-toolbar-items class="d-none d-md-block">
         <v-btn class="transparent" elevation="0" @click="go('/scan')"><v-icon class="mr-2" :icon="mdiCamera" />{{ $t('navigation.scan') }}</v-btn>
@@ -60,7 +60,10 @@
 
 <script>
 import Constants from '../classes/constants';
+import Storage from '../classes/storage';
 import { mdiCamera, mdiCog, mdiFileDocumentMultiple, mdiInformation, mdiTools } from '@mdi/js';
+
+const storage = Storage.instance();
 export default {
   name: 'Navigation',
 
@@ -86,6 +89,13 @@ export default {
       drawer: false,
       version: Constants.Version
     };
+  },
+
+  computed: {
+    appTitle() {
+      const configured = storage.pwaConfig.name;
+      return configured || this.$t('global.application-name');
+    }
   },
 
   methods: {

@@ -26,6 +26,15 @@ module.exports = class Config {
       timeout: 600000,
       devices: [],
       ocrLanguage: 'eng',
+      pwa: {
+        name: Package.name,
+        shortName: 'Scanner',
+        display: 'standalone',
+        themeColor: '#1976D2',
+        iconFiles: [],
+        lockName: false,
+        lockDevice: false
+      },
       log: {
         level: 'INFO',
         prefix: {

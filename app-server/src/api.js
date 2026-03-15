@@ -268,7 +268,7 @@ module.exports = new class Api {
   async autoCrop(params) {
     log.trace('autoCrop()', params);
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
-    
+
     // Guardrail: if preview image does not exist, immediately return zero-value
     if (!source.exists()) {
       log.info('AutoCrop aborted: preview.tif does not exist');
@@ -280,17 +280,12 @@ module.exports = new class Api {
     const bedW = device.features['-x'].limits[1];
     const bedH = device.features['-y'].limits[1];
 
-    const left = parseFloat(params.left) || 0;
-    const top = parseFloat(params.top) || 0;
-    const width = parseFloat(params.width) || bedW;
-    const height = parseFloat(params.height) || bedH;
-
     const args = [
       `--image '${source.fullname}'`,
-      `--left ${left}`,
-      `--top ${top}`,
-      `--width ${width}`,
-      `--height ${height}`,
+      `--left ${params.left || 0}`,
+      `--top ${params.top || 0}`,
+      `--width ${params.width || bedW}`,
+      `--height ${params.height || bedH}`,
       `--bed-width ${bedW}`,
       `--bed-height ${bedH}`
     ].join(' ');
@@ -312,7 +307,65 @@ module.exports = new class Api {
       return parsed;
     } catch (e) {
       log.error('AutoCrop execution failed', e.message, e.stderr);
-      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || "Unknown error").substring(0, 100)}` };
+      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || 'Unknown error').substring(0, 100)}` };
     }
+  }
+
+  /**
+   * @param {any} query
+   * @returns {any}
+   */
+  pwaManifest(query) {
+    const name = query.name || config.pwa.name;
+    const shortName = query.shortName || config.pwa.shortName;
+    const startUrl = query.startUrl || '/';
+    const display = query.display || config.pwa.display;
+    const themeColor = query.themeColor || config.pwa.themeColor;
+
+    let icons;
+    const iconFiles = config.pwa.iconFiles;
+    if (iconFiles && iconFiles.length > 0) {
+      const path = require('path');
+      const seen = new Set();
+      icons = iconFiles
+        .map(file => {
+          const ext = path.extname(file).toLowerCase();
+          const src = `/icons/pwa-icon${ext}`;
+          if (seen.has(src)) return null;
+          seen.add(src);
+          const mimeType = ext === '.svg' ? 'image/svg+xml' : 'image/png';
+          const sizes = ext === '.svg' ? 'any' : '512x512';
+          return { src, sizes, type: mimeType, purpose: 'any maskable' };
+        })
+        .filter(Boolean);
+    } else {
+      icons = [
+        { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
+        { src: '/icons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/icons/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+      ];
+    }
+
+    return {
+      name,
+      short_name: shortName,
+      start_url: startUrl,
+      scope: '/',
+      display,
+      theme_color: themeColor,
+      background_color: '#ffffff',
+      icons
+    };
+  }
+
+  /**
+   * @returns {string}
+   */
+  pwaServiceWorker() {
+    return `
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+    `;
   }
 };

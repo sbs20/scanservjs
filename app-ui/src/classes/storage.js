@@ -56,6 +56,24 @@ export default class Storage {
   }
 
   /**
+   * @returns {any}
+   */
+  get pwaConfig() {
+    return localStorage.getItem('pwa-config') ? JSON.parse(localStorage.getItem('pwa-config')) : {};
+  }
+
+  /**
+   * @param {any} config
+   */
+  set pwaConfig(config) {
+    if (config) {
+      localStorage.setItem('pwa-config', JSON.stringify(config));
+    } else {
+      localStorage.removeItem('pwa-config');
+    }
+  }
+
+  /**
    * @returns {Storage}
    */
   static instance() {

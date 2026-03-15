@@ -79,3 +79,5 @@ __pycache__/
 *.pyc
 requirements.txt
 build-test-deb.sh
+
+scanserv-support.tar

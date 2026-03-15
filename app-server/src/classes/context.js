@@ -70,6 +70,8 @@ module.exports = class Context {
 
     /** @type {string[]} */
     this.actions = userOptions.actions().map(a => a.name);
+
+    this.pwa = config.pwa;
   }
 
   /**

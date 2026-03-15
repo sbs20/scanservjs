@@ -96,8 +96,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
-                 @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.top)" label="px" type="text"
+                 @input="onPixelInput" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -108,8 +108,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
-                 @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.left)" label="px" type="text"
+                 @input="onPixelInput" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -120,8 +120,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
-                 @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.width)" label="px" type="text"
+                 @input="onPixelInput" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -132,8 +132,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
-                 @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.height)" label="px" type="text"
+                 @input="onPixelInput" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -220,6 +220,7 @@ import Common from '../classes/common';
 import Device from '../classes/device';
 import Request from '../classes/request';
 import Storage from '../classes/storage';
+import { findByI18nName } from '../classes/i18n-match';
 
 import 'vue-advanced-cropper/dist/style.css';
 
@@ -469,6 +470,13 @@ export default {
 
   mounted() {
     this._resizePreview();
+    
+    // PWA Kiosk mode: reset settings if requested via URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('kiosk') === '1') {
+      storage.request = null;
+    }
+
     this.readContext().then(() => {
       this.readPreview();
     });
@@ -665,8 +673,17 @@ export default {
         window.clearTimeout(timer);
         if (context.devices && context.devices.length > 0) {
           this.context = context;
-          this.device = context.devices[0];
+          
+          // Selection logic: URL param > pwaConfig scanner (standalone) > Default (first)
+          const urlParams = new URLSearchParams(window.location.search);
+          const requestedId = urlParams.get('deviceId')
+            || (window.matchMedia('(display-mode: standalone)').matches
+              ? storage.pwaConfig.scannerId : null);
+          const found = requestedId ? context.devices.find(d => d.id === requestedId) : null;
+
+          this.device = found || context.devices[0];
           this.request = this.buildRequest();
+          this._applyPwaPresets();
           for (let test of context.diagnostics) {
             if (!test.success) {
               this.notify({ type: 'e', message: test.message });
@@ -716,8 +733,13 @@ export default {
     },
 
     buildRequest() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDeviceId = urlParams.get('deviceId');
       let request = storage.request;
-      if (request && request.params) {
+
+      // A URL deviceId (from an installed PWA) takes precedence over the
+      // device remembered in the last session.
+      if (!urlDeviceId && request && request.params) {
         this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
           || this.context.devices[0];
       }
@@ -853,7 +875,7 @@ export default {
 
       this.mask(1);
       this.originalParams = Common.clone(this.request.params);
-      
+
       // We send full bed dimensions to ensure the script doesn't try to scale-to-fit
       const params = Common.clone(this.request.params);
       params.left = 0;
@@ -924,10 +946,9 @@ export default {
       }
     },
 
-    toPixels(mm, axis) {
-      if (!this.$refs.cropper) return 0;
-      const scale = this.pixelsPerMm()[axis];
-      return Math.round(mm * scale);
+    toPixels(mm) {
+      const ppi = parseFloat(this.request.params.resolution) || 300;
+      return Math.round((mm / 25.4) * ppi);
     },
 
     onDimensionInput(event, field) {
@@ -950,12 +971,107 @@ export default {
     commitPixel(field, event) {
       let val = parseInt(event.target.value);
       if (isNaN(val)) val = 0;
-      const axis = (field === 'left' || field === 'width') ? 'x' : 'y';
-      const mm = round(val / this.pixelsPerMm()[axis], 1);
+      const ppi = parseFloat(this.request.params.resolution) || 300;
+      const mm = round((val / ppi) * 25.4, 1);
       const scanner = this.deviceSize;
       const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
       this.request.params[field] = Math.min(Math.max(0, mm), max);
       this.onCoordinatesChange();
+    },
+
+
+    _applyPwaPresets() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // When running as an installed PWA, read kiosk config from localStorage.
+      // URL params (from a properly-constructed start_url) take precedence if present.
+      const isPwa = window.matchMedia('(display-mode: standalone)').matches;
+      const kioskConfig = isPwa ? (storage.pwaConfig.kiosk || {}) : {};
+
+      // Collect parameters to reset to device defaults: URL 'reset' param plus
+      // any kiosk entries with mode='default'.
+      const resets = (urlParams.get('reset') || '').split(',').filter(x => x);
+      for (const [param, cfg] of Object.entries(kioskConfig)) {
+        if (cfg.mode === 'default' && !resets.includes(param)) {
+          resets.push(param);
+        }
+      }
+
+      // System Default: reset listed parameters to device/admin defaults.
+      resets.forEach(key => {
+        if (key === 'paperSize') {
+          // Paper size has no single device default; reset to the full scanner bed.
+          if (this.geometry) {
+            this.request.params.left = 0;
+            this.request.params.top = 0;
+            this.request.params.width = this.device.features['-x'].limits[1];
+            this.request.params.height = this.device.features['-y'].limits[1];
+          }
+        } else {
+          // device.settings covers pipeline/batchMode; device.features['--key'] covers scanner params.
+          const defaultValue = key in this.device.settings
+            ? this.device.settings[key].default
+            : (`--${key}` in this.device.features ? this.device.features[`--${key}`].default : undefined);
+          if (defaultValue !== undefined) {
+            // 'batchMode' is the kiosk param name; the request object uses 'batch'.
+            const requestKey = key === 'batchMode' ? 'batch' : key;
+            if (requestKey in this.request.params) {
+              this.request.params[requestKey] = defaultValue;
+            } else if (requestKey in this.request) {
+              this.request[requestKey] = defaultValue;
+            }
+          }
+        }
+      });
+
+      // PWA Preset: collect preset values from localStorage, then let URL params override.
+      const kioskPresets = {};
+      for (const [param, cfg] of Object.entries(kioskConfig)) {
+        if (cfg.mode === 'preset') {
+          kioskPresets[param] = cfg.value;
+        }
+      }
+      urlParams.forEach((value, key) => {
+        const match = key.match(/^kiosk\[(.+)\]$/);
+        if (match) {
+          kioskPresets[match[1]] = value;
+        }
+      });
+
+      // Apply all preset values.
+      for (const [param, value] of Object.entries(kioskPresets)) {
+        if (param === 'paperSize') {
+          // Match by raw key first, then fall back to locale-aware fuzzy matching
+          // so that translated names (e.g. "Letter (Portrait)") also work.
+          const paper = findByI18nName(
+            this.context.paperSizes, p => p.name, value, this.$i18n.locale.value
+          );
+          if (paper) {
+            this.request.params.width = paper.dimensions.x;
+            this.request.params.height = paper.dimensions.y;
+          }
+        } else if (param === 'pipeline') {
+          // Pipeline descriptions contain @: references; use locale-aware matching
+          // so that translated descriptions (e.g. "OCR | PDF (JPG | High quality)")
+          // resolve to the canonical key the server expects.
+          const opts = this.device.settings && this.device.settings.pipeline
+            ? this.device.settings.pipeline.options : [];
+          const matched = findByI18nName(opts, p => p, value, this.$i18n.locale.value);
+          if (matched != null) {
+            this.request.pipeline = matched;
+          }
+        } else if (param === 'batchMode') {
+          // 'batchMode' is the kiosk param name; the request object uses 'batch'.
+          this.request.batch = value;
+        } else if (param in this.request.params) {
+          this.request.params[param] = value;
+        } else if (param in this.request) {
+          this.request[param] = value;
+        }
+      }
+      // The cropper reads its initial position from the cropperDefaultPosition/
+      // cropperDefaultSize computed properties (derived from request.params), so
+      // no explicit sync call is needed here.
     }
   }
 };

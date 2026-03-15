@@ -24,6 +24,13 @@ module.exports = {
     // config.convert = '/usr/bin/convert';
     // config.tesseract = '/usr/bin/tesseract';
     // config.previewResolution = 100;
+    // config.pwa.name = 'scanservjs';
+    // config.pwa.shortName = 'Scanner';
+    // config.pwa.themeColor = '#1976D2';
+    // config.pwa.iconFiles = ['/etc/scanservjs/pwa-icon.png'];
+    // config.pwa.iconFiles = ['/etc/scanservjs/pwa-icon.svg', '/etc/scanservjs/pwa-icon.png'];
+    // config.pwa.lockName = false;
+    // config.pwa.lockDevice = false;
 
     /* When all scans are complete, the filenames are all piped into stdin of the
     first pipeline command. It would be nicer to pipe the binary output of scanimage
