@@ -12,11 +12,14 @@ const Process = require('./classes/process');
 const application = require('./application');
 const config = application.config();
 
+const logBuffer = require('./classes/log-buffer');
+
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
 rootLog.enableAll();
 rootLog.setLevel(config.log.level);
 prefix.apply(rootLog, config.log.prefix);
+logBuffer.install();
 
 const log = rootLog.getLogger('Http');
 const api = require('./api');
@@ -341,6 +344,11 @@ const EndpointSpecs = [
       editorApi.deleteSession(req.params[0]);
       res.send({});
     }
+  },
+  {
+    method: 'get',
+    path: '/api/v1/logs',
+    callback: async (req, res) => res.send(logBuffer.getEntries())
   }
 ];
 
