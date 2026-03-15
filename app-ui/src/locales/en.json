@@ -64,6 +64,9 @@
     "dialog:rename-cancel": "Cancel",
     "dialog:rename-save": "Save",
     "actions": "Actions",
+    "button:download": "Download",
+    "button:delete": "Delete",
+    "button:rename": "Rename",
     "thumbnail-show": "Show thumbnails",
     "thumbnail-size": "Thumbnail size"
   },

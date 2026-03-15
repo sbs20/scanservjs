@@ -64,9 +64,9 @@
       {{ $d(new Date(item.lastModified), 'long') }}
     </template>
     <template #[`item.actions`]="{ item }">
-      <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
-      <v-icon class="mr-2" :icon="mdiPencil" @click="fileRename(item)" />
-      <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
+      <v-icon class="mr-2" :icon="mdiDownload" :title="$t('files.button:download')" @click="open(item)" />
+      <v-icon class="mr-2" :icon="mdiPencil" :title="$t('files.button:rename')" @click="fileRename(item)" />
+      <v-icon class="mr-2" :icon="mdiDelete" :title="$t('files.button:delete')" @click="fileRemove(item)" />
     </template>
     <template #[`footer.page-text`]="items">
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
