@@ -72,6 +72,14 @@ module.exports = class PikepdfTool extends PdfTool {
     await Process.spawn(cmd);
   }
 
+  /** @override */
+  async placeOnPage(inputPath, widthPts, heightPts, fitMode, marginPts, outputPath) {
+    const cmd = this._cmd('place-on-page', inputPath,
+      String(widthPts), String(heightPts), fitMode, String(marginPts), outputPath);
+    log.debug('placeOnPage:', cmd);
+    await Process.spawn(cmd);
+  }
+
   /**
    * Test whether pikepdf is available via the project venv.
    * @returns {Promise<boolean>}

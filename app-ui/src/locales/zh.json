@@ -199,7 +199,11 @@
     "fit-mode": "应用方式",
     "fit-set-size": "仅设置页面大小（OCR 安全）",
     "fit-fit": "缩放内容以适应页面",
-    "fit-ocr-warning": "缩放内容可能影响 OCR 文档中的可搜索文本"
+    "fit-ocr-warning": "缩放内容可能影响 OCR 文档中的可搜索文本",
+    "fit-fill": "缩放填充（可能裁剪）",
+    "fit-use-margin": "添加约 1 厘米边距",
+    "set-page-size": "设置页面大小",
+    "apply": "应用"
   },
   "settings": {
     "title": "@:navigation.settings",

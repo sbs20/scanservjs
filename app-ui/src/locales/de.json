@@ -204,7 +204,11 @@
     "fit-mode": "Anwenden als",
     "fit-set-size": "Nur Seitengröße festlegen (OCR-sicher)",
     "fit-fit": "Inhalt einpassen",
-    "fit-ocr-warning": "Das Skalieren des Inhalts kann durchsuchbaren Text in OCR-Dokumenten beeinträchtigen"
+    "fit-ocr-warning": "Das Skalieren des Inhalts kann durchsuchbaren Text in OCR-Dokumenten beeinträchtigen",
+    "fit-fill": "Auf Seite füllen (kann abschneiden)",
+    "fit-use-margin": "Rand ~1 cm hinzufügen",
+    "set-page-size": "Seitengröße festlegen",
+    "apply": "Anwenden"
   },
   "settings": {
     "title": "@:navigation.settings",

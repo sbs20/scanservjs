@@ -257,7 +257,8 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const result = await editorApi.save(
         req.params[0], req.body.pages, req.body.filename,
-        req.body.paperSize || null, req.body.fitMode || null);
+        req.body.paperSize || null, req.body.fitMode || null,
+        req.body.fitMargin || false);
       res.send(result);
     }
   },

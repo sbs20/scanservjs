@@ -250,7 +250,19 @@ class EditorSession {
         }
       }
 
-      preparedPaths.push(prepPath);
+      // Per-page paper size adjustment
+      if (entry.targetSize && entry.pageFitMode) {
+        const MM_TO_PT = 72 / 25.4;
+        const w = Math.round(entry.targetSize.x * MM_TO_PT);
+        const h = Math.round(entry.targetSize.y * MM_TO_PT);
+        const marginPts = entry.useMargin ? Math.round(10 * MM_TO_PT) : 0;
+        const sizedPath = path.join(this.dir, 'pages',
+          `sized-${String(i).padStart(4, '0')}.pdf`);
+        await this.pdfTool.placeOnPage(prepPath, w, h, entry.pageFitMode, marginPts, sizedPath);
+        preparedPaths.push(sizedPath);
+      } else {
+        preparedPaths.push(prepPath);
+      }
     }
 
     // Merge all prepared pages
@@ -265,47 +277,40 @@ class EditorSession {
   }
 
   /**
-   * Apply paper size adjustment to an assembled PDF.
+   * Apply document-level paper size adjustment to an assembled PDF.
    * @param {string} inputPath - path to assembled PDF
    * @param {{x: number, y: number}} paperSize - target dimensions in mm
-   * @param {'set-size'|'fit'} fitMode
+   * @param {'set-size'|'fit'|'fill'} fitMode
+   * @param {boolean} useMargin - whether to apply a ~1 cm margin
    * @returns {Promise<string>} path to adjusted PDF
    */
-  async _applyPaperSize(inputPath, paperSize, fitMode) {
+  async _applyPaperSize(inputPath, paperSize, fitMode, useMargin) {
     const MM_TO_PT = 72 / 25.4;
     const w = Math.round(paperSize.x * MM_TO_PT);
     const h = Math.round(paperSize.y * MM_TO_PT);
+    const marginPts = useMargin ? Math.round(10 * MM_TO_PT) : 0;
     const outputPath = path.join(this.dir, 'paper-adjusted.pdf');
-
-    if (fitMode === 'set-size') {
-      await this.pdfTool.resizeMediaBox(inputPath, w, h, outputPath);
-    } else {
-      // 'fit': scale content proportionally to fit within target dimensions
-      await Process.spawn(
-        `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4` +
-        ` -dFIXEDMEDIA -dPDFFitPage` +
-        ` -dDEVICEWIDTHPOINTS=${w} -dDEVICEHEIGHTPOINTS=${h}` +
-        ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`
-      );
-    }
+    await this.pdfTool.placeOnPage(inputPath, w, h, fitMode, marginPts, outputPath);
     return outputPath;
   }
 
   /**
    * Save the final document from an edit list.
-   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height}
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height,
+   *   [targetSize], [pageFitMode], [useMargin]}
    * @param {string} filename - output filename
-   * @param {{x: number, y: number}|null} [paperSize] - target paper size in mm, or null
-   * @param {'set-size'|'fit'|null} [fitMode] - how to apply the paper size
+   * @param {{x: number, y: number}|null} [paperSize] - document-level target paper size in mm
+   * @param {'set-size'|'fit'|'fill'|null} [fitMode] - document-level fit mode
+   * @param {boolean} [fitMargin] - whether to apply a ~1 cm margin (document-level)
    * @returns {Promise<string>} path to saved file
    */
-  async save(editList, filename, paperSize = null, fitMode = null) {
+  async save(editList, filename, paperSize = null, fitMode = null, fitMargin = false) {
     this.touch();
     FileInfo.unsafe(this.config.outputDirectory, filename);
     let assembledPath = await this._assemblePages(editList);
 
     if (paperSize && fitMode) {
-      assembledPath = await this._applyPaperSize(assembledPath, paperSize, fitMode);
+      assembledPath = await this._applyPaperSize(assembledPath, paperSize, fitMode, fitMargin);
     }
 
     // Atomic write to output directory

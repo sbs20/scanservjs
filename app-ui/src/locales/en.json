@@ -215,7 +215,11 @@
     "fit-mode": "Apply as",
     "fit-set-size": "Set page size only (OCR-safe)",
     "fit-fit": "Scale content to fit",
-    "fit-ocr-warning": "Content scaling may affect searchable text in OCR'd documents"
+    "fit-ocr-warning": "Content scaling may affect searchable text in OCR'd documents",
+    "fit-fill": "Scale to fill (may crop)",
+    "fit-use-margin": "Add ~1 cm margin",
+    "set-page-size": "Set page size",
+    "apply": "Apply"
   },
 
   "settings": {

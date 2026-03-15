@@ -68,4 +68,18 @@ module.exports = class PdfTool {
   async resizeMediaBox(inputPath, widthPts, heightPts, outputPath) {
     throw new Error('Not implemented');
   }
+
+  /**
+   * Place content onto a target page with the given fit mode (OCR-safe).
+   * @param {string} inputPath
+   * @param {number} widthPts - target width in points
+   * @param {number} heightPts - target height in points
+   * @param {'set-size'|'fit'|'fill'} fitMode
+   * @param {number} marginPts - margin on each side in points (0 = none)
+   * @param {string} outputPath - destination file
+   * @returns {Promise<void>}
+   */
+  async placeOnPage(inputPath, widthPts, heightPts, fitMode, marginPts, outputPath) {
+    throw new Error('Not implemented');
+  }
 };

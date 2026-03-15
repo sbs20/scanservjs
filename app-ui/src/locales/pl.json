@@ -202,7 +202,11 @@
     "fit-mode": "Zastosuj jako",
     "fit-set-size": "Ustaw tylko rozmiar strony (bezpieczne dla OCR)",
     "fit-fit": "Dopasuj treść do strony",
-    "fit-ocr-warning": "Skalowanie treści może wpłynąć na przeszukiwalny tekst w dokumentach OCR"
+    "fit-ocr-warning": "Skalowanie treści może wpłynąć na przeszukiwalny tekst w dokumentach OCR",
+    "fit-fill": "Skaluj do wypełnienia (może obciąć)",
+    "fit-use-margin": "Dodaj margines ~1 cm",
+    "set-page-size": "Ustaw rozmiar strony",
+    "apply": "Zastosuj"
   },
   "settings": {
     "title": "@:navigation.settings",
