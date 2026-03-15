@@ -47,14 +47,10 @@
       <!-- Positioning context for the source-divider overlay -->
       <div class="editor-content-wrapper">
         <draggable
-          ref="draggable"
           v-model="pages"
           item-key="id"
           class="editor-grid"
           ghost-class="editor-ghost"
-          :multi-drag="true"
-          selected-class="sortable-multidrag-selected"
-          multi-drag-key="NONEXISTENT"
           @start="onDragStart"
           @end="onDragEnd"
           @click.self="onBackgroundClick">
@@ -226,16 +222,12 @@
 
 <script>
 import draggable from 'vuedraggable';
-import Sortable from 'sortablejs';
-import { MultiDrag } from 'sortablejs';
 import Common from '../classes/common';
 import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
   mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
 } from '@mdi/js';
-
-Sortable.mount(new MultiDrag());
 
 const EAGER_LOAD_THRESHOLD = 50;
 const THUMB_OBSERVER_MARGIN = '200px';
@@ -382,9 +374,6 @@ export default {
         this.observeCards();
         this.updateDividerPositions();
       });
-    },
-    selected() {
-      this.$nextTick(() => this._syncMultiDragSelection());
     },
     showDividers() {
       this.$nextTick(() => this.updateDividerPositions());
@@ -1088,40 +1077,13 @@ export default {
       }
     },
 
-    // --- MultiDrag selection sync ---
-
-    _syncMultiDragSelection() {
-      const sortable = this.$refs.draggable?._sortable;
-      if (!sortable || !Sortable.utils.select) return;
-
-      const container = sortable.el;
-      if (!container) return;
-
-      const children = container.children;
-      const selectedSet = new Set(this.selected);
-
-      for (let i = 0; i < children.length; i++) {
-        const el = children[i];
-        const page = this.pages[i];
-        if (!page) continue;
-
-        const isVueSelected = selectedSet.has(page.id);
-        const isMultiDragSelected = el.classList.contains('sortable-multidrag-selected');
-
-        if (isVueSelected && !isMultiDragSelected) {
-          Sortable.utils.select(el);
-        } else if (!isVueSelected && isMultiDragSelected) {
-          Sortable.utils.deselect(el);
-        }
-      }
-    },
-
     // --- Drag-and-drop ---
 
-    onDragStart() {
-      // Snapshot page IDs and objects before vuedraggable's single-item splice
-      this._dragSnapshot = this.pages.map(p => p.id);
-      this._dragSnapshotPages = new Map(this.pages.map(p => [p.id, p]));
+    onDragStart(evt) {
+      // Snapshot the full page array before vuedraggable's single-item splice
+      // runs in onDragUpdate. We need this to reconstruct multi-item moves.
+      this._dragStartPages = [...this.pages];
+      this._dragStartSelected = [...this.selected];
       this.isDragging = true;
     },
 
@@ -1129,50 +1091,44 @@ export default {
       this.isDragging = false;
       this.hasReordered = true;
 
-      const isMultiDrag = evt.oldIndicies && evt.oldIndicies.length > 1;
+      const dragStartPages = this._dragStartPages;
+      const dragStartSelected = this._dragStartSelected;
+      this._dragStartPages = null;
+      this._dragStartSelected = null;
 
-      if (isMultiDrag) {
-        this._handleMultiDragDrop(evt);
+      const selectedIds = new Set(dragStartSelected || []);
+      const draggedId = dragStartPages?.[evt.oldIndex]?.id;
+
+      if (draggedId && selectedIds.has(draggedId) && selectedIds.size > 1) {
+        // Multi-item drag: vuedraggable already moved the dragged item to
+        // evt.newIndex via its single-item splice. The other selected items
+        // are still at their original positions. Reconstruct the array by
+        // removing all selected items except the dragged one (which is at
+        // its new position), then replacing it with the full group in
+        // original relative order.
+        const pageById = Object.fromEntries(this.pages.map(p => [p.id, p]));
+        const group = dragStartPages
+          .filter(p => selectedIds.has(p.id))
+          .map(p => pageById[p.id])
+          .filter(Boolean);
+
+        const withoutOthers = this.pages.filter(
+          p => !selectedIds.has(p.id) || p.id === draggedId
+        );
+        const draggedPos = withoutOthers.findIndex(p => p.id === draggedId);
+        withoutOthers.splice(draggedPos, 1, ...group);
+        this.pages = withoutOthers;
+
+        const draggedGroupIdx = group.findIndex(p => p.id === draggedId);
+        this.focusIndex = draggedPos + draggedGroupIdx;
+        this.cursorPosition = this.focusIndex + 1;
       } else {
-        // Single-item drag: vuedraggable already moved the item correctly
+        // Single-item drag: vuedraggable already handled the splice correctly
         this.focusIndex = evt.newIndex;
         this.cursorPosition = evt.newIndex + 1;
       }
 
-      this._dragSnapshot = null;
-      this._dragSnapshotPages = null;
       this.pushState();
-    },
-
-    _handleMultiDragDrop(evt) {
-      const snapshot = this._dragSnapshot;
-      const snapshotPages = this._dragSnapshotPages;
-      if (!snapshot || !snapshotPages) return;
-
-      // Dragged IDs from pre-drag snapshot, using oldIndicies
-      const draggedIds = new Set(
-        evt.oldIndicies.map(o => snapshot[o.index]).filter(Boolean)
-      );
-
-      // Insertion point: the minimum of the new positions
-      const insertAt = Math.min(...evt.newIndicies.map(n => n.index));
-
-      // Build new array: remove dragged IDs from snapshot order,
-      // re-insert them (in original relative order) at the insertion point
-      const remaining = snapshot.filter(id => !draggedIds.has(id));
-      const dragged = snapshot.filter(id => draggedIds.has(id));
-
-      remaining.splice(insertAt, 0, ...dragged);
-
-      // Map IDs back to page objects from snapshot (vuedraggable has mangled this.pages)
-      this.pages = remaining.map(id => snapshotPages.get(id)).filter(Boolean);
-
-      // Focus on the first dragged item in its new position
-      const firstDraggedIdx = this.pages.findIndex(p => draggedIds.has(p.id));
-      if (firstDraggedIdx >= 0) {
-        this.focusIndex = firstDraggedIdx;
-        this.cursorPosition = firstDraggedIdx + 1;
-      }
     },
 
     rotateSelected(degrees) {
@@ -1442,7 +1398,7 @@ export default {
 
 /* During multi-item drag: non-ghost selected items show a dashed border to
    signal they will move together with the dragged item. */
-.editor-page-drag-peer:not(.editor-ghost):not(.sortable-multidrag-selected) {
+.editor-page-drag-peer:not(.editor-ghost) {
   opacity: 0.55;
   border-color: rgb(var(--v-theme-primary));
   border-style: dashed;
