@@ -24,9 +24,19 @@
           @rename="onRenameFile" />
         <v-toolbar-title v-else class="text-truncate text-subtitle-1 ml-4">{{ fileName }}</v-toolbar-title>
         <v-spacer />
+        <v-tooltip v-if="showSave" location="bottom" :text="$t('editor.save')">
+          <template #activator="{ props }">
+            <v-btn v-bind="props" icon variant="text" class="mr-1"
+              :color="editorDirty ? 'primary' : 'white'"
+              :disabled="mode === 'edit' && !editorDirty"
+              @click="saveFromToolbar">
+              <v-icon :icon="mdiContentSave" />
+            </v-btn>
+          </template>
+        </v-tooltip>
         <v-tooltip location="bottom" :text="$t('files.download')">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon color="white" variant="text" class="mr-2" @click="$emit('download')">
+            <v-btn v-bind="props" icon color="white" variant="text" class="mr-1" @click="download">
               <v-icon :icon="mdiDownload" />
             </v-btn>
           </template>
@@ -91,7 +101,7 @@
 import Common from '../classes/common';
 import Editor from './Editor.vue';
 import InlineEdit from './InlineEdit.vue';
-import { mdiAlertCircle, mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil } from '@mdi/js';
+import { mdiAlertCircle, mdiClose, mdiContentSave, mdiDownload, mdiEye, mdiEyeOff, mdiPencil } from '@mdi/js';
 
 export default {
   name: 'DocumentDialog',
@@ -99,7 +109,7 @@ export default {
   emits: ['mask', 'notify', 'close', 'saved', 'download'],
 
   setup() {
-    return { mdiAlertCircle, mdiClose, mdiDownload, mdiEye, mdiEyeOff, mdiPencil };
+    return { mdiAlertCircle, mdiClose, mdiContentSave, mdiDownload, mdiEye, mdiEyeOff, mdiPencil };
   },
 
   props: {
@@ -164,6 +174,13 @@ export default {
       if (this.files.length !== 1) return false;
       const name = (this.files[0].name || this.files[0]).toLowerCase();
       return name.endsWith('.txt');
+    },
+    showSave() {
+      // In edit mode: always show (disabled when not dirty)
+      // In view mode: only show when there are unsaved edits
+      if (!this.canEdit) return false;
+      if (this.mode === 'edit') return true;
+      return this.editorDirty;
     },
     viewSrc() {
       if (this.previewUrl) return this.previewUrl;
@@ -281,6 +298,38 @@ export default {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
         this.assemblingPreview = false;
+      }
+    },
+
+    saveFromToolbar() {
+      const editor = this.$refs.editor;
+      if (editor) editor.save();
+    },
+
+    async download() {
+      if (!this.editorDirty || !this.sessionId) {
+        // No edits — download original file
+        this.$emit('download');
+        return;
+      }
+      // Edits pending — assemble and download the edited version
+      this.$emit('mask', 1);
+      try {
+        const editor = this.$refs.editor;
+        const editList = editor.getEditList();
+        await Common.fetch(
+          `api/v1/editor/sessions/${this.sessionId}/preview`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pages: editList })
+          });
+        this.lastPreviewHash = editor.getEditListHash();
+        // Trigger download of the assembled preview
+        window.location.href = `api/v1/editor/sessions/${this.sessionId}/preview?download=true`;
+      } catch (error) {
+        this.$emit('notify', { type: 'e', message: String(error) });
+      } finally {
+        this.$emit('mask', -1);
       }
     },
 

@@ -234,8 +234,12 @@ const EndpointSpecs = [
     path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
     callback: async (req, res) => {
       const previewPath = editorApi.getPreviewPath(req.params[0]);
-      res.type('pdf');
-      res.sendFile(path.resolve(previewPath));
+      if (req.query.download === 'true') {
+        res.download(path.resolve(previewPath), 'document.pdf');
+      } else {
+        res.type('pdf');
+        res.sendFile(path.resolve(previewPath));
+      }
     }
   },
   {

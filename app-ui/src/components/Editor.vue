@@ -18,14 +18,6 @@
       <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
         :title="$t('editor.delete')" @click="deleteSelected" />
       <v-spacer />
-      <v-btn color="primary" variant="tonal" size="small" class="mr-2"
-        @click="save">
-        {{ $t('editor.save') }}
-      </v-btn>
-      <v-btn v-if="files.length > 1" variant="tonal" size="small" class="mr-2"
-        @click="saveAs">
-        {{ $t('editor.save-as') }}
-      </v-btn>
     </v-toolbar>
 
     <div class="pa-4 overflow-y-auto flex-grow-1">
