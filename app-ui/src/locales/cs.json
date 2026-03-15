@@ -206,7 +206,12 @@
     "op-interleave-reverse": "Spojit přední a zadní strany (obráceně)",
     "op-interleave-reverse-hint": "Nejběžnější pro oboustranné skenování se simplexním ADF",
     "op-swap-pairs": "Prohodit každý pár stránek",
-    "op-deinterleave": "Oddělit přední a zadní strany"
+    "op-deinterleave": "Oddělit přední a zadní strany",
+    "paper-size": "Velikost papíru",
+    "fit-mode": "Použít jako",
+    "fit-set-size": "Nastavit pouze velikost stránky (bezpečné pro OCR)",
+    "fit-fit": "Přizpůsobit obsah na stránku",
+    "fit-ocr-warning": "Přizpůsobení obsahu může ovlivnit prohledávatelný text v dokumentech s OCR"
   },
   "settings": {
     "title": "@:navigation.settings",

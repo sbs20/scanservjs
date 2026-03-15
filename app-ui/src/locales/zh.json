@@ -194,7 +194,12 @@
     "op-interleave-reverse": "合并正反面页面（反向）",
     "op-interleave-reverse-hint": "单面ADF进行双面扫描时最常用",
     "op-swap-pairs": "交换每对页面",
-    "op-deinterleave": "分离正反面页面"
+    "op-deinterleave": "分离正反面页面",
+    "paper-size": "纸张大小",
+    "fit-mode": "应用方式",
+    "fit-set-size": "仅设置页面大小（OCR 安全）",
+    "fit-fit": "缩放内容以适应页面",
+    "fit-ocr-warning": "缩放内容可能影响 OCR 文档中的可搜索文本"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -199,7 +199,12 @@
     "op-interleave-reverse": "Vorder- und Rückseiten zusammenführen (umgekehrt)",
     "op-interleave-reverse-hint": "Häufigste Variante für Duplex-Scannen mit Simplex-ADF",
     "op-swap-pairs": "Seitenpaare vertauschen",
-    "op-deinterleave": "Vorder- und Rückseiten trennen"
+    "op-deinterleave": "Vorder- und Rückseiten trennen",
+    "paper-size": "Papierformat",
+    "fit-mode": "Anwenden als",
+    "fit-set-size": "Nur Seitengröße festlegen (OCR-sicher)",
+    "fit-fit": "Inhalt einpassen",
+    "fit-ocr-warning": "Das Skalieren des Inhalts kann durchsuchbaren Text in OCR-Dokumenten beeinträchtigen"
   },
   "settings": {
     "title": "@:navigation.settings",

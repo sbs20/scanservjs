@@ -210,7 +210,12 @@
     "op-interleave-reverse": "Combine front & back pages (reversed)",
     "op-interleave-reverse-hint": "Most common for duplex scanning with simplex ADF",
     "op-swap-pairs": "Swap each page pair",
-    "op-deinterleave": "Separate front & back pages"
+    "op-deinterleave": "Separate front & back pages",
+    "paper-size": "Paper size",
+    "fit-mode": "Apply as",
+    "fit-set-size": "Set page size only (OCR-safe)",
+    "fit-fit": "Scale content to fit",
+    "fit-ocr-warning": "Content scaling may affect searchable text in OCR'd documents"
   },
 
   "settings": {

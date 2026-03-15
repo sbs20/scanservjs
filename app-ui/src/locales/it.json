@@ -208,7 +208,12 @@
     "op-interleave-reverse": "Combina fronte e retro (invertito)",
     "op-interleave-reverse-hint": "Più comune per scansione fronte-retro con ADF simplex",
     "op-swap-pairs": "Scambia ogni coppia di pagine",
-    "op-deinterleave": "Separa fronte e retro"
+    "op-deinterleave": "Separa fronte e retro",
+    "paper-size": "Formato carta",
+    "fit-mode": "Applica come",
+    "fit-set-size": "Imposta solo il formato pagina (sicuro per OCR)",
+    "fit-fit": "Adatta il contenuto alla pagina",
+    "fit-ocr-warning": "Il ridimensionamento del contenuto può influire sul testo ricercabile nei documenti OCR"
   },
   "settings": {
     "title": "@:navigation.settings",

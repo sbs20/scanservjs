@@ -55,4 +55,17 @@ module.exports = class PdfTool {
   async createBlank(widthPts, heightPts, outputPath) {
     throw new Error('Not implemented');
   }
+
+  /**
+   * Set the MediaBox of all pages to target dimensions (Tier 1, OCR-safe).
+   * Adjusts only page metadata — content is not scaled.
+   * @param {string} inputPath
+   * @param {number} widthPts - target width in points
+   * @param {number} heightPts - target height in points
+   * @param {string} outputPath - destination file
+   * @returns {Promise<void>}
+   */
+  async resizeMediaBox(inputPath, widthPts, heightPts, outputPath) {
+    throw new Error('Not implemented');
+  }
 };

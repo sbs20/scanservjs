@@ -64,6 +64,14 @@ module.exports = class PikepdfTool extends PdfTool {
     await Process.spawn(cmd);
   }
 
+  /** @override */
+  async resizeMediaBox(inputPath, widthPts, heightPts, outputPath) {
+    const cmd = this._cmd('resize-mediabox', inputPath,
+      String(widthPts), String(heightPts), outputPath);
+    log.debug('resizeMediaBox:', cmd);
+    await Process.spawn(cmd);
+  }
+
   /**
    * Test whether pikepdf is available via the project venv.
    * @returns {Promise<boolean>}
