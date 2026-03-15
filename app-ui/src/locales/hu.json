@@ -5,19 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Nincs elérhető adat"
   },
-
   "about": {
     "main": "A scanservjs egy egyszerű webes felhasználói felület a szkenneréhez. Lehetővé teszi egy vagy több szkenner (SANE használatával) megosztását egy hálózaton, illesztőprogramok vagy bonyolult telepítés nélkül. TIF, JPG, PNG, PDF és TXT formátumba (Tesseract OCR segítségével) tud menteni, különböző tömörítési beállításokkal, amelyek mindegyike konfigurálható. Támogatja a többoldalas szkennelést és az összes SANE-kompatibilis eszközt.",
-    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
+    "fork": "Egy közösségi forkot használ, amely extra funkciókat és hibajavításokat tartalmaz. Kérjük, a problémákat a fork tárolójában jelezze, ne az eredeti projektben.",
+    "fork-upstream": "Az eredeti projekt Sam Strackantól:",
+    "fork-issue": "Ez a fork — problémák jelzése és forráskód megtekintése:",
     "api": "Swagger API dokumentáció:",
-    "system-info": "Rendszer információ"
+    "system-info": "Rendszer információ",
+    "issue": "Hiba bejelentése vagy a forráskód megtekintése:"
   },
-
   "colors": {
     "accent-4": "Alapértelmezett",
     "red": "Piros",
@@ -40,14 +40,12 @@
     "blue-grey": "Kékesszürke",
     "grey": "Szürke"
   },
-
   "batch-dialog": {
     "btn-cancel": "Mégsem",
     "btn-finish": "Kész",
     "btn-rescan": "Oldal újrascannelése",
     "btn-next": "Következő"
   },
-
   "files": {
     "filename": "Fájlnév",
     "date": "Dátum",
@@ -66,7 +64,6 @@
     "thumbnail-show": "Bélyegképek mutatása",
     "thumbnail-size": "Bélyegképek mérete"
   },
-
   "navigation": {
     "scan": "Szkennelés",
     "files": "Fájlok",
@@ -74,7 +71,6 @@
     "about": "A programról",
     "version": "Verzió"
   },
-
   "batch-mode": {
     "none": "Nincs",
     "manual": "Kézi (megerősítéssel)",
@@ -82,31 +78,26 @@
     "auto-collate-standard": "Automata (Leválogatás 1, 3... 4, 2)",
     "auto-collate-reverse": "Automata (Kihagyás 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Automata szint",
     "threshold": "Korlát",
     "blur": "Elmosás"
   },
-
   "mode": {
     "color": "Színes",
     "halftone": "Féltónus",
     "gray": "Szürke",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Egyoldalas",
     "duplex": "Kétoldalas"
   },
-
   "source": {
     "flatbed": "Síkágyas",
     "adf": "ADF",
@@ -115,14 +106,12 @@
     "centrally-aligned": "Középre Igazított",
     "duplex": "Kétoldalas",
     "transparency unit": "Átlátszósági egység",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Magas minőség",
     "medium-quality": "Közepes minőség",
@@ -132,7 +121,6 @@
     "ocr": "OCR",
     "text-file": "Szöveges fájl"
   },
-
   "paper-size": {
     "letter": "Levél",
     "legal": "Legal",
@@ -143,7 +131,6 @@
     "portrait": "Álló",
     "landscape": "Fekvő"
   },
-
   "scan": {
     "device": "Eszköz",
     "source": "Forrás",
@@ -172,7 +159,6 @@
     "message:turn-documents": "Fordítsa meg a dokumentumokat",
     "message:preview-of-page": "Oldal előnézete"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Viselkedés és UI",

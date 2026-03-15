@@ -5,19 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "No data available"
   },
-
   "about": {
     "main": "scanservjs is a simple web-based UI for your scanner. It allows you to share one or more scanners (using SANE) on a network without the need for drivers or complicated installation. It can save to TIF, JPG, PNG, PDF and TXT (with Tesseract OCR) with varying compression settings, all of which can be configured. It supports multipage scanning and all SANE compatible devices.",
-    "issue": "File an issue or view the source code:",
+    "fork": "You are running a community fork with additional features and fixes. Please report any issues to the fork repository, not the original project.",
+    "fork-upstream": "Original project by Sam Strachan:",
+    "fork-issue": "This fork — file issues and view source here:",
     "api": "OpenAPI documentation:",
-    "system-info": "System information"
+    "system-info": "System information",
+    "issue": "File an issue or view the source code:"
   },
-
   "colors": {
     "accent-4": "Default",
     "red": "Red",
@@ -40,14 +40,12 @@
     "blue-grey": "Blue gray",
     "grey": "Gray"
   },
-
   "batch-dialog": {
     "btn-cancel": "Cancel",
     "btn-finish": "Finish",
     "btn-rescan": "Rescan page",
     "btn-next": "Next"
   },
-
   "files": {
     "filename": "Filename",
     "date": "Date",
@@ -66,7 +64,6 @@
     "thumbnail-show": "Show thumbnails",
     "thumbnail-size": "Thumbnail size"
   },
-
   "navigation": {
     "scan": "Scan",
     "files": "Files",
@@ -74,7 +71,6 @@
     "about": "About",
     "version": "Version"
   },
-
   "batch-mode": {
     "none": "None",
     "manual": "Manual (with prompt)",
@@ -82,31 +78,26 @@
     "auto-collate-standard": "Auto (Collate 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (Reverse 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Auto level",
     "threshold": "Threshold",
     "blur": "Blur"
   },
-
   "mode": {
     "color": "Color",
     "halftone": "Halftone",
     "gray": "Gray",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Simplex",
     "duplex": "Duplex"
   },
-
   "source": {
     "flatbed": "Flatbed",
     "adf": "ADF",
@@ -115,14 +106,12 @@
     "centrally-aligned": "Centrally Aligned",
     "duplex": "Duplex",
     "transparency unit": "Transparency Unit",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "High quality",
     "medium-quality": "Medium quality",
@@ -132,7 +121,6 @@
     "ocr": "OCR",
     "text-file": "Text file"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -143,7 +131,6 @@
     "portrait": "Portrait",
     "landscape": "Landscape"
   },
-
   "scan": {
     "device": "Device",
     "source": "Source",
@@ -172,7 +159,6 @@
     "message:turn-documents": "Turn documents over",
     "message:preview-of-page": "Preview of page"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Behavior and UI",
