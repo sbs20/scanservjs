@@ -983,9 +983,13 @@ export default {
     },
 
     toPixels(mm, axis) {
-      if (!this.$refs.cropper) return 0;
-      const scale = this.pixelsPerMm()[axis];
-      return Math.round(mm * scale);
+      if (this.$refs.cropper && this.$refs.cropper.imageSize.width) {
+        const scale = this.pixelsPerMm()[axis];
+        return Math.round(mm * scale);
+      }
+      // No preview loaded yet — fall back to resolution-based calculation
+      const ppi = parseFloat(this.request.params.resolution) || 300;
+      return Math.round((mm / 25.4) * ppi);
     },
 
     onDimensionInput(event, field) {
