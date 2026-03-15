@@ -207,7 +207,12 @@
     "confirm-overwrite": "A file named \"{0}\" already exists. Overwrite it?",
     "overwrite-warning": "\"{0}\" already exists and will be overwritten",
     "button:edit": "Edit",
-    "button:edit-selected": "Edit selected"
+    "button:edit-selected": "Edit selected",
+    "insert-blank-before": "Insert blank page before",
+    "insert-blank-after": "Insert blank page after",
+    "select-all": "Select all",
+    "deselect-all": "Deselect all",
+    "jump-to": "Go to page"
   },
 
   "settings": {
