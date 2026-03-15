@@ -1508,36 +1508,29 @@ Independent grid enhancements. No server changes.
 
 ### 17.7 Multi-Item Drag-and-Drop
 
-Uses SortableJS's built-in **MultiDrag** plugin (ships with sortablejs 1.14.0)
-to drag multiple selected pages as a unit.
+Snapshot-based array reconstruction after vuedraggable's single-item drag.
 
-**Why not manual post-splice regroup?** vuedraggable's `onDragUpdate` does a
-single-item `splice()` on the v-model array before `@end` fires. The array is
-already wrong by the time our handler runs, making reconstruction fragile and
-providing no visual feedback during drag.
+**Why not SortableJS MultiDrag?** MultiDrag removes selected DOM elements
+during the drag (the "folding" animation) and re-inserts them at drop time.
+vuedraggable's `onDragUpdate` fires between these steps and calculates array
+indices from DOM children — which are missing. This causes corrupted splices,
+disappearing items during drag, and wrong final order. The conflict is
+architectural and cannot be worked around without patching vuedraggable.
 
-**Selection sync:** MultiDrag has its own click-based selection (`selectedClass`
-+ internal `multiDragElements` array). We suppress it with a `multiDragKey`
-set to `"NONEXISTENT"` and a dummy `selectedClass` (`sortable-multidrag-selected`)
-with no CSS rules. A Vue watcher on `selected` calls `_syncMultiDragSelection()`
-in `$nextTick`, which iterates the sortable container's children and calls
-`Sortable.utils.select(el)` / `deselect(el)` to keep MultiDrag in sync with
-Vue's state.
+**Approach:** Use vuedraggable's normal single-item drag. On `@start`, snapshot
+the full page array and selected IDs. On `@end`, detect multi-item drag
+(dragged item was in the selection, selection has >1 item) and reconstruct:
 
-**Array reconstruction (`_handleMultiDragDrop`):**
-1. On `@start`, snapshot page IDs in pre-drag order + a Map of id→page object.
-2. On `@end` with `evt.oldIndicies.length > 1` (multi-drag detected):
-   - Map `evt.oldIndicies[].index` through the snapshot to get dragged IDs.
-   - Compute insertion point = `Math.min(evt.newIndicies[].index)`.
-   - Build new array: remove dragged IDs from snapshot, re-insert at insertion
-     point in original relative order.
-   - Map IDs back to page objects from snapshot (bypassing vuedraggable's
-     already-mangled `this.pages`).
-3. Single-drag: vuedraggable handled the splice correctly; just update cursor.
+1. vuedraggable has already moved the dragged item to `evt.newIndex` via its
+   single-item splice. Other selected items remain at their original positions.
+2. Build the selected group in original relative order (from the snapshot).
+3. Filter `this.pages` to remove all selected items except the dragged one
+   (which acts as a positional anchor).
+4. Replace the anchor with the full group via `splice()`.
 
-**Known limitation:** The folding animation (items visually collapsing onto the
-drag ghost) depends on SortableJS's `animation` option. vuedraggable defaults
-this to 0; users can set `:animation="150"` on the `<draggable>` element.
+This yields correct final order. The trade-off: only one ghost is visible
+during drag. Visual feedback for the other selected items is provided via
+`editor-page-drag-peer` CSS (dashed border + reduced opacity).
 
 ### 17.8 Touch Rubber-Band Fix
 
