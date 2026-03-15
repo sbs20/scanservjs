@@ -17,6 +17,7 @@ sudo apt install ./scanservjs_3.0.4-1_all.deb
 
 ## Enhancements over upstream
 
+- **PDF Editor**: Rearrange, rotate, and delete pages in scanned PDFs directly in the browser; merge multiple documents into one with drag-and-drop and full undo/redo.
 - **Smart Autocrop**: Automatic document boundary detection, deskew, and crop for flatbed scans.
 - **Installable PWA**: Add scanservjs to your home screen; the app name is configurable per instance.
 - **Pixel-Precise Coordinates**: Dual mm/pixel input fields with aspect-ratio lock for exact scan geometry.

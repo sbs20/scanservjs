@@ -32,6 +32,7 @@ mkdir -pv $DIR_DOC
 # Copy distribution
 cp -rv dist/* $DIR_LIB
 cp -rv autocrop $DIR_LIB
+cp -rv editor $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
@@ -132,6 +133,7 @@ if [ "\$1" = "configure" ] ; then
   python3 -m venv /usr/lib/$APP_NAME/.venv
   /usr/lib/$APP_NAME/.venv/bin/pip install --upgrade pip
   /usr/lib/$APP_NAME/.venv/bin/pip install -r /usr/lib/$APP_NAME/autocrop/requirements.txt
+  /usr/lib/$APP_NAME/.venv/bin/pip install -r /usr/lib/$APP_NAME/editor/requirements.txt
   chown -R $USER:$GROUP /usr/lib/$APP_NAME/.venv
 
   if [ -d /etc/ImageMagick-6 ]; then

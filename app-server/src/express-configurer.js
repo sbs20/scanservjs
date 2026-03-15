@@ -20,6 +20,7 @@ prefix.apply(rootLog, config.log.prefix);
 
 const log = rootLog.getLogger('Http');
 const api = require('./api');
+const editorApi = require('./editor-api');
 
 /**
  * @param {import('express').Response} res
@@ -203,6 +204,85 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/system',
     callback: async (req, res) => res.send(await api.readSystem())
+  },
+  {
+    method: 'post',
+    path: '/api/v1/editor/sessions',
+    callback: async (req, res) => {
+      const result = await editorApi.createSession(req.body.files);
+      res.send(result);
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)$/,
+    callback: async (req, res) => {
+      res.send(editorApi.getSession(req.params[0]));
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/pages\/(\d+)\/thumbnail/,
+    callback: async (req, res) => {
+      const buffer = await editorApi.getThumbnail(req.params[0], parseInt(req.params[1], 10));
+      res.type('jpg');
+      res.send(buffer);
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/pages/,
+    callback: async (req, res) => {
+      const result = await editorApi.addPages(req.params[0], req.body.file);
+      res.send(result);
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      await editorApi.assemblePreview(req.params[0], req.body.pages);
+      res.send({ ok: true });
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      const previewPath = editorApi.getPreviewPath(req.params[0]);
+      if (req.query.download === 'true') {
+        let filename = 'document.pdf';
+        if (req.query.filename) {
+          try {
+            FileInfo.assertFilenameIsSafe(req.query.filename);
+            filename = req.query.filename;
+          } catch (e) {
+            // Invalid filename chars — use safe default
+          }
+        }
+        res.download(path.resolve(previewPath), filename);
+      } else {
+        res.type('pdf');
+        res.sendFile(path.resolve(previewPath));
+      }
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/save/,
+    callback: async (req, res) => {
+      const result = await editorApi.save(
+        req.params[0], req.body.pages, req.body.filename);
+      res.send(result);
+    }
+  },
+  {
+    method: 'delete',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)/,
+    callback: async (req, res) => {
+      editorApi.deleteSession(req.params[0]);
+      res.send({});
+    }
   }
 ];
 
@@ -222,6 +302,11 @@ module.exports = class ExpressConfigurer {
       log.warn(`Error ensuring output and temp directories exist: ${exception}`);
       log.warn(`Currently running node version ${process.version}.`);
     }
+
+    // Editor: clean up orphaned sessions from previous runs
+    editorApi.startupCleanup();
+    // Editor: TTL-based cleanup every 5 minutes
+    setInterval(() => editorApi.ttlCleanup(), 5 * 60 * 1000);
   }
 
   /**
