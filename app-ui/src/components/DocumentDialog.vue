@@ -1,17 +1,23 @@
 <template>
-  <v-dialog v-model="visible" width="95vw" max-width="1400" scrollable persistent>
-    <v-card height="92vh" class="d-flex flex-column overflow-hidden">
+  <v-dialog v-model="visible" width="90vw" persistent>
+    <v-card height="90vh" class="d-flex flex-column overflow-hidden">
       <v-toolbar flat color="grey-darken-4" theme="dark" density="comfortable">
-        <v-btn-toggle v-if="canEdit" v-model="mode" mandatory density="compact" class="ml-2">
-          <v-btn value="view" size="small">
+        <template v-if="canEdit">
+          <v-btn size="small" class="ml-2"
+            :variant="mode === 'view' ? 'flat' : 'text'"
+            :color="mode === 'view' ? 'primary' : 'white'"
+            @click="switchMode('view')">
             <v-icon :icon="mdiEye" class="mr-1" />
             {{ $t('document-dialog.view') }}
           </v-btn>
-          <v-btn value="edit" size="small">
+          <v-btn size="small"
+            :variant="mode === 'edit' ? 'flat' : 'text'"
+            :color="mode === 'edit' ? 'primary' : 'white'"
+            @click="switchMode('edit')">
             <v-icon :icon="mdiPencil" class="mr-1" />
             {{ $t('document-dialog.edit') }}
           </v-btn>
-        </v-btn-toggle>
+        </template>
         <v-toolbar-title class="text-truncate text-subtitle-1 ml-4">{{ fileName }}</v-toolbar-title>
         <v-spacer />
         <v-tooltip location="bottom" :text="$t('files.download')">
@@ -151,14 +157,6 @@ export default {
     modelValue(val) {
       if (val) this.onOpen();
       else this.onClose();
-    },
-    async mode(newMode, oldMode) {
-      if (newMode === 'edit' && !this.sessionId) {
-        await this.createSession();
-      }
-      if (newMode === 'view' && oldMode === 'edit' && this.sessionId && this.editorDirty) {
-        await this.assemblePreview();
-      }
     }
   },
 
@@ -196,6 +194,18 @@ export default {
       }
       this.previewUrl = null;
       this.lastPreviewHash = null;
+    },
+
+    async switchMode(newMode) {
+      if (newMode === this.mode) return;
+      const oldMode = this.mode;
+      this.mode = newMode;
+      if (newMode === 'edit' && !this.sessionId) {
+        await this.createSession();
+      }
+      if (newMode === 'view' && oldMode === 'edit' && this.sessionId && this.editorDirty) {
+        await this.assemblePreview();
+      }
     },
 
     requestClose() {
