@@ -61,9 +61,9 @@
     <template #[`item.actions`]="{ item }">
       <v-icon class="mr-2" :icon="mdiBookEdit" :title="$t('editor.button:edit')"
         @click="editFile(item)" />
-      <v-icon v-if="isPreviewable(item)" class="mr-2" :icon="mdiEye" @click="filePreview(item)" />
-      <v-icon class="mr-2" :icon="mdiDownload" @click="open(item)" />
-      <v-icon class="mr-2" :icon="mdiDelete" @click="fileRemove(item)" />
+      <v-icon v-if="isPreviewable(item)" class="mr-2" :icon="mdiEye" :title="$t('files.button:preview')" @click="filePreview(item)" />
+      <v-icon class="mr-2" :icon="mdiDownload" :title="$t('files.button:download')" @click="open(item)" />
+      <v-icon class="mr-2" :icon="mdiDelete" :title="$t('files.button:delete')" @click="fileRemove(item)" />
     </template>
     <template #[`footer.page-text`]="items">
       {{ items.pageStart }} - {{ items.pageStop }} / {{ items.itemsLength }}
