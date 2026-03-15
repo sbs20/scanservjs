@@ -1,6 +1,6 @@
 # Document Editor — Design & Implementation Plan
 
-> **Revision 2** — Updated after user feedback and tool-chain research.
+> **Revision 3** — Phase 2 added: viewer/editor integration and large-document UX.
 
 ## 1. Overview
 
@@ -150,7 +150,7 @@ button in the toolbar.
 5. Click "Duplex Merge (Standard)" → pages interleave correctly
 6. Save as `document.pdf`
 
-### 3.5 N-up Grid Layout (Phase 2)
+### 3.5 N-up Grid Layout (Phase 3)
 
 Simple mechanism to arrange multiple images or scanned items (photos, ID cards,
 business cards) into a grid on a single page. This is a distinct operation from
@@ -817,7 +817,19 @@ not for a polished public history.
 1. Create `editor/pdf_ops.py` — pikepdf wrapper script (invoked by Node.js
    via `Process.spawn()`)
 
-### Phase 2: Duplex Templates + Polish
+### Phase 2: Viewer/Editor Integration + Large Document UX
+
+See Section 17 for detailed design.
+
+**Goal A:** Unify the PDF viewer and editor into a single dialog with a
+toggle so the user can switch between the full PDF view and the edit grid
+without leaving the dialog — treating them as two views onto the same document.
+
+**Goal B:** Make the editor ergonomic for large documents (50–500 pages) with
+proper cursor-based insertion, efficient multi-select, rubber-band selection,
+keyboard navigation, and virtualized rendering.
+
+### Phase 3: Duplex Templates + Polish
 
 1. Implement interleave / swap-pairs / reverse algorithms (client-side)
 2. Add duplex merge template buttons
@@ -825,25 +837,22 @@ not for a polished public history.
 4. Implement two-tier paper size adjustment
 5. Keyboard shortcuts (Ctrl+Z, Ctrl+S, Delete, Ctrl+A)
 6. Mobile touch optimization
-7. IntersectionObserver for lazy thumbnail loading
-8. Error handling (corrupt files, disk full, tool not found)
-9. i18n for all new strings (start with English, add others incrementally)
+7. Error handling (corrupt files, disk full, tool not found)
+8. i18n for all new strings (start with English, add others incrementally)
 
-### Phase 3: N-up Grid Layout
+### Phase 4: N-up Grid Layout
 
 1. Create `editor/nup.py` — ReportLab-based grid compositor
 2. Add N-up button/dialog to editor UI (grid size selection)
 3. Add "composite pages" operation to edit list
 4. Test memory usage on ARM device
 
-### Phase 4: Extended Polish
+### Phase 5: Extended Polish
 
 1. Progress reporting for large documents
-2. Drag-select (rubber band) for page selection
-3. Page range selection (Shift+click on first and last)
-4. Copy/paste pages between editor sessions (stretch)
-5. Comprehensive i18n
-6. ARM device performance testing and optimization
+2. Copy/paste pages between editor sessions (stretch)
+3. Comprehensive i18n
+4. ARM device performance testing and optimization
 
 ---
 
@@ -997,3 +1006,419 @@ package.json                    # MODIFIED — add vuedraggable dependency
 
 4. **Editor bookmarks/sections:** For very long documents, collapsible
    section headers or bookmarks within the editor view.
+
+---
+
+## 17. Phase 2 Detailed Design: Viewer/Editor Integration + Large Document UX
+
+### 17.1 Motivation
+
+Two independent observations that compound into a single phase:
+
+1. After editing, users naturally want to see the resulting document in context
+   — scrolling through pages, checking that rotations look right, verifying
+   page order. The existing PDF viewer is perfect for this. Forcing the user to
+   save first, close the editor, and then open the viewer is a friction-heavy
+   workflow. The viewer and editor are two views onto the same document.
+
+2. The current editor is comfortable for documents up to ~30 pages. Beyond
+   that, selecting a specific page, knowing where an insert will land, or
+   operating on a range of pages becomes increasingly laborious. These are
+   well-studied UX problems in document editors (PDF editors, presentation
+   tools, video timeline editors) with established solutions.
+
+Both are solved together because unifying the dialogs incidentally gives the
+editor more vertical space (the toolbar is shared chrome rather than extra
+overhead), and because the resulting larger/stabler dialog is what makes the
+large-document navigation feel comfortable.
+
+---
+
+### 17.2 Unified Viewer/Editor Dialog
+
+#### 17.2.1 Concept
+
+Replace the two separate dialogs (Files.vue's `dialogPreview` and Editor.vue's
+`visible`) with a single `DocumentDialog` component that hosts both modes. The
+dialog chrome — title bar, close button, file name — is stable across both modes.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [≡ View] [✏ Edit]        scan_2024-01-15.pdf    [↗] [✕]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│                 ← content area swaps here →                  │
+│                                                              │
+│  View mode: <iframe src="..."> (full height)                 │
+│  Edit mode: toolbar + thumbnail grid                         │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Tab/mode switcher:** Two buttons in the title bar (or a segmented button):
+`[View]` and `[Edit]`. The active mode is highlighted. This is more
+space-efficient than tabs, and the two-option case is exactly what a segmented
+button is designed for.
+
+**Dialog dimensions:** Inherit the current viewer's dimensions
+(`width="95vw" max-width="1400px" height="92vh"`). The editor currently uses
+the same nominal dimensions but the toolbar consumes ~56px, making the grid
+area noticeably shorter. With shared chrome in a unified dialog, the editor
+gets the full content area minus only the tab-switcher header row (~48px) —
+a net gain over the current standalone editor dialog.
+
+**Entry points (in Files.vue):**
+
+| User action | Opens in mode |
+|-------------|--------------|
+| Click preview icon on any file | View mode (viewer only — no Edit tab for non-PDF/TIF files where editing isn't meaningful) |
+| Click preview icon on a PDF/TIF | View mode, with Edit tab available |
+| Click edit icon on a PDF/TIF | Edit mode directly |
+| Click Edit in toolbar (multi-select) | Edit mode directly |
+
+When the dialog opens directly in View mode and the user clicks the Edit tab
+for the first time, a session is created at that moment (lazy session creation).
+
+#### 17.2.2 Switching Edit → View
+
+When the user clicks the View tab while unsaved edits exist:
+
+1. Client sends current edit list to server: `POST /sessions/:id/preview`
+2. Server assembles a temporary preview PDF in the session's temp directory
+   (`session/preview.pdf`) using the same pipeline as save (Section 8).
+3. Server responds with `{ previewUrl: "/api/v1/editor/sessions/:id/preview" }`
+4. Dialog swaps iframe src to the preview URL.
+5. A loading indicator is shown while assembly runs.
+
+**Optimization — skip re-assembly if nothing changed:**
+
+The client maintains a hash of the edit list (JSON stringify → simple checksum).
+Before requesting a new preview, it compares against the hash of the last
+assembled preview. If identical, no request is sent and the existing iframe is
+kept.
+
+```javascript
+// Client-side
+const editListHash = JSON.stringify(this.pages); // sufficient for equality check
+if (editListHash === this.lastPreviewHash) return; // reuse cached preview
+await this.fetchPreview();
+this.lastPreviewHash = editListHash;
+```
+
+**Switching View → Edit:** Instant — no server round-trip. The thumbnail grid
+was already rendering (it is kept mounted but hidden in View mode, not
+destroyed) so thumbnails are not re-requested.
+
+#### 17.2.3 New Server Endpoint
+
+```
+POST /api/v1/editor/sessions/:id/preview
+Body: { "pages": [...edit list...] }
+Response: { "previewToken": "abc123" }
+
+GET  /api/v1/editor/sessions/:id/preview
+Response: application/pdf (the assembled preview file)
+```
+
+The assembled `preview.pdf` lives at `data/temp/editor-{id}/preview.pdf`.
+It is overwritten on each preview request. No additional cleanup logic is
+needed beyond the existing session TTL/destroy.
+
+**Resource bounds:** Preview assembly has the same memory/disk budget as save
+(Section 6). On a 1 GB ARM device with a 200-page document, peak memory during
+assembly is ~50 MB (pikepdf merge). The resulting PDF is the same size as the
+saved output — no duplication, since it lives in the temp dir alongside the
+extracted pages which are already there. It is deleted when the session is
+cleaned up.
+
+#### 17.2.4 Opening in View Mode Without a Session
+
+When the user opens the dialog in View mode (no editing yet), no session is
+created. The iframe simply points to the existing file via the files API:
+
+```
+GET /api/v1/files/{filename}?preview=true
+```
+
+This is exactly what the current preview dialog does. No change to the server.
+A session is only created if/when the user clicks the Edit tab.
+
+#### 17.2.5 Unsaved Changes Guard
+
+The existing close-guard logic (`if (isDirty) confirm("Discard changes?")`)
+applies when the dialog is closed from either mode. In View mode with no active
+session, there is nothing to guard.
+
+---
+
+### 17.3 Large Document UX
+
+#### 17.3.1 Insertion Cursor
+
+The current editor has no explicit concept of "where the next operation will
+apply." Add/blank page operations currently append to the end. This becomes
+confusing with large documents where the user has scrolled deep.
+
+**Design:** A visual insertion cursor — a highlighted vertical bar appearing
+in the gap between two page thumbnails (or after the last page). It indicates
+where "Add Pages", "Add Blank", and paste operations will insert.
+
+```
+┌─────┐  ┌─────┐  ┌─────┐  ┃  ┌─────┐  ┌─────┐
+│  1  │  │  2  │  │  3  │  ┃  │  5  │  │  6  │
+└─────┘  └─────┘  └─────┘  ┃  └─────┘  └─────┘
+                            ↑ cursor between 3 and 5
+```
+
+**Cursor placement rules:**
+- Clicking on an empty space in the grid (between or after thumbnails) moves
+  the cursor to that gap.
+- Selecting one or more pages moves the cursor to after the last selected page.
+- Ctrl+clicking a page includes it in selection without moving the cursor.
+- After a drag-reorder operation, the cursor follows the dropped pages.
+- Default cursor position: after the last page.
+
+**Cursor persistence:** The cursor position is an index (gap number: 0 = before
+page 1, N = after page N). It is part of component state, not the undo stack.
+Undo/redo does not restore cursor position (consistent with how text editors
+handle this).
+
+**Implementation:**
+- The cursor is rendered as a CSS pseudo-element highlight (2px vertical bar,
+  accent color) on the gap element in the grid.
+- The grid adds explicit gap divs between thumbnails that are click-targets for
+  cursor placement; they are invisible except when the cursor is on them or on
+  hover.
+
+#### 17.3.2 Selection Model
+
+Adopt the standard multi-select model used by all mainstream document editors
+(file managers, presentation tools, PDF editors):
+
+| Interaction | Effect |
+|-------------|--------|
+| **Click** on a page | Select it exclusively; deselect all others; set cursor after it |
+| **Ctrl+click** | Toggle page in/out of selection; do not move cursor |
+| **Shift+click** | Range-select from anchor page to clicked page (inclusive); anchor is the last page clicked without Shift or Ctrl |
+| **Click on empty space** | Deselect all; move cursor to nearest gap |
+| **Ctrl+A** | Select all |
+| **Escape** | Deselect all |
+| **Arrow keys** | Move selection one page in that direction (with grid-aware wrapping); Shift+Arrow extends selection |
+| **Delete / Backspace** | Delete selected pages |
+| **Rubber-band drag** | See 17.3.3 |
+
+The **anchor page** concept: clicking without Shift sets the anchor. Shift+click
+always selects from anchor to current, replacing any prior shift-extension.
+This is identical to how file managers work (Windows Explorer, macOS Finder,
+Nautilus).
+
+**Visual feedback:**
+- Selected pages: elevated card with accent-color border (or checkmark overlay).
+- The anchor page has a subtly different indicator (thicker border or dot) so
+  the user can see where a Shift+click range will start from.
+- Cursor gap: visible 2px line between thumbnails.
+
+#### 17.3.3 Rubber-Band (Lasso) Selection
+
+Click-drag on empty space in the grid draws a translucent rectangle. On mouse
+up, all pages whose thumbnails overlap the rectangle are added to the selection
+(replacing any prior selection, unless Ctrl is held during the drag).
+
+**Implementation:**
+- Track `mousedown` on the grid container (not on a page card); if the target
+  is a gap or the grid background, start a rubber-band.
+- Render a `position: absolute` div with semi-transparent fill and border,
+  expanding as the mouse moves.
+- On `mouseup`, compute which page cards intersect the rubber-band rect using
+  `getBoundingClientRect()` comparisons.
+- Clean up the rubber-band div.
+
+This is the same mechanism used by desktop file managers, LibreOffice Impress's
+slide panel, and PDF thumbnail panels (Adobe Acrobat, Foxit, PDF-XChange).
+
+**Touch equivalent:** On touch devices, rubber-band is impractical (conflicts
+with scroll). Instead, long-press on a page enters "selection mode" where
+subsequent taps toggle selection. A "select mode" indicator appears in the
+toolbar when active.
+
+#### 17.3.4 Context Menu
+
+Right-click on a selected page shows a context menu (using Vuetify's `v-menu`
+with `activator="parent"` pattern):
+
+| Action | Enabled when |
+|--------|-------------|
+| Rotate CW | ≥1 page selected |
+| Rotate CCW | ≥1 page selected |
+| Delete | ≥1 page selected |
+| Insert blank before | ≥1 page selected |
+| Insert blank after | ≥1 page selected |
+| Select all | always |
+| Deselect all | ≥1 page selected |
+
+Right-click on an unselected page first selects it, then shows the menu (same
+behavior as file managers).
+
+#### 17.3.5 Virtualized Thumbnail Rendering
+
+For documents over ~50 pages, rendering all thumbnail `<img>` tags creates DOM
+pressure and triggers many simultaneous HTTP requests.
+
+**Strategy: IntersectionObserver + request queue**
+
+```javascript
+// Mount observer on each page card
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      enqueueThumb(entry.target.dataset.pageIdx);
+    } else {
+      dequeueThumb(entry.target.dataset.pageIdx); // abort if not yet fetched
+    }
+  });
+}, { rootMargin: '200px' }); // prefetch 200px outside viewport
+```
+
+**Request queue:**
+- Maintain a queue of pending thumbnail fetch tasks, ordered by distance from
+  viewport center.
+- Fetch up to 4 thumbnails concurrently (balances throughput vs. server load).
+- Requests for pages that have scrolled out of range are cancelled via
+  `AbortController` if still in flight.
+- Already-fetched thumbnails are kept in a Map keyed by `originalIndex`. When
+  a page is moved (edit-list reorder), its existing thumbnail is reused without
+  re-fetching.
+
+**Skeleton loading:** While a thumbnail is loading, show a grey placeholder
+card with a spinner or shimmer animation (Vuetify's `v-skeleton-loader`
+component, type `image`). This prevents layout shifts when thumbnails load.
+
+**Virtual DOM threshold:** Below 50 pages, render all thumbnails eagerly (no
+observer overhead). Above 50, activate IntersectionObserver. This threshold is
+a simple computed property and can be tuned.
+
+#### 17.3.6 Jump-to-Page Navigation
+
+A "Go to page" input in the status bar:
+
+```
+Status:  47 pages · scan_2024-01-15.pdf + 3 pages  │ Go to: [___]
+```
+
+Typing a number and pressing Enter (or clicking the arrow) scrolls the grid
+to center that page in the viewport. Implementation: `page.scrollIntoView({
+behavior: 'smooth', block: 'center' })`. The page briefly highlights with a
+pulse animation to orient the user.
+
+#### 17.3.7 Source Section Dividers
+
+When the editor session contains pages from multiple source files, render a
+subtle section header between source groups:
+
+```
+  ┌─────┐  ┌─────┐  ┌─────┐
+  │  1  │  │  2  │  │  3  │    ← from: scan_fronts.pdf (8 pages)
+  └─────┘  └─────┘  └─────┘
+
+  ─── scan_backs.pdf (8 pages) ───────────────────────────────
+
+  ┌─────┐  ┌─────┐  ┌─────┐
+  │  9  │  │ 10  │  │ 11  │    ← from: scan_backs.pdf
+  └─────┘  └─────┘  └─────┘
+```
+
+Section dividers are non-interactive cosmetic elements, rendered as `v-divider`
+with a label chip. They disappear after the user reorders pages (since the
+source-group structure has been broken), or they can be toggled off by the user.
+
+**Implementation:** After any reorder operation, the dividers are recomputed by
+scanning for runs of consecutive pages from the same source. If a run has been
+broken, no divider is shown for that source.
+
+#### 17.3.8 Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `←` `→` `↑` `↓` | Move selection one page in grid direction |
+| `Shift+←/→/↑/↓` | Extend selection |
+| `Ctrl+A` | Select all |
+| `Escape` | Deselect all |
+| `Delete` / `Backspace` | Delete selected |
+| `Ctrl+Z` / `Ctrl+Shift+Z` | Undo / Redo (already planned) |
+| `Ctrl+Home` / `Ctrl+End` | Jump to first / last page |
+| `PgUp` / `PgDn` | Scroll by one viewport height |
+| `Enter` or `Space` | (on a selected page) open that page in single-page view (Phase 3+) |
+
+The editor component must capture these keys only when it is the active dialog
+(standard Vuetify behavior — dialogs trap focus). Ctrl+Z/S must not also
+trigger browser undo/save — `event.preventDefault()` after handling.
+
+---
+
+### 17.4 Session Lifecycle with Viewer Integration
+
+The single-session limit (Section 6.4) remains in force. The sequence changes
+slightly:
+
+```
+User opens dialog in View mode
+  → No session created yet. iframe points to /api/v1/files/{name}?preview=true
+
+User clicks Edit tab
+  → POST /api/v1/editor/sessions  { files: [name] }
+  → Session created; editor grid loads
+
+User makes edits, clicks View tab
+  → POST /api/v1/editor/sessions/:id/preview  { pages: [...] }
+  → preview.pdf assembled in session temp dir
+  → iframe points to /api/v1/editor/sessions/:id/preview
+
+User clicks Edit tab
+  → Instant switch (grid stays mounted)
+
+User clicks View tab again (no new edits)
+  → editListHash unchanged → no new assembly → existing iframe stays
+
+User closes dialog
+  → If dirty: confirm "Discard changes?"
+  → DELETE /api/v1/editor/sessions/:id
+  → Temp dir cleaned up (includes preview.pdf)
+```
+
+**Multiple preview.pdf versions:** Only the latest assembled preview is kept.
+Each new preview request overwrites `session/preview.pdf`. The iframe always
+fetches from the same URL so caching must be defeated: append a
+`?v={editListHash}` query param to the iframe src on each update. This forces
+the browser to reload without needing cache-control headers.
+
+---
+
+### 17.5 Implementation Checklist
+
+**Shared dialog refactor:**
+- [ ] Extract `DocumentDialog.vue` component with View/Edit mode switcher
+- [ ] Move iframe logic from `Files.vue` into `DocumentDialog.vue`
+- [ ] Move editor grid from `Editor.vue` into `DocumentDialog.vue` (or keep
+  `Editor.vue` as a slot/child with the dialog as the outer frame)
+- [ ] Update `Files.vue` to use `DocumentDialog.vue` for both preview and edit
+  entry points
+- [ ] Lazy session creation on first Edit tab click
+
+**Server: preview endpoint:**
+- [ ] Add `POST /sessions/:id/preview` to `express-configurer.js`
+- [ ] Add `assemblePreview(editList)` method to `EditorSession`
+- [ ] Add `GET /sessions/:id/preview` to serve the file
+- [ ] Add `previewEtag` field to session for hash-based skip logic
+
+**Large document UX:**
+- [ ] Add cursor-position state to editor component; render gap highlights
+- [ ] Update "Add Pages" and "Add Blank" to insert at cursor position
+- [ ] Implement Ctrl+click, Shift+click, anchor tracking
+- [ ] Implement rubber-band selection (mouse drag on grid background)
+- [ ] Add context menu (right-click) with page operations
+- [ ] Implement IntersectionObserver with request queue and AbortController
+- [ ] Add skeleton loading placeholders
+- [ ] Add "Go to page" input in status bar
+- [ ] Add source section dividers (initial load only)
+- [ ] Implement keyboard navigation (arrow keys, PgUp/Dn, Ctrl+Home/End)
+- [ ] Long-press → selection mode on touch devices
