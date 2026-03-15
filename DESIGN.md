@@ -1505,3 +1505,50 @@ Independent grid enhancements. No server changes.
 - [x] In selection mode, taps toggle page selection
 - [x] "Selection mode" indicator in toolbar
 - [x] Tap outside pages or press a "Done" button exits selection mode
+
+### 17.7 Multi-Item Drag-and-Drop
+
+Uses SortableJS's built-in **MultiDrag** plugin (ships with sortablejs 1.14.0)
+to drag multiple selected pages as a unit.
+
+**Why not manual post-splice regroup?** vuedraggable's `onDragUpdate` does a
+single-item `splice()` on the v-model array before `@end` fires. The array is
+already wrong by the time our handler runs, making reconstruction fragile and
+providing no visual feedback during drag.
+
+**Selection sync:** MultiDrag has its own click-based selection (`selectedClass`
++ internal `multiDragElements` array). We suppress it with a `multiDragKey`
+set to `"NONEXISTENT"` and a dummy `selectedClass` (`sortable-multidrag-selected`)
+with no CSS rules. A Vue watcher on `selected` calls `_syncMultiDragSelection()`
+in `$nextTick`, which iterates the sortable container's children and calls
+`Sortable.utils.select(el)` / `deselect(el)` to keep MultiDrag in sync with
+Vue's state.
+
+**Array reconstruction (`_handleMultiDragDrop`):**
+1. On `@start`, snapshot page IDs in pre-drag order + a Map of id→page object.
+2. On `@end` with `evt.oldIndicies.length > 1` (multi-drag detected):
+   - Map `evt.oldIndicies[].index` through the snapshot to get dragged IDs.
+   - Compute insertion point = `Math.min(evt.newIndicies[].index)`.
+   - Build new array: remove dragged IDs from snapshot, re-insert at insertion
+     point in original relative order.
+   - Map IDs back to page objects from snapshot (bypassing vuedraggable's
+     already-mangled `this.pages`).
+3. Single-drag: vuedraggable handled the splice correctly; just update cursor.
+
+**Known limitation:** The folding animation (items visually collapsing onto the
+drag ghost) depends on SortableJS's `animation` option. vuedraggable defaults
+this to 0; users can set `:animation="150"` on the `<draggable>` element.
+
+### 17.8 Touch Rubber-Band Fix
+
+**Problem:** Vue's `@touchstart="handler"` registers a passive event listener.
+Calling `e.preventDefault()` inside the handler is silently ignored by the
+browser, so native gestures (scroll, context menu, text selection) fire on top
+of our rubber-band selection.
+
+**Fix:** Remove the template `@touchstart` binding from the scroll area. In
+`mounted()`, manually register via `addEventListener('touchstart', handler,
+{ passive: false })`, and clean up in `beforeUnmount()`. Additionally, when
+`touchSelectMode` is active, the scroll area gets a dynamic class
+`editor-touch-select-active` with `touch-action: none`, telling the browser
+to not interpret any touch gestures on that element.
