@@ -131,6 +131,7 @@ module.exports = class Config {
         { name: '@:paper-size.junior-legal (@:paper-size.portrait)', dimensions: { x: 127, y: 203.2 } },
         { name: '@:paper-size.half-letter (@:paper-size.portrait)', dimensions: { x: 139.7, y: 215.9 } }
       ],
+      scanOnTabClick: Constants.SCAN_ON_TAB_CLICK_USER,
     });
 
     const config = this;

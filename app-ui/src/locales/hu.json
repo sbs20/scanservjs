@@ -180,6 +180,7 @@
     "reset": "Reset",
     "clear-storage:description": "Törli a gyorsítótárazott paraméterek helyi tárolását",
     "clear-storage": "Törlés",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",

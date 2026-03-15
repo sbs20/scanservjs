@@ -60,6 +60,7 @@ module.exports = class Context {
 
     this.devices = devices;
     this.version = config.version;
+    this.scanOnTabClick = config.scanOnTabClick;
     this.diagnostics = [
       diagnostic(config.scanimage),
       diagnostic(config.convert)

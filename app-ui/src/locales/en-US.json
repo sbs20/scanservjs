@@ -180,6 +180,7 @@
     "reset": "Reset",
     "clear-storage:description": "Clears local storage of any cached parameters",
     "clear-storage": "Clear",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",

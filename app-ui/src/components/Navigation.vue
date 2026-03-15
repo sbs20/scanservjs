@@ -59,10 +59,10 @@
 </template>
 
 <script>
+import { mdiCamera, mdiCog, mdiFileDocumentMultiple, mdiInformation, mdiTools } from '@mdi/js';
+import Common from '../classes/common';
 import Constants from '../classes/constants';
 import Storage from '../classes/storage';
-import { mdiCamera, mdiCog, mdiFileDocumentMultiple, mdiInformation, mdiTools } from '@mdi/js';
-
 const storage = Storage.instance();
 export default {
   name: 'Navigation',
@@ -87,7 +87,8 @@ export default {
   data() {
     return {
       drawer: false,
-      version: Constants.Version
+      version: Constants.Version,
+      context: {}
     };
   },
 
@@ -98,8 +99,28 @@ export default {
     }
   },
 
+  mounted() {
+    Common.fetch('api/v1/context').then(context => {
+      this.context = context;
+    });
+  },
+
   methods: {
     go(location) {
+      if (this.$route.path === location && location === '/scan') {
+        const config = this.context.scanOnTabClick;
+        let trigger = false;
+        
+        if (config === Constants.ScanOnTabClick.Always) {
+          trigger = true;
+        } else if (config === Constants.ScanOnTabClick.User) {
+          trigger = storage.settings.scanOnTabClick;
+        }
+        
+        if (trigger) {
+          window.dispatchEvent(new CustomEvent('scan-trigger'));
+        }
+      }
       if (this.$route.path !== location) {
         this.$router.push(location);
       }

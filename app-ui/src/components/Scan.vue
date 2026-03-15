@@ -469,6 +469,7 @@ export default {
   },
 
   mounted() {
+    window.addEventListener('scan-trigger', this.scan);
     this._resizePreview();
     
     // PWA Kiosk mode: reset settings if requested via URL

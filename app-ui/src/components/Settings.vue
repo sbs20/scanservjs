@@ -46,6 +46,16 @@
             </div>
           </template>
         </settings-item>
+        <settings-item v-if="context.scanOnTabClick === ScanOnTabClick.User">
+          <template #description>
+            {{ $t('settings.scan-on-tab-click:description') }}
+          </template>
+          <template #action>
+            <div style="max-width: 10rem;">
+              <v-switch v-model="settings.scanOnTabClick" />
+            </div>
+          </template>
+        </settings-item>
       </template>
     </settings-section>
 
@@ -195,6 +205,7 @@ export default {
     return {
       mdiDelete,
       mdiRefresh,
+      ScanOnTabClick: Constants.ScanOnTabClick,
       mdiClose,
       mdiChevronDown,
       mdiChevronUp,

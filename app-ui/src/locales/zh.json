@@ -164,6 +164,7 @@
     "reset": "重置",
     "clear-storage:description": "清空本地缓存",
     "clear-storage": "清空",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",

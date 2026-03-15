@@ -180,6 +180,7 @@
     "reset": "Resetovat",
     "clear-storage:description": "Uvolní veškerou mezipaměť vytvořenou v lokálním úložišti prohlížeče",
     "clear-storage": "Uvolnit",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",

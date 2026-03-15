@@ -177,6 +177,7 @@
     "reset": "إعادة تعيين",
     "clear-storage:description": "حذف أي إعدادات مؤقتة من التخزين المحلي",
     "clear-storage": "حذف",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",

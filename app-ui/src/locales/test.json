@@ -182,6 +182,7 @@
     "reset": "##SETTINGS.RESET",
     "clear-storage:description": "##SETTINGS.CLEAR-STORAGE:DESCRIPTION",
     "clear-storage": "##SETTINGS.CLEAR",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
     "clear-storage:notification": "Local scan parameters cleared.",
     "pwa": {
       "section-title": "Desktop App (PWA)",
