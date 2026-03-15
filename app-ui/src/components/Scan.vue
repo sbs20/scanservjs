@@ -93,12 +93,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.top" :label="$t('scan.top')" type="text"
                  @input="onDimensionInput($event, 'top')" @blur="commitDimension('top', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.top, 'y')" type="text"
                  @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
             <v-col cols="2" />
           </v-row>
@@ -106,12 +106,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.left" :label="$t('scan.left')" type="text"
                  @input="onDimensionInput($event, 'left')" @blur="commitDimension('left', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.left, 'x')" type="text"
                  @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
             <v-col cols="2" />
           </v-row>
@@ -119,12 +119,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.width" :label="$t('scan.width')" type="text"
                  @input="onDimensionInput($event, 'width')" @blur="commitDimension('width', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.width, 'x')" type="text"
                  @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
             <v-col cols="2" class="lock-arm lock-arm-top" />
           </v-row>
@@ -145,12 +145,12 @@
             <v-col cols="6">
               <v-text-field :model-value="request.params.height" :label="$t('scan.height')" type="text"
                  @input="onDimensionInput($event, 'height')" @blur="commitDimension('height', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" />
+                 suffix="mm" hide-details="auto" class="dimension-input" />
             </v-col>
             <v-col cols="4" class="d-flex align-center justify-center pl-2">
               <v-text-field :model-value="toPixels(request.params.height, 'y')" type="text"
                  @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" />
+                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
             </v-col>
             <v-col cols="2" class="lock-arm lock-arm-bottom" />
           </v-row>
@@ -1150,8 +1150,9 @@ export default {
 </script>
 
 <style scoped>
-.centered-input :deep(input) {
-  text-align: center;
+
+.dimension-input :deep(input) {
+  text-align: right;
 }
 .cropper {
   max-width: 100%;
