@@ -1545,3 +1545,40 @@ of our rubber-band selection.
 `touchSelectMode` is active, the scroll area gets a dynamic class
 `editor-touch-select-active` with `touch-action: none`, telling the browser
 to not interpret any touch gestures on that element.
+
+### 17.9 Duplex Page Operations
+
+Users scanning duplex documents on simplex ADFs feed a stack twice — fronts
+then backs — producing pages like `F1,F2,F3,B3,B2,B1` that need reassembly
+into `F1,B1,F2,B2,F3,B3`. Manually dragging pages is impractical for 50+ page
+documents. Five bulk page-order operations cover the common duplex workflows.
+
+**Operations:**
+
+| Operation | Transform | Primary use case |
+|-----------|-----------|-----------------|
+| Reverse | Reverse page order | Fix reversed back pages |
+| Interleave (reversed) | Split in half, reverse 2nd half, zip | Standard 2-pass ADF duplex reassembly |
+| Interleave | Split in half, zip as-is | Face-up output scanners |
+| Swap pairs | Transpose each consecutive pair | Fix per-sheet front/back inversion |
+| Split odd/even | Odd-indexed pages, then even-indexed | Undo an interleave (deinterleave) |
+
+**Scope model:** Operations apply to a contiguous selection (≥2 pages), or the
+entire document if nothing or only one page is selected. Discontiguous
+selections disable all operations. The toolbar dropdown header shows a scope
+label ("Apply to N selected pages" or "Apply to all N pages").
+
+**Edge cases:** Odd page count — first half gets `ceil(n/2)`, last page
+unpaired stays in place. Swap pairs with odd count — last page stays.
+Interleave/deinterleave require ≥4 pages to be meaningful.
+
+**Implementation pattern:** All five operations share a `_applyPageOrderOp(fn)`
+helper that extracts the working slice from `this.pages`, applies the transform
+function, splices the result back, sets `hasReordered`, updates selection to
+cover the affected range, and pushes undo state.
+
+**UI layout:** A toolbar dropdown menu (shuffle icon) contains all five
+operations to avoid toolbar clutter. The context menu includes only Reverse and
+Interleave (reversed) — the two most common operations — to keep it short.
+Both the normal toolbar and the touch selection-mode toolbar include the
+dropdown.

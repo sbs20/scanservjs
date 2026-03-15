@@ -204,7 +204,16 @@
     "deselect-all": "Alles deselecteren",
     "jump-to": "Ga naar pagina",
     "selection-mode": "Selectiemodus",
-    "done": "Klaar"
+    "done": "Klaar",
+    "page-order": "Paginavolgorde",
+    "scope-selection": "Toepassen op {0} geselecteerde pagina's",
+    "scope-all": "Toepassen op alle {0} pagina's",
+    "op-reverse": "Paginavolgorde omkeren",
+    "op-interleave": "Voor- en achterkanten samenvoegen",
+    "op-interleave-reverse": "Voor- en achterkanten samenvoegen (omgekeerd)",
+    "op-interleave-reverse-hint": "Meest gebruikelijk voor dubbelzijdig scannen met simplex ADF",
+    "op-swap-pairs": "Elk paginapaar verwisselen",
+    "op-deinterleave": "Voor- en achterkanten scheiden"
   },
   "settings": {
     "title": "@:navigation.settings",

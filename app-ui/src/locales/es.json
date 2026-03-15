@@ -204,7 +204,16 @@
     "deselect-all": "Deseleccionar todo",
     "jump-to": "Ir a la página",
     "selection-mode": "Modo selección",
-    "done": "Listo"
+    "done": "Listo",
+    "page-order": "Orden de páginas",
+    "scope-selection": "Aplicar a {0} páginas seleccionadas",
+    "scope-all": "Aplicar a las {0} páginas",
+    "op-reverse": "Invertir orden de páginas",
+    "op-interleave": "Combinar anverso y reverso",
+    "op-interleave-reverse": "Combinar anverso y reverso (invertido)",
+    "op-interleave-reverse-hint": "Más común para escaneo dúplex con ADF símplex",
+    "op-swap-pairs": "Intercambiar cada par de páginas",
+    "op-deinterleave": "Separar anverso y reverso"
   },
   "settings": {
     "title": "@:navigation.settings",

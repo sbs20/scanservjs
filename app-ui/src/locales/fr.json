@@ -206,7 +206,16 @@
     "deselect-all": "Tout désélectionner",
     "jump-to": "Aller à la page",
     "selection-mode": "Mode sélection",
-    "done": "Terminé"
+    "done": "Terminé",
+    "page-order": "Ordre des pages",
+    "scope-selection": "Appliquer aux {0} pages sélectionnées",
+    "scope-all": "Appliquer aux {0} pages",
+    "op-reverse": "Inverser l'ordre des pages",
+    "op-interleave": "Combiner recto et verso",
+    "op-interleave-reverse": "Combiner recto et verso (inversé)",
+    "op-interleave-reverse-hint": "Le plus courant pour la numérisation recto-verso avec ADF simplex",
+    "op-swap-pairs": "Permuter chaque paire de pages",
+    "op-deinterleave": "Séparer recto et verso"
   },
   "settings": {
     "title": "@:navigation.settings",

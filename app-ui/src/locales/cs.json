@@ -213,7 +213,16 @@
     "deselect-all": "Zrušit výběr",
     "jump-to": "Přejít na stránku",
     "selection-mode": "Režim výběru",
-    "done": "Hotovo"
+    "done": "Hotovo",
+    "page-order": "Pořadí stránek",
+    "scope-selection": "Použít na {0} vybraných stránek",
+    "scope-all": "Použít na všech {0} stránek",
+    "op-reverse": "Obrátit pořadí stránek",
+    "op-interleave": "Spojit přední a zadní strany",
+    "op-interleave-reverse": "Spojit přední a zadní strany (obráceně)",
+    "op-interleave-reverse-hint": "Nejběžnější pro oboustranné skenování se simplexním ADF",
+    "op-swap-pairs": "Prohodit každý pár stránek",
+    "op-deinterleave": "Oddělit přední a zadní strany"
   },
   "settings": {
     "title": "@:navigation.settings",

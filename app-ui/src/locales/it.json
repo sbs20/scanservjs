@@ -215,7 +215,16 @@
     "deselect-all": "Deseleziona tutto",
     "jump-to": "Vai alla pagina",
     "selection-mode": "Modalità selezione",
-    "done": "Fatto"
+    "done": "Fatto",
+    "page-order": "Ordine pagine",
+    "scope-selection": "Applica a {0} pagine selezionate",
+    "scope-all": "Applica a tutte le {0} pagine",
+    "op-reverse": "Inverti ordine pagine",
+    "op-interleave": "Combina fronte e retro",
+    "op-interleave-reverse": "Combina fronte e retro (invertito)",
+    "op-interleave-reverse-hint": "Più comune per scansione fronte-retro con ADF simplex",
+    "op-swap-pairs": "Scambia ogni coppia di pagine",
+    "op-deinterleave": "Separa fronte e retro"
   },
   "settings": {
     "title": "@:navigation.settings",

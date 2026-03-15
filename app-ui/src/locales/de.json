@@ -206,7 +206,16 @@
     "deselect-all": "Auswahl aufheben",
     "jump-to": "Zur Seite",
     "selection-mode": "Auswahlmodus",
-    "done": "Fertig"
+    "done": "Fertig",
+    "page-order": "Seitenreihenfolge",
+    "scope-selection": "Auf {0} ausgewählte Seiten anwenden",
+    "scope-all": "Auf alle {0} Seiten anwenden",
+    "op-reverse": "Seitenreihenfolge umkehren",
+    "op-interleave": "Vorder- und Rückseiten zusammenführen",
+    "op-interleave-reverse": "Vorder- und Rückseiten zusammenführen (umgekehrt)",
+    "op-interleave-reverse-hint": "Häufigste Variante für Duplex-Scannen mit Simplex-ADF",
+    "op-swap-pairs": "Seitenpaare vertauschen",
+    "op-deinterleave": "Vorder- und Rückseiten trennen"
   },
   "settings": {
     "title": "@:navigation.settings",
