@@ -194,6 +194,11 @@ const EndpointSpecs = [
   },
   {
     method: 'post',
+    path: '/api/v1/autocrop',
+    callback: async (req, res) => res.send(await api.autoCrop(req.body))
+  },
+  {
+    method: 'post',
     path: '/api/v1/preview',
     callback: async (req, res) => res.send(await api.createPreview(req.body))
   },

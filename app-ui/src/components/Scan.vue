@@ -96,8 +96,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.top)" label="px" type="text"
-                 @input="onPixelInput" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
+                 @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -108,8 +108,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.left)" label="px" type="text"
-                 @input="onPixelInput" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
+                 @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -120,8 +120,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.width)" label="px" type="text"
-                 @input="onPixelInput" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
+                 @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -132,8 +132,8 @@
                  prefix="mm" hide-details="auto" />
             </v-col>
             <v-col cols="5" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.height)" label="px" type="text"
-                 @input="onPixelInput" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
+              <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
+                 @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
                  hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
@@ -573,12 +573,58 @@ export default {
       });
     },
 
+    // Transform a rectangle from deskewed (pre-rotation) space to display
+    // (post-rotation) space. Only applies when magic (autocrop) is active.
+    _deskewedToDisplayRect(rect) {
+      if (!this.transformations.magic) return rect;
+      const r = this.transformations.rotation || 0;
+      if (r === 0) return rect;
+      const sw = this.deviceSize.width;
+      const sh = this.deviceSize.height;
+      const { left, top, width, height } = rect;
+      switch (r) {
+        case 90:
+          return { left: sh - top - height, top: left, width: height, height: width };
+        case 180:
+          return { left: sw - left - width, top: sh - top - height, width, height };
+        case 270:
+          return { left: top, top: sw - left - width, width: height, height: width };
+        default:
+          return rect;
+      }
+    },
+
+    // Inverse of _deskewedToDisplayRect: transform from display (post-rotation)
+    // space back to deskewed (pre-rotation) space.
+    _displayToDeskewedRect(rect) {
+      if (!this.transformations.magic) return rect;
+      const r = this.transformations.rotation || 0;
+      if (r === 0) return rect;
+      const sw = this.deviceSize.width;
+      const sh = this.deviceSize.height;
+      const { left, top, width, height } = rect;
+      switch (r) {
+        case 90:
+          return { left: top, top: sh - left - width, width: height, height: width };
+        case 180:
+          return { left: sw - left - width, top: sh - top - height, width, height };
+        case 270:
+          return { left: sw - top - height, top: left, width: height, height: width };
+        default:
+          return rect;
+      }
+    },
+
     pixelsPerMm() {
       const scanner = this.deviceSize;
       const image = this.$refs.cropper.imageSize;
+      // When magic is active and image is rotated 90/270, the display image axes
+      // are swapped relative to the scanner bed axes.
+      const swapped = this.transformations.magic
+        && (this.transformations.rotation === 90 || this.transformations.rotation === 270);
       return {
-        x: image.width / scanner.width,
-        y: image.height / scanner.height
+        x: image.width / (swapped ? scanner.height : scanner.width),
+        y: image.height / (swapped ? scanner.width : scanner.height)
       };
     },
 
@@ -592,8 +638,9 @@ export default {
     },
 
     cropperDefaultPosition() {
+      const displayRect = this._deskewedToDisplayRect(this.request.params);
       const adjusted = this.scaleCoordinates(
-        this.request.params,
+        displayRect,
         this.pixelsPerMm().x,
         this.pixelsPerMm().y);
 
@@ -604,8 +651,9 @@ export default {
     },
 
     cropperDefaultSize() {
+      const displayRect = this._deskewedToDisplayRect(this.request.params);
       const adjusted = this.scaleCoordinates(
-        this.request.params,
+        displayRect,
         this.pixelsPerMm().x,
         this.pixelsPerMm().y);
 
@@ -625,8 +673,9 @@ export default {
 
     onCoordinatesChange() {
       if (!this.$refs.cropper) return;
+      const displayRect = this._deskewedToDisplayRect(this.request.params);
       const adjusted = this.scaleCoordinates(
-        this.request.params,
+        displayRect,
         this.pixelsPerMm().x,
         this.pixelsPerMm().y);
 
@@ -634,10 +683,12 @@ export default {
     },
 
     onCropperChange({ coordinates }) {
-      const adjusted = this.scaleCoordinates(
+      const ppm = this.pixelsPerMm();
+      const displayMm = this.scaleCoordinates(
         coordinates,
-        1 / this.pixelsPerMm().x,
-        1 / this.pixelsPerMm().y);
+        1 / ppm.x,
+        1 / ppm.y);
+      const adjusted = this._displayToDeskewedRect(displayMm);
 
       const scanner = this.deviceSize;
       const params = this.request.params;
@@ -946,9 +997,10 @@ export default {
       }
     },
 
-    toPixels(mm) {
-      const ppi = parseFloat(this.request.params.resolution) || 300;
-      return Math.round((mm / 25.4) * ppi);
+    toPixels(mm, axis) {
+      if (!this.$refs.cropper) return 0;
+      const scale = this.pixelsPerMm()[axis];
+      return Math.round(mm * scale);
     },
 
     onDimensionInput(event, field) {
@@ -971,8 +1023,8 @@ export default {
     commitPixel(field, event) {
       let val = parseInt(event.target.value);
       if (isNaN(val)) val = 0;
-      const ppi = parseFloat(this.request.params.resolution) || 300;
-      const mm = round((val / ppi) * 25.4, 1);
+      const axis = (field === 'left' || field === 'width') ? 'x' : 'y';
+      const mm = round(val / this.pixelsPerMm()[axis], 1);
       const scanner = this.deviceSize;
       const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
       this.request.params[field] = Math.min(Math.max(0, mm), max);

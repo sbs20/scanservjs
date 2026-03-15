@@ -142,6 +142,8 @@ class ScanController {
 
   /**
    * Build ImageMagick transformation parameters
+   * @param {Object} config
+   * @param {Object} request
    * @param {Object} transformations
    * @returns {string}
    */
@@ -173,6 +175,9 @@ class ScanController {
         // Safety for legacy placeholders
         magic = magic.replace(/{TCX}/g, '0');
         magic = magic.replace(/{TCY}/g, '0');
+        if (/[;|&$`\n\r(){}<>]/.test(magic)) {
+          throw new Error('Transformation contains unsafe characters');
+        }
         params.push(magic);
 
         // Surgical crop to remove AABB padding in the final scan
