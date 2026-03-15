@@ -16,7 +16,12 @@
     "fork-issue": "Tento fork – nahlašujte problémy a prohlédněte si zdrojový kód zde:",
     "api": "OpenAPI dokumentace:",
     "system-info": "Informace o systému",
-    "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:"
+    "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:",
+    "logs": "Protokoly",
+    "logs-copy": "Kopírovat",
+    "logs-refresh": "Obnovit",
+    "logs-copied": "Protokoly zkopírovány do schránky",
+    "logs-empty": "Žádné záznamy v protokolu"
   },
   "colors": {
     "accent-4": "Výchozí",
@@ -66,7 +71,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Stáhnout",
+    "button:delete": "Smazat",
+    "button:rename": "Přejmenovat"
   },
   "navigation": {
     "scan": "Skenování",
@@ -163,7 +171,11 @@
     "message:no-devices": "Nebyla nalezena žádná zařízení",
     "message:deleted-preview": "Náhled byl odstraněn",
     "message:turn-documents": "Obraťte skenované dokumenty",
-    "message:preview-of-page": "Náhled strany č."
+    "message:preview-of-page": "Náhled strany č.",
+    "rotate-cw": "Otočit o 90° po směru hodinových ručiček",
+    "rotate-ccw": "Otočit o 90° proti směru hodinových ručiček",
+    "flip-h": "Překlopit vodorovně",
+    "flip-v": "Překlopit svisle"
   },
   "settings": {
     "title": "@:navigation.settings",

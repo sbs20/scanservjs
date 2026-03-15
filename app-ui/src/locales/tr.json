@@ -14,7 +14,12 @@
     "fork-upstream": "Orijinal proje — Sam Strachan:",
     "fork-issue": "Bu fork — sorunları bildirin ve kaynak kodunu burada görüntüleyin:",
     "system-info": "Sistem bilgisi",
-    "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:"
+    "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:",
+    "logs": "Günlükler",
+    "logs-copy": "Kopyala",
+    "logs-refresh": "Yenile",
+    "logs-copied": "Günlükler panoya kopyalandı",
+    "logs-empty": "Günlük girişi yok"
   },
   "colors": {
     "accent-4": "Varsayılan",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "İndir",
+    "button:delete": "Sil",
+    "button:rename": "Yeniden Adlandır"
   },
   "navigation": {
     "scan": "Tara",
@@ -154,7 +162,11 @@
     "message:no-devices": "Hiç cihaz bulunamadı",
     "message:deleted-preview": "Önizleme silindi",
     "message:turn-documents": "Dökümanı çevir",
-    "message:preview-of-page": "Sayfaynın önizlemesi"
+    "message:preview-of-page": "Sayfaynın önizlemesi",
+    "rotate-cw": "Saat yönünde 90° döndür",
+    "rotate-ccw": "Saat yönünün tersine 90° döndür",
+    "flip-h": "Yatay çevir",
+    "flip-v": "Dikey çevir"
   },
   "settings": {
     "title": "@:navigation.settings",

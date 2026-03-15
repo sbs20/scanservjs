@@ -14,7 +14,12 @@
     "fork-upstream": "Оригинальный проект Сэма Страчана:",
     "fork-issue": "Этот форк — сообщайте о проблемах и просматривайте код здесь:",
     "system-info": "Информация о системе",
-    "issue": "Обратная связь, исходный код:"
+    "issue": "Обратная связь, исходный код:",
+    "logs": "Журналы",
+    "logs-copy": "Копировать",
+    "logs-refresh": "Обновить",
+    "logs-copied": "Журналы скопированы в буфер обмена",
+    "logs-empty": "Нет записей в журнале"
   },
   "colors": {
     "accent-4": "По умолчанию",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Скачать",
+    "button:delete": "Удалить",
+    "button:rename": "Переименовать"
   },
   "navigation": {
     "scan": "Сканирование",
@@ -154,7 +162,11 @@
     "message:no-devices": "Устройства не обнаружены",
     "message:deleted-preview": "Удалено",
     "message:turn-documents": "Повернуть",
-    "message:preview-of-page": "Предпросмотр страницы"
+    "message:preview-of-page": "Предпросмотр страницы",
+    "rotate-cw": "Повернуть на 90° по часовой стрелке",
+    "rotate-ccw": "Повернуть на 90° против часовой стрелки",
+    "flip-h": "Отразить по горизонтали",
+    "flip-v": "Отразить по вертикали"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -14,7 +14,12 @@
     "fork-upstream": "原始项目作者：Sam Strachan：",
     "fork-issue": "此 fork — 在此提交问题并查看源代码：",
     "system-info": "系统信息",
-    "issue": "反馈问题或查看源码："
+    "issue": "反馈问题或查看源码：",
+    "logs": "日志",
+    "logs-copy": "复制",
+    "logs-refresh": "刷新",
+    "logs-copied": "日志已复制到剪贴板",
+    "logs-empty": "无日志条目"
   },
   "colors": {
     "accent-4": "默认",
@@ -59,7 +64,10 @@
     "dialog:rename-save": "保存",
     "actions": "操作",
     "message:preview": "Previewing {0}",
-    "no-preview": "No preview available for this file type"
+    "no-preview": "No preview available for this file type",
+    "button:download": "下载",
+    "button:delete": "删除",
+    "button:rename": "重命名"
   },
   "navigation": {
     "scan": "扫描",
@@ -148,7 +156,11 @@
     "message:no-devices": "未找到设备",
     "message:deleted-preview": "已清除预览",
     "message:turn-documents": "旋转文件",
-    "message:preview-of-page": "页面预览"
+    "message:preview-of-page": "页面预览",
+    "rotate-cw": "顺时针旋转 90°",
+    "rotate-ccw": "逆时针旋转 90°",
+    "flip-h": "水平翻转",
+    "flip-v": "垂直翻转"
   },
   "settings": {
     "title": "@:navigation.settings",

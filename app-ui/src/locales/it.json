@@ -16,7 +16,12 @@
     "fork-issue": "Questo fork — segnala problemi e visualizza il codice sorgente qui:",
     "api": "Documentazione API Swagger:",
     "system-info": "Informazioni di sistema",
-    "issue": "Segnala problemi o visualizza il codice sorgente:"
+    "issue": "Segnala problemi o visualizza il codice sorgente:",
+    "logs": "Log",
+    "logs-copy": "Copia",
+    "logs-refresh": "Aggiorna",
+    "logs-copied": "Log copiati negli appunti",
+    "logs-empty": "Nessuna voce di log"
   },
   "colors": {
     "accent-4": "Predefinito",
@@ -68,7 +73,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Scarica",
+    "button:delete": "Elimina",
+    "button:rename": "Rinomina"
   },
   "navigation": {
     "scan": "Scansiona",
@@ -165,7 +173,11 @@
     "message:no-devices": "Nessun dispositivo trovato",
     "message:deleted-preview": "Anteprima eliminata",
     "message:turn-documents": "Capovolgi i documenti",
-    "message:preview-of-page": "Anteprima della pagina"
+    "message:preview-of-page": "Anteprima della pagina",
+    "rotate-cw": "Ruota di 90° in senso orario",
+    "rotate-ccw": "Ruota di 90° in senso antiorario",
+    "flip-h": "Capovolgi orizzontalmente",
+    "flip-v": "Capovolgi verticalmente"
   },
   "settings": {
     "title": "@:navigation.settings",

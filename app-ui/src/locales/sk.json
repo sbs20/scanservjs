@@ -16,7 +16,12 @@
     "fork-issue": "Tento fork – nahlasujte problémy a zobrazujte zdrojový kód tu:",
     "api": "Swagger API dokumentácia:",
     "system-info": "Informácie o systéme",
-    "issue": "Nahláste chybu alebo si prezrite zdrojový kód:"
+    "issue": "Nahláste chybu alebo si prezrite zdrojový kód:",
+    "logs": "Záznamy",
+    "logs-copy": "Kopírovať",
+    "logs-refresh": "Obnoviť",
+    "logs-copied": "Záznamy skopírované do schránky",
+    "logs-empty": "Žiadne záznamy v denníku"
   },
   "colors": {
     "accent-4": "Predvolená",
@@ -66,7 +71,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Stiahnuť",
+    "button:delete": "Zmazať",
+    "button:rename": "Premenovať"
   },
   "navigation": {
     "scan": "Skenovanie",
@@ -161,7 +169,11 @@
     "message:no-devices": "Žiadne zariadenia sa nenašli",
     "message:deleted-preview": "Náhľad bol vyčistený",
     "message:turn-documents": "Obráťte skenované dokumenty",
-    "message:preview-of-page": "Náhľad strany č."
+    "message:preview-of-page": "Náhľad strany č.",
+    "rotate-cw": "Otočiť o 90° v smere hodinových ručičiek",
+    "rotate-ccw": "Otočiť o 90° v protismere hodinových ručičiek",
+    "flip-h": "Prevrátiť vodorovne",
+    "flip-v": "Prevrátiť zvisle"
   },
   "settings": {
     "title": "@:navigation.settings",

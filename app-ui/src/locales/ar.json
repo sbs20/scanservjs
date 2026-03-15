@@ -15,7 +15,12 @@
     "fork-issue": "هذه النسخة المعدّلة — أبلغ عن المشكلات وعرض الكود المصدري هنا:",
     "api": "وثائق Swagger API:",
     "system-info": "معلومات النظام",
-    "issue": "قدم مشكلة أو اعرض المصدر:"
+    "issue": "قدم مشكلة أو اعرض المصدر:",
+    "logs": "السجلات",
+    "logs-copy": "نسخ",
+    "logs-refresh": "تحديث",
+    "logs-copied": "تم نسخ السجلات إلى الحافظة",
+    "logs-empty": "لا توجد إدخالات في السجل"
   },
   "colors": {
     "accent-4": "إفتراضي",
@@ -65,7 +70,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "تنزيل",
+    "button:delete": "حذف",
+    "button:rename": "إعادة التسمية"
   },
   "navigation": {
     "scan": "مسح",
@@ -160,7 +168,11 @@
     "message:no-devices": "لم يتم العثور على أي جهاز",
     "message:deleted-preview": "تم حذه المعاينة",
     "message:turn-documents": "اقلب المستند",
-    "message:preview-of-page": "معاينة من الصفحة"
+    "message:preview-of-page": "معاينة من الصفحة",
+    "rotate-cw": "تدوير 90° باتجاه عقارب الساعة",
+    "rotate-ccw": "تدوير 90° عكس اتجاه عقارب الساعة",
+    "flip-h": "قلب أفقي",
+    "flip-v": "قلب رأسي"
   },
   "settings": {
     "title": "@:navigation.settings",

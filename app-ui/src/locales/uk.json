@@ -17,7 +17,12 @@
     "system-info": "Інформація про систему",
     "fork": "Ви використовуєте форк спільноти з додатковими функціями та виправленнями. Будь ласка, повідомляйте про проблеми до репозиторію форку, а не до оригінального проекту.",
     "fork-upstream": "Оригінальний проект Сема Страчана:",
-    "fork-issue": "Цей форк — повідомляйте про проблеми та переглядайте вихідний код тут:"
+    "fork-issue": "Цей форк — повідомляйте про проблеми та переглядайте вихідний код тут:",
+    "logs": "Журнали",
+    "logs-copy": "Копіювати",
+    "logs-refresh": "Оновити",
+    "logs-copied": "Журнали скопійовано до буфера обміну",
+    "logs-empty": "Немає записів у журналі"
   },
   "colors": {
     "accent-4": "За замовчуванням",
@@ -69,7 +74,10 @@
     "thumbnail-size": "Thumbnail size",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Завантажити",
+    "button:delete": "Видалити",
+    "button:rename": "Перейменувати"
   },
   "navigation": {
     "scan": "Сканування",
@@ -164,7 +172,11 @@
     "message:no-devices": "Пристрої не знайдено",
     "message:deleted-preview": "Видалено",
     "message:turn-documents": "Повернути",
-    "message:preview-of-page": "Попередній перегляд сторінки"
+    "message:preview-of-page": "Попередній перегляд сторінки",
+    "rotate-cw": "Повернути на 90° за годинниковою стрілкою",
+    "rotate-ccw": "Повернути на 90° проти годинникової стрілки",
+    "flip-h": "Відзеркалити горизонтально",
+    "flip-v": "Відзеркалити вертикально"
   },
   "settings": {
     "title": "@:navigation.settings",

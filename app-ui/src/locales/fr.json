@@ -14,7 +14,12 @@
     "fork-upstream": "Projet original par Sam Strachan :",
     "fork-issue": "Ce fork — signalez des problèmes et consultez le code source ici :",
     "system-info": "Informations système",
-    "issue": "Signaler un problème ou afficher le code source:"
+    "issue": "Signaler un problème ou afficher le code source:",
+    "logs": "Journaux",
+    "logs-copy": "Copier",
+    "logs-refresh": "Actualiser",
+    "logs-copied": "Journaux copiés dans le presse-papiers",
+    "logs-empty": "Aucune entrée de journal"
   },
   "colors": {
     "accent-4": "Défaut",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Télécharger",
+    "button:delete": "Supprimer",
+    "button:rename": "Renommer"
   },
   "navigation": {
     "scan": "Scan",
@@ -156,7 +164,11 @@
     "message:no-devices": "Aucun scanner trouvé",
     "message:deleted-preview": "Aperçu supprimé",
     "message:turn-documents": "Tourner le document",
-    "message:preview-of-page": "Aperçu de la page"
+    "message:preview-of-page": "Aperçu de la page",
+    "rotate-cw": "Pivoter de 90° dans le sens des aiguilles d'une montre",
+    "rotate-ccw": "Pivoter de 90° dans le sens inverse des aiguilles d'une montre",
+    "flip-h": "Retourner horizontalement",
+    "flip-v": "Retourner verticalement"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -14,7 +14,12 @@
     "fork-upstream": "Proyecto original de Sam Strachan:",
     "fork-issue": "Este fork — informe problemas y vea el código fuente aquí:",
     "system-info": "Información del sistema",
-    "issue": "Indicar una incidencia o ver el código fuente:"
+    "issue": "Indicar una incidencia o ver el código fuente:",
+    "logs": "Registros",
+    "logs-copy": "Copiar",
+    "logs-refresh": "Actualizar",
+    "logs-copied": "Registros copiados al portapapeles",
+    "logs-empty": "No hay entradas de registro"
   },
   "colors": {
     "accent-4": "Estándar",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Descargar",
+    "button:delete": "Eliminar",
+    "button:rename": "Renombrar"
   },
   "navigation": {
     "scan": "Escanear",
@@ -154,7 +162,11 @@
     "message:no-devices": "No se encuentran dispositivos",
     "message:deleted-preview": "Vista previa eliminada",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Vista previa de página"
+    "message:preview-of-page": "Vista previa de página",
+    "rotate-cw": "Rotar 90° en sentido horario",
+    "rotate-ccw": "Rotar 90° en sentido antihorario",
+    "flip-h": "Voltear horizontalmente",
+    "flip-v": "Voltear verticalmente"
   },
   "settings": {
     "title": "@:navigation.settings",

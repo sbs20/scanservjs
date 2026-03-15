@@ -14,7 +14,12 @@
     "fork-upstream": "Oryginalny projekt autorstwa Sama Strackana:",
     "fork-issue": "Ten fork — zgłaszaj problemy i wyświetlaj kod źródłowy tutaj:",
     "system-info": "Informacje o systemie",
-    "issue": "Zgłoś problem lub zobacz kod źródłowy:"
+    "issue": "Zgłoś problem lub zobacz kod źródłowy:",
+    "logs": "Dzienniki",
+    "logs-copy": "Kopiuj",
+    "logs-refresh": "Odśwież",
+    "logs-copied": "Dzienniki skopiowane do schowka",
+    "logs-empty": "Brak wpisów w dzienniku"
   },
   "colors": {
     "accent-4": "Domyślny",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Pobierz",
+    "button:delete": "Usuń",
+    "button:rename": "Zmień nazwę"
   },
   "navigation": {
     "scan": "Skanuj",
@@ -154,7 +162,11 @@
     "message:no-devices": "Nie znaleziono żadnych urządzeń",
     "message:deleted-preview": "Usunięto podgląd",
     "message:turn-documents": "Przewróć dokumenty na drugą stronę",
-    "message:preview-of-page": "Podgląd strony"
+    "message:preview-of-page": "Podgląd strony",
+    "rotate-cw": "Obróć o 90° zgodnie z ruchem wskazówek zegara",
+    "rotate-ccw": "Obróć o 90° przeciwnie do ruchu wskazówek zegara",
+    "flip-h": "Odbij poziomo",
+    "flip-v": "Odbij pionowo"
   },
   "settings": {
     "title": "@:navigation.settings",

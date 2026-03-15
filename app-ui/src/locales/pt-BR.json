@@ -16,7 +16,12 @@
     "fork-issue": "Este fork — reporte problemas e veja o código-fonte aqui:",
     "api": "Documentação Swagger da API:",
     "system-info": "Informação do sistema",
-    "issue": "Relatar um problema ou ver código fonte:"
+    "issue": "Relatar um problema ou ver código fonte:",
+    "logs": "Registros",
+    "logs-copy": "Copiar",
+    "logs-refresh": "Atualizar",
+    "logs-copied": "Registros copiados para a área de transferência",
+    "logs-empty": "Nenhuma entrada de registro"
   },
   "colors": {
     "accent-4": "Padrão",
@@ -68,7 +73,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Baixar",
+    "button:delete": "Excluir",
+    "button:rename": "Renomear"
   },
   "navigation": {
     "scan": "Escanear",
@@ -163,7 +171,11 @@
     "message:no-devices": "Nenhum dispositivo encontrado",
     "message:deleted-preview": "Prévisualização excluída",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Previsualização de página"
+    "message:preview-of-page": "Previsualização de página",
+    "rotate-cw": "Girar 90° no sentido horário",
+    "rotate-ccw": "Girar 90° no sentido anti-horário",
+    "flip-h": "Inverter horizontalmente",
+    "flip-v": "Inverter verticalmente"
   },
   "settings": {
     "title": "@:navigation.settings",

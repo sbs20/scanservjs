@@ -14,7 +14,12 @@
     "fork-upstream": "Originalprojekt von Sam Strachan:",
     "fork-issue": "Dieser Fork – Fehler melden und Quellcode ansehen:",
     "system-info": "Systeminformation",
-    "issue": "Melde Fehler oder wirf einen Blick auf den Quelltext:"
+    "issue": "Melde Fehler oder wirf einen Blick auf den Quelltext:",
+    "logs": "Protokolle",
+    "logs-copy": "Kopieren",
+    "logs-refresh": "Aktualisieren",
+    "logs-copied": "Protokolle in Zwischenablage kopiert",
+    "logs-empty": "Keine Protokolleinträge"
   },
   "colors": {
     "accent-4": "Standard",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Herunterladen",
+    "button:delete": "Löschen",
+    "button:rename": "Umbenennen"
   },
   "navigation": {
     "scan": "Scannen",
@@ -156,7 +164,11 @@
     "message:no-devices": "Keine Geräte gefunden",
     "message:deleted-preview": "Vorschau gelöscht",
     "message:turn-documents": "Dokumente umdrehen",
-    "message:preview-of-page": "Vorschau der Seite"
+    "message:preview-of-page": "Vorschau der Seite",
+    "rotate-cw": "90° im Uhrzeigersinn drehen",
+    "rotate-ccw": "90° gegen den Uhrzeigersinn drehen",
+    "flip-h": "Horizontal spiegeln",
+    "flip-v": "Vertikal spiegeln"
   },
   "settings": {
     "title": "@:navigation.settings",

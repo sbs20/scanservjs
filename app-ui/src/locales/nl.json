@@ -14,7 +14,12 @@
     "fork-upstream": "Origineel project van Sam Strachan:",
     "fork-issue": "Deze fork — meld problemen en bekijk de broncode hier:",
     "system-info": "Systeem informatie",
-    "issue": "Probleem indienen of bekijk de broncode:"
+    "issue": "Probleem indienen of bekijk de broncode:",
+    "logs": "Logboeken",
+    "logs-copy": "Kopiëren",
+    "logs-refresh": "Vernieuwen",
+    "logs-copied": "Logboeken naar klembord gekopieerd",
+    "logs-empty": "Geen logboekitems"
   },
   "colors": {
     "accent-4": "Standaard",
@@ -64,7 +69,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Downloaden",
+    "button:delete": "Verwijderen",
+    "button:rename": "Hernoemen"
   },
   "navigation": {
     "scan": "Scan",
@@ -154,7 +162,11 @@
     "message:no-devices": "Geen apparaten gevonden",
     "message:deleted-preview": "Verwijderd voorbeeld",
     "message:turn-documents": "Draai document om",
-    "message:preview-of-page": "Voorbeeld van pagina"
+    "message:preview-of-page": "Voorbeeld van pagina",
+    "rotate-cw": "90° met de klok mee draaien",
+    "rotate-ccw": "90° tegen de klok in draaien",
+    "flip-h": "Horizontaal spiegelen",
+    "flip-v": "Verticaal spiegelen"
   },
   "settings": {
     "title": "@:navigation.settings",

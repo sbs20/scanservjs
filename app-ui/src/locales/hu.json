@@ -16,7 +16,12 @@
     "fork-issue": "Ez a fork — problémák jelzése és forráskód megtekintése:",
     "api": "Swagger API dokumentáció:",
     "system-info": "Rendszer információ",
-    "issue": "Hiba bejelentése vagy a forráskód megtekintése:"
+    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
+    "logs": "Naplók",
+    "logs-copy": "Másolás",
+    "logs-refresh": "Frissítés",
+    "logs-copied": "Naplók vágólapra másolva",
+    "logs-empty": "Nincsenek naplóbejegyzések"
   },
   "colors": {
     "accent-4": "Alapértelmezett",
@@ -68,7 +73,10 @@
     "no-preview": "No preview available for this file type",
     "close": "Close",
     "download": "Download",
-    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:download": "Letöltés",
+    "button:delete": "Törlés",
+    "button:rename": "Átnevezés"
   },
   "navigation": {
     "scan": "Szkennelés",
@@ -163,7 +171,11 @@
     "message:no-devices": "Nem találtam eszközt",
     "message:deleted-preview": "Törölt előnézet",
     "message:turn-documents": "Fordítsa meg a dokumentumokat",
-    "message:preview-of-page": "Oldal előnézete"
+    "message:preview-of-page": "Oldal előnézete",
+    "rotate-cw": "Elforgatás 90°-kal az óramutató járásával megegyezően",
+    "rotate-ccw": "Elforgatás 90°-kal az óramutató járásával ellentétesen",
+    "flip-h": "Vízszintes tükrözés",
+    "flip-v": "Függőleges tükrözés"
   },
   "settings": {
     "title": "@:navigation.settings",
