@@ -1,86 +1,79 @@
 <template>
-  <v-dialog v-model="visible" width="95vw" max-width="1400" scrollable>
-    <v-card height="92vh">
-      <v-toolbar density="compact" flat>
-        <v-btn :disabled="!undoStack.canUndo" :icon="mdiUndo" size="small"
-          :title="$t('editor.undo')" @click="undo" />
-        <v-btn :disabled="!undoStack.canRedo" :icon="mdiRedo" size="small"
-          :title="$t('editor.redo')" @click="redo" />
-        <v-divider vertical class="mx-2" />
-        <v-btn :icon="mdiFilePlus" size="small"
-          :title="$t('editor.add-pages')" @click="showAddPages = true" />
-        <v-btn :icon="mdiFileDocumentPlus" size="small"
-          :title="$t('editor.add-blank')" @click="addBlank" />
-        <v-divider vertical class="mx-2" />
-        <v-btn :disabled="selected.length === 0" :icon="mdiRotateLeft" size="small"
-          :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
-        <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
-          :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
-        <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
-          :title="$t('editor.delete')" @click="deleteSelected" />
-        <v-spacer />
-        <v-btn color="primary" variant="tonal" size="small" class="mr-2"
-          @click="save">
-          {{ $t('editor.save') }}
-        </v-btn>
-        <v-btn variant="tonal" size="small" class="mr-2"
-          @click="saveAs">
-          {{ $t('editor.save-as') }}
-        </v-btn>
-        <v-btn variant="tonal" size="small" @click="close">
-          {{ $t('editor.cancel') }}
-        </v-btn>
-      </v-toolbar>
+  <div class="editor-root d-flex flex-column" style="height: 100%;">
+    <v-toolbar density="compact" flat>
+      <v-btn :disabled="!undoStack.canUndo" :icon="mdiUndo" size="small"
+        :title="$t('editor.undo')" @click="undo" />
+      <v-btn :disabled="!undoStack.canRedo" :icon="mdiRedo" size="small"
+        :title="$t('editor.redo')" @click="redo" />
+      <v-divider vertical class="mx-2" />
+      <v-btn :icon="mdiFilePlus" size="small"
+        :title="$t('editor.add-pages')" @click="showAddPages = true" />
+      <v-btn :icon="mdiFileDocumentPlus" size="small"
+        :title="$t('editor.add-blank')" @click="addBlank" />
+      <v-divider vertical class="mx-2" />
+      <v-btn :disabled="selected.length === 0" :icon="mdiRotateLeft" size="small"
+        :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
+      <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
+        :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
+      <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
+        :title="$t('editor.delete')" @click="deleteSelected" />
+      <v-spacer />
+      <v-btn color="primary" variant="tonal" size="small" class="mr-2"
+        @click="save">
+        {{ $t('editor.save') }}
+      </v-btn>
+      <v-btn variant="tonal" size="small" class="mr-2"
+        @click="saveAs">
+        {{ $t('editor.save-as') }}
+      </v-btn>
+    </v-toolbar>
 
-      <v-card-text class="pa-4 overflow-y-auto">
-        <draggable
-          v-model="pages"
-          item-key="id"
-          class="editor-grid"
-          ghost-class="editor-ghost"
-          @end="onDragEnd">
-          <template #item="{ element, index }">
-            <div
-              class="editor-page"
-              :class="{ 'editor-page-selected': isSelected(element.id) }"
-              @click.exact="selectOne(element.id)"
-              @click.ctrl.exact="toggleSelect(element.id)"
-              @click.meta.exact="toggleSelect(element.id)"
-              @click.shift.exact="selectRange(element.id)">
-              <div class="editor-thumb-wrap">
-                <v-img
-                  v-if="sessionId"
-                  :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
-                  :class="thumbRotationClass(element.rotation)"
-                  width="160"
-                  height="160"
-                  cover />
-                <div v-else class="editor-thumb-placeholder" />
-              </div>
-              <div class="editor-page-num text-caption text-center">
-                {{ index + 1 }}
-              </div>
-              <div v-if="element.rotation" class="editor-rotation-badge text-caption">
-                {{ element.rotation }}°
-              </div>
-              <div class="editor-source-badge text-caption text-truncate"
-                :title="element.source">
-                {{ element.source }}
-              </div>
+    <div class="pa-4 overflow-y-auto flex-grow-1">
+      <draggable
+        v-model="pages"
+        item-key="id"
+        class="editor-grid"
+        ghost-class="editor-ghost"
+        @end="onDragEnd">
+        <template #item="{ element, index }">
+          <div
+            class="editor-page"
+            :class="{ 'editor-page-selected': isSelected(element.id) }"
+            @click.exact="selectOne(element.id)"
+            @click.ctrl.exact="toggleSelect(element.id)"
+            @click.meta.exact="toggleSelect(element.id)"
+            @click.shift.exact="selectRange(element.id)">
+            <div class="editor-thumb-wrap">
+              <v-img
+                v-if="sessionId"
+                :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
+                :class="thumbRotationClass(element.rotation)"
+                width="160"
+                height="160"
+                cover />
+              <div v-else class="editor-thumb-placeholder" />
             </div>
-          </template>
-        </draggable>
-      </v-card-text>
+            <div class="editor-page-num text-caption text-center">
+              {{ index + 1 }}
+            </div>
+            <div v-if="element.rotation" class="editor-rotation-badge text-caption">
+              {{ element.rotation }}°
+            </div>
+            <div class="editor-source-badge text-caption text-truncate"
+              :title="element.source">
+              {{ element.source }}
+            </div>
+          </div>
+        </template>
+      </draggable>
+    </div>
 
-      <v-card-actions class="px-4 py-2">
-        <span class="text-caption">
-          {{ $t('editor.status', [pages.length]) }}
-          <template v-if="sourceFiles.length">
-            · {{ $t('editor.sources', [sourceFiles.join(', ')]) }}
-          </template>
-        </span>
-      </v-card-actions>
-    </v-card>
+    <div class="px-4 py-2 text-caption">
+      {{ $t('editor.status', [pages.length]) }}
+      <template v-if="sourceFiles.length">
+        · {{ $t('editor.sources', [sourceFiles.join(', ')]) }}
+      </template>
+    </div>
 
     <!-- Save-As dialog -->
     <v-dialog v-model="showSaveAs" max-width="400">
@@ -119,7 +112,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -144,7 +137,7 @@ function assignIds(pages) {
 export default {
   name: 'Editor',
   components: { draggable },
-  emits: ['mask', 'notify', 'close', 'saved'],
+  emits: ['mask', 'notify', 'saved', 'dirty'],
 
   setup() {
     return {
@@ -155,12 +148,11 @@ export default {
 
   props: {
     files: { type: Array, default: () => [] },
-    modelValue: { type: Boolean, default: false }
+    sessionId: { type: String, default: null }
   },
 
   data() {
     return {
-      sessionId: null,
       pages: [],
       selected: [],
       lastSelected: null,
@@ -169,43 +161,41 @@ export default {
       showAddPages: false,
       saveFilename: '',
       addPagesFile: null,
-      availableFiles: []
+      availableFiles: [],
+      initialHash: null
     };
   },
 
   computed: {
-    visible: {
-      get() { return this.modelValue; },
-      set(val) { if (!val) this.close(); }
-    },
     sourceFiles() {
       const sources = new Set(this.pages.map(p => p.source).filter(s => s !== 'blank'));
       return [...sources];
+    },
+    isDirty() {
+      return this.initialHash !== null && this.initialHash !== JSON.stringify(this.pages);
     }
   },
 
   watch: {
-    modelValue(val) {
-      if (val) this.open();
+    sessionId(val) {
+      if (val) this.loadSession();
+    },
+    isDirty(val) {
+      this.$emit('dirty', val);
     }
   },
 
   methods: {
-    async open() {
-      if (!this.files.length) return;
+    async loadSession() {
+      if (!this.sessionId) return;
       this.$emit('mask', 1);
       try {
         // Fetch file list for "Add Pages" dialog
         const fileList = await Common.fetch('api/v1/files');
         this.availableFiles = fileList;
 
-        // Create session
-        const result = await Common.fetch('api/v1/editor/sessions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ files: this.files.map(f => f.name || f) })
-        });
-        this.sessionId = result.sessionId;
+        // Get session data
+        const result = await Common.fetch(`api/v1/editor/sessions/${this.sessionId}`);
 
         // Build page list with stable IDs
         this.pages = assignIds(result.pages.map((p, i) => ({
@@ -217,6 +207,7 @@ export default {
         this.undoStack.push(this.pages);
         this.selected = [];
         this.lastSelected = null;
+        this.initialHash = JSON.stringify(this.pages);
 
         // Default save filename
         if (this.files.length === 1) {
@@ -232,16 +223,35 @@ export default {
       }
     },
 
-    close() {
-      if (this.sessionId) {
-        Common.fetch(`api/v1/editor/sessions/${this.sessionId}`, {
-          method: 'DELETE'
-        }).catch(() => {});
-        this.sessionId = null;
-      }
+    /**
+     * Get the current edit list for preview assembly.
+     * @returns {Array}
+     */
+    getEditList() {
+      return this.pages.map(p => ({
+        source: p.source,
+        sourceType: p.sourceType,
+        pageNum: p.pageNum,
+        rotation: p.rotation,
+        isBlank: p.isBlank || false,
+        width: p.width,
+        height: p.height
+      }));
+    },
+
+    /**
+     * Get a hash of the current edit list for change detection.
+     * @returns {string}
+     */
+    getEditListHash() {
+      return JSON.stringify(this.pages);
+    },
+
+    reset() {
       this.pages = [];
       this.undoStack.clear();
-      this.$emit('close');
+      this.selected = [];
+      this.initialHash = null;
     },
 
     // Selection
@@ -317,7 +327,6 @@ export default {
     },
 
     addBlank() {
-      // Use A4 dimensions in points as default
       const blank = {
         id: `page-${nextId++}`,
         source: 'blank',
@@ -344,8 +353,6 @@ export default {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file: this.addPagesFile })
           });
-        // result.pages is the full updated page list; result.added is the new pages
-        const startIdx = this.pages.length;
         const newPages = assignIds(result.added.map((p, i) => ({
           ...p,
           _originalIndex: result.pages.length - result.added.length + i
@@ -384,16 +391,7 @@ export default {
     async _doSave(filename) {
       this.$emit('mask', 1);
       try {
-        const editList = this.pages.map(p => ({
-          source: p.source,
-          sourceType: p.sourceType,
-          pageNum: p.pageNum,
-          rotation: p.rotation,
-          isBlank: p.isBlank || false,
-          width: p.width,
-          height: p.height
-        }));
-
+        const editList = this.getEditList();
         await Common.fetch(
           `api/v1/editor/sessions/${this.sessionId}/save`, {
             method: 'POST',
@@ -401,9 +399,9 @@ export default {
             body: JSON.stringify({ pages: editList, filename })
           });
 
+        this.initialHash = JSON.stringify(this.pages);
         this.$emit('notify', { type: 's', message: `Saved: ${filename}` });
         this.$emit('saved');
-        this.close();
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
       } finally {
@@ -417,14 +415,6 @@ export default {
       if (r === 180) return 'editor-thumb-r180';
       if (r === 270) return 'editor-thumb-r270';
       return '';
-    }
-  },
-
-  beforeUnmount() {
-    if (this.sessionId) {
-      Common.fetch(`api/v1/editor/sessions/${this.sessionId}`, {
-        method: 'DELETE'
-      }).catch(() => {});
     }
   }
 };

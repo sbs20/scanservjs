@@ -212,13 +212,12 @@ class EditorSession {
   }
 
   /**
-   * Save the final document from an edit list.
-   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height}
-   * @param {string} filename - output filename
-   * @returns {Promise<string>} path to saved file
+   * Prepare and merge pages from an edit list into a single PDF.
+   * Shared by save() and assemblePreview().
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height, sourceType}
+   * @returns {Promise<string>} path to assembled PDF
    */
-  async save(editList, filename) {
-    this.touch();
+  async _assemblePages(editList) {
     const preparedPaths = [];
 
     for (let i = 0; i < editList.length; i++) {
@@ -258,6 +257,19 @@ class EditorSession {
       await this.pdfTool.mergePages(preparedPaths, assembledPath);
     }
 
+    return assembledPath;
+  }
+
+  /**
+   * Save the final document from an edit list.
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height}
+   * @param {string} filename - output filename
+   * @returns {Promise<string>} path to saved file
+   */
+  async save(editList, filename) {
+    this.touch();
+    const assembledPath = await this._assemblePages(editList);
+
     // Atomic write to output directory
     const tempOutputPath = path.join(this.config.outputDirectory, `.tmp-${this.id}.pdf`);
     const finalPath = path.join(this.config.outputDirectory, filename);
@@ -271,6 +283,20 @@ class EditorSession {
     }
 
     return finalPath;
+  }
+
+  /**
+   * Assemble an ephemeral preview PDF from the current edit list.
+   * Overwrites any previous preview in the session directory.
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height, sourceType}
+   * @returns {Promise<string>} path to preview.pdf
+   */
+  async assemblePreview(editList) {
+    this.touch();
+    const assembledPath = await this._assemblePages(editList);
+    const previewPath = path.join(this.dir, 'preview.pdf');
+    fs.copyFileSync(assembledPath, previewPath);
+    return previewPath;
   }
 
   /** Update lastAccessedAt timestamp. */

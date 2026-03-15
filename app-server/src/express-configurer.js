@@ -223,6 +223,23 @@ const EndpointSpecs = [
   },
   {
     method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      await editorApi.assemblePreview(req.params[0], req.body.pages);
+      res.send({ ok: true });
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      const previewPath = editorApi.getPreviewPath(req.params[0]);
+      res.type('pdf');
+      res.sendFile(previewPath);
+    }
+  },
+  {
+    method: 'post',
     path: /\/api\/v1\/editor\/sessions\/([^/]+)\/save/,
     callback: async (req, res) => {
       const result = await editorApi.save(

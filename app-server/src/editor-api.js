@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const log = require('loglevel').getLogger('EditorApi');
 
 const EditorSession = require('./classes/editor-session');
@@ -110,6 +112,34 @@ module.exports = new class EditorApi {
     const outputPath = await session.save(editList, filename);
     log.info(`Saved editor output: ${filename}`);
     return { file: filename };
+  }
+
+  /**
+   * Assemble an ephemeral preview PDF from the current edit list.
+   * @param {string} id
+   * @param {Array} editList
+   * @returns {Promise<{previewPath: string}>}
+   */
+  async assemblePreview(id, editList) {
+    const session = this._requireSession(id);
+    const previewPath = await session.assemblePreview(editList);
+    log.info(`Assembled preview for session ${id}`);
+    return { previewPath };
+  }
+
+  /**
+   * Get the path to the preview PDF for a session.
+   * @param {string} id
+   * @returns {string} absolute path to preview.pdf
+   */
+  getPreviewPath(id) {
+    const session = this._requireSession(id);
+    session.touch();
+    const previewPath = path.join(session.dir, 'preview.pdf');
+    if (!fs.existsSync(previewPath)) {
+      throw new Error('No preview available. Assemble a preview first.');
+    }
+    return previewPath;
   }
 
   /**

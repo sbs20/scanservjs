@@ -791,18 +791,17 @@ Ghostscript content scaling may damage OCR layers — clearly warned in UI.
 
 ### Commit Strategy
 
-Use **incremental commits** during initial development. The history will be
-squashed before the first public release / upstream PR submission. Commit
-messages should be concise and descriptive of the change (not conversational),
-but they're primarily for developer orientation during active development —
-not for a polished public history.
+**Milestone:** Commit `65b533d` marks the end of Phase 1 + dependency setup.
+All commits up to and including this point are frozen — never squash or rebase
+before this commit.
+
+From Phase 2 onward, the commit policy is decided per session. Within a
+session, if the instruction is to squash, squash into the first Phase 2+
+commit (not into the milestone). If the instruction is incremental, add new
+commits normally.
 
 **Pattern:** `feat(editor): <what changed>` for features,
 `fix(editor): <what>` for fixes, `refactor(editor): <what>` for restructuring.
-
-> **TODO (pre-release):** Before the first full public announcement, squash
-> the commit history into clean, reviewable commits and update this section
-> to reflect the final commit policy.
 
 ---
 
