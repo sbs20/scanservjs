@@ -68,6 +68,7 @@ complicated installation.
 ## Features
 
 * Cropping
+* Image transformations: Rotate (90° clockwise/counter-clockwise) and Flip (horizontal/vertical)
 * Source selection (Flatbed / ADF)
 * Resolution
 * Output formats (TIF, JPG, PNG, PDF and TXT with Tesseract OCR) with varying
@@ -156,6 +157,18 @@ their abilities. (If this is the case, then you can override what's detected,
 see [Configuration and device override](docs/10-configuration.md) for more). If
 geometry is available (selecting scan size and position) then you will have
 cropping available to you.
+
+#### Image Transformations
+
+Above the preview image, you will find image transformation controls:
+* **Rotate 90° counter-clockwise**: Rotates the image 90 degrees to the left
+* **Rotate 90° clockwise**: Rotates the image 90 degrees to the right
+* **Flip horizontally**: Mirrors the image along the vertical axis
+* **Flip vertically**: Mirrors the image along the horizontal axis
+
+These transformations are applied to both the preview and the final scanned
+output. The flip buttons are highlighted when active. Transformations are reset
+when you clear the preview.
 
 There is also the ability to perform batch scanning. If you have a document
 feeder, then just use the `Auto` option. If not then use `Manual` and the app
