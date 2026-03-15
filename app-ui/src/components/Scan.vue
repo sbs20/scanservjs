@@ -1158,6 +1158,9 @@ export default {
 .dimension-input :deep(input) {
   text-align: right;
 }
+.dimension-input :deep(.v-text-field__suffix) {
+  padding-inline-start: 3px;
+}
 .cropper {
   max-width: 100%;
 }
