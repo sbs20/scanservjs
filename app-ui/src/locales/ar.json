@@ -194,7 +194,16 @@
     "deselect-all": "إلغاء تحديد الكل",
     "jump-to": "الانتقال إلى الصفحة",
     "selection-mode": "وضع التحديد",
-    "done": "تم"
+    "done": "تم",
+    "page-order": "ترتيب الصفحات",
+    "scope-selection": "تطبيق على {0} صفحات محددة",
+    "scope-all": "تطبيق على جميع الصفحات ({0})",
+    "op-reverse": "عكس ترتيب الصفحات",
+    "op-interleave": "دمج الصفحات الأمامية والخلفية",
+    "op-interleave-reverse": "دمج الصفحات الأمامية والخلفية (معكوس)",
+    "op-interleave-reverse-hint": "الأكثر شيوعاً للمسح الضوئي المزدوج مع وحدة تغذية أحادية",
+    "op-swap-pairs": "تبديل كل زوج من الصفحات",
+    "op-deinterleave": "فصل الصفحات الأمامية والخلفية"
   },
   "settings": {
     "title": "@:navigation.settings",

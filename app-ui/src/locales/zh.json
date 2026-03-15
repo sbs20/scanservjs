@@ -185,7 +185,16 @@
     "deselect-all": "取消全选",
     "jump-to": "跳转到页面",
     "selection-mode": "选择模式",
-    "done": "完成"
+    "done": "完成",
+    "page-order": "页面顺序",
+    "scope-selection": "应用于 {0} 个选中页面",
+    "scope-all": "应用于全部 {0} 个页面",
+    "op-reverse": "反转页面顺序",
+    "op-interleave": "合并正反面页面",
+    "op-interleave-reverse": "合并正反面页面（反向）",
+    "op-interleave-reverse-hint": "单面ADF进行双面扫描时最常用",
+    "op-swap-pairs": "交换每对页面",
+    "op-deinterleave": "分离正反面页面"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -12,6 +12,29 @@
           :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
         <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
           :title="$t('editor.delete')" @click="deleteSelected" />
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn v-bind="props" :icon="mdiShuffleVariant" size="small"
+              :title="$t('editor.page-order')" :disabled="pages.length < 2" />
+          </template>
+          <v-list density="compact" nav>
+            <v-list-subheader>{{ duplexScopeLabel }}</v-list-subheader>
+            <v-list-item :title="$t('editor.op-reverse')"
+              :disabled="!canDuplexOp" @click="opReverse" />
+            <v-list-item :title="$t('editor.op-interleave-reverse')"
+              :subtitle="$t('editor.op-interleave-reverse-hint')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opInterleaveReverse" />
+            <v-list-item :title="$t('editor.op-interleave')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opInterleave" />
+            <v-list-item :title="$t('editor.op-swap-pairs')"
+              :disabled="!canDuplexOp" @click="opSwapPairs" />
+            <v-list-item :title="$t('editor.op-deinterleave')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opDeinterleave" />
+          </v-list>
+        </v-menu>
         <v-divider vertical class="mx-2" />
         <v-btn size="small" variant="tonal" @click="exitTouchSelectMode">
           {{ $t('editor.done') }}
@@ -34,6 +57,30 @@
           :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
         <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
           :title="$t('editor.delete')" @click="deleteSelected" />
+        <v-divider vertical class="mx-2" />
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn v-bind="props" :icon="mdiShuffleVariant" size="small"
+              :title="$t('editor.page-order')" :disabled="pages.length < 2" />
+          </template>
+          <v-list density="compact" nav>
+            <v-list-subheader>{{ duplexScopeLabel }}</v-list-subheader>
+            <v-list-item :title="$t('editor.op-reverse')"
+              :disabled="!canDuplexOp" @click="opReverse" />
+            <v-list-item :title="$t('editor.op-interleave-reverse')"
+              :subtitle="$t('editor.op-interleave-reverse-hint')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opInterleaveReverse" />
+            <v-list-item :title="$t('editor.op-interleave')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opInterleave" />
+            <v-list-item :title="$t('editor.op-swap-pairs')"
+              :disabled="!canDuplexOp" @click="opSwapPairs" />
+            <v-list-item :title="$t('editor.op-deinterleave')"
+              :disabled="!canDuplexOp || duplexWorkingLength < 4"
+              @click="opDeinterleave" />
+          </v-list>
+        </v-menu>
         <v-spacer />
       </template>
     </v-toolbar>
@@ -176,6 +223,13 @@
         <v-list-item :title="$t('editor.deselect-all')"
           :disabled="selected.length === 0"
           @click="deselectAll" />
+        <template v-if="canDuplexOp">
+          <v-divider class="my-1" />
+          <v-list-item :title="$t('editor.op-reverse')" @click="opReverse" />
+          <v-list-item v-if="duplexWorkingLength >= 4"
+            :title="$t('editor.op-interleave-reverse')"
+            @click="opInterleaveReverse" />
+        </template>
       </v-list>
     </v-menu>
 
@@ -228,7 +282,8 @@ import Common from '../classes/common';
 import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
-  mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
+  mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
+  mdiShuffleVariant
 } from '@mdi/js';
 
 const EAGER_LOAD_THRESHOLD = 50;
@@ -252,7 +307,8 @@ export default {
   setup() {
     return {
       mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
-      mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
+      mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
+      mdiShuffleVariant
     };
   },
 
@@ -361,6 +417,50 @@ export default {
         width: Math.abs(x2 - x1) + 'px',
         height: Math.abs(y2 - y1) + 'px'
       };
+    },
+
+    // --- Duplex page operations ---
+
+    isContiguousSelection() {
+      if (this.selected.length <= 1) return true;
+      const indices = this.selected
+        .map(id => this.pages.findIndex(p => p.id === id))
+        .sort((a, b) => a - b);
+      for (let i = 1; i < indices.length; i++) {
+        if (indices[i] !== indices[i - 1] + 1) return false;
+      }
+      return true;
+    },
+
+    duplexWorkingRange() {
+      if (this.selected.length >= 2 && this.isContiguousSelection) {
+        const indices = this.selected
+          .map(id => this.pages.findIndex(p => p.id === id))
+          .sort((a, b) => a - b);
+        return { start: indices[0], end: indices[indices.length - 1], scope: 'selection' };
+      }
+      if (this.pages.length >= 2) {
+        return { start: 0, end: this.pages.length - 1, scope: 'all' };
+      }
+      return null;
+    },
+
+    duplexWorkingLength() {
+      const r = this.duplexWorkingRange;
+      return r ? r.end - r.start + 1 : 0;
+    },
+
+    canDuplexOp() {
+      return this.duplexWorkingLength >= 2 && this.isContiguousSelection;
+    },
+
+    duplexScopeLabel() {
+      const r = this.duplexWorkingRange;
+      if (!r) return '';
+      const n = r.end - r.start + 1;
+      return r.scope === 'selection'
+        ? this.$t('editor.scope-selection', [n])
+        : this.$t('editor.scope-all', [n]);
     }
   },
 
@@ -1211,6 +1311,69 @@ export default {
       this.anchor = blank.id;
       this.pushState();
       this.scrollToPage(this.focusIndex);
+    },
+
+    // --- Duplex page-order operations ---
+
+    _applyPageOrderOp(transformFn) {
+      const range = this.duplexWorkingRange;
+      if (!range) return;
+      const { start, end } = range;
+      const slice = this.pages.slice(start, end + 1);
+      const result = transformFn(slice);
+      this.pages.splice(start, slice.length, ...result);
+      this.hasReordered = true;
+      this.selected = this.pages.slice(start, start + result.length).map(p => p.id);
+      this.focusIndex = start;
+      this.cursorPosition = start + result.length;
+      this.pushState();
+    },
+
+    opReverse() {
+      this._applyPageOrderOp(s => [...s].reverse());
+    },
+
+    opInterleave() {
+      this._applyPageOrderOp(s => {
+        const mid = Math.ceil(s.length / 2);
+        const a = s.slice(0, mid), b = s.slice(mid);
+        const r = [];
+        for (let i = 0; i < a.length; i++) {
+          r.push(a[i]);
+          if (i < b.length) r.push(b[i]);
+        }
+        return r;
+      });
+    },
+
+    opInterleaveReverse() {
+      this._applyPageOrderOp(s => {
+        const mid = Math.ceil(s.length / 2);
+        const a = s.slice(0, mid), b = s.slice(mid).reverse();
+        const r = [];
+        for (let i = 0; i < a.length; i++) {
+          r.push(a[i]);
+          if (i < b.length) r.push(b[i]);
+        }
+        return r;
+      });
+    },
+
+    opSwapPairs() {
+      this._applyPageOrderOp(s => {
+        const r = [...s];
+        for (let i = 0; i + 1 < r.length; i += 2) {
+          [r[i], r[i + 1]] = [r[i + 1], r[i]];
+        }
+        return r;
+      });
+    },
+
+    opDeinterleave() {
+      this._applyPageOrderOp(s => [
+        ...s.filter((_, i) => i % 2 === 0),
+        ...s.filter((_, i) => i % 2 === 1)
+      ]);
     },
 
     async confirmAddPages() {

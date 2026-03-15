@@ -188,7 +188,16 @@
     "deselect-all": "Desselecionar tudo",
     "jump-to": "Ir para página",
     "selection-mode": "Modo de seleção",
-    "done": "Concluído"
+    "done": "Concluído",
+    "page-order": "Ordem das páginas",
+    "scope-selection": "Aplicar a {0} páginas selecionadas",
+    "scope-all": "Aplicar a todas as {0} páginas",
+    "op-reverse": "Inverter ordem das páginas",
+    "op-interleave": "Combinar frente e verso",
+    "op-interleave-reverse": "Combinar frente e verso (invertido)",
+    "op-interleave-reverse-hint": "Mais comum para digitalização duplex com ADF simplex",
+    "op-swap-pairs": "Trocar cada par de páginas",
+    "op-deinterleave": "Separar frente e verso"
   },
   "settings": {
     "title": "@:navigation.settings",

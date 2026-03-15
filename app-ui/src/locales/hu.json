@@ -197,7 +197,16 @@
     "deselect-all": "Kijelölés törlése",
     "jump-to": "Ugrás az oldalra",
     "selection-mode": "Kijelölési mód",
-    "done": "Kész"
+    "done": "Kész",
+    "page-order": "Oldalak sorrendje",
+    "scope-selection": "Alkalmazás {0} kijelölt oldalra",
+    "scope-all": "Alkalmazás mind a {0} oldalra",
+    "op-reverse": "Oldalsorrend megfordítása",
+    "op-interleave": "Elő- és hátoldalak összefésülése",
+    "op-interleave-reverse": "Elő- és hátoldalak összefésülése (fordított)",
+    "op-interleave-reverse-hint": "Leggyakoribb duplex szkennelésnél simplex ADF-fel",
+    "op-swap-pairs": "Oldalak páronkénti cseréje",
+    "op-deinterleave": "Elő- és hátoldalak szétválasztása"
   },
   "settings": {
     "title": "@:navigation.settings",

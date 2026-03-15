@@ -188,7 +188,16 @@
     "deselect-all": "Odznacz wszystko",
     "jump-to": "Przejdź do strony",
     "selection-mode": "Tryb zaznaczania",
-    "done": "Gotowe"
+    "done": "Gotowe",
+    "page-order": "Kolejność stron",
+    "scope-selection": "Zastosuj do {0} wybranych stron",
+    "scope-all": "Zastosuj do wszystkich {0} stron",
+    "op-reverse": "Odwróć kolejność stron",
+    "op-interleave": "Połącz strony przednie i tylne",
+    "op-interleave-reverse": "Połącz strony przednie i tylne (odwrócone)",
+    "op-interleave-reverse-hint": "Najczęstsza metoda dla skanowania dupleksowego z ADF simplex",
+    "op-swap-pairs": "Zamień każdą parę stron",
+    "op-deinterleave": "Rozdziel strony przednie i tylne"
   },
   "settings": {
     "title": "@:navigation.settings",

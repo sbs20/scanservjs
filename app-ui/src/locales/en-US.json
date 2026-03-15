@@ -197,7 +197,16 @@
     "deselect-all": "Deselect all",
     "jump-to": "Go to page",
     "selection-mode": "Selection mode",
-    "done": "Done"
+    "done": "Done",
+    "page-order": "Page order",
+    "scope-selection": "Apply to {0} selected pages",
+    "scope-all": "Apply to all {0} pages",
+    "op-reverse": "Reverse page order",
+    "op-interleave": "Combine front & back pages",
+    "op-interleave-reverse": "Combine front & back pages (reversed)",
+    "op-interleave-reverse-hint": "Most common for duplex scanning with simplex ADF",
+    "op-swap-pairs": "Swap each page pair",
+    "op-deinterleave": "Separate front & back pages"
   },
   "settings": {
     "title": "@:navigation.settings",

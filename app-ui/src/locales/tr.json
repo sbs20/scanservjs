@@ -188,7 +188,16 @@
     "deselect-all": "Tümünün Seçimini Kaldır",
     "jump-to": "Sayfaya Git",
     "selection-mode": "Seçim Modu",
-    "done": "Tamam"
+    "done": "Tamam",
+    "page-order": "Sayfa sırası",
+    "scope-selection": "{0} seçili sayfaya uygula",
+    "scope-all": "Tüm {0} sayfaya uygula",
+    "op-reverse": "Sayfa sırasını tersine çevir",
+    "op-interleave": "Ön ve arka sayfaları birleştir",
+    "op-interleave-reverse": "Ön ve arka sayfaları birleştir (tersine)",
+    "op-interleave-reverse-hint": "Simpleks ADF ile dupleks tarama için en yaygın yöntem",
+    "op-swap-pairs": "Her sayfa çiftini değiştir",
+    "op-deinterleave": "Ön ve arka sayfaları ayır"
   },
   "settings": {
     "title": "@:navigation.settings",
