@@ -115,12 +115,12 @@ module.exports = class Config {
         { name: 'DIN D5 (@:paper-size.landscape)', dimensions: { x: 192, y: 136 } },
         { name: 'DIN D6 (@:paper-size.portrait)', dimensions: { x: 96, y: 136 } },
         { name: 'DIN D6 (@:paper-size.landscape)', dimensions: { x: 136, y: 96 } },
-        { name: '@:paper-size.letter (@:paper-size.portrait)', dimensions: { x: 216, y: 279 } },
-        { name: '@:paper-size.legal (@:paper-size.portrait)', dimensions: { x: 216, y: 356 } },
-        { name: '@:paper-size.tabloid (@:paper-size.portrait)', dimensions: { x: 279, y: 432 } },
-        { name: '@:paper-size.ledger (@:paper-size.portrait)', dimensions: { x: 432, y: 279 } },
-        { name: '@:paper-size.junior-legal (@:paper-size.portrait)', dimensions: { x: 127, y: 203 } },
-        { name: '@:paper-size.half-letter (@:paper-size.portrait)', dimensions: { x: 140, y: 216 } }
+        { name: '@:paper-size.letter (@:paper-size.portrait)', dimensions: { x: 215.9, y: 279.4 } },
+        { name: '@:paper-size.legal (@:paper-size.portrait)', dimensions: { x: 215.9, y: 355.6 } },
+        { name: '@:paper-size.tabloid (@:paper-size.portrait)', dimensions: { x: 279.4, y: 431.8 } },
+        { name: '@:paper-size.ledger (@:paper-size.portrait)', dimensions: { x: 431.8, y: 279.4 } },
+        { name: '@:paper-size.junior-legal (@:paper-size.portrait)', dimensions: { x: 127, y: 203.2 } },
+        { name: '@:paper-size.half-letter (@:paper-size.portrait)', dimensions: { x: 139.7, y: 215.9 } }
       ],
     });
 

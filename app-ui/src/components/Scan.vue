@@ -364,8 +364,11 @@ export default {
         y: this.device.features['-y'].limits[1]
       };
 
+      // Tolerance of 2.0mm to account for minute rounding discrepancies 
+      // between standard paper sizes and scanner hardware reported limits.
+      const tolerance = 2.0;
       return this.context.paperSizes
-        .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y)
+        .filter(paper => paper.dimensions.x <= deviceSize.x + tolerance && paper.dimensions.y <= deviceSize.y + tolerance)
         .map(paper => {
           const variables = (paper.name.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
           variables.forEach(v => {
@@ -823,9 +826,11 @@ export default {
     },
 
     updatePaperSize(value) {
-      if (value.dimensions) {
-        this.request.params.width = value.dimensions.x;
-        this.request.params.height = value.dimensions.y;
+      if (value.dimensions && this.deviceSize) {
+        // Clamp dimensions to the actual device limits to avoid scanner errors,
+        // even if the selected paper size was slightly larger due to tolerance.
+        this.request.params.width = Math.min(value.dimensions.x, this.deviceSize.width);
+        this.request.params.height = Math.min(value.dimensions.y, this.deviceSize.height);
         this.onCoordinatesChange();
       }
     },
