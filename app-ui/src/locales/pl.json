@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs to prosty interfejs internetowy dla Twojego skanera. Pozwala ci udostępnić skaner lub kilka (używając SANE) w sieci bez sterowników lub skompilowanych konfiguracji oprogramowania. Zapisuje do formatów TIF, JPG, PNG, PDF i TXT (używając Tesseract OCR) z różnymi ustawieniami kompresji, zgodnie z Twoimi ustawieniami. Wspiera skanowanie wielu stron i wszystkie urządzenia kompatybilne z SANE.",
     "issue": "Zgłoś problem lub zobacz kod źródłowy:",
-    "system-info": "Informacje o systemie"
+    "system-info": "Informacje o systemie",
+    "logs": "Dzienniki",
+    "logs-copy": "Kopiuj",
+    "logs-refresh": "Odśwież",
+    "logs-copied": "Dzienniki skopiowane do schowka",
+    "logs-empty": "Brak wpisów w dzienniku"
   },
-
   "colors": {
     "accent-4": "Domyślny",
     "red": "Czerwony",
@@ -38,14 +40,12 @@
     "blue-grey": "Niebieskoszary",
     "grey": "Szary"
   },
-
   "batch-dialog": {
     "btn-cancel": "Anuluj",
     "btn-finish": "Zakończ",
     "btn-rescan": "Zeskanuj ponownie",
     "btn-next": "Następny"
   },
-
   "files": {
     "filename": "Nazwa pliku",
     "date": "Data",
@@ -59,18 +59,19 @@
     "dialog:rename-cancel": "Anuluj",
     "dialog:rename-save": "Zapis",
     "actions": "Akcje",
+    "button:download": "Pobierz",
+    "button:delete": "Usuń",
+    "button:rename": "Zmień nazwę",
     "thumbnail-show": "Pokaż miniatury",
     "thumbnail-size": "Rozmiar miniatur"
   },
-
   "navigation": {
     "scan": "Skanuj",
     "files": "Pliki",
     "settings": "Ustawienia",
     "about": "Informacje",
-    "version": "Wersja"  
+    "version": "Wersja"
   },
-
   "batch-mode": {
     "none": "Brak",
     "manual": "Manualny (z monitem)",
@@ -78,26 +79,22 @@
     "auto-collate-standard": "Automatyczny (kompletowane 1, 3... 4, 2)",
     "auto-collate-reverse": "Automatyczny (kolejność odwrotna 1, 3... 2, 4)"
   },
-    
   "filter": {
     "auto-level": "Automatyczne równanie",
     "threshold": "Próg",
     "blur": "Rozmazanie"
   },
-
   "mode": {
     "color": "Kolor",
     "halftone": "Półton",
     "gray": "Szary",
     "lineart": "Kreskowanie",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Skaner płaski",
     "adf": "ADF",
@@ -106,14 +103,12 @@
     "centrally-aligned": "Wyśrodkowane",
     "duplex": "Dupleks",
     "transparency unit": "Jednostka przejrzystości",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Wysoka jakość",
     "medium-quality": "Średnia jakość",
@@ -122,8 +117,7 @@
     "lzw-compressed": "Kompresja LZW",
     "ocr": "OCR",
     "text-file": "Plik tekstowy"
-  },  
-
+  },
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +128,6 @@
     "portrait": "Portrait",
     "landscape": "Landscape"
   },
-
   "scan": {
     "device": "Urządzenie",
     "source": "Źródło",
@@ -156,13 +149,16 @@
     "paperSize": "Rozmiar kartki",
     "brightness": "Jasność",
     "contrast": "Kontrast",
+    "rotate-cw": "Obróć o 90° zgodnie z ruchem wskazówek zegara",
+    "rotate-ccw": "Obróć o 90° przeciwnie do ruchu wskazówek zegara",
+    "flip-h": "Odbij poziomo",
+    "flip-v": "Odbij pionowo",
     "message:loading-devices": "Wczytywanie urządzeń...",
     "message:no-devices": "Nie znaleziono żadnych urządzeń",
     "message:deleted-preview": "Usunięto podgląd",
     "message:turn-documents": "Przewróć dokumenty na drugą stronę",
     "message:preview-of-page": "Podgląd strony"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Zachowanie i interfejs",

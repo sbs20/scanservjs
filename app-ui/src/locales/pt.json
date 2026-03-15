@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs é uma interface web para o seu scanner/digitalizador. Permite partilhar um ou mais scanners (através do SANE) em rede sem necessidade para drivers ou instalações complicadas. Permite guardar como TIF, JPG, PNG, PDF e TXT (com Tesseract OCR) com variadas definições de compressão, os quais podem ser configurados. Suporta digitalização multipágina e todos os dispositivos compatíveis com SANE.",
     "issue": "Submeter um problema ou visualizar código-fonte:",
-    "system-info": "Informação de sistema"
+    "system-info": "Informação de sistema",
+    "logs": "Registos",
+    "logs-copy": "Copiar",
+    "logs-refresh": "Atualizar",
+    "logs-copied": "Registos copiados para a área de transferência",
+    "logs-empty": "Nenhuma entrada de registo"
   },
-
   "colors": {
     "accent-4": "Predefinição",
     "red": "Vermelho",
@@ -38,14 +40,12 @@
     "blue-grey": "Azul acinzentado",
     "grey": "Cinza"
   },
-
   "batch-dialog": {
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
     "btn-rescan": "Redigitalizar página",
     "btn-next": "Próximo"
   },
-
   "files": {
     "filename": "Nome do ficheiro",
     "date": "Data",
@@ -59,10 +59,12 @@
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
     "actions": "Ações",
+    "button:download": "Transferir",
+    "button:delete": "Eliminar",
+    "button:rename": "Renomear",
     "thumbnail-show": "Show thumbnails",
     "thumbnail-size": "Thumbnail size"
   },
-
   "navigation": {
     "scan": "Digitalização",
     "files": "Ficheiros",
@@ -70,7 +72,6 @@
     "about": "Sobre",
     "version": "Versão"
   },
-
   "batch-mode": {
     "none": "Nenhum",
     "manual": "Manual (com intervação)",
@@ -78,26 +79,22 @@
     "auto-collate-standard": "Auto (Ordenado 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (Reverso 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Nivel automático",
     "threshold": "Limiar",
     "blur": "Esbater"
   },
-
   "mode": {
     "color": "Color",
     "halftone": "Meio tom",
     "gray": "Cinza",
     "lineart": "Arte de linha",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Flatbed",
     "adf": "ADF",
@@ -106,14 +103,12 @@
     "centrally-aligned": "Alinhamento ao Centro",
     "duplex": "Duplex",
     "transparency unit": "Unidade de tranparência",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Qualidade alta",
     "medium-quality": "Qualidade média",
@@ -123,7 +118,6 @@
     "ocr": "OCR",
     "text-file": "Ficheiro de texto"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +128,6 @@
     "portrait": "Retrato",
     "landscape": "Paisagem"
   },
-
   "scan": {
     "device": "Dispositivo",
     "source": "Fonte",
@@ -156,13 +149,16 @@
     "paperSize": "Tamanho do papel",
     "brightness": "Brilho",
     "contrast": "Contraste",
+    "rotate-cw": "Rodar 90° no sentido horário",
+    "rotate-ccw": "Rodar 90° no sentido anti-horário",
+    "flip-h": "Inverter horizontalmente",
+    "flip-v": "Inverter verticalmente",
     "message:loading-devices": "Carregando dispositivos...",
     "message:no-devices": "Nenhum dispositivo encontrado",
     "message:deleted-preview": "Eliminada pré-visualização",
     "message:turn-documents": "Virar documentos",
     "message:preview-of-page": "Pré-visualização de página"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Comportamento e Interface Visual",
@@ -182,7 +178,6 @@
     "clear-storage:description": "Limpa a local storage de qualquer parâmetro cacheado",
     "clear-storage": "Limpar"
   },
-
   "locales": {
     "cs": "Checo",
     "de": "Alemão",

@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs es una interfaz gráfica simple y basada en web. Permite compartir uno o mas escáneres (utilizando SANE) en una red sin la necesidad de controladores adicionales o una instalación complicada. Permite guardar en formato TIF, JPG, PNG, PDF, y TXT (con Tesseract OCR) con varias configuraciones de compresión, todas ellas configurables. Soporta el escaneo multipágina y todos los dispositivos SANE compatibles.",
     "issue": "Indicar una incidencia o ver el código fuente:",
-    "system-info": "Información del sistema"
+    "system-info": "Información del sistema",
+    "logs": "Registros",
+    "logs-copy": "Copiar",
+    "logs-refresh": "Actualizar",
+    "logs-copied": "Registros copiados al portapapeles",
+    "logs-empty": "No hay entradas de registro"
   },
-
   "colors": {
     "accent-4": "Estándar",
     "red": "Rojo",
@@ -38,14 +40,12 @@
     "blue-grey": "Gris azulado",
     "grey": "Gris"
   },
-
   "batch-dialog": {
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
     "btn-rescan": "Reescanear página",
     "btn-next": "Siguiente"
   },
-
   "files": {
     "filename": "Nombre de fichero",
     "date": "Fecha",
@@ -59,18 +59,19 @@
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
     "actions": "Acciones",
+    "button:download": "Descargar",
+    "button:delete": "Eliminar",
+    "button:rename": "Renombrar",
     "thumbnail-show": "Show thumbnails",
     "thumbnail-size": "Thumbnail size"
   },
-
   "navigation": {
     "scan": "Escanear",
     "files": "Ficheros",
     "settings": "Configuración",
     "about": "Acerca de",
-    "version": "Versión"  
+    "version": "Versión"
   },
-
   "batch-mode": {
     "none": "Nada",
     "manual": "Manual (con aviso)",
@@ -78,26 +79,22 @@
     "auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "Autonivelar",
     "threshold": "Umbral",
     "blur": "Difuminar"
   },
-
   "mode": {
     "color": "Color",
     "halftone": "Punteado",
     "gray": "Gris",
     "lineart": "Blanco y negro",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Cuna",
     "adf": "Alimentador automático",
@@ -106,14 +103,12 @@
     "centrally-aligned": "Alineado al centro",
     "duplex": "Dúplex",
     "transparency unit": "Unidad de transparencia",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Calidad alta",
     "medium-quality": "Calidad media",
@@ -122,8 +117,7 @@
     "lzw-compressed": "Compresión LZW",
     "ocr": "OCR",
     "text-file": "Fichero de texto"
-  },  
-
+  },
   "paper-size": {
     "letter": "Letter (216 × 279 mm)",
     "legal": "Legal (216 × 356 mm)",
@@ -134,7 +128,6 @@
     "portrait": "Retrato",
     "landscape": "Apaisado"
   },
-
   "scan": {
     "device": "Dispositivo",
     "source": "Origen",
@@ -156,13 +149,16 @@
     "paperSize": "Tamaño papel",
     "brightness": "Brillo",
     "contrast": "Contraste",
+    "rotate-cw": "Rotar 90° en sentido horario",
+    "rotate-ccw": "Rotar 90° en sentido antihorario",
+    "flip-h": "Voltear horizontalmente",
+    "flip-v": "Voltear verticalmente",
     "message:loading-devices": "Cargando dispositivos...",
     "message:no-devices": "No se encuentran dispositivos",
     "message:deleted-preview": "Vista previa eliminada",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Vista previa de página"  
+    "message:preview-of-page": "Vista previa de página"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Comportamiento e interfaz gráfica",

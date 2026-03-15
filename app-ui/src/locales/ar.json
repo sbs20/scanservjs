@@ -5,18 +5,20 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "يعتبر scanservjs واجهة مستخدم بسيطة قائمة على الويب لجهاز المسح الضوئي الخاص بك. يسمح لك بمشاركة ماسحات متعددة (باستخدام SANE) على الشبكة دون الحاجة إلى برامج تشغيل أو تثبيت معقد. يمكنه الحفظ بصيغ TIF و JPG و PNG و PDF و TXT (باستخدام Tesseract OCR) بإعدادات ضغط مختلفة ، والتي يمكن تخصيصها جميعًا. يدعم المسح متعدد الصفحات وجميع الأجهزة المتوافقة مع SANE.",
     "issue": "قدم مشكلة أو اعرض المصدر:",
     "api": "وثائق Swagger API:",
-    "system-info": "معلومات النظام"
+    "system-info": "معلومات النظام",
+    "logs": "السجلات",
+    "logs-copy": "نسخ",
+    "logs-refresh": "تحديث",
+    "logs-copied": "تم نسخ السجلات إلى الحافظة",
+    "logs-empty": "لا توجد إدخالات في السجل"
   },
-
   "colors": {
     "accent-4": "إفتراضي",
     "red": "أحمر",
@@ -39,14 +41,12 @@
     "blue-grey": "رمادي مزرق",
     "grey": "رمادي"
   },
-
   "batch-dialog": {
     "btn-cancel": "إلغاء",
     "btn-finish": "إنهاء",
     "btn-rescan": "إعادة مسح",
     "btn-next": "التالي"
   },
-
   "files": {
     "filename": "إسم الملف",
     "date": "التاريخ",
@@ -60,10 +60,12 @@
     "dialog:rename-cancel": "إلغاء",
     "dialog:rename-save": "حفظ",
     "actions": "إجراءات",
+    "button:download": "تنزيل",
+    "button:delete": "حذف",
+    "button:rename": "إعادة التسمية",
     "thumbnail-show": "إظهار الصور المصغرة",
     "thumbnail-size": "حجم الصور المصغرة"
   },
-
   "navigation": {
     "scan": "مسح",
     "files": "ملفات",
@@ -71,7 +73,6 @@
     "about": "حول",
     "version": "النسخة"
   },
-
   "batch-mode": {
     "none": "بلا",
     "manual": "يدوي (بالتوجيه)",
@@ -79,31 +80,26 @@
     "auto-collate-standard": "تلقائي (ترتيب 1، 3... 4، 2)",
     "auto-collate-reverse": "تلقائي (ترتيب 1، 3... 2، 4)"
   },
-
   "filter": {
     "auto-level": "مستوى ذاتي",
     "threshold": "عتبة",
     "blur": "تمويه"
   },
-
   "mode": {
     "color": "ملون",
     "halftone": "لون نصفي",
     "gray": "رمادي",
     "lineart": "فن خطي",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "بسيط",
     "duplex": "مزدوج"
   },
-
   "source": {
     "flatbed": "سطح المسح",
     "adf": "وحدة تغذية المستندات",
@@ -112,14 +108,12 @@
     "centrally-aligned": "محاذاة للوسط",
     "duplex": "ماسح مزدوج",
     "transparency unit": "وحدة الشفافية",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned، @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned، @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "جودة عالية",
     "medium-quality": "جودة متوسطة",
@@ -129,7 +123,6 @@
     "ocr": "التعرف على الحروف",
     "text-file": "ملف نصي"
   },
-
   "paper-size": {
     "letter": "الخطاب",
     "legal": "الشكل القانونى",
@@ -140,7 +133,6 @@
     "portrait": "عمودي",
     "landscape": "أفقي"
   },
-
   "scan": {
     "device": "الجهاز",
     "source": "المصدر",
@@ -163,13 +155,16 @@
     "paperSize": "قياس الورق",
     "brightness": "سطوع",
     "contrast": "تباين",
+    "rotate-cw": "تدوير 90° باتجاه عقارب الساعة",
+    "rotate-ccw": "تدوير 90° عكس اتجاه عقارب الساعة",
+    "flip-h": "قلب أفقي",
+    "flip-v": "قلب رأسي",
     "message:loading-devices": "جاري تحميل الأجهزة",
     "message:no-devices": "لم يتم العثور على أي جهاز",
     "message:deleted-preview": "تم حذه المعاينة",
     "message:turn-documents": "اقلب المستند",
     "message:preview-of-page": "معاينة من الصفحة"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "الواجهة والسلوك",

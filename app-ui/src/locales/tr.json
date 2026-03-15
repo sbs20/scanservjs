@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs tarayıcınız için basit bir web arayüzüdür. Bir veya birden fazla tarayıcıyı ağ üzerinden (SANE kullanarak), kolay kurulum ve sürücü gerektirmeden paylaşmanızı sağlar. TIF, JPG, PNG, PDF ve TXT (Tesseract OCR ile) dosya uzantıları ile çeşitli sıkıştırma ayarlarıyla kaydedebilir ve tümü ayarlanabilir. Çoklu sayfa taramasını ve tüm SANE uyumlu cihazları destekler.",
     "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:",
-    "system-info": "Sistem bilgisi"
+    "system-info": "Sistem bilgisi",
+    "logs": "Günlükler",
+    "logs-copy": "Kopyala",
+    "logs-refresh": "Yenile",
+    "logs-copied": "Günlükler panoya kopyalandı",
+    "logs-empty": "Günlük girişi yok"
   },
-
   "colors": {
     "accent-4": "Varsayılan",
     "red": "Kırmızı",
@@ -38,14 +40,12 @@
     "blue-grey": "Mavi gri",
     "grey": "Gri"
   },
-
   "batch-dialog": {
     "btn-cancel": "İptal",
     "btn-finish": "Bitir",
     "btn-rescan": "Sayfayı tekrar tara",
     "btn-next": "İleri"
   },
-
   "files": {
     "filename": "Dosya adı",
     "date": "Tarih",
@@ -59,10 +59,12 @@
     "dialog:rename-cancel": "İptal",
     "dialog:rename-save": "Kaydet",
     "actions": "Eylemler",
+    "button:download": "İndir",
+    "button:delete": "Sil",
+    "button:rename": "Yeniden Adlandır",
     "thumbnail-show": "Show thumbnails",
     "thumbnail-size": "Thumbnail size"
   },
-
   "navigation": {
     "scan": "Tara",
     "files": "Dosyalar",
@@ -70,7 +72,6 @@
     "about": "Hakkında",
     "version": "Versiyon"
   },
-
   "batch-mode": {
     "none": "Hiçbiri",
     "manual": "Manüel (istemci ile)",
@@ -78,26 +79,22 @@
     "auto-collate-standard": "Oto (Sıraya koy 1, 3... 4, 2)",
     "auto-collate-reverse": "Oto (Ters 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Oto serviye",
     "threshold": "Eşik",
     "blur": "Bulanıklık"
   },
-
   "mode": {
     "color": "Renk",
     "halftone": "Yarım ton",
     "gray": "Gri",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Düz platform",
     "adf": "ADF",
@@ -106,14 +103,12 @@
     "centrally-aligned": "Ortaya hizalı",
     "duplex": "Arkalı önlü",
     "transparency unit": "Şeffaflık Birimi",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Yüksek kalite",
     "medium-quality": "Orta kalite",
@@ -123,7 +118,6 @@
     "ocr": "OCR",
     "text-file": "Metin dosyası"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +128,6 @@
     "portrait": "Dikey",
     "landscape": "Yatay"
   },
-
   "scan": {
     "device": "Cihaz",
     "source": "Kaynak",
@@ -156,13 +149,16 @@
     "paperSize": "Sayfa boyutu",
     "brightness": "Parlaklık",
     "contrast": "Kontrast",
+    "rotate-cw": "Saat yönünde 90° döndür",
+    "rotate-ccw": "Saat yönünün tersine 90° döndür",
+    "flip-h": "Yatay çevir",
+    "flip-v": "Dikey çevir",
     "message:loading-devices": "Cihazlar yükleniyor...",
     "message:no-devices": "Hiç cihaz bulunamadı",
     "message:deleted-preview": "Önizleme silindi",
     "message:turn-documents": "Dökümanı çevir",
     "message:preview-of-page": "Sayfaynın önizlemesi"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Davranış ve arayüz",

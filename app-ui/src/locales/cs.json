@@ -5,19 +5,21 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Žádná data nejsou k dispozici"
   },
-
   "about": {
     "main": "scanservjs je jednoduché webové uživatelské rozhraní pro váš skener. Umožňuje vám sdílet jeden nebo více skenerů (s využitím SANE) bez ovladačů nebo komplikované instalace. Umí ukládat do TIF, JPG, PNG, PDF a TXT (využívá Tesseract OCR) s různými nastaveními komprese, vše je možné konfigurovat. Podporuje vícestránkové skenování a všechna zařízení kompatibilní se SANE.",
     "issue": "Ohlaste chybu nebo se podívejte na zdrojový kód:",
     "api": "OpenAPI dokumentace:",
-    "system-info": "Informace o systému"
+    "system-info": "Informace o systému",
+    "logs": "Protokoly",
+    "logs-copy": "Kopírovat",
+    "logs-refresh": "Obnovit",
+    "logs-copied": "Protokoly zkopírovány do schránky",
+    "logs-empty": "Žádné záznamy v protokolu"
   },
-
   "colors": {
     "accent-4": "Výchozí",
     "red": "Červená",
@@ -40,14 +42,12 @@
     "blue-grey": "Šedomodrá",
     "grey": "Šedá"
   },
-
   "batch-dialog": {
     "btn-cancel": "Zrušit",
     "btn-finish": "Dokončit",
     "btn-rescan": "Znovu oskenovat stranu",
     "btn-next": "Další"
   },
-
   "files": {
     "filename": "Název souboru",
     "date": "Datum",
@@ -61,10 +61,12 @@
     "dialog:rename-cancel": "Zrušit",
     "dialog:rename-save": "Uložit",
     "actions": "Akce",
+    "button:download": "Stáhnout",
+    "button:delete": "Smazat",
+    "button:rename": "Přejmenovat",
     "thumbnail-show": "Zobrazit miniatury",
     "thumbnail-size": "Velikost miniatur"
   },
-
   "navigation": {
     "scan": "Skenování",
     "files": "Soubory",
@@ -72,7 +74,6 @@
     "about": "Informace",
     "version": "Verze"
   },
-
   "batch-mode": {
     "none": "Vypnuto",
     "manual": "Manuální (s výzvou)",
@@ -80,7 +81,6 @@
     "auto-collate-standard": "Automatický (Kompletovat 1, 3... 4, 2)",
     "auto-collate-reverse": "Automatický (Obrátit 1, 3... 2, 4)"
   },
-    
   "filter": {
     "auto-level": "Automatické zarovnání",
     "auto-contrast": "Automatický kontrast",
@@ -88,25 +88,21 @@
     "threshold": "Práh",
     "blur": "Rozostření"
   },
-
   "mode": {
     "color": "Barevný",
     "halftone": "Polotón",
     "gray": "Černobílý",
     "lineart": "Perokresba",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Jednostranný",
     "duplex": "Oboustranný"
   },
-
   "source": {
     "flatbed": "Skenovací deska",
     "adf": "Automatický podavač",
@@ -115,14 +111,12 @@
     "centrally-aligned": "zarovnáno na střed",
     "duplex": "oboustranně",
     "transparency unit": "Transparentní jednotka",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Vysoká kvalita",
     "medium-quality": "Střední kvalita",
@@ -132,7 +126,6 @@
     "ocr": "OCR",
     "text-file": "Textový soubor"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -143,7 +136,6 @@
     "portrait": "Na výšku",
     "landscape": "Na šířku"
   },
-
   "scan": {
     "device": "Zařízení",
     "source": "Zdroj",
@@ -166,13 +158,16 @@
     "paperSize": "Velikost papíru",
     "brightness": "Jas",
     "contrast": "Kontrast",
+    "rotate-cw": "Otočit o 90° po směru hodinových ručiček",
+    "rotate-ccw": "Otočit o 90° proti směru hodinových ručiček",
+    "flip-h": "Překlopit vodorovně",
+    "flip-v": "Překlopit svisle",
     "message:loading-devices": "Načítání zařízení...",
     "message:no-devices": "Nebyla nalezena žádná zařízení",
     "message:deleted-preview": "Náhled byl odstraněn",
     "message:turn-documents": "Obraťte skenované dokumenty",
     "message:preview-of-page": "Náhled strany č."
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Chování a uživatelské rozhraní",

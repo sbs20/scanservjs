@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs est une simple interface web pour votre scanner. Cette interface permet de partager un ou plusieurs scanners (utilisant SANE) sur un réseau sans avoir besoin de drivers ou d'installation complexe. Les images scannées peuvent être enregistrées aux formats TIF, JPG, PNG, PDF et TXT (avec Tesseract OCR) avec des compressions paramétrables. scanservjs supporte les scans de plusieurs pages et tous les scanners compatibles avec SANE.",
     "issue": "Signaler un problème ou afficher le code source:",
-    "system-info": "Informations système"
+    "system-info": "Informations système",
+    "logs": "Journaux",
+    "logs-copy": "Copier",
+    "logs-refresh": "Actualiser",
+    "logs-copied": "Journaux copiés dans le presse-papiers",
+    "logs-empty": "Aucune entrée de journal"
   },
-
   "colors": {
     "accent-4": "Défaut",
     "red": "Rouge",
@@ -38,14 +40,12 @@
     "blue-grey": "Bleu gris",
     "grey": "Gris"
   },
-
   "batch-dialog": {
     "btn-cancel": "Annuler",
     "btn-finish": "Terminer",
     "btn-rescan": "Re-numériser page",
     "btn-next": "Suivant"
   },
-
   "files": {
     "filename": "Nom de fichier",
     "date": "Date",
@@ -59,10 +59,12 @@
     "dialog:rename-cancel": "Annuler",
     "dialog:rename-save": "Enregistrer",
     "actions": "Actions",
+    "button:download": "Télécharger",
+    "button:delete": "Supprimer",
+    "button:rename": "Renommer",
     "thumbnail-show": "Afficher les miniatures",
     "thumbnail-size": "Taille de la miniature"
   },
-
   "navigation": {
     "scan": "Scan",
     "files": "Fichiers",
@@ -70,7 +72,6 @@
     "about": "A propos",
     "version": "Version"
   },
-
   "batch-mode": {
     "none": "Sans",
     "manual": "Manuel (avec popup)",
@@ -78,7 +79,6 @@
     "auto-collate-standard": "Assemblage auto (Standard 1, 3... 4, 2)",
     "auto-collate-reverse": "Assemblage auto (Inversé 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Niveaux automatiques",
     "auto-contrast": "Contraste automatique",
@@ -86,20 +86,17 @@
     "threshold": "Seuil",
     "blur": "Flou"
   },
-
   "mode": {
     "color": "Couleur",
     "halftone": "Noir et blanc",
     "gray": "Niveau de gris",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Vitre du scanner",
     "adf": "Chargeur de documents",
@@ -108,14 +105,12 @@
     "centrally-aligned": "Aligné centré",
     "duplex": "Duplex",
     "transparency unit": "Unité de transparence",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Qualité haute",
     "medium-quality": "Qualité moyenne",
@@ -125,7 +120,6 @@
     "ocr": "OCR",
     "text-file": "Fichier texte"
   },
-
   "paper-size": {
     "letter": "Lettre",
     "legal": "Legal",
@@ -136,7 +130,6 @@
     "portrait": "Portrait",
     "landscape": "Paysage"
   },
-
   "scan": {
     "device": "Scanner",
     "source": "Source",
@@ -158,13 +151,16 @@
     "paperSize": "Taille papier",
     "brightness": "Luminosité",
     "contrast": "Contraste",
+    "rotate-cw": "Pivoter de 90° dans le sens des aiguilles d'une montre",
+    "rotate-ccw": "Pivoter de 90° dans le sens inverse des aiguilles d'une montre",
+    "flip-h": "Retourner horizontalement",
+    "flip-v": "Retourner verticalement",
     "message:loading-devices": "Chargement des scanners...",
     "message:no-devices": "Aucun scanner trouvé",
     "message:deleted-preview": "Aperçu supprimé",
     "message:turn-documents": "Tourner le document",
     "message:preview-of-page": "Aperçu de la page"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Paramètres et interface utilisateur",

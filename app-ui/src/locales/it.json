@@ -5,19 +5,21 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Dati non disponibili"
   },
-
   "about": {
     "main": "scanservjs è una semplice interfaccia web per il tuo scanner. Permette di condividere uno o più scanner (usando SANE) in una rete, senza necessità di driver o installazioni complicate. Può salvare nei formati TIF, JPG, PNG, PDF e TXT (via Tesseract OCR) con vari livelli di compressione. Supporta la scansione multi-pagina e tutti i dispositivi compatibili con SANE.",
     "issue": "Segnala problemi o visualizza il codice sorgente:",
     "api": "Documentazione API Swagger:",
-    "system-info": "Informazioni di sistema"
+    "system-info": "Informazioni di sistema",
+    "logs": "Log",
+    "logs-copy": "Copia",
+    "logs-refresh": "Aggiorna",
+    "logs-copied": "Log copiati negli appunti",
+    "logs-empty": "Nessuna voce di log"
   },
-
   "colors": {
     "accent-4": "Predefinito",
     "red": "Rosso",
@@ -40,14 +42,12 @@
     "blue-grey": "Grigio bluastro",
     "grey": "Grigio"
   },
-
   "batch-dialog": {
     "btn-cancel": "Annulla",
     "btn-finish": "Finito",
     "btn-rescan": "Ripeti scansione",
     "btn-next": "Prossima pagina"
   },
-
   "files": {
     "filename": "Nome file",
     "date": "Data",
@@ -63,10 +63,12 @@
     "dialog:rename-cancel": "Annulla",
     "dialog:rename-save": "Salva",
     "actions": "Azioni",
+    "button:download": "Scarica",
+    "button:delete": "Elimina",
+    "button:rename": "Rinomina",
     "thumbnail-show": "Mostra miniature",
     "thumbnail-size": "Dimensione miniature"
   },
-
   "navigation": {
     "scan": "Scansiona",
     "files": "File",
@@ -74,7 +76,6 @@
     "about": "Informazioni",
     "version": "Versione"
   },
-
   "batch-mode": {
     "none": "No",
     "manual": "Manuale (Con finestra guidata)",
@@ -82,7 +83,6 @@
     "auto-collate-standard": "Automatico (Fascicola 1, 3... 4, 2)",
     "auto-collate-reverse": "Automatico (Inverso 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "Livello automatico",
     "auto-contrast": "Contrasto automatico",
@@ -90,25 +90,21 @@
     "threshold": "Soglia",
     "blur": "Sfocatura"
   },
-
   "mode": {
     "color": "A colori",
     "halftone": "Mezzitoni",
     "gray": "Scala di grigi",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Solo fronte",
     "duplex": "Fronte/retro"
   },
-
   "source": {
     "flatbed": "Piano fisso",
     "adf": "Alimentatore automatico di documenti",
@@ -117,14 +113,12 @@
     "centrally-aligned": "Allineato al centro",
     "duplex": "Fronte/retro",
     "transparency unit": "Adattatore per trasparenza",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Qualità alta",
     "medium-quality": "Qualità media",
@@ -134,7 +128,6 @@
     "ocr": "OCR",
     "text-file": "File di testo"
   },
-
   "paper-size": {
     "letter": "Lettera",
     "legal": "Legale",
@@ -145,7 +138,6 @@
     "portrait": "Verticale",
     "landscape": "Orizzontale"
   },
-
   "scan": {
     "device": "Dispositivo",
     "source": "Sorgente",
@@ -168,13 +160,16 @@
     "paperSize": "Formato carta",
     "brightness": "Luminosità",
     "contrast": "Contrasto",
+    "rotate-cw": "Ruota di 90° in senso orario",
+    "rotate-ccw": "Ruota di 90° in senso antiorario",
+    "flip-h": "Capovolgi orizzontalmente",
+    "flip-v": "Capovolgi verticalmente",
     "message:loading-devices": "Caricamento dispositivi...",
     "message:no-devices": "Nessun dispositivo trovato",
     "message:deleted-preview": "Anteprima eliminata",
     "message:turn-documents": "Capovolgi i documenti",
     "message:preview-of-page": "Anteprima della pagina"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Comportamento ed interfaccia",
