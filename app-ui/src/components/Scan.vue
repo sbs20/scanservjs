@@ -141,6 +141,7 @@ import Common from '../classes/common';
 import Device from '../classes/device';
 import Request from '../classes/request';
 import Storage from '../classes/storage';
+import { findByI18nName } from '../classes/i18n-match';
 
 import 'vue-advanced-cropper/dist/style.css';
 
@@ -653,10 +654,12 @@ export default {
             ? this.device.settings[key].default
             : (`--${key}` in this.device.features ? this.device.features[`--${key}`].default : undefined);
           if (defaultValue !== undefined) {
-            if (key in this.request.params) {
-              this.request.params[key] = defaultValue;
-            } else if (key in this.request) {
-              this.request[key] = defaultValue;
+            // 'batchMode' is the kiosk param name; the request object uses 'batch'.
+            const requestKey = key === 'batchMode' ? 'batch' : key;
+            if (requestKey in this.request.params) {
+              this.request.params[requestKey] = defaultValue;
+            } else if (requestKey in this.request) {
+              this.request[requestKey] = defaultValue;
             }
           }
         }
@@ -679,11 +682,28 @@ export default {
       // Apply all preset values.
       for (const [param, value] of Object.entries(kioskPresets)) {
         if (param === 'paperSize') {
-          const paper = this.context.paperSizes.find(p => p.name === value);
+          // Match by raw key first, then fall back to locale-aware fuzzy matching
+          // so that translated names (e.g. "Letter (Portrait)") also work.
+          const paper = findByI18nName(
+            this.context.paperSizes, p => p.name, value, this.$i18n.locale.value
+          );
           if (paper) {
             this.request.params.width = paper.dimensions.x;
             this.request.params.height = paper.dimensions.y;
           }
+        } else if (param === 'pipeline') {
+          // Pipeline descriptions contain @: references; use locale-aware matching
+          // so that translated descriptions (e.g. "OCR | PDF (JPG | High quality)")
+          // resolve to the canonical key the server expects.
+          const opts = this.device.settings && this.device.settings.pipeline
+            ? this.device.settings.pipeline.options : [];
+          const matched = findByI18nName(opts, p => p, value, this.$i18n.locale.value);
+          if (matched != null) {
+            this.request.pipeline = matched;
+          }
+        } else if (param === 'batchMode') {
+          // 'batchMode' is the kiosk param name; the request object uses 'batch'.
+          this.request.batch = value;
         } else if (param in this.request.params) {
           this.request.params[param] = value;
         } else if (param in this.request) {
