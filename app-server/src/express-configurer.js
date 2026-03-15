@@ -170,6 +170,37 @@ const EndpointSpecs = [
   },
   {
     method: 'get',
+    path: '/favicon.svg',
+    callback: async (req, res) => {
+      const iconFiles = config.pwa.iconFiles || [];
+      const svgFile = iconFiles.find(f => path.extname(f).toLowerCase() === '.svg');
+      if (svgFile && fs.existsSync(svgFile)) {
+        res.type('image/svg+xml');
+        res.sendFile(path.resolve(svgFile));
+        return;
+      }
+      res.type('image/svg+xml');
+      res.send(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="60" y="240" width="392" height="210" rx="15" fill="#2D3748"/>
+  <rect x="100" y="380" width="312" height="40" rx="4" fill="#4A5568"/>
+  <rect x="40" y="170" width="432" height="75" rx="8" fill="#3182CE"/>
+  <rect x="55" y="185" width="402" height="45" rx="4" fill="#63B3ED" opacity="0.4"/>
+  <path d="M60 120 L452 120 L472 170 L40 170 Z" fill="#E2E8F0"/>
+  <rect x="140" y="70" width="232" height="50" rx="10" fill="#A0AEC0"/>
+  <rect x="170" y="60" width="172" height="15" rx="3" fill="#CBD5E0"/>
+  <rect x="30" y="90" width="160" height="120" rx="10" fill="#1A202C"/>
+  <rect x="38" y="98" width="144" height="12" rx="2" fill="#718096"/>
+  <rect x="38" y="110" width="144" height="70" fill="white"/>
+  <rect x="48" y="130" width="25" height="25" rx="4" fill="#48BB78"/>
+  <rect x="83" y="130" width="25" height="25" rx="4" fill="#9F7AEA"/>
+  <rect x="118" y="130" width="25" height="25" rx="4" fill="#4299E1"/>
+  <rect x="38" y="180" width="144" height="24" rx="2" fill="#E2E8F0"/>
+  <rect x="155" y="184" width="16" height="16" rx="4" fill="#38A169"/>
+</svg>`);
+    }
+  },
+  {
+    method: 'get',
     path: /\/icons\/pwa-icon\.(png|svg)$/,
     callback: async (req, res) => {
       const requestedExt = `.${req.params[0]}`;
