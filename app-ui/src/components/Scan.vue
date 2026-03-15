@@ -9,7 +9,8 @@
             v-model="device"
             style="min-width: 0px;"
             :label="$t('scan.device')"
-            :items="context.devices" return-object item-title="name" @update:model-value="clear" />
+            @update:model-value="clear"
+            :items="context.devices" return-object item-title="name" />
           <v-btn small class="ml-2 mt-4 pl-1 pr-1" min-width="32" @click="deviceRefresh"><v-icon :icon="mdiRefresh" /></v-btn>
         </div>
 
@@ -70,33 +71,99 @@
         </div>
       </v-col>
 
-      <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+      <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`, overflow: 'hidden'}">
+        <div class="d-flex justify-center mb-2">
+          <v-btn-group density="comfortable" variant="outlined">
+            <v-btn :disabled="!img || isBatchOrAdf" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-v')" :color="transformations.flipV ? 'primary' : undefined" @click="toggleFlipVertical"><v-icon :icon="mdiFlipVertical" /></v-btn>
+          </v-btn-group>
+        </div>
         <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-            :src="img" @change="onCropperChange" />
-        <v-img v-if="!geometry" :src="img" />
+            :src="img" :style="previewStyle" :stencil-props="cropperStencilProps" @change="onCropperChange" />
+        <v-img v-if="!geometry" :src="img" :style="previewStyle" />
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <template v-if="geometry">
-          <v-text-field v-model="request.params.top" :label="$t('scan.top')" type="number" step="any" @blur="onCoordinatesChange" />
-          <v-text-field v-model="request.params.left" :label="$t('scan.left')" type="number" step="any" @blur="onCoordinatesChange" />
-          <v-text-field v-model="request.params.width" :label="$t('scan.width')" type="number" step="any" @blur="onCoordinatesChange" />
-          <v-text-field v-model="request.params.height" :label="$t('scan.height')" type="number" step="any" @blur="onCoordinatesChange" />
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
+              <v-text-field :model-value="request.params.top" :label="$t('scan.top')" type="text"
+                 @input="onDimensionInput($event, 'top')" @blur="commitDimension('top', $event)" @keyup.enter="$event.target.blur()"
+                 prefix="mm" hide-details="auto" />
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
+                 @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
+                 hide-details="auto" class="centered-input" density="compact" />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
+              <v-text-field :model-value="request.params.left" :label="$t('scan.left')" type="text"
+                 @input="onDimensionInput($event, 'left')" @blur="commitDimension('left', $event)" @keyup.enter="$event.target.blur()"
+                 prefix="mm" hide-details="auto" />
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
+                 @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
+                 hide-details="auto" class="centered-input" density="compact" />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
+              <v-text-field :model-value="request.params.width" :label="$t('scan.width')" type="text"
+                 @input="onDimensionInput($event, 'width')" @blur="commitDimension('width', $event)" @keyup.enter="$event.target.blur()"
+                 prefix="mm" hide-details="auto" />
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
+                 @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
+                 hide-details="auto" class="centered-input" density="compact" />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
+              <v-text-field :model-value="request.params.height" :label="$t('scan.height')" type="text"
+                 @input="onDimensionInput($event, 'height')" @blur="commitDimension('height', $event)" @keyup.enter="$event.target.blur()"
+                 prefix="mm" hide-details="auto" />
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
+                 @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
+                 hide-details="auto" class="centered-input" density="compact" />
+            </v-col>
+          </v-row>
 
-          <v-menu offset-y>
-            <template #activator="{ props }">
-              <v-btn color="primary" class="mb-4" v-bind="props">{{ $t('scan.paperSize') }}</v-btn>
-            </template>
-            <v-list dense>
-              <v-list-item
-                v-for="(item, index) in paperSizes"
-                :key="index"
-                @click="updatePaperSize(item)">
-                <v-list-item-title>{{ item.name }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+          <v-row no-gutters class="mb-4">
+            <v-col cols="7">
+              <v-menu offset-y>
+                <template #activator="{ props }">
+                  <v-btn color="primary" block v-bind="props">{{ $t('scan.paperSize') }}</v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item
+                    v-for="(item, index) in paperSizes"
+                    :key="index"
+                    @click="updatePaperSize(item)">
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-btn
+                :icon="aspectRatioLocked ? mdiLock : mdiLockOpenOutline"
+                variant="text"
+                density="comfortable"
+                :color="aspectRatioLocked ? 'primary' : undefined"
+                @click="toggleAspectRatioLock"
+              />
+            </v-col>
+          </v-row>
         </template>
 
         <template v-if="'--brightness' in device.features">
@@ -105,7 +172,7 @@
             :min="device.features['--brightness']['limits'][0]"
             :max="device.features['--brightness']['limits'][1]">
             <template #prepend>
-              <v-text-field v-model="request.params.brightness" 
+              <v-text-field v-model="request.params.brightness"
                 :label="$t('scan.brightness')" style="width: 60px" type="number" />
             </template>
           </v-slider>
@@ -117,13 +184,13 @@
             :min="device.features['--contrast']['limits'][0]"
             :max="device.features['--contrast']['limits'][1]">
             <template #prepend>
-              <v-text-field v-model="request.params.contrast" 
+              <v-text-field v-model="request.params.contrast"
                 :label="$t('scan.contrast')" style="width: 60px" type="number" />
             </template>
           </v-slider>
         </div>
       </v-col>
-      
+
       <v-spacer />
     </v-row>
 
@@ -132,7 +199,19 @@
 </template>
 
 <script>
-import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh } from '@mdi/js';
+import {
+  mdiAutoFix,
+  mdiCamera,
+  mdiDelete,
+  mdiFlipHorizontal,
+  mdiFlipVertical,
+  mdiLock,
+  mdiLockOpenOutline,
+  mdiMagnify,
+  mdiRefresh,
+  mdiRotateLeft,
+  mdiRotateRight
+} from '@mdi/js';
 import { Cropper } from 'vue-advanced-cropper';
 import { useI18n } from 'vue-i18n';
 import BatchDialog from './BatchDialog.vue';
@@ -169,10 +248,17 @@ export default {
   setup() {
     const { te } = useI18n();
     return {
+      mdiAutoFix,
       mdiCamera,
       mdiDelete,
+      mdiFlipHorizontal,
+      mdiFlipVertical,
+      mdiLock,
+      mdiLockOpenOutline,
       mdiMagnify,
       mdiRefresh,
+      mdiRotateLeft,
+      mdiRotateRight,
       te
     };
   },
@@ -197,7 +283,18 @@ export default {
         timer: 0,
         width: 400,
         key: 0
-      }
+      },
+      transformations: storage.transformations || {
+        rotation: 0,
+        flipH: false,
+        flipV: false,
+        magic: ''
+      },
+      aspectRatioLocked: storage.aspectRatioLocked || false,
+      lockedAspectRatio: storage.lockedAspectRatio || null,
+      baselineBrightness: 0,
+      baselineContrast: 0,
+      originalParams: null
     };
   },
 
@@ -304,6 +401,45 @@ export default {
           return x;
         })
         : undefined;
+    },
+
+    previewStyle() {
+      if (!this.img) {
+        return {};
+      }
+
+      const calcFilter = (val, baseline, feature) => {
+        if (!feature) return 100;
+        const limits = feature.limits;
+        const min = limits[0];
+        const max = limits[1];
+        const normal = min < 0 ? 0 : (min + max) / 2;
+        const range = max - normal;
+        if (range === 0) return 100;
+        return 100 * (1 + (val - baseline) / range);
+      };
+
+      const brightness = calcFilter(this.request.params.brightness || 0, this.baselineBrightness, this.device.features['--brightness']);
+      const contrast = calcFilter(this.request.params.contrast || 0, this.baselineContrast, this.device.features['--contrast']);
+
+      return {
+        filter: `brightness(${brightness}%) contrast(${contrast}%)`
+      };
+    },
+
+    cropperStencilProps() {
+      if (this.aspectRatioLocked && this.lockedAspectRatio) {
+        return { aspectRatio: this.lockedAspectRatio };
+      }
+      return {};
+    },
+
+    isBatchOrAdf() {
+      const batch = this.request && this.request.batch;
+      const isBatch = batch && batch !== 'none' && batch !== 'false' && batch !== false;
+      const source = this.request && this.request.params ? this.request.params.source : '';
+      const isAdf = source && typeof source === 'string' && source.toLowerCase().includes('adf');
+      return isBatch || isAdf;
     }
   },
 
@@ -313,6 +449,18 @@ export default {
         storage.request = request;
       },
       deep: true
+    },
+    transformations: {
+      handler(transformations) {
+        storage.transformations = transformations;
+      },
+      deep: true
+    },
+    aspectRatioLocked(val) {
+      storage.aspectRatioLocked = val;
+    },
+    lockedAspectRatio(val) {
+      storage.lockedAspectRatio = val;
     }
   },
 
@@ -321,26 +469,37 @@ export default {
     this.readContext().then(() => {
       this.readPreview();
     });
-    window.addEventListener('resize', () => {
-      clearTimeout(this.preview.timer);
-      this.preview.timer = setTimeout(this._resizePreview, 100);
-    });
+    window.addEventListener('resize', this._onResize);
+    window.addEventListener('scan-trigger', this._onScanTrigger);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('scan-trigger', this._onScanTrigger);
   },
 
   methods: {
+    _onResize() {
+      clearTimeout(this.preview.timer);
+      this.preview.timer = setTimeout(this._resizePreview, 100);
+    },
+
+    _onScanTrigger() {
+      this.scan(1);
+    },
+
     _resizePreview() {
       const paperRatio = this.geometry
         ? this.deviceSize.width / this.deviceSize.height
         : 210 / 297;
 
-      // This only makes a difference when the col-width="auto" - so md+
       const mdBreakpoint = 960;
       if (window.innerWidth >= mdBreakpoint) {
         const appbarHeight = 80;
         const availableWidth = window.innerWidth - 30;
         const availableHeight = window.innerHeight - appbarHeight;
         const desiredWidth = availableHeight * paperRatio;
-        this.preview.width = Math.min(availableWidth / 2, desiredWidth);
+        this.preview.width = Math.min(availableWidth * 0.4, desiredWidth);
         this.preview.key += 1;
       }
     },
@@ -361,11 +520,17 @@ export default {
 
     createPreview() {
       this.mask(1);
-
-      // Keep reloading the preview image
+      this.transformations.magic = '';
+      this.originalParams = null;
       const timer = window.setInterval(this.readPreview, 1000);
-
       let data = Common.clone(this.request);
+      
+      // Force full-bed scan for previews by removing crop parameters.
+      // This allows the Magic Wand to see the background and prevents 'bites'.
+      delete data.params.left;
+      delete data.params.top;
+      delete data.params.width;
+      delete data.params.height;
 
       this._fetch('api/v1/preview', {
         method: 'POST',
@@ -376,9 +541,6 @@ export default {
         }
       }).then(() => {
         window.clearInterval(timer);
-
-        // Some scanners don't create the preview until after the scan has finished.
-        // Run preview one last time
         window.setTimeout(this.readPreview, 1000);
         this.mask(-1);
       }).catch(() => {
@@ -402,10 +564,6 @@ export default {
 
     pixelsPerMm() {
       const scanner = this.deviceSize;
-
-      // The preview image may not have perfectly scaled dimensions
-      // because pixel counts are integers. So we report a horizontal
-      // and vertical resolution
       const image = this.$refs.cropper.imageSize;
       return {
         x: image.width / scanner.width,
@@ -455,6 +613,7 @@ export default {
     },
 
     onCoordinatesChange() {
+      if (!this.$refs.cropper) return;
       const adjusted = this.scaleCoordinates(
         this.request.params,
         this.pixelsPerMm().x,
@@ -469,11 +628,6 @@ export default {
         1 / this.pixelsPerMm().x,
         1 / this.pixelsPerMm().y);
 
-      // The cropper changes even when coordinates are set manually. This will
-      // result in manually set values being overwritten because of rounding.
-      // If someone is taking the trouble to set values manually then they
-      // should be preserved. We should only update the values if they breach
-      // a threshold or the scanner dimensions
       const scanner = this.deviceSize;
       const params = this.request.params;
       const threshold = 0.4;
@@ -486,17 +640,26 @@ export default {
       params.height = bestValue(params.height, adjusted.height, 0, scanner.height);
       params.left = bestValue(params.left, adjusted.left, 0, scanner.width);
       params.top = bestValue(params.top, adjusted.top, 0, scanner.height);
+
+      if (this.transformations.magic) {
+        this.transformations.left = params.left;
+        this.transformations.top = params.top;
+        this.transformations.width = params.width;
+        this.transformations.height = params.height;
+      }
+
+      if (this.aspectRatioLocked) {
+        this.lockedAspectRatio = params.width / params.height;
+      }
     },
 
     readContext() {
-      // Only show notification if things are slow (first time / force)
       const timer = window.setTimeout(() => {
         this.notify({ type: 'i', message: this.$t('scan.message:loading-devices') });
       }, 250);
 
       return this._fetch('api/v1/context').then(context => {
         window.clearTimeout(timer);
-
         if (context.devices && context.devices.length > 0) {
           this.context = context;
           this.device = context.devices[0];
@@ -521,15 +684,30 @@ export default {
     },
 
     readPreview() {
-      // Gets the preview image as a base64 encoded jpg and updates the UI
-      const uri = 'api/v1/preview?' + new URLSearchParams(
-        this.request.filters.map(e => ['filter', e]));
+      const params = new URLSearchParams(this.request.filters.map(e => ['filter', e]));
+      params.append('rotation', this.transformations.rotation);
+      params.append('flipH', this.transformations.flipH);
+      params.append('flipV', this.transformations.flipV);
+      params.append('magic', this.transformations.magic);
+      
+      // If magic is NOT active, we pass current crop to the preview server.
+      // If it IS active, we omit them to get the full bed background.
+      if (!this.transformations.magic) {
+        params.append('left', this.request.params.left);
+        params.append('top', this.request.params.top);
+        params.append('width', this.request.params.width);
+        params.append('height', this.request.params.height);
+      }
 
-      this._fetch(uri, {
+      const uri = 'api/v1/preview?' + params.toString();
+
+      return this._fetch(uri, {
         cache: 'no-store',
         method: 'GET'
       }).then(data => {
         this.img = 'data:image/jpeg;base64,' + data.content;
+        this.baselineBrightness = this.request.params.brightness || 0;
+        this.baselineContrast = this.request.params.contrast || 0;
         this._resizePreview();
       });
     },
@@ -540,7 +718,6 @@ export default {
         this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
           || this.context.devices[0];
       }
-
       request = Request.create(request, this.device);
       return request;
     },
@@ -554,8 +731,57 @@ export default {
       if (index !== undefined) {
         this.request.index = index;
       }
-
       const data = Common.clone(this.request);
+      data.transformations = Common.clone(this.transformations);
+      
+      // Precise AABB Strategy: If magic is active, calculate the exact 
+      // Axis-Aligned Bounding Box needed on the bed to cover the rotated region.
+      if (data.transformations.magic && this.deviceSize && this.transformations.angle !== undefined) {
+        const a = (this.transformations.angle || 0) * Math.PI / 180;
+        const cx = this.transformations.doc_c_x;
+        const cy = this.transformations.doc_c_y;
+        
+        // Corners of the crop box in 'straightened' space
+        const corners = [
+          [data.params.left, data.params.top],
+          [data.params.left + data.params.width, data.params.top],
+          [data.params.left, data.params.top + data.params.height],
+          [data.params.left + data.params.width, data.params.top + data.params.height]
+        ];
+        
+        // Map corners back to bed space
+        const bedCorners = corners.map(([x, y]) => {
+          const dx = x - cx;
+          const dy = y - cy;
+          // Reverse rotation: x' = dx*cos(a) - dy*sin(a) + cx, y' = dx*sin(a) + dy*cos(a) + cy
+          return [
+            dx * Math.cos(a) - dy * Math.sin(a) + cx,
+            dx * Math.sin(a) + dy * Math.cos(a) + cy
+          ];
+        });
+        
+        const minX = Math.min(...bedCorners.map(c => c[0]));
+        const maxX = Math.max(...bedCorners.map(c => c[0]));
+        const minY = Math.min(...bedCorners.map(c => c[1]));
+        const maxY = Math.max(...bedCorners.map(c => c[1]));
+        
+        // Buffer for rounding errors (1mm)
+        const buffer = 1.0;
+        const l = Math.max(0, minX - buffer);
+        const t = Math.max(0, minY - buffer);
+        const r = Math.min(this.deviceSize.width, maxX + buffer);
+        const b = Math.min(this.deviceSize.height, maxY + buffer);
+        
+        // Final crop size for the ImageMagick -extent filter
+        data.transformations.width = data.params.width;
+        data.transformations.height = data.params.height;
+        
+        data.params.left = l;
+        data.params.top = t;
+        data.params.width = r - l;
+        data.params.height = b - t;
+      }
+
       this._fetch('api/v1/scan', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -567,8 +793,7 @@ export default {
         if (response && 'index' in response) {
           const options = {
             message: this.$t('scan.message:turn-documents'),
-            onFinish: () => {
-            },
+            onFinish: () => {},
             onNext: () => {
               this.request.index = response.index + 1;
               this.scan();
@@ -588,7 +813,6 @@ export default {
           }
           this.$refs.batchDialog.open(options);
         } else {
-          // Finish
           if (storage.settings.showFilesAfterScan) {
             this.$router.push('/files');
           } else {
@@ -604,19 +828,139 @@ export default {
         this.request.params.height = value.dimensions.y;
         this.onCoordinatesChange();
       }
+    },
+
+    autoCrop() {
+      if (this.transformations.magic) {
+        this.transformations.magic = '';
+        if (this.originalParams) {
+          const old = this.originalParams;
+          this.request.params.left = old.left;
+          this.request.params.top = old.top;
+          this.request.params.width = old.width;
+          this.request.params.height = old.height;
+          this.originalParams = null;
+          this.onCoordinatesChange();
+        }
+        this.readPreview();
+        return;
+      }
+
+      this.mask(1);
+      this.originalParams = Common.clone(this.request.params);
+      
+      // We send full bed dimensions to ensure the script doesn't try to scale-to-fit
+      const params = Common.clone(this.request.params);
+      params.left = 0;
+      params.top = 0;
+      params.width = this.deviceSize.width;
+      params.height = this.deviceSize.height;
+
+      Common.fetch('api/v1/autocrop', {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(data => {
+        if (data.magic) {
+          this.transformations.magic = data.magic;
+          this.transformations.angle = data.angle;
+          this.transformations.doc_c_x = data.doc_c_x;
+          this.transformations.doc_c_y = data.doc_c_y;
+          this.transformations.doc_w = data.doc_w;
+          this.transformations.doc_h = data.doc_h;
+          this.transformations.width = data.doc_w;
+          this.transformations.height = data.doc_h;
+
+          if (data.doc_w && data.doc_h) {
+            this.request.params.left = round(data.doc_c_x - (data.doc_w / 2), 1);
+            this.request.params.top = round(data.doc_c_y - (data.doc_h / 2), 1);
+            this.request.params.width = round(data.doc_w, 1);
+            this.request.params.height = round(data.doc_h, 1);
+            this.onCoordinatesChange();
+          }
+          this.readPreview();
+        } else {
+          this.notify({ type: 'i', message: 'No document detected' });
+        }
+        this.mask(-1);
+      }).catch(error => {
+        this.notify({ type: 'e', message: error });
+        this.mask(-1);
+      });
+    },
+
+    toggleFlipHorizontal() {
+      this.transformations.flipH = !this.transformations.flipH;
+      this.readPreview();
+    },
+
+    toggleFlipVertical() {
+      this.transformations.flipV = !this.transformations.flipV;
+      this.readPreview();
+    },
+
+    rotateCounterClockwise() {
+      this.transformations.rotation = (this.transformations.rotation + 270) % 360;
+      this.readPreview();
+    },
+
+    rotateClockwise() {
+      this.transformations.rotation = (this.transformations.rotation + 90) % 360;
+      this.readPreview();
+    },
+
+    toggleAspectRatioLock() {
+      this.aspectRatioLocked = !this.aspectRatioLocked;
+      if (this.aspectRatioLocked) {
+        this.lockedAspectRatio = this.request.params.width / this.request.params.height;
+      }
+    },
+
+    toPixels(mm, axis) {
+      if (!this.$refs.cropper) return 0;
+      const scale = this.pixelsPerMm()[axis];
+      return Math.round(mm * scale);
+    },
+
+    onDimensionInput(event, field) {
+      const val = event.target.value;
+      this.request.params[field] = val;
+    },
+
+    commitDimension(field, event) {
+      let val = parseFloat(event.target.value);
+      if (isNaN(val)) val = 0;
+      const scanner = this.deviceSize;
+      const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
+      val = round(Math.min(Math.max(0, val), max), 1);
+      this.request.params[field] = val;
+      this.onCoordinatesChange();
+    },
+
+    onPixelInput() {},
+
+    commitPixel(field, event) {
+      let val = parseInt(event.target.value);
+      if (isNaN(val)) val = 0;
+      const axis = (field === 'left' || field === 'width') ? 'x' : 'y';
+      const mm = round(val / this.pixelsPerMm()[axis], 1);
+      const scanner = this.deviceSize;
+      const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
+      this.request.params[field] = Math.min(Math.max(0, mm), max);
+      this.onCoordinatesChange();
     }
   }
 };
 </script>
 
 <style scoped>
-#mask {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,.4);
-  top: 0;
-  left: 0;
-  z-index: 10;
+.centered-input :deep(input) {
+  text-align: center;
+}
+.cropper {
+  max-width: 100%;
 }
 </style>

@@ -24,7 +24,6 @@ mkdir -pv $DIR_DEBIAN
 mkdir -pv $DIR_ETC
 mkdir -pv $DIR_SYSTEMD
 mkdir -pv $DIR_RUNTIME/output
-mkdir -pv $DIR_RUNTIME/preview
 mkdir -pv $DIR_RUNTIME/temp
 mkdir -pv $DIR_RUNTIME/thumbnail
 mkdir -pv $DIR_LIB
@@ -32,6 +31,7 @@ mkdir -pv $DIR_DOC
 
 # Copy distribution
 cp -rv dist/* $DIR_LIB
+cp -rv autocrop $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
@@ -40,7 +40,8 @@ npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
 find $DIR_LIB -name "*.map" -type f -delete
 
 # Move and tidy up files
-mv -v $DIR_LIB/data/preview/* $DIR_RUNTIME/preview/
+mkdir -pv $BASE/usr/share/$APP_NAME/preview
+mv -v $DIR_LIB/data/preview/* $BASE/usr/share/$APP_NAME/preview/
 mv -v $DIR_LIB/config/* $DIR_ETC/
 rm -rfv $DIR_LIB/data \
   $DIR_LIB/config
@@ -75,7 +76,7 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: all
-Depends: adduser, nodejs, imagemagick, sane-utils
+Depends: adduser, nodejs, imagemagick, sane-utils, python3, python3-venv, python3-pip
 Recommends: sane-airscan, ipp-usb, tesseract-ocr, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
 Maintainer: Sam Strachan <info@sbs20.com>
 Description: Web-based UI for SANE
@@ -115,6 +116,23 @@ if [ "\$1" = "configure" ] ; then
 
   # Set permissions
   chown -R $USER:$GROUP $PATH_RUNTIME
+
+  # Seed the default preview if it doesn't exist (preserves custom files or symlinks)
+  if [ ! -d "$PATH_RUNTIME/preview" ]; then
+    mkdir -p "$PATH_RUNTIME/preview"
+    chown $USER:$GROUP "$PATH_RUNTIME/preview"
+  fi
+  if [ ! -e "$PATH_RUNTIME/preview/default.jpg" ] && [ ! -L "$PATH_RUNTIME/preview/default.jpg" ]; then
+    cp /usr/share/$APP_NAME/preview/default.jpg "$PATH_RUNTIME/preview/default.jpg"
+    chown $USER:$GROUP "$PATH_RUNTIME/preview/default.jpg"
+  fi
+
+  # Setup the isolated Python environment
+  echo "Setting up isolated Python environment..."
+  python3 -m venv /usr/lib/$APP_NAME/.venv
+  /usr/lib/$APP_NAME/.venv/bin/pip install --upgrade pip
+  /usr/lib/$APP_NAME/.venv/bin/pip install -r /usr/lib/$APP_NAME/autocrop/requirements.txt
+  chown -R $USER:$GROUP /usr/lib/$APP_NAME/.venv
 
   if [ -d /etc/ImageMagick-6 ]; then
     # Enable PDF
@@ -211,7 +229,7 @@ case "\$1" in
     # Let the user know about deleting other stuff
     echo "Consider removing the following. You will need root privileges:"
     echo "  userdel -r $USER"
-    echo "  rf -rf $PATH_ETC $PATH_RUNTIME"
+    echo "  rm -rf $PATH_ETC $PATH_RUNTIME"
   ;;
 
   *)

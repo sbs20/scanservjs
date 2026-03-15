@@ -69,3 +69,10 @@ debian
 _site
 .jekyll-metadata
 Gemfile.lock
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+requirements.txt
+build-test-deb.sh

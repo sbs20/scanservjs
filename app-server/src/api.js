@@ -89,10 +89,11 @@ module.exports = new class Api {
 
   /**
    * @param {string[]} filters
-   * @returns {Promise.<Buffer>}
+   * @param {Object} transformations
+   * @returns {Promise.<{buffer: Buffer, isDefault: boolean}>}
    */
-  async readPreview(filters) {
-    log.trace('readPreview()', filters);
+  async readPreview(filters, transformations) {
+    log.trace('readPreview()', filters, transformations);
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it.
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
@@ -104,7 +105,27 @@ module.exports = new class Api {
         cmds.splice(0, 0, `convert - ${params} tif:-`);
       }
 
-      return await Process.chain(cmds, buffer, { ignoreErrors: true });
+      // We need to know the physical dimensions of the preview.tif (full bed)
+      const context = await application.context();
+      const device = context.getDevice();
+      const inputImageBounds = {
+        left: 0,
+        top: 0,
+        width: (device.features['-x'] && device.features['-x'].limits) ? device.features['-x'].limits[1] : 215.9,
+        height: (device.features['-y'] && device.features['-y'].limits) ? device.features['-y'].limits[1] : 279.4
+      };
+
+      // Apply transformations (rotation, flip)
+      const transformParams = Api._buildTransformParams(config, transformations, inputImageBounds);
+      if (transformParams) {
+        log.trace({ transformParams });
+        cmds.splice(0, 0, `convert - ${transformParams} tif:-`);
+      }
+
+      return {
+        buffer: await Process.chain(cmds, buffer, { ignoreErrors: true }),
+        isDefault: false
+      };
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -117,10 +138,74 @@ module.exports = new class Api {
       const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
       const width = 868;
       const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+      return {
+        buffer: await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer),
+        isDefault: true
+      };
     } catch (e) {
-      return Promise.resolve(buffer);
+      return {
+        buffer: buffer,
+        isDefault: true
+      };
     }
+  }
+
+  /**
+   * Build ImageMagick transformation parameters
+   * @param {Object} config
+   * @param {Object} transformations
+   * @param {Object} inputImageBounds
+   * @returns {string}
+   */
+  static _buildTransformParams(config, transformations, inputImageBounds) {
+    if (!transformations) {
+      return '';
+    }
+
+    const params = [];
+
+    if (transformations.magic && inputImageBounds) {
+        const ox = inputImageBounds.left;
+        const oy = inputImageBounds.top;
+        const iw = inputImageBounds.width;
+        const ih = inputImageBounds.height;
+
+        const width = parseFloat(transformations.width) || iw;
+        const height = parseFloat(transformations.height) || ih;
+
+        let magic = transformations.magic;
+        magic = magic.replace(/{OX}/g, ox);
+        magic = magic.replace(/{OY}/g, oy);
+        magic = magic.replace(/{IW}/g, iw);
+        magic = magic.replace(/{IH}/g, ih);
+        magic = magic.replace(/{TW}/g, width);
+        magic = magic.replace(/{TH}/g, height);
+        // Safety for legacy placeholders
+        magic = magic.replace(/{TCX}/g, '0');
+        magic = magic.replace(/{TCY}/g, '0');
+        if (/[;|&$`\n\r(){}<>]/.test(magic)) {
+          throw new Error('Transformation contains unsafe characters');
+        }
+        params.push(magic);
+    }
+
+    // Handle rotation
+    const rotation = parseInt(transformations.rotation, 10) || 0;
+    if (rotation !== 0) {
+      params.push(`-rotate ${rotation}`);
+    }
+
+    // Handle horizontal flip
+    if (transformations.flipH === 'true' || transformations.flipH === true) {
+      params.push('-flop');
+    }
+
+    // Handle vertical flip
+    if (transformations.flipV === 'true' || transformations.flipV === true) {
+      params.push('-flip');
+    }
+
+    return params.join(' ');
   }
 
   /**
@@ -174,5 +259,60 @@ module.exports = new class Api {
     const systemInfo = await application.systemInfo();
     log.debug(LogFormatter.format().full(systemInfo));
     return systemInfo;
+  }
+
+  /**
+   * @param {Object} params
+   * @returns {Promise.<Object>}
+   */
+  async autoCrop(params) {
+    log.trace('autoCrop()', params);
+    const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
+    
+    // Guardrail: if preview image does not exist, immediately return zero-value
+    if (!source.exists()) {
+      log.info('AutoCrop aborted: preview.tif does not exist');
+      return { magic: null };
+    }
+
+    const context = await application.context();
+    const device = context.getDevice(params.deviceId);
+    const bedW = device.features['-x'].limits[1];
+    const bedH = device.features['-y'].limits[1];
+
+    const left = parseFloat(params.left) || 0;
+    const top = parseFloat(params.top) || 0;
+    const width = parseFloat(params.width) || bedW;
+    const height = parseFloat(params.height) || bedH;
+
+    const args = [
+      `--image '${source.fullname}'`,
+      `--left ${left}`,
+      `--top ${top}`,
+      `--width ${width}`,
+      `--height ${height}`,
+      `--bed-width ${bedW}`,
+      `--bed-height ${bedH}`
+    ].join(' ');
+
+    const cmd = `.venv/bin/python autocrop/autocrop.py ${args}`;
+    try {
+      const stdout = await Process.execute(cmd);
+      let parsed;
+      try {
+        parsed = JSON.parse(stdout.trim());
+      } catch (parseErr) {
+        log.error('AutoCrop JSON parse failed. Stdout was:', stdout);
+        return { magic: null, error: `Invalid response: ${stdout.substring(0, 100)}` };
+      }
+      if (parsed.error) {
+        log.error('AutoCrop python script error:', parsed.error);
+        return { magic: null, error: parsed.error };
+      }
+      return parsed;
+    } catch (e) {
+      log.error('AutoCrop execution failed', e.message, e.stderr);
+      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || "Unknown error").substring(0, 100)}` };
+    }
   }
 };

@@ -81,6 +81,17 @@ class ScanController {
       files = Collator.collate(files, this.request.batch === Constants.BATCH_COLLATE_STANDARD);
     }
 
+    // Apply transformations (rotation, flip)
+    if (this.request.transformations) {
+      const transformParams = ScanController._buildTransformParams(config, this.request, this.request.transformations);
+      if (transformParams) {
+        const stdin = files.map(f => `${f.name}\n`).join('');
+        const cmd = `convert @- ${transformParams} t-%04d.tif`;
+        await Process.spawn(cmd, stdin, { cwd: config.tempDirectory });
+        files = (await this.listFiles()).filter(f => f.name.match(/t-\d{4}\.tif/));
+      }
+    }
+
     // Apply filters
     if (this.request.filters.length > 0) {
       const stdin = files.map(f => `${f.name}\n`).join('');
@@ -130,6 +141,74 @@ class ScanController {
   }
 
   /**
+   * Build ImageMagick transformation parameters
+   * @param {Object} config
+   * @param {Object} request
+   * @param {Object} transformations
+   * @returns {string}
+   */
+  static _buildTransformParams(config, request, transformations) {
+    if (!transformations) {
+      return '';
+    }
+
+    const params = [];
+
+    if (transformations.magic) {
+        let offsetX = 0;
+        let offsetY = 0;
+        let width = 0;
+        let height = 0;
+        if (request && request.params) {
+            offsetX = parseFloat(request.params['-l'] || request.params.left) || 0;
+            offsetY = parseFloat(request.params['-t'] || request.params.top) || 0;
+            width = parseFloat(request.params['-x'] || request.params.width) || 0;
+            height = parseFloat(request.params['-y'] || request.params.height) || 0;
+        }
+        let magic = transformations.magic;
+        magic = magic.replace(/{OX}/g, offsetX);
+        magic = magic.replace(/{OY}/g, offsetY);
+        magic = magic.replace(/{IW}/g, width);
+        magic = magic.replace(/{IH}/g, height);
+        magic = magic.replace(/{TW}/g, width);
+        magic = magic.replace(/{TH}/g, height);
+        // Safety for legacy placeholders
+        magic = magic.replace(/{TCX}/g, '0');
+        magic = magic.replace(/{TCY}/g, '0');
+        if (/[;|&$`\n\r(){}<>]/.test(magic)) {
+          throw new Error('Transformation contains unsafe characters');
+        }
+        params.push(magic);
+
+        // Surgical crop to remove AABB padding in the final scan
+        if (transformations.width && transformations.height) {
+          const res = request.params.resolution || 300;
+          const w_px = Math.round(parseFloat(transformations.width) * res / 25.4);
+          const h_px = Math.round(parseFloat(transformations.height) * res / 25.4);
+          params.push(`-gravity center -extent ${w_px}x${h_px} +repage`);
+        }
+    }
+    
+    // Handle rotation
+    const rotation = parseInt(transformations.rotation, 10) || 0;
+    if (rotation !== 0) {
+      params.push(`-rotate ${rotation}`);
+    }
+
+    // Handle horizontal flip
+    if (transformations.flipH === 'true' || transformations.flipH === true) {
+      params.push('-flop');
+    }
+
+    // Handle vertical flip
+    if (transformations.flipV === 'true' || transformations.flipV === true) {
+      params.push('-flip');
+    }
+
+    return params.join(' ');
+  }
+
+  /**
    * Creates a preview image from a scan. This is less trivial because we need
    * to accommodate the possibility of cropping
    * @param {string} filename
@@ -148,7 +227,7 @@ class ScanController {
       const top = Math.round(this.request.params.top * scale);
       const scaleWidth = Math.round(this.request.params.width * scale);
       cmdBuilder.arg('-scale', scaleWidth)
-        .arg('-background', '#808080')
+        .arg('-background', 'white')
         .arg('-extent', `${width}x${height}-${left}-${top}`);
     } else {
       cmdBuilder.arg('-scale', width);

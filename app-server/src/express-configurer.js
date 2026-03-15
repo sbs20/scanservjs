@@ -129,9 +129,20 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/preview',
     callback: async (req, res) => {
-      const buffer = await api.readPreview(req.query.filter);
+      const transformations = {
+        magic: req.query.magic,
+        rotation: req.query.rotation,
+        flipH: req.query.flipH,
+        flipV: req.query.flipV,
+        left: req.query.left,
+        top: req.query.top,
+        width: req.query.width,
+        height: req.query.height
+      };
+      const result = await api.readPreview(req.query.filter, transformations);
       res.send({
-        content: buffer.toString('base64')
+        content: result.buffer.toString('base64'),
+        isDefault: result.isDefault
       });
     }
   },
@@ -139,6 +150,11 @@ const EndpointSpecs = [
     method: 'delete',
     path: '/api/v1/preview',
     callback: async (req, res) => res.send(api.deletePreview())
+  },
+  {
+    method: 'post',
+    path: '/api/v1/autocrop',
+    callback: async (req, res) => res.send(await api.autoCrop(req.body))
   },
   {
     method: 'post',
