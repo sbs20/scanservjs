@@ -531,8 +531,6 @@ export default {
 
     createPreview() {
       this.mask(1);
-      this.transformations.magic = '';
-      this.originalParams = null;
       this.resetTransformations();
       const timer = window.setInterval(this.readPreview, 1000);
       let data = Common.clone(this.request);
@@ -974,6 +972,14 @@ export default {
         this.notify({ type: 'e', message: error });
         this.mask(-1);
       });
+    },
+
+    resetTransformations() {
+      this.transformations.rotation = 0;
+      this.transformations.flipH = false;
+      this.transformations.flipV = false;
+      this.transformations.magic = '';
+      this.originalParams = null;
     },
 
     toggleFlipHorizontal() {
