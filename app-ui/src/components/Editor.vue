@@ -51,6 +51,8 @@
           item-key="id"
           class="editor-grid"
           ghost-class="editor-ghost"
+          :delay="150"
+          :delay-on-touch-only="true"
           @start="onDragStart"
           @end="onDragEnd"
           @click.self="onBackgroundClick">
@@ -377,6 +379,19 @@ export default {
     },
     showDividers() {
       this.$nextTick(() => this.updateDividerPositions());
+    },
+    contextMenuVisible(visible) {
+      // Vuetify's click-outside directive may not fire from touch events.
+      // Manually listen for any touch to dismiss the context menu.
+      if (visible) {
+        this._dismissContextMenu = () => { this.contextMenuVisible = false; };
+        setTimeout(() => {
+          document.addEventListener('touchstart', this._dismissContextMenu, { once: true });
+        }, 0);
+      } else if (this._dismissContextMenu) {
+        document.removeEventListener('touchstart', this._dismissContextMenu);
+        this._dismissContextMenu = null;
+      }
     }
   },
 
@@ -410,6 +425,10 @@ export default {
     }
     this._removeRubberListeners();
     this._cancelLongPress();
+    if (this._dismissContextMenu) {
+      document.removeEventListener('touchstart', this._dismissContextMenu);
+      this._dismissContextMenu = null;
+    }
   },
 
   methods: {
@@ -888,8 +907,14 @@ export default {
       const rLeft = Math.min(x1, x2), rRight = Math.max(x1, x2);
       const rTop = Math.min(y1, y2), rBottom = Math.max(y1, y2);
 
-      // Ignore tiny drags (treat as a click)
-      if (rRight - rLeft < 4 && rBottom - rTop < 4) return;
+      // Ignore tiny drags (treat as a click/tap)
+      if (rRight - rLeft < 4 && rBottom - rTop < 4) {
+        // Touch tap on background in selection mode → exit selection mode
+        if (this.touchSelectMode) {
+          this.exitTouchSelectMode();
+        }
+        return;
+      }
 
       this._suppressNextClick = true;
 
@@ -973,6 +998,7 @@ export default {
     },
 
     onPageTouchStart(element, index, e) {
+      this._isTouching = true;
       this._cancelLongPress();
       this._longPressId = element.id;
       this._longPressIdx = index;
@@ -1008,6 +1034,9 @@ export default {
 
     onPageTouchEnd() {
       this._cancelLongPress();
+      // Clear _isTouching after a microtask so the contextmenu event
+      // (which fires between touchend and click) still sees it as true.
+      setTimeout(() => { this._isTouching = false; }, 0);
     },
 
     exitTouchSelectMode() {
@@ -1019,6 +1048,9 @@ export default {
     // --- Context menu ---
 
     openContextMenu(element, index, e) {
+      // Don't open the context menu from touch — long-press is used for
+      // selection mode, and the menu is hard to dismiss on touch devices.
+      if (this._isTouching || this.touchSelectMode) return;
       // Right-click on an unselected page selects it first
       if (!this.selected.includes(element.id)) {
         this.selectOne(element.id, index);
@@ -1090,6 +1122,9 @@ export default {
     onDragEnd(evt) {
       this.isDragging = false;
       this.hasReordered = true;
+      // Suppress the click that fires after a touch drag ends, which would
+      // otherwise toggle the dragged item out of the selection.
+      this._longPressSuppressClick = true;
 
       const dragStartPages = this._dragStartPages;
       const dragStartSelected = this._dragStartSelected;
@@ -1281,6 +1316,14 @@ export default {
 <style scoped>
 .editor-scroll:focus {
   outline: none;
+}
+
+/* Suppress native long-press behaviors (context menu, text selection) on touch
+   so our long-press-to-select and rubber-band handlers get full control. */
+.editor-scroll {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Positioning context for the source-divider overlay */
