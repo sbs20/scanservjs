@@ -2,6 +2,22 @@
 
 > **Revision 3** — Phase 2 added: viewer/editor integration and large-document UX.
 
+### Branch Dependencies
+
+Starting with Phase 2, the `feature/editor` branch depends on
+`feature/file-preview`. The file-preview branch has been merged into
+`feature/editor` as an explicit git ancestor. This means:
+
+- **Cherry-picking:** Anyone who picks up `feature/editor` automatically
+  gets `feature/file-preview`. No separate merge required.
+- **Production merge order:** If starting from a clean `master`, merge
+  `feature/file-preview` first, then `feature/editor`. If both are already
+  in production (as they are now), this is a non-issue.
+- **Upstream PR:** The editor cannot be submitted as a standalone upstream PR
+  without the file-preview feature also being present. If the upstream project
+  adopts file-preview independently, the editor PR would need to be rebased
+  onto that. If not, the editor PR would include both features.
+
 ## 1. Overview
 
 A document editor accessible from the Files tab that enables users to perform
