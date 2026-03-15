@@ -49,10 +49,9 @@
       </v-list>
 
       <template #append>
-        <div class="d-flex flex-row pa-4 text-caption">
-          <div class="ml-auto">
-            &copy; 2016 - {{ new Date().getFullYear() }} Sam Strachan
-          </div>
+        <div class="d-flex flex-column pa-4 text-caption align-end">
+          <div>&copy; 2016 - {{ new Date().getFullYear() }} Sam Strachan</div>
+          <div>Community Fork</div>
         </div>
       </template>
     </v-navigation-drawer>
