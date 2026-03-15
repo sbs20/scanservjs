@@ -70,7 +70,8 @@
     "button:rename": "重命名",
     "close": "关闭",
     "download": "下载",
-    "tiff-browser-unsupported": "大多数浏览器不原生支持 TIFF 文件"
+    "tiff-browser-unsupported": "大多数浏览器不原生支持 TIFF 文件",
+    "button:preview": "预览"
   },
   "navigation": {
     "scan": "扫描",
@@ -222,5 +223,40 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "document-dialog": {
+    "view": "查看",
+    "edit": "编辑",
+    "discard-changes": "您有未保存的更改。是否放弃？",
+    "preview-failed": "无法生成预览",
+    "back-to-editor": "返回编辑器"
+  },
+  "editor": {
+    "title": "编辑器",
+    "undo": "撤销",
+    "redo": "重做",
+    "add-pages": "从文件添加页面",
+    "add-blank": "添加空白页",
+    "rotate-cw": "顺时针旋转",
+    "rotate-ccw": "逆时针旋转",
+    "delete": "删除所选",
+    "save": "保存",
+    "save-as": "另存为…",
+    "cancel": "取消",
+    "add": "添加",
+    "select-file": "选择文件",
+    "status": "{0} 页",
+    "sources": "来源：{0}",
+    "confirm-overwrite": "名为 \"{0}\" 的文件已存在。覆盖它？",
+    "overwrite-warning": "\"{0}\" 已存在，将被覆盖",
+    "button:edit": "编辑",
+    "button:edit-selected": "编辑所选",
+    "insert-blank-before": "在前面插入空白页",
+    "insert-blank-after": "在后面插入空白页",
+    "select-all": "全选",
+    "deselect-all": "取消全选",
+    "jump-to": "跳转到页面",
+    "selection-mode": "选择模式",
+    "done": "完成"
   }
 }
