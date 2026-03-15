@@ -21,53 +21,123 @@
     </v-toolbar>
 
     <div ref="scrollArea" class="pa-4 overflow-y-auto flex-grow-1 editor-scroll"
-      tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick">
+      tabindex="0" @keydown="onKeydown" @click.self="onBackgroundClick"
+      @mousedown="onScrollAreaMousedown">
       <draggable
         v-model="pages"
         item-key="id"
         class="editor-grid"
         ghost-class="editor-ghost"
+        handle=".editor-page"
+        filter=".source-divider"
         @end="onDragEnd"
         @click.self="onBackgroundClick">
         <template #item="{ element, index }">
-          <div
-            class="editor-page"
-            :class="pageClasses(element, index)"
-            @click.exact="selectOne(element.id, index)"
-            @click.ctrl.exact="toggleSelect(element.id)"
-            @click.meta.exact="toggleSelect(element.id)"
-            @click.shift.exact="selectRange(element.id, index)">
-            <div class="editor-thumb-wrap">
-              <v-img
-                v-if="sessionId && !element.isBlank"
-                :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
-                :class="thumbRotationClass(element.rotation)"
-                width="160"
-                height="160"
-                cover />
-              <div v-else class="editor-thumb-placeholder" />
+          <div style="display: contents">
+            <!-- Source section divider before first page of each new source group -->
+            <div v-if="showDividers && sourceBreaks.has(index)"
+              class="source-divider d-flex align-center my-1">
+              <v-divider />
+              <v-chip class="mx-2" size="x-small" label>{{ element.source }}</v-chip>
+              <v-divider />
             </div>
-            <div class="editor-page-num text-caption text-center">
-              {{ index + 1 }}
-            </div>
-            <div v-if="element.rotation" class="editor-rotation-badge text-caption">
-              {{ element.rotation }}°
-            </div>
-            <div class="editor-source-badge text-caption text-truncate"
-              :title="element.source">
-              {{ element.source }}
+
+            <!-- Page card -->
+            <div
+              class="editor-page"
+              :class="pageClasses(element, index)"
+              :data-orig-idx="element.originalIndex"
+              @click.exact="selectOne(element.id, index)"
+              @click.ctrl.exact="toggleSelect(element.id)"
+              @click.meta.exact="toggleSelect(element.id)"
+              @click.shift.exact="selectRange(element.id, index)"
+              @contextmenu.prevent="openContextMenu(element, index, $event)">
+              <div class="editor-thumb-wrap">
+                <v-img
+                  v-if="sessionId && !element.isBlank && loadedThumbs[element.originalIndex]"
+                  :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
+                  :class="thumbRotationClass(element.rotation)"
+                  width="160"
+                  height="160"
+                  cover />
+                <v-skeleton-loader
+                  v-else-if="sessionId && !element.isBlank"
+                  type="image"
+                  width="160"
+                  height="160" />
+                <div v-else class="editor-thumb-placeholder" />
+              </div>
+              <div class="editor-page-num text-caption text-center">
+                {{ index + 1 }}
+              </div>
+              <div v-if="element.rotation" class="editor-rotation-badge text-caption">
+                {{ element.rotation }}°
+              </div>
+              <div class="editor-source-badge text-caption text-truncate"
+                :title="element.source">
+                {{ element.source }}
+              </div>
             </div>
           </div>
         </template>
       </draggable>
     </div>
 
-    <div class="px-4 py-2 text-caption">
-      {{ $t('editor.status', [pages.length]) }}
+    <!-- Status bar -->
+    <div class="px-4 py-2 text-caption d-flex align-center" style="gap: 4px; flex-wrap: wrap;">
+      <span>{{ $t('editor.status', [pages.length]) }}</span>
       <template v-if="sourceFiles.length">
-        · {{ $t('editor.sources', [sourceFiles.join(', ')]) }}
+        <span>· {{ $t('editor.sources', [sourceFiles.join(', ')]) }}</span>
+      </template>
+      <v-spacer />
+      <template v-if="pages.length > 0">
+        <span class="text-medium-emphasis">{{ $t('editor.jump-to') }}</span>
+        <v-text-field
+          v-model.number="jumpToPage"
+          type="number"
+          density="compact"
+          hide-details
+          variant="underlined"
+          min="1"
+          :max="pages.length"
+          style="width: 56px; flex-shrink: 0;"
+          @keyup.enter="doJumpToPage" />
+        <v-btn :icon="mdiArrowRightCircle" size="x-small" variant="text"
+          :title="$t('editor.jump-to')" @click="doJumpToPage" />
       </template>
     </div>
+
+    <!-- Rubber-band selection overlay -->
+    <div v-if="rubberBand" class="rubber-band-rect" :style="rubberBandStyle" />
+
+    <!-- Context menu -->
+    <v-menu v-model="contextMenuVisible" :target="[contextMenuX, contextMenuY]">
+      <v-list density="compact" nav>
+        <v-list-item :prepend-icon="mdiRotateRight" :title="$t('editor.rotate-cw')"
+          :disabled="selected.length === 0"
+          @click="rotateSelected(90)" />
+        <v-list-item :prepend-icon="mdiRotateLeft" :title="$t('editor.rotate-ccw')"
+          :disabled="selected.length === 0"
+          @click="rotateSelected(-90)" />
+        <v-list-item :prepend-icon="mdiDelete" :title="$t('editor.delete')"
+          :disabled="selected.length === 0"
+          @click="deleteSelected" />
+        <v-divider class="my-1" />
+        <v-list-item :prepend-icon="mdiFileDocumentPlus"
+          :title="$t('editor.insert-blank-before')"
+          @click="addBlankAtPosition(contextTargetIndex)" />
+        <v-list-item :prepend-icon="mdiFileDocumentPlus"
+          :title="$t('editor.insert-blank-after')"
+          @click="addBlankAtPosition(contextTargetIndex + 1)" />
+        <v-divider class="my-1" />
+        <v-list-item :title="$t('editor.select-all')"
+          :disabled="selected.length === pages.length && pages.length > 0"
+          @click="selectAll" />
+        <v-list-item :title="$t('editor.deselect-all')"
+          :disabled="selected.length === 0"
+          @click="deselectAll" />
+      </v-list>
+    </v-menu>
 
     <!-- Save-As dialog -->
     <v-dialog v-model="showSaveAs" max-width="400">
@@ -118,8 +188,11 @@ import Common from '../classes/common';
 import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
-  mdiDelete, mdiFilePlus, mdiFileDocumentPlus
+  mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
 } from '@mdi/js';
+
+const EAGER_LOAD_THRESHOLD = 50;
+const THUMB_OBSERVER_MARGIN = '200px';
 
 let nextId = 1;
 function assignIds(pages) {
@@ -139,7 +212,7 @@ export default {
   setup() {
     return {
       mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
-      mdiDelete, mdiFilePlus, mdiFileDocumentPlus
+      mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle
     };
   },
 
@@ -162,7 +235,27 @@ export default {
       saveFilename: '',
       addPagesFile: null,
       availableFiles: [],
-      initialHash: null
+      initialHash: null,
+
+      // Virtualized thumbnails
+      loadedThumbs: {},
+      thumbnailObserver: null,
+
+      // Context menu
+      contextMenuVisible: false,
+      contextMenuX: 0,
+      contextMenuY: 0,
+      contextTargetIndex: -1,
+
+      // Rubber-band selection
+      rubberBand: null,
+
+      // Jump-to-page
+      jumpToPage: '',
+      pulsePageIndex: -1,
+
+      // Source tracking
+      hasReordered: false
     };
   },
 
@@ -187,6 +280,33 @@ export default {
         : null;
       return this.saveAsTargetName !== originalName
         && this.fileList.some(f => (f.name || f) === this.saveAsTargetName);
+    },
+
+    // Source section dividers
+    showDividers() {
+      return !this.hasReordered && this.sourceFiles.length > 1;
+    },
+    sourceBreaks() {
+      const breaks = new Set();
+      if (!this.showDividers) return breaks;
+      for (let i = 1; i < this.pages.length; i++) {
+        if (this.pages[i].source !== this.pages[i - 1].source) {
+          breaks.add(i);
+        }
+      }
+      return breaks;
+    },
+
+    // Rubber-band overlay style (viewport coordinates)
+    rubberBandStyle() {
+      if (!this.rubberBand) return {};
+      const { x1, y1, x2, y2 } = this.rubberBand;
+      return {
+        left: Math.min(x1, x2) + 'px',
+        top: Math.min(y1, y2) + 'px',
+        width: Math.abs(x2 - x1) + 'px',
+        height: Math.abs(y2 - y1) + 'px'
+      };
     }
   },
 
@@ -196,10 +316,57 @@ export default {
     },
     isDirty(val) {
       this.$emit('dirty', val);
+    },
+    pages() {
+      if (this.thumbnailObserver) {
+        this.$nextTick(this.observeCards);
+      }
     }
   },
 
+  mounted() {
+    this.setupThumbnailObserver();
+  },
+
+  beforeUnmount() {
+    this.thumbnailObserver?.disconnect();
+    this.thumbnailObserver = null;
+    this._removeRubberListeners();
+  },
+
   methods: {
+    // --- Thumbnail virtualization ---
+
+    setupThumbnailObserver() {
+      this.thumbnailObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = parseInt(entry.target.dataset.origIdx);
+            if (!isNaN(idx) && !this.loadedThumbs[idx]) {
+              this.loadedThumbs[idx] = true;
+            }
+          }
+        }
+      }, { root: this.$refs.scrollArea, rootMargin: THUMB_OBSERVER_MARGIN });
+    },
+
+    observeCards() {
+      if (!this.thumbnailObserver) return;
+      this.thumbnailObserver.disconnect();
+      const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page[data-orig-idx]');
+      cards?.forEach(card => this.thumbnailObserver.observe(card));
+    },
+
+    eagerLoadThumbs() {
+      for (const page of this.pages) {
+        if (!page.isBlank) {
+          this.loadedThumbs[page.originalIndex] = true;
+        }
+      }
+    },
+
+    // --- Session ---
+
     async loadSession() {
       if (!this.sessionId) return;
       this.$emit('mask', 1);
@@ -213,6 +380,13 @@ export default {
           ...p,
           _originalIndex: i
         })));
+
+        this.loadedThumbs = {};
+        this.hasReordered = false;
+
+        if (this.pages.length < EAGER_LOAD_THRESHOLD) {
+          this.eagerLoadThumbs();
+        }
 
         this.undoStack.clear();
         this.undoStack.push(this.pages);
@@ -238,6 +412,9 @@ export default {
 
         this.$nextTick(() => {
           this.$refs.scrollArea?.focus({ preventScroll: true });
+          if (this.pages.length >= EAGER_LOAD_THRESHOLD) {
+            this.observeCards();
+          }
         });
       } catch (error) {
         this.$emit('notify', { type: 'e', message: String(error) });
@@ -270,6 +447,8 @@ export default {
       this.focusIndex = -1;
       this.cursorPosition = 0;
       this.initialHash = null;
+      this.loadedThumbs = {};
+      this.hasReordered = false;
     },
 
     updateSource(oldName, newName) {
@@ -289,12 +468,12 @@ export default {
       return Math.max(1, Math.floor((available + 12) / 188));
     },
 
-    scrollToPage(index) {
+    scrollToPage(index, block = 'nearest') {
       if (index < 0 || index >= this.pages.length) return;
       this.$nextTick(() => {
         const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page');
         if (cards && cards[index]) {
-          cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          cards[index].scrollIntoView({ behavior: 'smooth', block });
         }
       });
     },
@@ -308,7 +487,8 @@ export default {
         'editor-cursor-before': this.cursorPosition === index
           && this.cursorPosition < this.pages.length,
         'editor-cursor-after': this.cursorPosition === this.pages.length
-          && index === this.pages.length - 1
+          && index === this.pages.length - 1,
+        'editor-page-pulse': this.pulsePageIndex === index
       };
     },
 
@@ -527,6 +707,10 @@ export default {
     // --- Background click ---
 
     onBackgroundClick(e) {
+      if (this._suppressNextClick) {
+        this._suppressNextClick = false;
+        return;
+      }
       this.selected = [];
       this.focusIndex = -1;
 
@@ -557,6 +741,108 @@ export default {
         ? closestIdx : closestIdx + 1;
 
       this.$refs.scrollArea?.focus({ preventScroll: true });
+    },
+
+    // --- Rubber-band selection ---
+
+    onScrollAreaMousedown(e) {
+      // Only left button, only on background (not on a page card)
+      if (e.button !== 0 || e.target.closest('.editor-page')) return;
+      e.preventDefault();
+      this.rubberBand = {
+        x1: e.clientX, y1: e.clientY,
+        x2: e.clientX, y2: e.clientY,
+        additive: e.ctrlKey || e.metaKey
+      };
+      this._onRubberMove = this._updateRubberBand.bind(this);
+      this._onRubberUp = this._endRubberBand.bind(this);
+      document.addEventListener('mousemove', this._onRubberMove);
+      document.addEventListener('mouseup', this._onRubberUp);
+    },
+
+    _updateRubberBand(e) {
+      if (!this.rubberBand) return;
+      this.rubberBand = { ...this.rubberBand, x2: e.clientX, y2: e.clientY };
+    },
+
+    _endRubberBand(e) {
+      const band = this.rubberBand;
+      this.rubberBand = null;
+      this._removeRubberListeners();
+      if (!band) return;
+
+      const { x1, y1, x2, y2, additive } = band;
+      const rLeft = Math.min(x1, x2), rRight = Math.max(x1, x2);
+      const rTop = Math.min(y1, y2), rBottom = Math.max(y1, y2);
+
+      // Ignore tiny drags (treat as a click)
+      if (rRight - rLeft < 4 && rBottom - rTop < 4) return;
+
+      this._suppressNextClick = true;
+
+      const cards = this.$refs.scrollArea?.querySelectorAll('.editor-page');
+      const ids = [];
+      if (cards) {
+        for (let i = 0; i < cards.length; i++) {
+          const rect = cards[i].getBoundingClientRect();
+          if (rect.left < rRight && rect.right > rLeft &&
+              rect.top < rBottom && rect.bottom > rTop) {
+            const page = this.pages[i];
+            if (page) ids.push(page.id);
+          }
+        }
+      }
+
+      if (additive) {
+        this.selected = [...new Set([...this.selected, ...ids])];
+      } else {
+        this.selected = ids;
+      }
+
+      if (ids.length > 0) {
+        const firstId = ids[0];
+        const firstIdx = this.pages.findIndex(p => p.id === firstId);
+        this.anchor = firstId;
+        this.focusIndex = firstIdx;
+        this.cursorPosition = firstIdx + 1;
+      }
+
+      this.$refs.scrollArea?.focus({ preventScroll: true });
+    },
+
+    _removeRubberListeners() {
+      if (this._onRubberMove) {
+        document.removeEventListener('mousemove', this._onRubberMove);
+        this._onRubberMove = null;
+      }
+      if (this._onRubberUp) {
+        document.removeEventListener('mouseup', this._onRubberUp);
+        this._onRubberUp = null;
+      }
+    },
+
+    // --- Context menu ---
+
+    openContextMenu(element, index, e) {
+      // Right-click on an unselected page selects it first
+      if (!this.selected.includes(element.id)) {
+        this.selectOne(element.id, index);
+      }
+      this.contextTargetIndex = index;
+      this.contextMenuX = e.clientX;
+      this.contextMenuY = e.clientY;
+      this.contextMenuVisible = true;
+    },
+
+    // --- Jump-to-page ---
+
+    doJumpToPage() {
+      const n = parseInt(this.jumpToPage);
+      if (isNaN(n)) return;
+      const idx = Math.max(0, Math.min(n - 1, this.pages.length - 1));
+      this.scrollToPage(idx, 'center');
+      this.pulsePageIndex = idx;
+      setTimeout(() => { this.pulsePageIndex = -1; }, 700);
     },
 
     // --- Operations ---
@@ -595,6 +881,7 @@ export default {
     onDragEnd(evt) {
       this.focusIndex = evt.newIndex;
       this.cursorPosition = evt.newIndex + 1;
+      this.hasReordered = true;
       this.pushState();
     },
 
@@ -620,6 +907,11 @@ export default {
     },
 
     addBlank() {
+      this.addBlankAtPosition(this.cursorPosition);
+    },
+
+    addBlankAtPosition(pos) {
+      const insertAt = Math.max(0, Math.min(pos, this.pages.length));
       const blank = {
         id: `page-${nextId++}`,
         source: 'blank',
@@ -631,9 +923,9 @@ export default {
         isBlank: true,
         originalIndex: -1
       };
-      this.pages.splice(this.cursorPosition, 0, blank);
-      this.cursorPosition++;
-      this.focusIndex = this.cursorPosition - 1;
+      this.pages.splice(insertAt, 0, blank);
+      this.cursorPosition = insertAt + 1;
+      this.focusIndex = insertAt;
       this.selected = [blank.id];
       this.anchor = blank.id;
       this.pushState();
@@ -656,6 +948,10 @@ export default {
           _originalIndex: result.pages.length - result.added.length + i
         })));
         this.pages.splice(this.cursorPosition, 0, ...newPages);
+        // Eager-load thumbnails for newly added pages
+        for (const p of newPages) {
+          this.loadedThumbs[p.originalIndex] = true;
+        }
         this.cursorPosition += newPages.length;
         this.focusIndex = this.cursorPosition - 1;
         this.pushState();
@@ -801,6 +1097,31 @@ export default {
   background: rgb(var(--v-theme-primary));
   border-radius: 1px;
   pointer-events: none;
+}
+
+@keyframes editorPulse {
+  0%   { box-shadow: 0 0 0 0   rgba(var(--v-theme-primary), 0.5); }
+  50%  { box-shadow: 0 0 0 8px rgba(var(--v-theme-primary), 0.2); }
+  100% { box-shadow: 0 0 0 0   rgba(var(--v-theme-primary), 0); }
+}
+
+.editor-page-pulse {
+  animation: editorPulse 0.7s ease-out;
+}
+
+.source-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.rubber-band-rect {
+  position: fixed;
+  border: 1px solid rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.08);
+  pointer-events: none;
+  z-index: 9999;
 }
 
 .editor-ghost {
