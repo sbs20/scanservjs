@@ -23,6 +23,7 @@ sudo apt install ./scanservjs_3.0.4-1_all.deb
 - **File Previews**: In-browser previews for PDFs, images, and OCR text, with on-the-fly TIFF transcoding.
 - **Scan on Tab Click**: Optional immediate scan trigger when revisiting the Scan tab.
 - **UI Fixes**: Various interface refinements and bug fixes.
+- **Security Hardening**: Input validation, HTTP security headers, and fixes for common injection and traversal patterns.
 
 ---
 
