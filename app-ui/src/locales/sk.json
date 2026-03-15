@@ -225,7 +225,11 @@
     "fit-mode": "Použiť ako",
     "fit-set-size": "Nastaviť iba veľkosť stránky (bezpečné pre OCR)",
     "fit-fit": "Prispôsobiť obsah stránke",
-    "fit-ocr-warning": "Zmena mierky obsahu môže ovplyvniť vyhľadávateľný text v dokumentoch s OCR"
+    "fit-ocr-warning": "Zmena mierky obsahu môže ovplyvniť vyhľadávateľný text v dokumentoch s OCR",
+    "fit-fill": "Prispôsobiť na vyplnenie (môže orezať)",
+    "fit-use-margin": "Pridať okraj ~1 cm",
+    "set-page-size": "Nastaviť veľkosť stránky",
+    "apply": "Použiť"
   },
   "settings": {
     "title": "@:navigation.settings",

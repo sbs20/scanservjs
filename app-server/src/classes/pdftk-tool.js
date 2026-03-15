@@ -89,6 +89,22 @@ module.exports = class PdftkTool extends PdfTool {
     await Process.spawn(cmd);
   }
 
+  /** @override */
+  async placeOnPage(inputPath, widthPts, heightPts, fitMode, marginPts, outputPath) {
+    // pikepdf is unavailable, so OCR-safe CTM injection is not possible.
+    // Fall back to Ghostscript: set-size uses media-only resize; fit/fill
+    // both use -dPDFFitPage (proportional fit; margin is not supported).
+    if (fitMode === 'set-size') {
+      return this.resizeMediaBox(inputPath, widthPts, heightPts, outputPath);
+    }
+    const cmd = `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4` +
+      ` -dFIXEDMEDIA -dPDFFitPage` +
+      ` -dDEVICEWIDTHPOINTS=${widthPts} -dDEVICEHEIGHTPOINTS=${heightPts}` +
+      ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`;
+    log.debug('placeOnPage (gs):', cmd);
+    await Process.spawn(cmd);
+  }
+
   /**
    * Test whether pdftk is available.
    * @returns {Promise<boolean>}

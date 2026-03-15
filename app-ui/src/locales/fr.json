@@ -220,7 +220,11 @@
     "fit-mode": "Appliquer comme",
     "fit-set-size": "Définir uniquement la taille de page (compatible OCR)",
     "fit-fit": "Adapter le contenu à la page",
-    "fit-ocr-warning": "La mise à l'échelle du contenu peut affecter le texte indexable dans les documents OCR"
+    "fit-ocr-warning": "La mise à l'échelle du contenu peut affecter le texte indexable dans les documents OCR",
+    "fit-fill": "Remplir la page (peut rogner)",
+    "fit-use-margin": "Ajouter une marge ~1 cm",
+    "set-page-size": "Définir la taille de la page",
+    "apply": "Appliquer"
   },
   "settings": {
     "title": "@:navigation.settings",

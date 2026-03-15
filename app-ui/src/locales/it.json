@@ -229,7 +229,11 @@
     "fit-mode": "Applica come",
     "fit-set-size": "Imposta solo il formato pagina (sicuro per OCR)",
     "fit-fit": "Adatta il contenuto alla pagina",
-    "fit-ocr-warning": "Il ridimensionamento del contenuto può influire sul testo ricercabile nei documenti OCR"
+    "fit-ocr-warning": "Il ridimensionamento del contenuto può influire sul testo ricercabile nei documenti OCR",
+    "fit-fill": "Scala per riempire (può tagliare)",
+    "fit-use-margin": "Aggiungi margine ~1 cm",
+    "set-page-size": "Imposta formato pagina",
+    "apply": "Applica"
   },
   "settings": {
     "title": "@:navigation.settings",

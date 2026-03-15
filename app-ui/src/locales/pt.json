@@ -218,7 +218,11 @@
     "fit-mode": "Aplicar como",
     "fit-set-size": "Definir apenas o tamanho da página (seguro para OCR)",
     "fit-fit": "Ajustar conteúdo à página",
-    "fit-ocr-warning": "O redimensionamento do conteúdo pode afetar o texto pesquisável em documentos OCR"
+    "fit-ocr-warning": "O redimensionamento do conteúdo pode afetar o texto pesquisável em documentos OCR",
+    "fit-fill": "Escalar para preencher (pode cortar)",
+    "fit-use-margin": "Adicionar margem ~1 cm",
+    "set-page-size": "Definir tamanho da página",
+    "apply": "Aplicar"
   },
   "settings": {
     "title": "@:navigation.settings",

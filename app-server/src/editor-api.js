@@ -106,12 +106,13 @@ module.exports = new class EditorApi {
    * @param {Array} editList
    * @param {string} filename
    * @param {{x: number, y: number}|null} [paperSize]
-   * @param {'set-size'|'fit'|null} [fitMode]
+   * @param {'set-size'|'fit'|'fill'|null} [fitMode]
+   * @param {boolean} [fitMargin]
    * @returns {Promise<{file: string}>}
    */
-  async save(id, editList, filename, paperSize = null, fitMode = null) {
+  async save(id, editList, filename, paperSize = null, fitMode = null, fitMargin = false) {
     const session = this._requireSession(id);
-    await session.save(editList, filename, paperSize, fitMode);
+    await session.save(editList, filename, paperSize, fitMode, fitMargin);
     log.info(`Saved editor output: ${filename}`);
     return { file: filename };
   }

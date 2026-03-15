@@ -218,7 +218,11 @@
     "fit-mode": "Uygulama şekli",
     "fit-set-size": "Yalnızca sayfa boyutunu ayarla (OCR güvenli)",
     "fit-fit": "İçeriği sayfaya sığdır",
-    "fit-ocr-warning": "İçerik ölçeklendirme, OCR'li belgelerdeki aranabilir metni etkileyebilir"
+    "fit-ocr-warning": "İçerik ölçeklendirme, OCR'li belgelerdeki aranabilir metni etkileyebilir",
+    "fit-fill": "Doldurmak için ölçekle (kırpabilir)",
+    "fit-use-margin": "~1 cm kenar boşluğu ekle",
+    "set-page-size": "Sayfa boyutunu ayarla",
+    "apply": "Uygula"
   },
   "settings": {
     "title": "@:navigation.settings",

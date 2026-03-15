@@ -227,7 +227,11 @@
     "fit-mode": "Alkalmazás módja",
     "fit-set-size": "Csak az oldalméret beállítása (OCR-biztonságos)",
     "fit-fit": "Tartalom méretezése az oldalhoz",
-    "fit-ocr-warning": "A tartalom átméretezése befolyásolhatja az OCR-rel feldolgozott dokumentumok kereshető szövegét"
+    "fit-ocr-warning": "A tartalom átméretezése befolyásolhatja az OCR-rel feldolgozott dokumentumok kereshető szövegét",
+    "fit-fill": "Kitöltés (levághat)",
+    "fit-use-margin": "~1 cm margó hozzáadása",
+    "set-page-size": "Oldalméret beállítása",
+    "apply": "Alkalmaz"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -108,6 +108,103 @@ def cmd_resize_mediabox(args):
     pdf.save(out_path)
 
 
+def _inject_ctm(pdf, page, scale, tx, ty):
+    """Prepend a uniform-scale CTM transform to page content, wrapped in q/Q.
+
+    Inserts: q <scale> 0 0 <scale> <tx> <ty> cm
+    before existing content and appends Q, preserving the graphics state for
+    any content that follows.  Works with both single-stream and multi-stream
+    pages.  OCR-safe: only the coordinate transform changes, not the content.
+    """
+    pre = f'q {scale:.6f} 0 0 {scale:.6f} {tx:.6f} {ty:.6f} cm\n'.encode()
+    suf = b'\nQ\n'
+    pre_stream = pikepdf.Stream(pdf, pre)
+    suf_stream = pikepdf.Stream(pdf, suf)
+
+    try:
+        existing = page['/Contents']
+    except KeyError:
+        existing = None
+
+    if existing is None:
+        page['/Contents'] = pikepdf.Array([pre_stream, suf_stream])
+    elif isinstance(existing, pikepdf.Array):
+        page['/Contents'] = pikepdf.Array([pre_stream, *list(existing), suf_stream])
+    else:
+        # Single stream (direct or via indirect reference)
+        page['/Contents'] = pikepdf.Array([pre_stream, existing, suf_stream])
+
+
+def cmd_place_on_page(args):
+    """Place page content onto a target page with the specified fit mode.
+
+    Usage: place-on-page <input> <target_w_pts> <target_h_pts> <fit_mode> <margin_pts> <output>
+
+    fit_mode values:
+      set-size  Adjust MediaBox only — no content scaling (OCR-safe)
+      fit       Scale content proportionally to fit within (target − 2×margin),
+                centred, with white margins as needed
+      fill      Scale content proportionally to fill (target − 2×margin),
+                centred, cropping overflow at the MediaBox boundary
+
+    All modes are OCR-safe: fit/fill use a pikepdf CTM transform rather than
+    Ghostscript re-rendering.
+    """
+    if len(args) != 6:
+        print(
+            'Usage: place-on-page <input> <target_w_pts> <target_h_pts>'
+            ' <fit_mode> <margin_pts> <output>',
+            file=sys.stderr)
+        sys.exit(1)
+    in_path = args[0]
+    target_w = float(args[1])
+    target_h = float(args[2])
+    fit_mode = args[3]   # 'set-size' | 'fit' | 'fill'
+    margin_pts = float(args[4])
+    out_path = args[5]
+
+    pdf = pikepdf.Pdf.open(in_path)
+    for page in pdf.pages:
+        box = page.mediabox
+        src_x0 = float(box[0])
+        src_y0 = float(box[1])
+        src_w = float(box[2]) - src_x0
+        src_h = float(box[3]) - src_y0
+
+        if fit_mode == 'set-size':
+            page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
+            if '/CropBox' in page:
+                del page['/CropBox']
+            continue
+
+        # Degenerate page guard
+        if src_w <= 0 or src_h <= 0:
+            page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
+            if '/CropBox' in page:
+                del page['/CropBox']
+            continue
+
+        avail_w = max(1.0, target_w - 2 * margin_pts)
+        avail_h = max(1.0, target_h - 2 * margin_pts)
+
+        if fit_mode == 'fit':
+            scale = min(avail_w / src_w, avail_h / src_h)
+        else:  # fill
+            scale = max(avail_w / src_w, avail_h / src_h)
+
+        # Centre scaled content on the target page, accounting for any
+        # non-zero source origin.
+        tx = (target_w - src_w * scale) / 2 - src_x0 * scale
+        ty = (target_h - src_h * scale) / 2 - src_y0 * scale
+
+        _inject_ctm(pdf, page, scale, tx, ty)
+        page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
+        if '/CropBox' in page:
+            del page['/CropBox']
+
+    pdf.save(out_path)
+
+
 COMMANDS = {
     'info': cmd_info,
     'extract': cmd_extract,
@@ -115,6 +212,7 @@ COMMANDS = {
     'merge': cmd_merge,
     'blank': cmd_blank,
     'resize-mediabox': cmd_resize_mediabox,
+    'place-on-page': cmd_place_on_page,
 }
 
 

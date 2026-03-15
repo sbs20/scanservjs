@@ -140,6 +140,9 @@
               <div v-if="element.rotation" class="editor-rotation-badge text-caption">
                 {{ element.rotation }}°
               </div>
+              <div v-if="element.targetSize" class="editor-resize-badge">
+                <v-icon :icon="mdiResize" size="12" color="white" />
+              </div>
               <!-- Source badge: only shown for multi-source docs after reordering,
                    when section dividers are no longer present. -->
               <div v-if="showSourceBadge && !element.isBlank"
@@ -217,13 +220,18 @@
           :title="$t('editor.insert-blank-after')"
           @click="addBlankAtPosition(contextTargetIndex + 1)" />
         <v-divider class="my-1" />
+        <v-list-item :title="$t('editor.set-page-size')"
+          :disabled="selected.length === 0"
+          @click="openPageSizeDialog" />
+        <v-divider class="my-1" />
         <v-list-item :title="$t('editor.select-all')"
           :disabled="selected.length === pages.length && pages.length > 0"
           @click="selectAll" />
         <v-list-item :title="$t('editor.deselect-all')"
           :disabled="selected.length === 0"
           @click="deselectAll" />
-        <template v-if="canDuplexOp">
+        <!-- Duplex ops: only meaningful when ≥2 pages are explicitly selected -->
+        <template v-if="selected.length >= 2 && isContiguousSelection && duplexWorkingLength >= 2">
           <v-divider class="my-1" />
           <v-list-item :title="$t('editor.op-reverse')" @click="opReverse" />
           <v-list-item v-if="duplexWorkingLength >= 4"
@@ -258,8 +266,12 @@
             <v-radio-group v-model="fitMode" density="compact" hide-details>
               <v-radio value="set-size" :label="$t('editor.fit-set-size')" />
               <v-radio value="fit" :label="$t('editor.fit-fit')" />
+              <v-radio value="fill" :label="$t('editor.fit-fill')" />
             </v-radio-group>
-            <v-alert v-if="fitMode === 'fit'" type="warning" density="compact"
+            <v-checkbox v-if="fitMode !== 'set-size'" v-model="fitMargin"
+              :label="$t('editor.fit-use-margin')" density="compact" hide-details
+              class="mt-1" />
+            <v-alert v-if="fitMode !== 'set-size'" type="warning" density="compact"
               variant="tonal" class="mt-2">
               {{ $t('editor.fit-ocr-warning') }}
             </v-alert>
@@ -269,6 +281,42 @@
           <v-spacer />
           <v-btn @click="showSaveAs = false">{{ $t('editor.cancel') }}</v-btn>
           <v-btn color="primary" @click="confirmSaveAs">{{ $t('editor.save') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Per-page size dialog -->
+    <v-dialog v-model="showPageSizeDialog" max-width="380">
+      <v-card>
+        <v-card-title>{{ $t('editor.set-page-size') }}</v-card-title>
+        <v-card-text>
+          <v-select
+            v-model="pageSizeDialogSize"
+            :items="pageSizeDialogItems"
+            :label="$t('editor.paper-size')"
+            item-title="title"
+            item-value="value"
+            clearable
+            density="compact" />
+          <template v-if="pageSizeDialogSize">
+            <div class="text-body-2 mt-3 mb-1">{{ $t('editor.fit-mode') }}</div>
+            <v-radio-group v-model="pageSizeDialogMode" density="compact" hide-details>
+              <v-radio value="set-size" :label="$t('editor.fit-set-size')" />
+              <v-radio value="fit" :label="$t('editor.fit-fit')" />
+              <v-radio value="fill" :label="$t('editor.fit-fill')" />
+            </v-radio-group>
+            <v-checkbox v-if="pageSizeDialogMode !== 'set-size'"
+              v-model="pageSizeDialogMargin"
+              :label="$t('editor.fit-use-margin')" density="compact" hide-details
+              class="mt-1" />
+          </template>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="showPageSizeDialog = false">{{ $t('editor.cancel') }}</v-btn>
+          <v-btn color="primary" @click="applyPageSizeToSelected">
+            {{ $t('editor.apply') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -304,7 +352,7 @@ import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
   mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
-  mdiShuffleVariant
+  mdiShuffleVariant, mdiResize
 } from '@mdi/js';
 
 const EAGER_LOAD_THRESHOLD = 50;
@@ -329,7 +377,7 @@ export default {
     return {
       mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
       mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
-      mdiShuffleVariant
+      mdiShuffleVariant, mdiResize
     };
   },
 
@@ -383,10 +431,17 @@ export default {
       // Multi-item drag state
       isDragging: false,
 
-      // Paper size adjustment (applied at save time)
+      // Document-level paper size adjustment (applied at save time)
       paperSizes: [],
       paperSize: null,
-      fitMode: 'set-size'
+      fitMode: 'set-size',
+      fitMargin: false,
+
+      // Per-page paper size dialog
+      showPageSizeDialog: false,
+      pageSizeDialogSize: null,
+      pageSizeDialogMode: 'fit',
+      pageSizeDialogMargin: true
     };
   },
 
@@ -490,15 +545,12 @@ export default {
     },
 
     paperSizeItems() {
-      return this.paperSizes.map(ps => {
-        // Resolve @:key i18n references embedded in paper size names
-        let name = ps.name;
-        const refs = (name.match(/@:[a-z.-]+/ig) || []).map(s => s.slice(2));
-        refs.forEach(key => {
-          name = name.replaceAll(`@:${key}`, this.$t(key));
-        });
-        return { title: name, value: ps.dimensions };
-      });
+      return this._resolvePaperSizeNames(this.paperSizes);
+    },
+
+    // Alias for the per-page dialog (same list, different binding target)
+    pageSizeDialogItems() {
+      return this.paperSizeItems;
     }
   },
 
@@ -658,7 +710,9 @@ export default {
           this.focusIndex = -1;
           this.cursorPosition = 0;
         }
-        this.initialHash = JSON.stringify(this.pages);
+        // Multi-file sessions are dirty from the start: opening several files
+        // creates a new merged document that has never been saved.
+        this.initialHash = this.files.length > 1 ? '' : JSON.stringify(this.pages);
 
         if (this.files.length === 1) {
           const name = this.files[0].name || this.files[0];
@@ -682,15 +736,23 @@ export default {
     },
 
     getEditList() {
-      return this.pages.map(p => ({
-        source: p.source,
-        sourceType: p.sourceType,
-        pageNum: p.pageNum,
-        rotation: p.rotation,
-        isBlank: p.isBlank || false,
-        width: p.width,
-        height: p.height
-      }));
+      return this.pages.map(p => {
+        const entry = {
+          source: p.source,
+          sourceType: p.sourceType,
+          pageNum: p.pageNum,
+          rotation: p.rotation,
+          isBlank: p.isBlank || false,
+          width: p.width,
+          height: p.height
+        };
+        if (p.targetSize && p.pageFitMode) {
+          entry.targetSize = p.targetSize;
+          entry.pageFitMode = p.pageFitMode;
+          entry.useMargin = p.useMargin !== false;
+        }
+        return entry;
+      });
     },
 
     getEditListHash() {
@@ -710,6 +772,7 @@ export default {
       this.dividerPositions = [];
       this.paperSize = null;
       this.fitMode = 'set-size';
+      this.fitMargin = false;
     },
 
     updateSource(oldName, newName) {
@@ -1496,6 +1559,7 @@ export default {
         if (this.paperSize && this.fitMode) {
           body.paperSize = this.paperSize;
           body.fitMode = this.fitMode;
+          body.fitMargin = this.fitMargin;
         }
         await Common.fetch(
           `api/v1/editor/sessions/${this.sessionId}/save`, {
@@ -1520,6 +1584,51 @@ export default {
       if (r === 180) return 'editor-thumb-r180';
       if (r === 270) return 'editor-thumb-r270';
       return '';
+    },
+
+    // --- Paper size helpers ---
+
+    _resolvePaperSizeNames(sizes) {
+      return sizes.map(ps => {
+        let name = ps.name;
+        const refs = (name.match(/@:[a-z.-]+/ig) || []).map(s => s.slice(2));
+        refs.forEach(key => { name = name.replaceAll(`@:${key}`, this.$t(key)); });
+        return { title: name, value: ps.dimensions };
+      });
+    },
+
+    openPageSizeDialog() {
+      // Pre-populate from the first selected page that has a targetSize set
+      const firstWithSize = this.pages.find(
+        p => this.selected.includes(p.id) && p.targetSize);
+      if (firstWithSize) {
+        this.pageSizeDialogSize = firstWithSize.targetSize;
+        this.pageSizeDialogMode = firstWithSize.pageFitMode || 'fit';
+        this.pageSizeDialogMargin = firstWithSize.useMargin !== false;
+      } else {
+        this.pageSizeDialogSize = null;
+        this.pageSizeDialogMode = 'fit';
+        this.pageSizeDialogMargin = true;
+      }
+      this.showPageSizeDialog = true;
+    },
+
+    applyPageSizeToSelected() {
+      for (const page of this.pages) {
+        if (!this.selected.includes(page.id)) continue;
+        if (this.pageSizeDialogSize) {
+          page.targetSize = this.pageSizeDialogSize;
+          page.pageFitMode = this.pageSizeDialogMode;
+          page.useMargin = this.pageSizeDialogMargin;
+        } else {
+          // null selection → clear page size from selected pages
+          delete page.targetSize;
+          delete page.pageFitMode;
+          delete page.useMargin;
+        }
+      }
+      this.pushState();
+      this.showPageSizeDialog = false;
     }
   }
 };
@@ -1713,5 +1822,15 @@ export default {
   font-size: 10px;
   opacity: 0.6;
   text-align: center;
+}
+
+.editor-resize-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 2px;
+  padding: 1px 3px;
+  line-height: 1;
 }
 </style>

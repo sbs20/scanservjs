@@ -218,7 +218,11 @@
     "fit-mode": "Toepassen als",
     "fit-set-size": "Alleen paginaformaat instellen (OCR-veilig)",
     "fit-fit": "Inhoud passend maken",
-    "fit-ocr-warning": "Inhoud schalen kan de doorzoekbare tekst in OCR-documenten beïnvloeden"
+    "fit-ocr-warning": "Inhoud schalen kan de doorzoekbare tekst in OCR-documenten beïnvloeden",
+    "fit-fill": "Schalen om te vullen (kan bijsnijden)",
+    "fit-use-margin": "Marge ~1 cm toevoegen",
+    "set-page-size": "Paginaformaat instellen",
+    "apply": "Toepassen"
   },
   "settings": {
     "title": "@:navigation.settings",
