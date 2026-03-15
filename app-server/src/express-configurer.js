@@ -11,11 +11,14 @@ const FileInfo = require('./classes/file-info');
 const application = require('./application');
 const config = application.config();
 
+const logBuffer = require('./classes/log-buffer');
+
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
 rootLog.enableAll();
 rootLog.setLevel(config.log.level);
 prefix.apply(rootLog, config.log.prefix);
+logBuffer.install();
 
 const log = rootLog.getLogger('Http');
 const api = require('./api');
@@ -160,6 +163,11 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/system',
     callback: async (req, res) => res.send(await api.readSystem())
+  },
+  {
+    method: 'get',
+    path: '/api/v1/logs',
+    callback: async (req, res) => res.send(logBuffer.getEntries())
   }
 ];
 

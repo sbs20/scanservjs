@@ -17,7 +17,8 @@
       <a target="_blank" href="api-docs">/api-docs</a>
     </div>
 
-    <v-btn @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
+    <v-btn class="mr-2" @click="showSystemInfo">{{ $t('about.system-info') }}</v-btn>
+    <v-btn @click="showLogs">{{ $t('about.logs') }}</v-btn>
 
     <v-dialog v-model="systemInfoDialog" aria-role="dialog" max-width="480" aria-modal @keydown.stop="_onKeys">
       <v-card>
@@ -26,6 +27,25 @@
         </v-card-title>
         <v-card-text>
           <pre class="text-caption text--secondary">{{ systemInfo }}</pre>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="logsDialog" max-width="720" scrollable>
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          {{ $t('about.logs') }}
+          <v-spacer />
+          <v-btn variant="text" size="small" @click="copyLogs">
+            {{ $t('about.logs-copy') }}
+          </v-btn>
+          <v-btn variant="text" size="small" @click="refreshLogs">
+            {{ $t('about.logs-refresh') }}
+          </v-btn>
+        </v-card-title>
+        <v-card-text style="max-height: 60vh;">
+          <pre v-if="logEntries.length" class="text-caption log-entries">{{ formattedLogs }}</pre>
+          <div v-else class="text-body-2 text--secondary">{{ $t('about.logs-empty') }}</div>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -45,8 +65,21 @@ export default {
     return {
       version: Constants.Version,
       systemInfo: null,
-      systemInfoDialog: false
+      systemInfoDialog: false,
+      logsDialog: false,
+      logEntries: []
     };
+  },
+
+  computed: {
+    formattedLogs() {
+      return this.logEntries.map(e => {
+        const ts = e.timestamp.replace('T', ' ').replace(/\.\d+Z$/, '');
+        const lvl = e.level.toUpperCase().padEnd(5);
+        const src = e.logger ? `[${e.logger}]` : '';
+        return `${ts} ${lvl} ${src} ${e.message}`;
+      }).join('\n');
+    }
   },
 
   methods: {
@@ -66,11 +99,36 @@ export default {
         this.$emit('notify', { type: 'e', message: error });
         this.$emit('mask', -1);
       });
+    },
+
+    showLogs() {
+      this.refreshLogs();
+      this.logsDialog = true;
+    },
+
+    refreshLogs() {
+      Common.fetch('api/v1/logs').then(entries => {
+        this.logEntries = entries;
+      }).catch(error => {
+        this.$emit('notify', { type: 'e', message: error });
+      });
+    },
+
+    copyLogs() {
+      navigator.clipboard.writeText(this.formattedLogs).then(() => {
+        this.$emit('notify', { type: 'i', message: this.$t('about.logs-copied') });
+      });
     }
   }
 };
 </script>
 
-<style>
-
+<style scoped>
+.log-entries {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 11px;
+  line-height: 1.4;
+}
 </style>
