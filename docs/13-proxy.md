@@ -59,8 +59,8 @@ sudo systemctl restart nginx
 
 ## Cloudflare
 
-scanservjs works behind Cloudflare's reverse proxy, but two things require
-attention when Cloudflare Access (Zero Trust) is also in front of it.
+scanservjs works behind Cloudflare's reverse proxy, but requires attention
+when Cloudflare Access (Zero Trust) is also in front of it.
 
 ### Cloudflare Access: bypass PWA resource paths
 
@@ -80,6 +80,9 @@ for the following path patterns under your application:
 | `/favicon.svg` | Favicon |
 
 These resources contain no sensitive data and must be publicly reachable.
+This is optional — without it, all scanning features work normally. Only
+PWA installation fails, and CORS errors appear in the browser developer
+console (invisible to regular users).
 
 ### Content Security Policy and the Cloudflare beacon
 
