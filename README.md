@@ -196,6 +196,11 @@ and possibilities are endless and are beyond the scope of the app.
 scanservjs can integrate files either through pipeline automation or file
 actions. See [integration documentation](docs/11-integration.md) for more.
 
+PDF files also have an **Edit** button that opens the document editor, where
+you can rearrange or delete pages, rotate pages, adjust paper size, perform
+duplex page-order operations (interleave/deinterleave for double-sided scans),
+and merge multiple documents into one — all without leaving the browser.
+
 ### Settings
 
 The settings page allows you to change the appearance and locale / language.
