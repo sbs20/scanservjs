@@ -123,7 +123,8 @@
                 <img
                   v-if="sessionId && !element.isBlank && loadedThumbs[element.originalIndex]"
                   :src="thumbUrl(element)"
-                  :class="['editor-thumb-img', thumbRotationClass(element)]" />
+                  class="editor-thumb-img"
+                  :style="thumbTransform(element)" />
                 <v-skeleton-loader
                   v-else-if="sessionId && !element.isBlank"
                   type="image"
@@ -1585,14 +1586,25 @@ export default {
       }
     },
 
-    thumbRotationClass(element) {
-      // Sized thumbnails include rotation server-side — no CSS rotation needed
-      if (element.targetSize && element.pageFitMode) return '';
+    thumbTransform(element) {
+      // Sized thumbnails include rotation server-side — no CSS transform needed
+      if (element.targetSize && element.pageFitMode) return {};
       const r = ((element.rotation || 0) + 360) % 360;
-      if (r === 90) return 'editor-thumb-r90';
-      if (r === 180) return 'editor-thumb-r180';
-      if (r === 270) return 'editor-thumb-r270';
-      return '';
+      if (r === 0) return {};
+      if (r === 180) return { transform: 'rotate(180deg)' };
+
+      // 90°/270°: scale down so the full rotated image fits within 160px width.
+      // page.width/height are VISUAL (post-rotation swap). The thumbnail is in
+      // ORIGINAL orientation, so original dims = swap back.
+      const origW = element.height;
+      const origH = element.width;
+      if (!origW || !origH) return { transform: `rotate(${r}deg)` };
+
+      // Thumbnail displayed at 160px wide, proportional height
+      const displayH = 160 * origH / origW;
+      // After rotation, displayH becomes the visual width → scale to fit 160px
+      const scale = Math.min(1, 160 / displayH);
+      return { transform: `rotate(${r}deg) scale(${scale.toFixed(4)})` };
     },
 
     thumbUrl(element) {
@@ -1714,6 +1726,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  align-items: flex-end;
 }
 
 .editor-page {
@@ -1840,33 +1853,27 @@ export default {
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
-  background: #f5f5f5;
+  background: transparent;
   border-radius: 2px;
 }
 
 .editor-thumb-placeholder {
   width: 100%;
   height: 100%;
-  background: #e0e0e0;
+  background: rgba(128, 128, 128, 0.15);
+  border-radius: 2px;
 }
 
 /* Natural-proportion thumbnail: fixed width, variable height, bottom-aligned.
-   flex-shrink: 0 prevents flexbox from compressing the image vertically. */
+   flex-shrink: 0 prevents flexbox from compressing the image vertically.
+   box-shadow makes the page boundary visible against dark backgrounds. */
 .editor-thumb-img {
   width: 160px;
   height: auto;
   display: block;
   flex-shrink: 0;
-}
-
-.editor-thumb-r90 {
-  transform: rotate(90deg);
-}
-.editor-thumb-r180 {
-  transform: rotate(180deg);
-}
-.editor-thumb-r270 {
-  transform: rotate(270deg);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+  border-radius: 1px;
 }
 
 .editor-page-num {
