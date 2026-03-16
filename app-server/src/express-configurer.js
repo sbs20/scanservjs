@@ -497,7 +497,8 @@ module.exports = class ExpressConfigurer {
       /\/api\/v1\/editor\/sessions\/([^/]+)\/upload/,
       express.raw({ type: '*/*', limit: '100mb' }),
       async (req, res) => {
-        log.info(formatForLog(req));
+        log.info({ method: req.method, path: req.path, query: req.query,
+          bodySize: req.body?.length ?? 0 });
         try {
           const filename = req.query.filename;
           if (!filename || typeof filename !== 'string') {

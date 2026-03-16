@@ -274,7 +274,9 @@ class EditorSession {
     const uploadsDir = path.join(this.dir, 'uploads');
     fs.mkdirSync(uploadsDir, { recursive: true });
     const tag = crypto.randomBytes(4).toString('hex');
-    const uploadPath = path.join(uploadsDir, `${tag}-${safeName}`);
+    // path.resolve() ensures an absolute path even when this.dir is relative,
+    // so _resolveSource() can distinguish uploaded files from output-dir files.
+    const uploadPath = path.resolve(uploadsDir, `${tag}-${safeName}`);
     fs.writeFileSync(uploadPath, buffer);
 
     const newPages = [];
