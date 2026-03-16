@@ -120,13 +120,10 @@
               @touchmove="onPageTouchMove"
               @touchend="onPageTouchEnd">
               <div class="editor-thumb-wrap">
-                <v-img
+                <img
                   v-if="sessionId && !element.isBlank && loadedThumbs[element.originalIndex]"
-                  :src="`api/v1/editor/sessions/${sessionId}/pages/${element.originalIndex}/thumbnail`"
-                  :class="thumbRotationClass(element.rotation)"
-                  width="160"
-                  height="160"
-                  cover />
+                  :src="thumbUrl(element)"
+                  :class="['editor-thumb-img', thumbRotationClass(element.rotation)]" />
                 <v-skeleton-loader
                   v-else-if="sessionId && !element.isBlank"
                   type="image"
@@ -1586,13 +1583,61 @@ export default {
       return '';
     },
 
+    thumbUrl(element) {
+      const base = `api/v1/editor/sessions/${this.sessionId}/pages/${element.originalIndex}/thumbnail`;
+      if (!element.targetSize || !element.pageFitMode) return base;
+      const MM_TO_PT = 72 / 25.4;
+      const w = Math.round(element.targetSize.x * MM_TO_PT);
+      const h = Math.round(element.targetSize.y * MM_TO_PT);
+      const margin = element.useMargin ? Math.round(10 * MM_TO_PT) : 0;
+      return `${base}?w=${w}&h=${h}&fitMode=${element.pageFitMode}&margin=${margin}`;
+    },
+
     // --- Paper size helpers ---
 
     _resolvePaperSizeNames(sizes) {
-      return sizes.map(ps => {
+      // Build deduplicated list including rotated variants of each size
+      const byDim = new Map(); // "wxh" → {name, dimensions}
+
+      // First pass: preserve all original sizes
+      for (const ps of sizes) {
+        const key = `${ps.dimensions.x}x${ps.dimensions.y}`;
+        if (!byDim.has(key)) byDim.set(key, ps);
+      }
+
+      // Second pass: add rotated versions not already covered
+      for (const ps of sizes) {
+        const rot = { x: ps.dimensions.y, y: ps.dimensions.x };
+        if (rot.x === rot.y) continue; // skip square sizes
+        const key = `${rot.x}x${rot.y}`;
+        if (byDim.has(key)) continue;
+        // Derive name by swapping portrait ↔ landscape in the original name
         let name = ps.name;
-        const refs = (name.match(/@:[a-z.-]+/ig) || []).map(s => s.slice(2));
-        refs.forEach(key => { name = name.replaceAll(`@:${key}`, this.$t(key)); });
+        if (name.includes('@:paper-size.portrait')) {
+          name = name.replace('@:paper-size.portrait', '@:paper-size.landscape');
+        } else if (name.includes('@:paper-size.landscape')) {
+          name = name.replace('@:paper-size.landscape', '@:paper-size.portrait');
+        } else {
+          name += rot.x > rot.y ? ' (@:paper-size.landscape)' : ' (@:paper-size.portrait)';
+        }
+        byDim.set(key, { name, dimensions: rot });
+      }
+
+      // Sort: larger area first; within the same area group, portrait before landscape
+      const sorted = [...byDim.values()].sort((a, b) => {
+        const da = a.dimensions, db = b.dimensions;
+        const areaDiff = db.x * db.y - da.x * da.y;
+        if (Math.abs(areaDiff) > 100) return areaDiff;
+        const aLand = da.x > da.y, bLand = db.x > db.y;
+        if (aLand !== bLand) return aLand ? 1 : -1;
+        return 0;
+      });
+
+      // Resolve @: i18n references in names
+      return sorted.map(ps => {
+        let name = ps.name;
+        (name.match(/@:[a-z.-]+/ig) || []).map(s => s.slice(2))
+          .forEach(k => { name = name.replaceAll(`@:${k}`, this.$t(k)); });
         return { title: name, value: ps.dimensions };
       });
     },
@@ -1777,9 +1822,9 @@ export default {
 
 .editor-thumb-wrap {
   width: 160px;
-  height: 160px;
+  height: 230px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   overflow: hidden;
   background: #f5f5f5;
@@ -1790,6 +1835,15 @@ export default {
   width: 100%;
   height: 100%;
   background: #e0e0e0;
+}
+
+/* Natural-proportion thumbnail: fixed width, variable height, bottom-aligned.
+   flex-shrink: 0 prevents flexbox from compressing the image vertically. */
+.editor-thumb-img {
+  width: 160px;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
 }
 
 .editor-thumb-r90 {

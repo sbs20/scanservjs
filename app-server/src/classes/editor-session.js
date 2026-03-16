@@ -109,30 +109,44 @@ class EditorSession {
   /**
    * Get a thumbnail for a page. Lazy: generates on first request.
    * @param {number} pageIdx - 0-based index into this.pages
+   * @param {{w: number, h: number, fitMode: string, margin: number}|null} [sizeOpts]
+   *   Optional: if provided, generate a thumbnail after applying a paper-size adjustment.
+   *   w/h are target dimensions in PDF points; margin is in points.
    * @returns {Promise<Buffer>}
    */
-  async getThumbnail(pageIdx) {
+  async getThumbnail(pageIdx, sizeOpts = null) {
     this.touch();
     if (pageIdx < 0 || pageIdx >= this.pages.length) {
       throw new Error(`Page index out of range: ${pageIdx}`);
     }
 
-    const thumbPath = path.join(this.dir, 'thumbs', `page-${String(pageIdx).padStart(4, '0')}.jpg`);
+    let thumbName = `page-${String(pageIdx).padStart(4, '0')}`;
+    if (sizeOpts) {
+      const { w, h, fitMode, margin } = sizeOpts;
+      thumbName += `-sized-${w}x${h}-${fitMode}${margin > 0 ? '-mg' : ''}`;
+    }
+    const thumbPath = path.join(this.dir, 'thumbs', `${thumbName}.jpg`);
     if (fs.existsSync(thumbPath)) {
       return fs.readFileSync(thumbPath);
     }
 
     const page = this.pages[pageIdx];
-    const sourcePath = path.join(this.config.outputDirectory, page.source);
 
     let buffer;
     if (page.sourceType === 'pdf') {
-      // Extract the page first if not yet extracted
       const extractedPath = await this._ensurePageExtracted(pageIdx);
+      let sourcePath = extractedPath;
+      if (sizeOpts) {
+        const { w, h, fitMode, margin } = sizeOpts;
+        const sizedPdfPath = path.join(this.dir, 'thumbs', `${thumbName}.pdf`);
+        await this.pdfTool.placeOnPage(extractedPath, w, h, fitMode, margin, sizedPdfPath);
+        sourcePath = sizedPdfPath;
+      }
       buffer = await Process.spawn(
-        `convert '${extractedPath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
+        `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     } else {
-      // Image: generate thumbnail directly from source
+      // Image: generate thumbnail directly from source (size opts not applied for images)
+      const sourcePath = path.join(this.config.outputDirectory, page.source);
       buffer = await Process.spawn(
         `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     }

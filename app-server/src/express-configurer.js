@@ -290,7 +290,17 @@ const EndpointSpecs = [
     method: 'get',
     path: /\/api\/v1\/editor\/sessions\/([^/]+)\/pages\/(\d+)\/thumbnail/,
     callback: async (req, res) => {
-      const buffer = await editorApi.getThumbnail(req.params[0], parseInt(req.params[1], 10));
+      let sizeOpts = null;
+      if (req.query.w && req.query.h && req.query.fitMode) {
+        sizeOpts = {
+          w: parseInt(req.query.w, 10),
+          h: parseInt(req.query.h, 10),
+          fitMode: req.query.fitMode,
+          margin: parseInt(req.query.margin || '0', 10)
+        };
+      }
+      const buffer = await editorApi.getThumbnail(
+        req.params[0], parseInt(req.params[1], 10), sizeOpts);
       res.type('jpg');
       res.send(buffer);
     }
