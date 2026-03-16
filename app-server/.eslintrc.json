@@ -4,11 +4,12 @@
     "node": true,
     "es6": true
   },
+  "plugins": ["n"],
   "extends": [
     "eslint:recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2022
   },
   "rules": {
     "array-bracket-spacing": "error",
@@ -26,9 +27,11 @@
     "no-unused-vars": "error",
     "no-var": "error", "object-shorthand": [ 1, "methods" ],
     "prefer-arrow-callback": "error",
-    "quotes": [ "error", "single" ],
+    "quotes": [ "error", "single", { "avoidEscape": true } ],
     "semi": [ "error", "always" ],
     "space-before-blocks": "error",
-    "space-infix-ops": "error"
+    "space-infix-ops": "error",
+    "n/no-unsupported-features/es-syntax": "error",
+    "n/no-unsupported-features/es-builtins": "error"
   }
 }

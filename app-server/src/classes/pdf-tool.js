@@ -2,6 +2,7 @@
  * Abstract base class for PDF operations.
  * Implementations: PikepdfTool (preferred), PdftkTool (fallback).
  */
+/* eslint-disable no-unused-vars */
 module.exports = class PdfTool {
   /**
    * Get page metadata for a PDF file.
