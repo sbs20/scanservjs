@@ -39,7 +39,9 @@ class EditorSession {
    * @returns {Promise<EditorSession>}
    */
   static async create(files, config, pdfTool) {
-    const id = crypto.randomUUID();
+    const id = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : crypto.randomBytes(16).toString('hex');
     const dir = path.join(config.tempDirectory, `${SESSION_PREFIX}${id}`);
     fs.mkdirSync(path.join(dir, 'pages'), { recursive: true });
     fs.mkdirSync(path.join(dir, 'thumbs'), { recursive: true });
