@@ -236,6 +236,11 @@ def cmd_place_on_page(args):
         src_h = float(box[3]) - src_y0
 
         if fit_mode == 'set-size':
+            # Rebase content to origin (0,0) before resizing the MediaBox.
+            # Without this, a non-zero source origin (e.g. [0, 32, 612, 792])
+            # causes content to appear shifted up / clipped after the resize.
+            if src_x0 != 0 or src_y0 != 0:
+                _inject_ctm(pdf, page, 1, 0, 0, 1, -src_x0, -src_y0)
             page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
             if '/CropBox' in page:
                 del page['/CropBox']
