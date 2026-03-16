@@ -82,7 +82,7 @@ module.exports = class PdftkTool extends PdfTool {
     // pdftk cannot adjust page dimensions; delegate to Ghostscript.
     // Without -dPDFFitPage the content is rendered at its original scale,
     // which matches the Tier 1 "set size only" behaviour.
-    const cmd = `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dFIXEDMEDIA` +
+    const cmd = 'gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dFIXEDMEDIA' +
       ` -dDEVICEWIDTHPOINTS=${widthPts} -dDEVICEHEIGHTPOINTS=${heightPts}` +
       ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`;
     log.debug('resizeMediaBox:', cmd);
@@ -97,8 +97,8 @@ module.exports = class PdftkTool extends PdfTool {
     if (fitMode === 'set-size') {
       return this.resizeMediaBox(inputPath, widthPts, heightPts, outputPath);
     }
-    const cmd = `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4` +
-      ` -dFIXEDMEDIA -dPDFFitPage` +
+    const cmd = 'gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4' +
+      ' -dFIXEDMEDIA -dPDFFitPage' +
       ` -dDEVICEWIDTHPOINTS=${widthPts} -dDEVICEHEIGHTPOINTS=${heightPts}` +
       ` -sOutputFile='${outputPath}' -dNOPAUSE -dBATCH -q '${inputPath}'`;
     log.debug('placeOnPage (gs):', cmd);

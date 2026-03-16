@@ -6,7 +6,9 @@ function deepMerge(...objects) {
       Array.isArray(cur) || typeof cur !== 'object' ? cur :
       Object.entries(cur).reduce((acc, kv) => {
         const [key, value] = kv;
-        if (DANGEROUS_KEYS.has(key)) return acc;
+        if (DANGEROUS_KEYS.has(key)) {
+          return acc;
+        }
         acc[key] = key in acc ? deepMerge(acc[key], value) : value;
         return acc;
       }, acc);

@@ -481,7 +481,9 @@ class EditorSession {
    * @param {string} tempDir
    */
   static cleanupAll(tempDir) {
-    if (!fs.existsSync(tempDir)) return;
+    if (!fs.existsSync(tempDir)) {
+      return;
+    }
     const entries = fs.readdirSync(tempDir);
     for (const entry of entries) {
       if (entry.startsWith(SESSION_PREFIX)) {
@@ -502,11 +504,15 @@ class EditorSession {
    * @param {number} maxAgeMs - maximum age in milliseconds
    */
   static cleanup(tempDir, maxAgeMs) {
-    if (!fs.existsSync(tempDir)) return;
+    if (!fs.existsSync(tempDir)) {
+      return;
+    }
     const now = Date.now();
     const entries = fs.readdirSync(tempDir);
     for (const entry of entries) {
-      if (!entry.startsWith(SESSION_PREFIX)) continue;
+      if (!entry.startsWith(SESSION_PREFIX)) {
+        continue;
+      }
       const fullPath = path.join(tempDir, entry);
       const manifestPath = path.join(fullPath, 'manifest.json');
       try {

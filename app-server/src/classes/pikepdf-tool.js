@@ -86,6 +86,7 @@ module.exports = class PikepdfTool extends PdfTool {
    */
   static async isAvailable() {
     try {
+      // eslint-disable-next-line quotes
       await Process.spawn(`'.venv/bin/python3' -c "import pikepdf"`);
       return true;
     } catch (e) {
