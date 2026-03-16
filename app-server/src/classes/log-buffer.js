@@ -9,7 +9,9 @@ class LogBuffer {
   }
 
   install() {
-    if (this._installed) return;
+    if (this._installed) {
+      return;
+    }
     this._installed = true;
 
     const originalFactory = rootLog.methodFactory;
