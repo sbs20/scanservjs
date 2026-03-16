@@ -81,11 +81,12 @@ module.exports = new class EditorApi {
    * Get a page thumbnail.
    * @param {string} id
    * @param {number} pageIdx - 0-based
+   * @param {{w: number, h: number, fitMode: string, margin: number}|null} [sizeOpts]
    * @returns {Promise<Buffer>}
    */
-  async getThumbnail(id, pageIdx) {
+  async getThumbnail(id, pageIdx, sizeOpts = null) {
     const session = this._requireSession(id);
-    return await session.getThumbnail(pageIdx);
+    return await session.getThumbnail(pageIdx, sizeOpts);
   }
 
   /**
