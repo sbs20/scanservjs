@@ -500,7 +500,7 @@ module.exports = class ExpressConfigurer {
       /\/api\/v1\/editor\/sessions\/([^/]+)\/upload/,
       async (req, res) => {
         log.info({ method: req.method, path: req.path, query: req.query,
-          contentLength: req.headers['content-length'] ?? 'unknown' });
+          contentLength: req.headers['content-length'] !== undefined ? req.headers['content-length'] : 'unknown' });
         try {
           const filename = req.query.filename;
           if (!filename || typeof filename !== 'string') {
