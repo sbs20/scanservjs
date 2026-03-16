@@ -219,7 +219,7 @@ module.exports = new class Api {
       if (thumbnail.exists()) {
         return thumbnail.toBuffer();
       } else {
-        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
+        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -background white -flatten -resize 256 -quality 75 jpg:-`);
         thumbnail.save(buffer);
         return buffer;
       }
