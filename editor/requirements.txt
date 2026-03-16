@@ -1,1 +1,2 @@
 pikepdf
+lxml<6
