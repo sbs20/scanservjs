@@ -1,6 +1,6 @@
 # Document Editor — Design & Implementation Plan
 
-> **Revision 3** — Phase 2 added: viewer/editor integration and large-document UX.
+> **Revision 4** — Phase 3 complete: duplex operations, paper size/fit modes, OCR-safe CTM pipeline, ephemeral uploads. Sealed at `a555b2f`.
 
 ### Branch Dependencies
 
@@ -166,7 +166,7 @@ button in the toolbar.
 5. Click "Duplex Merge (Standard)" → pages interleave correctly
 6. Save as `document.pdf`
 
-### 3.5 N-up Grid Layout (Phase 3)
+### 3.5 N-up Grid Layout (Phase 4)
 
 Simple mechanism to arrange multiple images or scanned items (photos, ID cards,
 business cards) into a grid on a single page. This is a distinct operation from
@@ -791,12 +791,20 @@ Ghostscript content scaling may damage OCR layers — clearly warned in UI.
 
 ### Commit Strategy
 
-**Milestone:** Commit `65b533d` marks the end of Phase 1 + dependency setup.
+**Phase 1 milestone:** Commit `65b533d` marks the end of Phase 1 + dependency setup.
 All commits up to and including this point are frozen — never squash or rebase
 before this commit.
 
-From Phase 2 onward, the commit policy is decided per session. Within a
-session, if the instruction is to squash, squash into the first Phase 2+
+**Phase 2 milestone (sealed at `baa9d42`):** Large Document UX + multi-drag +
+touch. Includes Batches A/B/C, i18n for 17 locales, multi-item drag-and-drop,
+and full touch interaction overhaul. Never squash or rebase before `baa9d42`.
+
+**Phase 3 milestone (sealed at `a555b2f`):** Duplex ops, paper size/fit modes,
+OCR-safe CTM pipeline, ephemeral upload, delete-last-page guard, MediaBox
+alignment (set-size: top-left, clips bottom). All Phase 3 work is complete.
+
+From Phase 4 onward, the commit policy is decided per session. Within a
+session, if the instruction is to squash, squash into the first Phase 4+
 commit (not into the milestone). If the instruction is incremental, add new
 commits normally.
 
@@ -844,16 +852,23 @@ without leaving the dialog — treating them as two views onto the same document
 proper cursor-based insertion, efficient multi-select, rubber-band selection,
 keyboard navigation, and virtualized rendering.
 
-### Phase 3: Duplex Templates + Polish
+### Phase 3: Duplex Templates + Polish ✅ Complete (sealed at `a555b2f`)
 
-1. Implement interleave / swap-pairs / reverse algorithms (client-side)
-2. Add duplex merge template buttons
-3. Paper size dropdown + fit mode selector
-4. Implement two-tier paper size adjustment
-5. Keyboard shortcuts (Ctrl+Z, Ctrl+S, Delete, Ctrl+A)
-6. Mobile touch optimization
-7. Error handling (corrupt files, disk full, tool not found)
-8. i18n for all new strings (start with English, add others incrementally)
+1. ✅ Interleave / swap-pairs / reverse / deinterleave algorithms (client-side,
+   contiguous-selection scope model, toolbar dropdown + context menu shortcuts,
+   undo support)
+2. ✅ Paper size dropdown + fit mode selector in Save-As dialog (`set-size` /
+   `fit` / `fill`); per-page paper size override via context menu
+3. ✅ Rotation via content-stream CTM (`_flatten_rotate` + `_apply_rotation`);
+   `/Rotate` folded in before any place-on-page operation
+4. ✅ `set-size` MediaBox alignment: top-left formula (`tx = -src_x0`,
+   `ty = target_h - src_h - src_y0`); clips bottom, preserves top
+5. ✅ Sized server-side thumbnails (rotation-aware)
+6. ✅ Ephemeral file upload: streaming raw body → disk; stored in session dir,
+   cleaned up with session; ARM-safe (no in-memory buffer)
+7. ✅ Delete-last-page guard (`canDelete` computed)
+8. ✅ JSON body limit raised to 10 MB
+9. ✅ i18n for all 18 supported locales
 
 ### Phase 4: N-up Grid Layout
 
