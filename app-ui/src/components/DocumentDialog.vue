@@ -263,7 +263,7 @@ export default {
       if (newMode === 'edit' && !this.sessionId) {
         await this.createSession();
       }
-      if (newMode === 'view' && oldMode === 'edit' && this.sessionId && this.editorDirty) {
+      if (newMode === 'view' && oldMode === 'edit' && this.sessionId) {
         await this.assemblePreview();
       }
     },
