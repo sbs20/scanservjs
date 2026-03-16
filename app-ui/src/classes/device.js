@@ -43,6 +43,10 @@ export default {
           options: [],
           default: ''
         },
+        autoCropMode: {
+          options: [],
+          default: ''
+        },
         filters: {
           options: [],
           default: []
