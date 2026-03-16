@@ -231,7 +231,8 @@
     "fit-fill": "Escalar para preencher (pode cortar)",
     "fit-use-margin": "Adicionar margem ~1 cm",
     "set-page-size": "Definir tamanho da página",
-    "apply": "Aplicar"
+    "apply": "Aplicar",
+    "upload-file": "Fazer upload de arquivo"
   },
   "settings": {
     "title": "@:navigation.settings",

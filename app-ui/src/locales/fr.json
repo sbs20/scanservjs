@@ -224,7 +224,8 @@
     "fit-fill": "Remplir la page (peut rogner)",
     "fit-use-margin": "Ajouter une marge ~1 cm",
     "set-page-size": "Définir la taille de la page",
-    "apply": "Appliquer"
+    "apply": "Appliquer",
+    "upload-file": "Téléverser un fichier"
   },
   "settings": {
     "title": "@:navigation.settings",

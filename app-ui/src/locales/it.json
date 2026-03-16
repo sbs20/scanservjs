@@ -233,7 +233,8 @@
     "fit-fill": "Scala per riempire (può tagliare)",
     "fit-use-margin": "Aggiungi margine ~1 cm",
     "set-page-size": "Imposta formato pagina",
-    "apply": "Applica"
+    "apply": "Applica",
+    "upload-file": "Carica file"
   },
   "settings": {
     "title": "@:navigation.settings",

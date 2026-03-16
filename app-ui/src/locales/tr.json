@@ -222,7 +222,8 @@
     "fit-fill": "Doldurmak için ölçekle (kırpabilir)",
     "fit-use-margin": "~1 cm kenar boşluğu ekle",
     "set-page-size": "Sayfa boyutunu ayarla",
-    "apply": "Uygula"
+    "apply": "Uygula",
+    "upload-file": "Dosya yükle"
   },
   "settings": {
     "title": "@:navigation.settings",

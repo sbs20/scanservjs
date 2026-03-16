@@ -107,6 +107,18 @@ class EditorSession {
   }
 
   /**
+   * Resolve a source path: absolute paths are returned as-is (uploaded files);
+   * relative paths are joined with outputDirectory (regular scan files).
+   * @param {string} source
+   * @returns {string}
+   */
+  _resolveSource(source) {
+    return path.isAbsolute(source)
+      ? source
+      : path.join(this.config.outputDirectory, source);
+  }
+
+  /**
    * Get a thumbnail for a page. Lazy: generates on first request.
    * @param {number} pageIdx - 0-based index into this.pages
    * @param {{w: number, h: number, fitMode: string, margin: number, rotation: number}|null} [sizeOpts]
@@ -139,7 +151,7 @@ class EditorSession {
       if (sizeOpts) {
         // For sized thumbnails: extract → rotate → place-on-page → JPEG
         const { w, h, fitMode, margin, rotation } = sizeOpts;
-        const origSourcePath = path.join(this.config.outputDirectory, page.source);
+        const origSourcePath = this._resolveSource(page.source);
 
         // Step 1: extract (with rotation if needed)
         const extractedForSize = path.join(this.dir, 'thumbs', `${thumbName}-src.pdf`);
@@ -162,7 +174,7 @@ class EditorSession {
         `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     } else {
       // Image: generate thumbnail directly from source (size opts not applied for images)
-      const sourcePath = path.join(this.config.outputDirectory, page.source);
+      const sourcePath = this._resolveSource(page.source);
       buffer = await Process.spawn(
         `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     }
@@ -182,7 +194,7 @@ class EditorSession {
       return pagePath;
     }
     const page = this.pages[pageIdx];
-    const sourcePath = path.join(this.config.outputDirectory, page.source);
+    const sourcePath = this._resolveSource(page.source);
     await this.pdfTool.extractPage(sourcePath, page.pageNum, pagePath);
     return pagePath;
   }
@@ -245,6 +257,55 @@ class EditorSession {
   }
 
   /**
+   * Add pages from an uploaded file (ephemeral — stored in session dir, not outputDirectory).
+   * @param {Buffer} buffer - raw file data
+   * @param {string} filename - original filename from the client (used for extension detection)
+   * @returns {Promise<Array>} the new pages added
+   */
+  async addUploadedFile(buffer, filename) {
+    this.touch();
+    const ALLOWED = ['.pdf', '.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.webp'];
+    const safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext = path.extname(safeName).toLowerCase();
+    if (!ALLOWED.includes(ext)) {
+      throw new Error(`Unsupported file type: ${ext}`);
+    }
+
+    const uploadsDir = path.join(this.dir, 'uploads');
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    const tag = crypto.randomBytes(4).toString('hex');
+    const uploadPath = path.join(uploadsDir, `${tag}-${safeName}`);
+    fs.writeFileSync(uploadPath, buffer);
+
+    const newPages = [];
+    if (ext === '.pdf') {
+      const info = await this.pdfTool.getInfo(uploadPath);
+      for (let i = 0; i < info.pages.length; i++) {
+        newPages.push({
+          source: uploadPath,
+          sourceType: 'pdf',
+          pageNum: i + 1,
+          width: info.pages[i].width,
+          height: info.pages[i].height
+        });
+      }
+    } else {
+      const dims = await EditorSession._getImageDimensions(uploadPath);
+      newPages.push({
+        source: uploadPath,
+        sourceType: 'image',
+        pageNum: 1,
+        width: dims.width,
+        height: dims.height
+      });
+    }
+
+    this.pages.push(...newPages);
+    this._saveManifest();
+    return newPages;
+  }
+
+  /**
    * Prepare and merge pages from an edit list into a single PDF.
    * Shared by save() and assemblePreview().
    * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height, sourceType}
@@ -261,7 +322,7 @@ class EditorSession {
         await this.pdfTool.createBlank(
           entry.width || 595, entry.height || 842, prepPath);
       } else if (entry.sourceType === 'pdf') {
-        const sourcePath = path.join(this.config.outputDirectory, entry.source);
+        const sourcePath = this._resolveSource(entry.source);
         if (entry.rotation && entry.rotation !== 0) {
           await this.pdfTool.extractRotatePage(
             sourcePath, entry.pageNum, entry.rotation, prepPath);
@@ -270,7 +331,7 @@ class EditorSession {
         }
       } else {
         // Image: convert to PDF, with optional rotation
-        const sourcePath = path.join(this.config.outputDirectory, entry.source);
+        const sourcePath = this._resolveSource(entry.source);
         const rotation = parseInt(entry.rotation, 10) || 0;
         if (rotation !== 0) {
           await Process.spawn(

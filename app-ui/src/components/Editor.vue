@@ -10,7 +10,7 @@
           :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
         <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
           :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
-        <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
+        <v-btn :disabled="!canDelete" :icon="mdiDelete" size="small"
           :title="$t('editor.delete')" @click="deleteSelected" />
         <v-menu>
           <template #activator="{ props }">
@@ -55,7 +55,7 @@
           :title="$t('editor.rotate-ccw')" @click="rotateSelected(-90)" />
         <v-btn :disabled="selected.length === 0" :icon="mdiRotateRight" size="small"
           :title="$t('editor.rotate-cw')" @click="rotateSelected(90)" />
-        <v-btn :disabled="selected.length === 0" :icon="mdiDelete" size="small"
+        <v-btn :disabled="!canDelete" :icon="mdiDelete" size="small"
           :title="$t('editor.delete')" @click="deleteSelected" />
         <v-divider vertical class="mx-2" />
         <v-menu>
@@ -208,7 +208,7 @@
           :disabled="selected.length === 0"
           @click="rotateSelected(-90)" />
         <v-list-item :prepend-icon="mdiDelete" :title="$t('editor.delete')"
-          :disabled="selected.length === 0"
+          :disabled="!canDelete"
           @click="deleteSelected" />
         <v-divider class="my-1" />
         <v-list-item :prepend-icon="mdiFileDocumentPlus"
@@ -332,6 +332,12 @@
             item-value="name" />
         </v-card-text>
         <v-card-actions>
+          <v-btn :prepend-icon="mdiUpload" @click="$refs.uploadInput.click()">
+            {{ $t('editor.upload-file') }}
+          </v-btn>
+          <input ref="uploadInput" type="file" style="display:none"
+            accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp"
+            @change="onUploadFileChange" />
           <v-spacer />
           <v-btn @click="showAddPages = false">{{ $t('editor.cancel') }}</v-btn>
           <v-btn color="primary" :disabled="!addPagesFile" @click="confirmAddPages">
@@ -350,7 +356,7 @@ import UndoStack from '../classes/undo-stack';
 import {
   mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
   mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
-  mdiShuffleVariant, mdiResize
+  mdiShuffleVariant, mdiResize, mdiUpload
 } from '@mdi/js';
 
 const EAGER_LOAD_THRESHOLD = 50;
@@ -375,7 +381,7 @@ export default {
     return {
       mdiUndo, mdiRedo, mdiRotateLeft, mdiRotateRight,
       mdiDelete, mdiFilePlus, mdiFileDocumentPlus, mdiArrowRightCircle,
-      mdiShuffleVariant, mdiResize
+      mdiShuffleVariant, mdiResize, mdiUpload
     };
   },
 
@@ -531,6 +537,11 @@ export default {
 
     canDuplexOp() {
       return this.duplexWorkingLength >= 2 && this.isContiguousSelection;
+    },
+
+    // Deleting is only valid when at least one page remains after the operation.
+    canDelete() {
+      return this.selected.length > 0 && this.selected.length < this.pages.length;
     },
 
     duplexScopeLabel() {
@@ -937,7 +948,7 @@ export default {
 
         case 'Delete':
         case 'Backspace':
-          if (this.selected.length > 0) {
+          if (this.canDelete) {
             e.preventDefault();
             this.deleteSelected();
           }
@@ -1391,7 +1402,7 @@ export default {
     },
 
     deleteSelected() {
-      if (this.selected.length === 0) return;
+      if (!this.canDelete) return;
       const firstDeletedIdx = this.pages.findIndex(p => this.selected.includes(p.id));
       this.pages = this.pages.filter(p => !this.selected.includes(p.id));
       this.selected = [];
@@ -1508,6 +1519,36 @@ export default {
         })));
         this.pages.splice(this.cursorPosition, 0, ...newPages);
         // Eager-load thumbnails for newly added pages
+        for (const p of newPages) {
+          this.loadedThumbs[p.originalIndex] = true;
+        }
+        this.cursorPosition += newPages.length;
+        this.focusIndex = this.cursorPosition - 1;
+        this.pushState();
+        this.addPagesFile = null;
+        this.scrollToPage(this.focusIndex);
+      } catch (error) {
+        this.$emit('notify', { type: 'e', message: String(error) });
+      } finally {
+        this.$emit('mask', -1);
+      }
+    },
+
+    async onUploadFileChange(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      event.target.value = '';
+      this.showAddPages = false;
+      this.$emit('mask', 1);
+      try {
+        const result = await Common.fetch(
+          `api/v1/editor/sessions/${this.sessionId}/upload?filename=${encodeURIComponent(file.name)}`,
+          { method: 'POST', body: file });
+        const newPages = assignIds(result.added.map((p, i) => ({
+          ...p,
+          _originalIndex: result.pages.length - result.added.length + i
+        })));
+        this.pages.splice(this.cursorPosition, 0, ...newPages);
         for (const p of newPages) {
           this.loadedThumbs[p.originalIndex] = true;
         }

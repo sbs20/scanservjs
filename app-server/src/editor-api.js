@@ -102,6 +102,19 @@ module.exports = new class EditorApi {
   }
 
   /**
+   * Add pages from an uploaded file (ephemeral, stored in session dir).
+   * @param {string} id
+   * @param {Buffer} buffer - raw file data
+   * @param {string} filename - original filename (for extension detection)
+   * @returns {Promise<{pages: Array, added: Array}>}
+   */
+  async uploadFile(id, buffer, filename) {
+    const session = this._requireSession(id);
+    const newPages = await session.addUploadedFile(buffer, filename);
+    return { pages: session.pages, added: newPages };
+  }
+
+  /**
    * Save the assembled document.
    * @param {string} id
    * @param {Array} editList

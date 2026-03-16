@@ -231,7 +231,8 @@
     "fit-fill": "Zmenšit pro vyplnění (může oříznout)",
     "fit-use-margin": "Přidat okraj ~1 cm",
     "set-page-size": "Nastavit velikost stránky",
-    "apply": "Použít"
+    "apply": "Použít",
+    "upload-file": "Nahrát soubor"
   },
   "settings": {
     "title": "@:navigation.settings",
