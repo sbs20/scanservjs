@@ -123,7 +123,7 @@
                 <img
                   v-if="sessionId && !element.isBlank && loadedThumbs[element.originalIndex]"
                   :src="thumbUrl(element)"
-                  :class="['editor-thumb-img', thumbRotationClass(element.rotation)]" />
+                  :class="['editor-thumb-img', thumbRotationClass(element)]" />
                 <v-skeleton-loader
                   v-else-if="sessionId && !element.isBlank"
                   type="image"
@@ -1372,8 +1372,18 @@ export default {
 
     rotateSelected(degrees) {
       for (const page of this.pages) {
-        if (this.selected.includes(page.id)) {
-          page.rotation = ((page.rotation || 0) + degrees + 360) % 360;
+        if (!this.selected.includes(page.id)) continue;
+        const oldRot = (page.rotation || 0);
+        const newRot = (oldRot + degrees + 360) % 360;
+        page.rotation = newRot;
+        // Swap effective dimensions when crossing a 90°/270° boundary
+        // so the UI knows the page's visual orientation.
+        const was90 = (oldRot % 180) !== 0;
+        const is90 = (newRot % 180) !== 0;
+        if (was90 !== is90) {
+          const tmp = page.width;
+          page.width = page.height;
+          page.height = tmp;
         }
       }
       this.pushState();
@@ -1575,8 +1585,10 @@ export default {
       }
     },
 
-    thumbRotationClass(rotation) {
-      const r = ((rotation || 0) + 360) % 360;
+    thumbRotationClass(element) {
+      // Sized thumbnails include rotation server-side — no CSS rotation needed
+      if (element.targetSize && element.pageFitMode) return '';
+      const r = ((element.rotation || 0) + 360) % 360;
       if (r === 90) return 'editor-thumb-r90';
       if (r === 180) return 'editor-thumb-r180';
       if (r === 270) return 'editor-thumb-r270';
@@ -1590,7 +1602,8 @@ export default {
       const w = Math.round(element.targetSize.x * MM_TO_PT);
       const h = Math.round(element.targetSize.y * MM_TO_PT);
       const margin = element.useMargin ? Math.round(10 * MM_TO_PT) : 0;
-      return `${base}?w=${w}&h=${h}&fitMode=${element.pageFitMode}&margin=${margin}`;
+      const rotation = element.rotation || 0;
+      return `${base}?w=${w}&h=${h}&fitMode=${element.pageFitMode}&margin=${margin}&rotation=${rotation}`;
     },
 
     // --- Paper size helpers ---

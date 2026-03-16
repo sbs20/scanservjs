@@ -296,7 +296,8 @@ const EndpointSpecs = [
           w: parseInt(req.query.w, 10),
           h: parseInt(req.query.h, 10),
           fitMode: req.query.fitMode,
-          margin: parseInt(req.query.margin || '0', 10)
+          margin: parseInt(req.query.margin || '0', 10),
+          rotation: parseInt(req.query.rotation || '0', 10)
         };
       }
       const buffer = await editorApi.getThumbnail(
