@@ -109,9 +109,9 @@ class EditorSession {
   /**
    * Get a thumbnail for a page. Lazy: generates on first request.
    * @param {number} pageIdx - 0-based index into this.pages
-   * @param {{w: number, h: number, fitMode: string, margin: number}|null} [sizeOpts]
-   *   Optional: if provided, generate a thumbnail after applying a paper-size adjustment.
-   *   w/h are target dimensions in PDF points; margin is in points.
+   * @param {{w: number, h: number, fitMode: string, margin: number, rotation: number}|null} [sizeOpts]
+   *   Optional: if provided, generate a thumbnail after applying rotation and/or
+   *   paper-size adjustment. w/h are target dimensions in PDF points; margin in points.
    * @returns {Promise<Buffer>}
    */
   async getThumbnail(pageIdx, sizeOpts = null) {
@@ -122,8 +122,8 @@ class EditorSession {
 
     let thumbName = `page-${String(pageIdx).padStart(4, '0')}`;
     if (sizeOpts) {
-      const { w, h, fitMode, margin } = sizeOpts;
-      thumbName += `-sized-${w}x${h}-${fitMode}${margin > 0 ? '-mg' : ''}`;
+      const { w, h, fitMode, margin, rotation } = sizeOpts;
+      thumbName += `-r${rotation || 0}-${w}x${h}-${fitMode}${margin > 0 ? '-mg' : ''}`;
     }
     const thumbPath = path.join(this.dir, 'thumbs', `${thumbName}.jpg`);
     if (fs.existsSync(thumbPath)) {
@@ -134,14 +134,30 @@ class EditorSession {
 
     let buffer;
     if (page.sourceType === 'pdf') {
-      const extractedPath = await this._ensurePageExtracted(pageIdx);
-      let sourcePath = extractedPath;
+      let sourcePath;
+
       if (sizeOpts) {
-        const { w, h, fitMode, margin } = sizeOpts;
+        // For sized thumbnails: extract → rotate → place-on-page → JPEG
+        const { w, h, fitMode, margin, rotation } = sizeOpts;
+        const origSourcePath = path.join(this.config.outputDirectory, page.source);
+
+        // Step 1: extract (with rotation if needed)
+        const extractedForSize = path.join(this.dir, 'thumbs', `${thumbName}-src.pdf`);
+        if (rotation && rotation !== 0) {
+          await this.pdfTool.extractRotatePage(
+            origSourcePath, page.pageNum, rotation, extractedForSize);
+        } else {
+          await this.pdfTool.extractPage(origSourcePath, page.pageNum, extractedForSize);
+        }
+
+        // Step 2: apply paper size
         const sizedPdfPath = path.join(this.dir, 'thumbs', `${thumbName}.pdf`);
-        await this.pdfTool.placeOnPage(extractedPath, w, h, fitMode, margin, sizedPdfPath);
+        await this.pdfTool.placeOnPage(extractedForSize, w, h, fitMode, margin, sizedPdfPath);
         sourcePath = sizedPdfPath;
+      } else {
+        sourcePath = await this._ensurePageExtracted(pageIdx);
       }
+
       buffer = await Process.spawn(
         `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
     } else {

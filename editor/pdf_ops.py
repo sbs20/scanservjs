@@ -28,6 +28,10 @@ def cmd_info(args):
         # MediaBox is [x0, y0, x1, y1] in points
         width = float(box[2]) - float(box[0])
         height = float(box[3]) - float(box[1])
+        # Account for /Rotate: 90° and 270° swap visual dimensions
+        rotate = int(page.get('/Rotate', 0)) % 360
+        if rotate in (90, 270):
+            width, height = height, width
         pages.append({'width': round(width, 2), 'height': round(height, 2)})
     json.dump({'pages': pages}, sys.stdout)
     sys.stdout.write('\n')
@@ -46,7 +50,13 @@ def cmd_extract(args):
 
 
 def cmd_extract_rotate(args):
-    """Extract a single page and rotate it."""
+    """Extract a single page and rotate via content-stream CTM.
+
+    Unlike page.rotate() which sets /Rotate (a display hint that downstream
+    operations ignore), this modifies the content stream so the MediaBox
+    reflects actual visual dimensions.  Any existing /Rotate on the source
+    page is folded in first.
+    """
     if len(args) != 4:
         print('Usage: extract-rotate <file> <page> <degrees> <output>',
               file=sys.stderr)
@@ -56,7 +66,14 @@ def cmd_extract_rotate(args):
     src = pikepdf.Pdf.open(src_path)
     dst = pikepdf.Pdf.new()
     dst.pages.append(src.pages[page_num - 1])
-    dst.pages[0].rotate(degrees, relative=True)
+    page = dst.pages[0]
+
+    # Fold existing /Rotate into content stream first
+    _flatten_rotate(dst, page)
+
+    # Apply the requested rotation
+    _apply_rotation(dst, page, degrees)
+
     dst.save(out_path)
 
 
@@ -108,15 +125,15 @@ def cmd_resize_mediabox(args):
     pdf.save(out_path)
 
 
-def _inject_ctm(pdf, page, scale, tx, ty):
-    """Prepend a uniform-scale CTM transform to page content, wrapped in q/Q.
+def _inject_ctm(pdf, page, a, b, c, d, e, f):
+    """Prepend a general CTM transform to page content, wrapped in q/Q.
 
-    Inserts: q <scale> 0 0 <scale> <tx> <ty> cm
+    Inserts: q <a> <b> <c> <d> <e> <f> cm
     before existing content and appends Q, preserving the graphics state for
     any content that follows.  Works with both single-stream and multi-stream
     pages.  OCR-safe: only the coordinate transform changes, not the content.
     """
-    pre = f'q {scale:.6f} 0 0 {scale:.6f} {tx:.6f} {ty:.6f} cm\n'.encode()
+    pre = f'q {a:.6f} {b:.6f} {c:.6f} {d:.6f} {e:.6f} {f:.6f} cm\n'.encode()
     suf = b'\nQ\n'
     pre_stream = pikepdf.Stream(pdf, pre)
     suf_stream = pikepdf.Stream(pdf, suf)
@@ -133,6 +150,49 @@ def _inject_ctm(pdf, page, scale, tx, ty):
     else:
         # Single stream (direct or via indirect reference)
         page['/Contents'] = pikepdf.Array([pre_stream, existing, suf_stream])
+
+
+def _flatten_rotate(pdf, page):
+    """Fold /Rotate into the content stream via CTM, removing the flag.
+
+    After this call the page has no /Rotate and its MediaBox reflects
+    the actual visual dimensions.
+    """
+    rotate = int(page.get('/Rotate', 0)) % 360
+    if rotate == 0:
+        return
+    del page['/Rotate']
+    _apply_rotation(pdf, page, rotate)
+
+
+def _apply_rotation(pdf, page, degrees):
+    """Apply a clockwise rotation via content-stream CTM + MediaBox swap.
+
+    The caller must ensure /Rotate has already been removed or is absent.
+    """
+    deg = degrees % 360
+    if deg == 0:
+        return
+
+    box = page.mediabox
+    x0, y0 = float(box[0]), float(box[1])
+    w = float(box[2]) - x0
+    h = float(box[3]) - y0
+
+    if deg == 90:
+        # (x,y) → (y − y0,  w + x0 − x)
+        _inject_ctm(pdf, page, 0, -1, 1, 0, -y0, w + x0)
+        page.mediabox = pikepdf.Array([0, 0, h, w])
+    elif deg == 180:
+        _inject_ctm(pdf, page, -1, 0, 0, -1, w + x0, h + y0)
+        page.mediabox = pikepdf.Array([0, 0, w, h])
+    elif deg == 270:
+        # (x,y) → (h + y0 − y,  x − x0)
+        _inject_ctm(pdf, page, 0, 1, -1, 0, h + y0, -x0)
+        page.mediabox = pikepdf.Array([0, 0, h, w])
+
+    if '/CropBox' in page:
+        del page['/CropBox']
 
 
 def cmd_place_on_page(args):
@@ -165,6 +225,10 @@ def cmd_place_on_page(args):
 
     pdf = pikepdf.Pdf.open(in_path)
     for page in pdf.pages:
+        # Flatten any /Rotate into content stream first so MediaBox
+        # dimensions reflect the actual visual layout.
+        _flatten_rotate(pdf, page)
+
         box = page.mediabox
         src_x0 = float(box[0])
         src_y0 = float(box[1])
@@ -197,7 +261,7 @@ def cmd_place_on_page(args):
         tx = (target_w - src_w * scale) / 2 - src_x0 * scale
         ty = (target_h - src_h * scale) / 2 - src_y0 * scale
 
-        _inject_ctm(pdf, page, scale, tx, ty)
+        _inject_ctm(pdf, page, scale, 0, 0, scale, tx, ty)
         page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
         if '/CropBox' in page:
             del page['/CropBox']
