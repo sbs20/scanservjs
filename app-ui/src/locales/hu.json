@@ -215,7 +215,8 @@
     "fit-fill": "Kitöltés (levághat)",
     "fit-use-margin": "~1 cm margó hozzáadása",
     "set-page-size": "Oldalméret beállítása",
-    "apply": "Alkalmaz"
+    "apply": "Alkalmaz",
+    "upload-file": "Fájl feltöltése"
   },
   "settings": {
     "title": "@:navigation.settings",

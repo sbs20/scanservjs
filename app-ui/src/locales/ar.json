@@ -212,7 +212,8 @@
     "fit-fill": "تحجيم للملء (قد يُقطع المحتوى)",
     "fit-use-margin": "إضافة هامش ~1 سم",
     "set-page-size": "تعيين حجم الصفحة",
-    "apply": "تطبيق"
+    "apply": "تطبيق",
+    "upload-file": "تحميل ملف"
   },
   "settings": {
     "title": "@:navigation.settings",

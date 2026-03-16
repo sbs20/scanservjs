@@ -206,7 +206,8 @@
     "fit-fill": "Skaluj do wypełnienia (może obciąć)",
     "fit-use-margin": "Dodaj margines ~1 cm",
     "set-page-size": "Ustaw rozmiar strony",
-    "apply": "Zastosuj"
+    "apply": "Zastosuj",
+    "upload-file": "Prześlij plik"
   },
   "settings": {
     "title": "@:navigation.settings",

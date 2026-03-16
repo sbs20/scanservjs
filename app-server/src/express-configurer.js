@@ -367,6 +367,26 @@ module.exports = class ExpressConfigurer {
         }
       });
     });
+
+    // Ephemeral file upload: uses express.raw() to receive raw binary body.
+    this.app.post(
+      /\/api\/v1\/editor\/sessions\/([^/]+)\/upload/,
+      express.raw({ type: '*/*', limit: '100mb' }),
+      async (req, res) => {
+        log.info(formatForLog(req));
+        try {
+          const filename = req.query.filename;
+          if (!filename || typeof filename !== 'string') {
+            res.status(400).send({ message: 'filename query parameter required' });
+            return;
+          }
+          const result = await editorApi.uploadFile(req.params[0], req.body, filename);
+          res.send(result);
+        } catch (error) {
+          sendError(res, 500, error);
+        }
+      }
+    );
   }
 
   /**

@@ -213,7 +213,8 @@
     "fit-fill": "Prispôsobiť na vyplnenie (môže orezať)",
     "fit-use-margin": "Pridať okraj ~1 cm",
     "set-page-size": "Nastaviť veľkosť stránky",
-    "apply": "Použiť"
+    "apply": "Použiť",
+    "upload-file": "Nahrať súbor"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -208,7 +208,8 @@
     "fit-fill": "Auf Seite füllen (kann abschneiden)",
     "fit-use-margin": "Rand ~1 cm hinzufügen",
     "set-page-size": "Seitengröße festlegen",
-    "apply": "Anwenden"
+    "apply": "Anwenden",
+    "upload-file": "Datei hochladen"
   },
   "settings": {
     "title": "@:navigation.settings",

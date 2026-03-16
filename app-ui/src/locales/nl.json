@@ -206,7 +206,8 @@
     "fit-fill": "Schalen om te vullen (kan bijsnijden)",
     "fit-use-margin": "Marge ~1 cm toevoegen",
     "set-page-size": "Paginaformaat instellen",
-    "apply": "Toepassen"
+    "apply": "Toepassen",
+    "upload-file": "Bestand uploaden"
   },
   "settings": {
     "title": "@:navigation.settings",

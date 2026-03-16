@@ -215,7 +215,8 @@
     "fit-fill": "Scale to fill (may crop)",
     "fit-use-margin": "Add ~1 cm margin",
     "set-page-size": "Set page size",
-    "apply": "Apply"
+    "apply": "Apply",
+    "upload-file": "Upload file"
   },
   "settings": {
     "title": "@:navigation.settings",

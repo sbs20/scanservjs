@@ -203,7 +203,8 @@
     "fit-fill": "缩放填充（可能裁剪）",
     "fit-use-margin": "添加约 1 厘米边距",
     "set-page-size": "设置页面大小",
-    "apply": "应用"
+    "apply": "应用",
+    "upload-file": "上传文件"
   },
   "settings": {
     "title": "@:navigation.settings",

@@ -206,7 +206,8 @@
     "fit-fill": "Масштаб для заполнения (может обрезать)",
     "fit-use-margin": "Добавить поля ~1 см",
     "set-page-size": "Задать размер страницы",
-    "apply": "Применить"
+    "apply": "Применить",
+    "upload-file": "Загрузить файл"
   },
   "settings": {
     "title": "@:navigation.settings",
