@@ -104,13 +104,13 @@ module.exports = new class EditorApi {
   /**
    * Add pages from an uploaded file (ephemeral, stored in session dir).
    * @param {string} id
-   * @param {Buffer} buffer - raw file data
+   * @param {import('stream').Readable} stream - HTTP request body stream
    * @param {string} filename - original filename (for extension detection)
    * @returns {Promise<{pages: Array, added: Array}>}
    */
-  async uploadFile(id, buffer, filename) {
+  async uploadStream(id, stream, filename) {
     const session = this._requireSession(id);
-    const newPages = await session.addUploadedFile(buffer, filename);
+    const newPages = await session.addUploadedStream(stream, filename);
     return { pages: session.pages, added: newPages };
   }
 

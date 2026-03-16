@@ -258,16 +258,19 @@ class EditorSession {
 
   /**
    * Add pages from an uploaded file (ephemeral — stored in session dir, not outputDirectory).
-   * @param {Buffer} buffer - raw file data
+   * The body is streamed directly to disk so memory usage stays constant regardless of
+   * file size — important on resource-constrained devices.
+   * @param {import('stream').Readable} stream - raw HTTP request body stream
    * @param {string} filename - original filename from the client (used for extension detection)
    * @returns {Promise<Array>} the new pages added
    */
-  async addUploadedFile(buffer, filename) {
+  async addUploadedStream(stream, filename) {
     this.touch();
     const ALLOWED = ['.pdf', '.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.webp'];
     const safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
     const ext = path.extname(safeName).toLowerCase();
     if (!ALLOWED.includes(ext)) {
+      stream.resume(); // drain so the connection closes cleanly
       throw new Error(`Unsupported file type: ${ext}`);
     }
 
@@ -277,7 +280,15 @@ class EditorSession {
     // path.resolve() ensures an absolute path even when this.dir is relative,
     // so _resolveSource() can distinguish uploaded files from output-dir files.
     const uploadPath = path.resolve(uploadsDir, `${tag}-${safeName}`);
-    fs.writeFileSync(uploadPath, buffer);
+
+    // Stream directly to disk — no in-memory buffer.
+    await new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(uploadPath);
+      stream.pipe(writeStream);
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+      stream.on('error', reject);
+    });
 
     const newPages = [];
     if (ext === '.pdf') {
