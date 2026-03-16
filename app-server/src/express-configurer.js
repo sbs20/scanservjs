@@ -348,7 +348,9 @@ module.exports = class ExpressConfigurer {
    */
   encoding() {
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(express.json());
+    // Raise the JSON body limit to 10 MB so that large edit lists (many hundreds
+    // of pages) are not rejected by the default 100 kB cap.
+    this.app.use(express.json({ limit: '10mb' }));
     return this;
   }
 
@@ -368,20 +370,21 @@ module.exports = class ExpressConfigurer {
       });
     });
 
-    // Ephemeral file upload: uses express.raw() to receive raw binary body.
+    // Ephemeral file upload: stream request body directly to disk — no in-memory
+    // buffer, so file size is limited only by available disk space, not RAM.
     this.app.post(
       /\/api\/v1\/editor\/sessions\/([^/]+)\/upload/,
-      express.raw({ type: '*/*', limit: '100mb' }),
       async (req, res) => {
         log.info({ method: req.method, path: req.path, query: req.query,
-          bodySize: req.body?.length ?? 0 });
+          contentLength: req.headers['content-length'] ?? 'unknown' });
         try {
           const filename = req.query.filename;
           if (!filename || typeof filename !== 'string') {
+            req.resume(); // drain so the connection closes cleanly
             res.status(400).send({ message: 'filename query parameter required' });
             return;
           }
-          const result = await editorApi.uploadFile(req.params[0], req.body, filename);
+          const result = await editorApi.uploadStream(req.params[0], req, filename);
           res.send(result);
         } catch (error) {
           sendError(res, 500, error);
