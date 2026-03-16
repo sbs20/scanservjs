@@ -236,11 +236,23 @@ def cmd_place_on_page(args):
         src_h = float(box[3]) - src_y0
 
         if fit_mode == 'set-size':
-            # Rebase content to origin (0,0) before resizing the MediaBox.
-            # Without this, a non-zero source origin (e.g. [0, 32, 612, 792])
-            # causes content to appear shifted up / clipped after the resize.
-            if src_x0 != 0 or src_y0 != 0:
-                _inject_ctm(pdf, page, 1, 0, 0, 1, -src_x0, -src_y0)
+            # Align content to the top-left corner of the target page.
+            #
+            # PDF y=0 is at the bottom; high y values are the visual top.
+            # Documents are typically placed at the top-left when scanned on a
+            # flatbed, so when the source is taller than the target we must
+            # clip the bottom, not the top.  Aligning left is likewise safer
+            # than centring for mixed A4/Letter environments.
+            #
+            # tx = -src_x0         rebase x to 0, align left
+            # ty = target_h - src_h - src_y0
+            #    = 0 when content exactly matches target height
+            #    > 0 when content is shorter (shifts up, white space at bottom)
+            #    < 0 when content is taller (shifts down, clips bottom, keeps top)
+            tx = -src_x0
+            ty = target_h - src_h - src_y0
+            if tx != 0 or ty != 0:
+                _inject_ctm(pdf, page, 1, 0, 0, 1, tx, ty)
             page.mediabox = pikepdf.Array([0, 0, target_w, target_h])
             if '/CropBox' in page:
                 del page['/CropBox']
