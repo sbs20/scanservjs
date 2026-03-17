@@ -722,72 +722,31 @@ function nodeToHTML(node, ctx = {}) {
     children = children.filter(c => c && c.name !== 'br');
   }
 
-  // xfaPosition containers: correct label wrappers positioned slightly above
-  // image-overlay wrappers.  pdfjs occasionally miscalculates XFA coordinates,
-  // placing column-header labels a few pixels above the visual top of the
-  // bordered region they belong to.  Clamp such text-draw wrappers down to the
-  // image overlay's top so they render inside the border box rather than above it.
-  //
-  // KNOWN HACK: threshold of 20 px is empirically chosen.  A text-draw wrapper
-  // that is legitimately positioned above an image by more than 20 px is left
-  // untouched.
-  if (classes.includes('xfaPosition')) {
-    const IMAGE_ABOVE_THRESHOLD = 20; // px tolerance for pdfjs coordinate errors
-    let minImageTop = Infinity;
-    for (const c of children) {
-      if (!c || c.name !== 'div') continue;
-      const cc = c.attributes?.class || [];
-      if (!cc.includes('xfaWrapper')) continue;
-      const isImageWrapper = (c.children || []).some(gc => {
-        if (!gc || gc.name !== 'div') return false;
-        const gcc = gc.attributes?.class || [];
-        if (!gcc.includes('xfaDraw')) return false;
-        const ggc = (gc.children || []).filter(Boolean);
-        return ggc.length === 1 && ggc[0].name === 'img';
-      });
-      if (isImageWrapper) {
-        const t = parseFloat(c.attributes?.style?.top) || 0;
-        if (t < minImageTop) minImageTop = t;
-      }
-    }
-    if (isFinite(minImageTop)) {
-      children = children.map(c => {
-        if (!c || c.name !== 'div') return c;
-        const cc = c.attributes?.class || [];
-        if (!cc.includes('xfaWrapper')) return c;
-        const top = parseFloat(c.attributes?.style?.top) || 0;
-        if (top >= minImageTop || minImageTop - top > IMAGE_ABOVE_THRESHOLD) return c;
-        const hasTextDraw = (c.children || []).some(gc => {
-          if (!gc || gc.name !== 'div') return false;
-          const gcc = gc.attributes?.class || [];
-          if (!gcc.includes('xfaDraw')) return false;
-          const ggc = (gc.children || []).filter(Boolean);
-          return ggc.length > 0 && !(ggc.length === 1 && ggc[0].name === 'img');
-        });
-        if (!hasTextDraw) return c;
-        return {
-          ...c,
-          attributes: {
-            ...c.attributes,
-            style: { ...c.attributes.style, top: `${minImageTop}px` },
-          },
-        };
-      });
-    }
-  }
-
   // xfaWrapper elements: manage z-index stacking and backgrounds.
   //
   // • Image-only xfaDraw child  → z-index: 1  (Lines overlay paints above white
   //   field backgrounds; without this the white `background: white !important`
   //   on input/textarea covers the overlay image)
-  // • Text-content xfaDraw child → z-index: 2  (column-header labels must paint
+  // • Text-label xfaDraw child  → z-index: 2  (column-header labels must paint
   //   above the Lines overlay image, which is z-index: 1)
+  //   A "text-label draw" is one that: has content, contains no interactive
+  //   elements (input/textarea/select) anywhere in its subtree, contains no SVG
+  //   children (SVG background boxes must not be raised), and has actual text.
+  //   Input-field draws and SVG background draws must stay at z-index: auto so
+  //   the Lines overlay continues to paint above them.
   // • Empty xfaDraw with a visible xfaBorder sibling → background: white
   //   (empty border-box cells such as signature boxes must not inherit the grey
   //   section background from their parent subform)
   let effectiveStyle = style;
   if (classes.includes('xfaWrapper')) {
+    // Recursive check: does a node contain any interactive element?
+    const hasInteractive = (n) => {
+      if (!n || typeof n !== 'object') return false;
+      const nm = n.name;
+      if (nm === 'input' || nm === 'textarea' || nm === 'select') return true;
+      return (n.children || []).some(hasInteractive);
+    };
+
     let hasImageOverlay      = false;
     let hasTextDraw          = false;
     let hasEmptyBorderedDraw = false;
@@ -795,20 +754,23 @@ function nodeToHTML(node, ctx = {}) {
     for (const c of children) {
       if (!c || c.name !== 'div') continue;
       const cc = c.attributes?.class || [];
-      if (cc.includes('xfaDraw')) {
-        const gc = (c.children || []).filter(Boolean);
-        if (gc.length === 1 && gc[0].name === 'img') {
-          hasImageOverlay = true;
-        } else if (gc.length === 0) {
-          // Empty draw — treat as a bordered box if a non-empty xfaBorder sibling exists
-          const hasBorder = children.some(b =>
-            b && (b.attributes?.class || []).includes('xfaBorder') &&
-            Object.keys(b.attributes?.style || {}).length > 0
-          );
-          if (hasBorder) hasEmptyBorderedDraw = true;
-        } else {
-          hasTextDraw = true;
-        }
+      if (!cc.includes('xfaDraw')) continue;
+      const gc = (c.children || []).filter(Boolean);
+      if (gc.length === 1 && gc[0].name === 'img') {
+        hasImageOverlay = true;
+      } else if (gc.length === 0) {
+        // Empty draw — treat as a bordered box if a non-empty xfaBorder sibling exists
+        const hasBorder = children.some(b =>
+          b && (b.attributes?.class || []).includes('xfaBorder') &&
+          Object.keys(b.attributes?.style || {}).length > 0
+        );
+        if (hasBorder) hasEmptyBorderedDraw = true;
+      } else if (
+        !gc.some(x => x.name === 'svg')  &&  // exclude SVG backgrounds
+        !hasInteractive(c)               &&  // exclude input/textarea fields
+        getTextContent(c) !== ''             // must have actual text
+      ) {
+        hasTextDraw = true;
       }
     }
 
