@@ -37,6 +37,7 @@ cp -rv xfa-convert $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
+npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB/xfa-convert
 
 # Get rid of map files
 find $DIR_LIB -name "*.map" -type f -delete
@@ -77,8 +78,8 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: all
-Depends: adduser, nodejs, imagemagick, sane-utils, python3, python3-venv, python3-pip
-Recommends: sane-airscan, ipp-usb, tesseract-ocr, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
+Depends: adduser, nodejs, imagemagick, sane-utils, python3, python3-venv, python3-pip, libpango-1.0-0, libpangoft2-1.0-0, libpangocairo-1.0-0
+Recommends: sane-airscan, ipp-usb, tesseract-ocr, fonts-crosextra-carlito, fonts-crosextra-caladea, fonts-liberation, tesseract-ocr-ara, tesseract-ocr-ces, tesseract-ocr-deu, tesseract-ocr-eng, tesseract-ocr-spa, tesseract-ocr-fra, tesseract-ocr-ita, tesseract-ocr-nld, tesseract-ocr-pol, tesseract-ocr-por, tesseract-ocr-rus, tesseract-ocr-tur, tesseract-ocr-chi-sim
 Maintainer: Sam Strachan <info@sbs20.com>
 Description: Web-based UI for SANE
   scanservjs allows you to share a scanner on a network without the need for
@@ -124,6 +125,13 @@ if [ "\$1" = "configure" ] ; then
   $PATH_LIB/.venv/bin/pip install --upgrade pip
   $PATH_LIB/.venv/bin/pip install -r $PATH_LIB/editor/requirements.txt
   chown -R $USER:$GROUP $PATH_LIB/.venv
+
+  # Setup isolated Python environment for XFA convert (WeasyPrint)
+  echo "Setting up XFA convert Python environment..."
+  python3 -m venv $PATH_LIB/xfa-convert/.venv
+  $PATH_LIB/xfa-convert/.venv/bin/pip install --upgrade pip
+  $PATH_LIB/xfa-convert/.venv/bin/pip install -r $PATH_LIB/xfa-convert/requirements.txt
+  chown -R $USER:$GROUP $PATH_LIB/xfa-convert/.venv
 
   if [ -d /etc/ImageMagick-6 ]; then
     # Enable PDF
