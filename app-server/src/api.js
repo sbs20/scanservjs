@@ -219,7 +219,7 @@ module.exports = new class Api {
       if (thumbnail.exists()) {
         return thumbnail.toBuffer();
       } else {
-        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -background white -flatten -resize 256 -quality 75 jpg:-`);
+        const buffer = await Process.spawn(`convert '${source.fullname}'[0] -resize 256 -quality 75 jpg:-`);
         thumbnail.save(buffer);
         return buffer;
       }
@@ -268,7 +268,7 @@ module.exports = new class Api {
   async autoCrop(params) {
     log.trace('autoCrop()', params);
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
-
+    
     // Guardrail: if preview image does not exist, immediately return zero-value
     if (!source.exists()) {
       log.info('AutoCrop aborted: preview.tif does not exist');
@@ -284,9 +284,11 @@ module.exports = new class Api {
     const top = parseFloat(params.top) || 0;
     const width = parseFloat(params.width) || bedW;
     const height = parseFloat(params.height) || bedH;
-    const mode = ['interactive', 'batch'].includes(params.autoCropMode)
-      ? params.autoCropMode
-      : 'interactive';
+    // The /api/v1/autocrop endpoint is exclusively invoked by the interactive
+    // magic-wand button.  Always use interactive mode regardless of what the
+    // client sends; batch/conservative mode is reserved for the future
+    // automatic per-page scanning path which has its own endpoint.
+    const mode = 'interactive';
 
     const args = [
       `--image '${source.fullname}'`,
@@ -316,65 +318,7 @@ module.exports = new class Api {
       return parsed;
     } catch (e) {
       log.error('AutoCrop execution failed', e.message, e.stderr);
-      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || 'Unknown error').substring(0, 100)}` };
+      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || "Unknown error").substring(0, 100)}` };
     }
-  }
-
-  /**
-   * @param {any} query
-   * @returns {any}
-   */
-  pwaManifest(query) {
-    const name = query.name || config.pwa.name;
-    const shortName = query.shortName || config.pwa.shortName;
-    const startUrl = query.startUrl || '/';
-    const display = query.display || config.pwa.display;
-    const themeColor = query.themeColor || config.pwa.themeColor;
-
-    let icons;
-    const iconFiles = config.pwa.iconFiles;
-    if (iconFiles && iconFiles.length > 0) {
-      const path = require('path');
-      const seen = new Set();
-      icons = iconFiles
-        .map(file => {
-          const ext = path.extname(file).toLowerCase();
-          const src = `/icons/pwa-icon${ext}`;
-          if (seen.has(src)) return null;
-          seen.add(src);
-          const mimeType = ext === '.svg' ? 'image/svg+xml' : 'image/png';
-          const sizes = ext === '.svg' ? 'any' : '512x512';
-          return { src, sizes, type: mimeType, purpose: 'any maskable' };
-        })
-        .filter(Boolean);
-    } else {
-      icons = [
-        { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
-        { src: '/icons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-        { src: '/icons/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
-      ];
-    }
-
-    return {
-      name,
-      short_name: shortName,
-      start_url: startUrl,
-      scope: '/',
-      display,
-      theme_color: themeColor,
-      background_color: '#ffffff',
-      icons
-    };
-  }
-
-  /**
-   * @returns {string}
-   */
-  pwaServiceWorker() {
-    return `
-      self.addEventListener('install', e => self.skipWaiting());
-      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-      self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
-    `;
   }
 };

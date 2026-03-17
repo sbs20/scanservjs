@@ -78,7 +78,7 @@
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`, overflow: 'hidden'}">
         <div class="d-flex justify-center mb-2">
           <v-btn-group density="comfortable" variant="outlined">
-            <v-btn :disabled="!img || isAutoCropOff || (isBatchOrAdf && !isBatchAutoCrop)" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
@@ -457,13 +457,6 @@ export default {
       return isBatch || isAdf;
     },
 
-    isBatchAutoCrop() {
-      return this.request && this.request.autoCropMode === 'batch';
-    },
-
-    isAutoCropOff() {
-      return this.request && this.request.autoCropMode === 'off';
-    }
   },
 
   watch: {
@@ -933,8 +926,10 @@ export default {
       params.top = 0;
       params.width = this.deviceSize.width;
       params.height = this.deviceSize.height;
-      // Forward autoCropMode so api.js can pass --mode to the Python script
-      params.autoCropMode = this.request.autoCropMode || 'interactive';
+      // The wand is always interactive — the user is reviewing the result directly.
+      // autoCropMode (the dropdown) controls automatic per-page behaviour during
+      // batch scanning; it has no effect on manual wand invocations.
+      params.autoCropMode = 'interactive';
 
       Common.fetch('api/v1/autocrop', {
         method: 'POST',
