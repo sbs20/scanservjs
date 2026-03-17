@@ -284,6 +284,9 @@ module.exports = new class Api {
     const top = parseFloat(params.top) || 0;
     const width = parseFloat(params.width) || bedW;
     const height = parseFloat(params.height) || bedH;
+    const mode = ['interactive', 'batch'].includes(params.autoCropMode)
+      ? params.autoCropMode
+      : 'interactive';
 
     const args = [
       `--image '${source.fullname}'`,
@@ -292,7 +295,8 @@ module.exports = new class Api {
       `--width ${width}`,
       `--height ${height}`,
       `--bed-width ${bedW}`,
-      `--bed-height ${bedH}`
+      `--bed-height ${bedH}`,
+      `--mode ${mode}`
     ].join(' ');
 
     const cmd = `.venv/bin/python autocrop/autocrop.py ${args}`;
