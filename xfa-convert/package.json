@@ -1,0 +1,13 @@
+{
+  "name": "xfa-convert",
+  "version": "1.0.0",
+  "description": "Convert XFA PDF to static HTML/PDF using pdfjs-dist",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^5.5.0"
+  }
+}
