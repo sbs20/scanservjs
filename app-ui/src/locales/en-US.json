@@ -77,8 +77,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Download",
-    "button:delete": "Delete",
     "button:rename": "Rename"
   },
   "navigation": {
@@ -178,7 +176,8 @@
     "rotate-cw": "Rotate 90° clockwise",
     "rotate-ccw": "Rotate 90° counter-clockwise",
     "flip-h": "Flip horizontally",
-    "flip-v": "Flip vertically"
+    "flip-v": "Flip vertically",
+    "autocrop-mode": "Auto-Crop Mode"
   },
   "document-dialog": {
     "view": "View",
@@ -293,5 +292,10 @@
       "param-pipeline": "Output Pipeline",
       "default-name": "Document Scanner"
     }
+  },
+  "autocrop-mode": {
+    "off": "Off",
+    "interactive": "Interactive",
+    "batch": "Batch (conservative)"
   }
 }

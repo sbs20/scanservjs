@@ -73,8 +73,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Скачать",
-    "button:delete": "Удалить",
     "button:rename": "Переименовать"
   },
   "navigation": {
@@ -169,7 +167,8 @@
     "rotate-cw": "Повернуть на 90° по часовой стрелке",
     "rotate-ccw": "Повернуть на 90° против часовой стрелки",
     "flip-h": "Отразить по горизонтали",
-    "flip-v": "Отразить по вертикали"
+    "flip-v": "Отразить по вертикали",
+    "autocrop-mode": "Режим автообрезки"
   },
   "document-dialog": {
     "view": "Просмотр",
@@ -283,5 +282,10 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "autocrop-mode": {
+    "off": "Выключено",
+    "interactive": "Интерактивный",
+    "batch": "Пакетный (консервативный)"
   }
 }

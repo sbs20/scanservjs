@@ -73,8 +73,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Télécharger",
-    "button:delete": "Supprimer",
     "button:rename": "Renommer"
   },
   "navigation": {
@@ -171,7 +169,8 @@
     "rotate-cw": "Pivoter de 90° dans le sens des aiguilles d'une montre",
     "rotate-ccw": "Pivoter de 90° dans le sens inverse des aiguilles d'une montre",
     "flip-h": "Retourner horizontalement",
-    "flip-v": "Retourner verticalement"
+    "flip-v": "Retourner verticalement",
+    "autocrop-mode": "Mode de recadrage automatique"
   },
   "document-dialog": {
     "view": "Voir",
@@ -285,5 +284,10 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "autocrop-mode": {
+    "off": "Désactivé",
+    "interactive": "Interactif",
+    "batch": "Lot (conservateur)"
   }
 }

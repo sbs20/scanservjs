@@ -77,8 +77,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Letöltés",
-    "button:delete": "Törlés",
     "button:rename": "Átnevezés"
   },
   "navigation": {
@@ -178,7 +176,8 @@
     "rotate-cw": "Elforgatás 90°-kal az óramutató járásával megegyezően",
     "rotate-ccw": "Elforgatás 90°-kal az óramutató járásával ellentétesen",
     "flip-h": "Vízszintes tükrözés",
-    "flip-v": "Függőleges tükrözés"
+    "flip-v": "Függőleges tükrözés",
+    "autocrop-mode": "Automatikus vágás módja"
   },
   "document-dialog": {
     "view": "Megtekintés",
@@ -292,5 +291,10 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "autocrop-mode": {
+    "off": "Kikapcsolva",
+    "interactive": "Interaktív",
+    "batch": "Kötegelt (konzervatív)"
   }
 }

@@ -75,8 +75,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Stiahnuť",
-    "button:delete": "Zmazať",
     "button:rename": "Premenovať"
   },
   "navigation": {
@@ -176,7 +174,8 @@
     "rotate-cw": "Otočiť o 90° v smere hodinových ručičiek",
     "rotate-ccw": "Otočiť o 90° v protismere hodinových ručičiek",
     "flip-h": "Prevrátiť vodorovne",
-    "flip-v": "Prevrátiť zvisle"
+    "flip-v": "Prevrátiť zvisle",
+    "autocrop-mode": "Režim automatického orezania"
   },
   "document-dialog": {
     "view": "Zobraziť",
@@ -290,5 +289,10 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "autocrop-mode": {
+    "off": "Vypnuté",
+    "interactive": "Interaktívny",
+    "batch": "Dávkové (konzervatívne)"
   }
 }

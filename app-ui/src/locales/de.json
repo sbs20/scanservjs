@@ -73,8 +73,6 @@
     "close": "Close",
     "download": "Download",
     "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
-    "button:download": "Herunterladen",
-    "button:delete": "Löschen",
     "button:rename": "Umbenennen"
   },
   "navigation": {
@@ -171,7 +169,8 @@
     "rotate-cw": "90° im Uhrzeigersinn drehen",
     "rotate-ccw": "90° gegen den Uhrzeigersinn drehen",
     "flip-h": "Horizontal spiegeln",
-    "flip-v": "Vertikal spiegeln"
+    "flip-v": "Vertikal spiegeln",
+    "autocrop-mode": "Automatischer Zuschnitt"
   },
   "document-dialog": {
     "view": "Anzeigen",
@@ -285,5 +284,10 @@
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline"
     }
+  },
+  "autocrop-mode": {
+    "off": "Aus",
+    "interactive": "Interaktiv",
+    "batch": "Batch (konservativ)"
   }
 }

@@ -19,6 +19,7 @@ export default class Request {
       filters: request.filters || device.settings.filters.default,
       pipeline: request.pipeline || device.settings.pipeline.default,
       batch: request.batch || device.settings.batchMode.default,
+      autoCropMode: request.autoCropMode || device.settings.autoCropMode.default,
       index: 1
     });
 

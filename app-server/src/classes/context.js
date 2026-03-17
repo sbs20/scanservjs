@@ -35,6 +35,10 @@ module.exports = class Context {
           options: config.batchModes,
           default: config.batchModes[0]
         },
+        autoCropMode: {
+          options: config.autoCropModes,
+          default: config.autoCropModes[0]
+        },
         filters: {
           options: config.filters.map(f => f.description),
           default: []

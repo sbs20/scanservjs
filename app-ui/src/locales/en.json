@@ -21,7 +21,8 @@
     "logs-copy": "Copy",
     "logs-refresh": "Refresh",
     "logs-copied": "Logs copied to clipboard",
-    "logs-empty": "No log entries"
+    "logs-empty": "No log entries",
+    "issue": "File an issue or view the source code:"
   },
   "colors": {
     "accent-4": "Default",
@@ -178,9 +179,9 @@
     "message:no-devices": "Found no devices",
     "message:deleted-preview": "Deleted preview",
     "message:turn-documents": "Turn documents over",
-    "message:preview-of-page": "Preview of page"
+    "message:preview-of-page": "Preview of page",
+    "autocrop-mode": "Auto-Crop Mode"
   },
-
   "document-dialog": {
     "view": "View",
     "edit": "Edit",
@@ -235,7 +236,6 @@
     "apply": "Apply",
     "upload-file": "Upload file"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Behaviour and UI",
@@ -316,5 +316,10 @@
     "uk": "Yкраїнська",
     "zh": "简体中文",
     "test": "Test"
+  },
+  "autocrop-mode": {
+    "off": "Off",
+    "interactive": "Interactive",
+    "batch": "Batch (conservative)"
   }
 }

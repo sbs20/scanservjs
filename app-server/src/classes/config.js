@@ -82,6 +82,12 @@ module.exports = class Config {
         Constants.BATCH_COLLATE_STANDARD
       ],
 
+      autoCropModes: [
+        Constants.AUTOCROP_OFF,
+        Constants.AUTOCROP_INTERACTIVE,
+        Constants.AUTOCROP_BATCH
+      ],
+
       filters: [
         {
           description: 'filter.auto-contrast',
