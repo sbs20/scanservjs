@@ -163,13 +163,32 @@ def run_heuristic_a(masked, debug=False, img_path=None):
             'thresh': thresh,
         }
 
-    median_angle = float(np.median(angles))
-    angle_std = float(np.std(angles))
-    n_lines = len(angles)
+    # Refine the angle estimate using the dominant cluster rather than the
+    # global median.  Business letters often have bimodal distributions: body
+    # text at one angle and headers/footers/logos at a different angle; the
+    # global median can land between the two clusters.
+    #
+    # Slide a ±3° window to find the centre with the most agreeing lines and
+    # use the median of that cluster as the angle estimate.  Confidence is
+    # intentionally based on ALL detected lines (including off-cluster ones),
+    # which correctly penalises bimodal / inconsistent distributions.  Using
+    # only the cluster for confidence would inflate scores for documents with
+    # few but tightly-grouped lines (e.g. edge artefacts on photos).
+    angles_arr = np.array(angles, dtype=float)
+    best_center = float(np.median(angles_arr))
+    best_count = 0
+    for candidate in angles_arr:
+        mask = np.abs(angles_arr - candidate) <= 3.0
+        if mask.sum() > best_count:
+            best_count = int(mask.sum())
+            best_center = float(np.median(angles_arr[mask]))
 
-    # Score: rewarded for more lines AND tight angular agreement.
-    # Consistency is weighted more heavily so that images with many detected
-    # "lines" but inconsistent angles (photos, random blobs) score low.
+    median_angle = float(np.median(angles_arr[np.abs(angles_arr - best_center) <= 3.0]))
+    n_lines = len(angles)                             # total qualifying lines
+    angle_std = float(np.std(angles_arr))             # global std for confidence
+
+    # Score: rewards many parallel lines AND global angular consistency.
+    # High global std (bimodal distribution) → low confidence → risk-3 fallback.
     line_score = min(1.0, (n_lines - 3) / 7.0)          # 0.0 at 3, 1.0 at 10+
     consistency_score = max(0.0, 1.0 - angle_std / 5.0)  # 1.0 at 0°, 0.0 at 5°+
     confidence = 0.3 * line_score + 0.7 * consistency_score
@@ -277,11 +296,17 @@ _HIGH_CONF = 0.5   # minimum for interactive level-1/2
 _CLEAR_CONF = 0.65  # minimum for batch level-1/2
 
 
-def risk_decision_engine(heuristic_a, heuristic_b, mode):
+def risk_decision_engine(heuristic_a, heuristic_b, mode,
+                         t_w=None, t_h=None, bed_w=None, bed_h=None):
     """
     Merge Heuristic A (text) and B (contour) into a single result dict.
     Returns None for risk-level 0 (no-op / don't transform).
     Returns dict(risk_level, rotate_angle, c_x_px, c_y_px, w_px, h_px) otherwise.
+
+    t_w, t_h: user-selected target scan dimensions (mm).  Used to cap the
+    full-bed guard output to the actual scan area, preventing the padded
+    preview height (which represents the full scanner bed) from inflating
+    the output dimensions beyond the user's chosen paper size.
     """
     text_conf = heuristic_a['text_confidence_score']
     text_angle = heuristic_a['text_angle']
@@ -314,8 +339,34 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
     # --- Batch-mode safety cap ---
     if mode == 'batch':
         if risk_level == 3:
-            # Contour-only crop in batch is risky (no text anchor) → no-op
-            risk_level = 0
+            # Contour-only crop in batch is generally risky (no text anchor).
+            # Exception: allow it when the contour detection shows the document
+            # is clearly smaller than the scanner bed in both dimensions, which
+            # indicates a high-confidence edge detection (visible document on bed).
+            # This covers flatbed scans of photos, IDs, and non-text documents.
+            if heuristic_b is not None:
+                img_area = thresh.shape[0] * thresh.shape[1]
+                doc_area = heuristic_b['w_px'] * heuristic_b['h_px']
+                # Allow risk-3 only when the document occupies significantly
+                # less area than the image, indicating clear visible edges.
+                # This keeps conservative mode safe for ADF (document fills bed,
+                # area ratio ≈ 1) while enabling it for clearly cropped docs.
+                img_w_b = thresh.shape[1]
+                img_h_b = thresh.shape[0]
+                b_w = heuristic_b['w_px'] if heuristic_b['angle_deg'] >= -45 else heuristic_b['h_px']
+                b_h = heuristic_b['h_px'] if heuristic_b['angle_deg'] >= -45 else heuristic_b['w_px']
+                contour_fills_image = (b_w / img_w_b > 0.99) and (b_h / img_h_b > 0.99)
+                if doc_area / img_area < 0.72:
+                    pass  # clearly smaller than bed → keep risk-3
+                elif text_conf > 0.15 and not contour_fills_image:
+                    # Large document with text and a non-trivial contour: the
+                    # full-bed guard will apply in the output step (no actual
+                    # crop), so this is safe in batch — it is just a deskew.
+                    pass
+                else:
+                    risk_level = 0
+            else:
+                risk_level = 0
         elif risk_level in (1, 2) and not clear_conf:
             # Not confident enough for automatic crop → no-op
             risk_level = 0
@@ -326,13 +377,33 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
 
     if risk_level == 1:
         bx, by, bw, bh = text_bbox
+        img_w_t = thresh.shape[1]
+        img_h_t = thresh.shape[0]
+
+        # Full-bed guard: if text spans > 90% in both dimensions, there is no
+        # meaningful crop to perform.  Only apply the deskew angle.
+        # Cap to the actual scan dims (t_w/t_h) if provided so that the padded
+        # preview height does not inflate the output beyond the user's paper size.
+        if (bw / img_w_t) > 0.90 and (bh / img_h_t) > 0.90:
+            cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
+            cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
+            w_px = float(min(img_w_t, cap_w))
+            h_px = float(min(img_h_t, cap_h))
+            c_x_px = w_px / 2.0
+            c_y_px = h_px / 2.0
+        else:
+            c_x_px = bx + bw / 2.0
+            c_y_px = by + bh / 2.0
+            w_px = float(bw)
+            h_px = float(bh)
+
         return {
             'risk_level': 1,
             'rotate_angle': text_angle_to_rotate_angle(text_angle),
-            'c_x_px': bx + bw / 2.0,
-            'c_y_px': by + bh / 2.0,
-            'w_px': float(bw),
-            'h_px': float(bh),
+            'c_x_px': c_x_px,
+            'c_y_px': c_y_px,
+            'w_px': w_px,
+            'h_px': h_px,
             'swap_dims': False,
         }
 
@@ -356,6 +427,24 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
     rot, swap = rect_to_rotate_angle(b['angle_deg'])
     w_px = b['h_px'] if swap else b['w_px']
     h_px = b['w_px'] if swap else b['h_px']
+
+    # Full-bed guard for large text documents: when text lines are present
+    # (any positive text confidence) and the contour bounding box covers most
+    # of the bed, the document is a white-on-white page whose ink content area
+    # is smaller than the physical paper.  Cropping to the ink boundary would
+    # cut into the paper margins, so we fall back to full image dimensions.
+    # This is the typical business-letter-on-flatbed case.
+    if text_conf > 0.15:
+        img_w_t = thresh.shape[1]
+        img_h_t = thresh.shape[0]
+        if (w_px / img_w_t) > 0.80 and (h_px / img_h_t) > 0.80:
+            # Cap to actual scan dims (t_w/t_h) to avoid using the padded
+            # preview height when the user selected a paper shorter than the bed.
+            cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
+            cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
+            w_px = float(min(img_w_t, cap_w))
+            h_px = float(min(img_h_t, cap_h))
+
     return {
         'risk_level': 3,
         'rotate_angle': rot,
@@ -391,6 +480,10 @@ def main():
                         default='interactive',
                         help='interactive: allow up to risk-3 crops; '
                              'batch: conservative, only high-confidence crops')
+    parser.add_argument('--no-scale', action='store_true',
+                        help='Force scale factors sx=sy=1.0 (disable scale-to-fit). '
+                             'Use when the caller handles sizing externally, e.g. '
+                             'scan-controller automatic mode.')
     parser.add_argument('--debug', action='store_true',
                         help='Output visual debug images')
 
@@ -449,7 +542,8 @@ def main():
         )
 
     # ── Step 3: Risk decision engine ────────────────────────────────────────
-    result = risk_decision_engine(heuristic_a, heuristic_b, mode)
+    result = risk_decision_engine(heuristic_a, heuristic_b, mode,
+                                  t_w=t_w, t_h=t_h, bed_w=bed_w, bed_h=bed_h)
 
     if result is None:
         # Risk level 0: return no-op (caller will not apply any transformation)
@@ -471,10 +565,16 @@ def main():
     doc_w_mm = w_px / px_per_mm_x
     doc_h_mm = h_px / px_per_mm_y
 
-    # ── Step 5: Scale-to-fit logic (unchanged from original) ─────────────────
-    is_full_bed = (t_w >= bed_w - 1.0) and (t_h >= bed_h - 1.0)
-
-    if is_full_bed:
+    # ── Step 5: Scale-to-fit logic ───────────────────────────────────────────
+    # --no-scale forces sx=sy=1.0 regardless of paper-size selection.
+    # This is used by the automatic scan-time path (scan-controller) to prevent
+    # scale-to-fit from distorting the output when the scan was done with a
+    # paper size shorter than the full bed.
+    if args.no_scale:
+        sx = 1.0
+        sy = 1.0
+    elif (t_w >= bed_w - 1.0) and (t_h >= bed_h - 1.0):
+        # Target dimensions equal the full bed: no scaling needed.
         sx = 1.0
         sy = 1.0
     else:
@@ -491,10 +591,17 @@ def main():
             sy = s
 
     # ── Step 6: Build ImageMagick SRT string ─────────────────────────────────
+    # Source center: document center in input pixels (rotate around this point).
     fx_cx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
     fx_cy = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
-    fx_tx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
-    fx_ty = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
+    # Destination center: always the image center so that the document ends up
+    # centred in the output regardless of where it sat on the scanner bed.
+    # The downstream surgical crop (`-gravity center -extent WxH`) then extracts
+    # the document precisely.  When the scan was pre-cropped to the document area
+    # (magic-wand workflow) the document centre already coincides with the image
+    # centre, so this has no practical effect on that path.
+    fx_tx = "%[fx:w/2]"
+    fx_ty = "%[fx:h/2]"
 
     srt_str = f"{fx_cx},{fx_cy} {sx:f},{sy:f} {rotate_angle:.6f} {fx_tx},{fx_ty}"
     magic_str = (f"-background white -virtual-pixel white "

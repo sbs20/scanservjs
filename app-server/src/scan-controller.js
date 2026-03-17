@@ -76,6 +76,16 @@ class ScanController {
     // Update preview with the first image (pre filter)
     await this.updatePreview(files[0].name);
 
+    // Automatic per-page autocrop when autoCropMode is set and no manual wand
+    // transformation is active.  Runs after the preview is created so that the
+    // preview.tif reflects the actual scan geometry.
+    if (this.request.autoCropMode && this.request.autoCropMode !== Constants.AUTOCROP_OFF) {
+      const hasManualCrop = this.request.transformations && this.request.transformations.magic;
+      if (!hasManualCrop) {
+        await this._applyAutoCrop();
+      }
+    }
+
     // Collation
     if ([Constants.BATCH_COLLATE_STANDARD, Constants.BATCH_COLLATE_REVERSE].includes(this.request.batch)) {
       files = Collator.collate(files, this.request.batch === Constants.BATCH_COLLATE_STANDARD);
@@ -175,7 +185,7 @@ class ScanController {
         // Safety for legacy placeholders
         magic = magic.replace(/{TCX}/g, '0');
         magic = magic.replace(/{TCY}/g, '0');
-        if (/[;|&$`\n\r(){}<>]/.test(magic)) {
+        if (/[;|&$`\n\r{}<>]/.test(magic)) {
           throw new Error('Transformation contains unsafe characters');
         }
         params.push(magic);
@@ -206,6 +216,73 @@ class ScanController {
     }
 
     return params.join(' ');
+  }
+
+  /**
+   * Run autocrop on the current preview.tif and populate this.request.transformations
+   * with the resulting magic string + document dimensions.  Called automatically
+   * during finish() when autoCropMode is set and no manual wand transformation
+   * is active.
+   * @returns {Promise.<void>}
+   */
+  async _applyAutoCrop() {
+    const previewPath = `${config.previewDirectory}/preview.tif`;
+    if (!FileInfo.create(previewPath).exists()) {
+      log.debug('AutoCrop (auto): preview.tif not found, skipping');
+      return;
+    }
+
+    const device = this.context.getDevice(this.request.params.deviceId);
+    const bedW = device.features['-x'].limits[1];
+    const bedH = device.features['-y'].limits[1];
+    const left = parseFloat(this.request.params.left) || 0;
+    const top = parseFloat(this.request.params.top) || 0;
+    const mode = this.request.autoCropMode === Constants.AUTOCROP_BATCH ? 'batch' : 'interactive';
+    // Pass the actual scan dimensions as --width/--height so autocrop.py uses
+    // the correct paper size when capping the full-bed guard output.  The
+    // --no-scale flag disables scale-to-fit; scaling would distort the output
+    // when the scan height differs from the scanner bed height.
+    const scanW = parseFloat(this.request.params.width) || bedW;
+    const scanH = parseFloat(this.request.params.height) || bedH;
+
+    const args = [
+      `--image '${previewPath}'`,
+      `--left ${left}`,
+      `--top ${top}`,
+      `--width ${scanW}`,
+      `--height ${scanH}`,
+      `--bed-width ${bedW}`,
+      `--bed-height ${bedH}`,
+      '--no-scale',
+      `--mode ${mode}`
+    ].join(' ');
+
+    try {
+      const stdout = await Process.execute(`.venv/bin/python autocrop/autocrop.py ${args}`);
+      const parsed = JSON.parse(stdout.trim());
+      if (parsed.error || !parsed.magic) {
+        log.debug(`AutoCrop (auto): no transformation (${parsed.error || 'no-op'})`);
+        return;
+      }
+      log.info(`AutoCrop (auto): mode=${mode} angle=${parsed.angle?.toFixed(2)}° doc=${parsed.doc_w?.toFixed(1)}x${parsed.doc_h?.toFixed(1)}mm`);
+      // Populate transformations so _buildTransformParams applies the SRT + surgical crop.
+      // Preserve any non-magic transformation fields (rotation, flip) the user may have set.
+      this.request.transformations = Object.assign(
+        this.request.transformations || {},
+        {
+          magic: parsed.magic,
+          angle: parsed.angle,
+          doc_c_x: parsed.doc_c_x,
+          doc_c_y: parsed.doc_c_y,
+          doc_w: parsed.doc_w,
+          doc_h: parsed.doc_h,
+          width: parsed.doc_w,
+          height: parsed.doc_h
+        }
+      );
+    } catch (e) {
+      log.warn('AutoCrop (auto): failed, continuing without crop:', e.message);
+    }
   }
 
   /**

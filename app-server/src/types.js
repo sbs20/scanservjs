@@ -80,6 +80,7 @@
  * @property {Pipeline[]} pipelines
  * @property {PaperSize[]} paperSizes
  * @property {string[]} batchModes
+ * @property {string[]} autoCropModes
  */
 
 /**
@@ -104,6 +105,7 @@
  * @property {string[]} filters
  * @property {string} pipeline
  * @property {string} batch
+ * @property {string} autoCropMode
  * @property {number} index
  */
 
