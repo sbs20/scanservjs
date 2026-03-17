@@ -1,0 +1,9 @@
+node_modules/
+.venv/
+*.json
+!package.json
+!package-lock.json
+xfa_pages.html
+*.pdf
+*.jpg
+*.png
