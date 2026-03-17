@@ -113,6 +113,18 @@ module.exports = {
     //   device.features['-x'].default = 215;
     //   device.features['-y'].default = 297;
     // }
+
+    // Override the default automatic crop mode for a specific device.
+    // Valid values: 'off' (disabled), 'interactive' (standard, full algorithm),
+    //               'batch' (conservative, high-confidence crops only).
+    // This controls automatic per-page cropping during batch/ADF scanning.
+    // The manual magic-wand button always uses the full interactive algorithm
+    // regardless of this setting.
+    //
+    // const device = devices[0];
+    // if (device) {
+    //   device.settings.autoCropMode.default = 'batch';
+    // }
   },
 
   /**
