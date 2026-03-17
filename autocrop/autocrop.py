@@ -446,7 +446,9 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode,
         # meaningful crop to perform.  Only apply the deskew angle.
         # Cap to the actual scan dims (t_w/t_h) if provided so that the padded
         # preview height does not inflate the output beyond the user's paper size.
-        if (bw / img_w_t) > 0.90 and (bh / img_h_t) > 0.90:
+        # 80% threshold: a standard 25 mm margin on each side leaves ≈ 83% of
+        # the A4/letter page covered by text.  90% was too conservative.
+        if (bw / img_w_t) > 0.80 and (bh / img_h_t) > 0.80:
             cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
             cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
             w_px = float(min(img_w_t, cap_w))
@@ -474,6 +476,19 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode,
         _, swap = rect_to_rotate_angle(b['angle_deg'])
         w_px = b['h_px'] if swap else b['w_px']
         h_px = b['w_px'] if swap else b['h_px']
+
+        # Apply the same full-bed guard as risk-1: when the document fills most
+        # of the image, the contour is measuring the ink area rather than the
+        # paper boundary.  Force full-bed / scan-size dimensions in that case.
+        if text_conf > 0.15:
+            img_w_t = thresh.shape[1]
+            img_h_t = thresh.shape[0]
+            if (w_px / img_w_t) > 0.80 and (h_px / img_h_t) > 0.80:
+                cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
+                cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
+                w_px = float(min(img_w_t, cap_w))
+                h_px = float(min(img_h_t, cap_h))
+
         return {
             'risk_level': 2,
             'rotate_angle': text_angle_to_rotate_angle(text_angle),
