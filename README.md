@@ -1,4 +1,4 @@
-# scanservjs — Security Hardening (`feature/security`)
+# scanservjs — White-background thumbnails (`feature/thumbnail`)
 
 > **This is a feature branch** of [Markus Gutschke's community fork](https://github.com/gutschke/scanservjs)
 > of [sbs20/scanservjs](https://github.com/sbs20/scanservjs).
@@ -7,18 +7,16 @@
 > [`production` branch](https://github.com/gutschke/scanservjs/tree/production) or the
 > [`binary` branch](https://github.com/gutschke/scanservjs/tree/binary).
 
-## Security Hardening
+## White-background thumbnails
 
-Addresses a set of security weaknesses in the upstream codebase:
+Fixes thumbnail generation for PDFs that have a transparent page background
+(such as PDFs produced by WeasyPrint).
 
-- **Input validation**: All user-supplied filenames and parameters are validated and
-  sanitised before use in shell commands or filesystem operations.
-- **Path containment**: File access is restricted to the configured output and temp
-  directories; traversal attempts (`../`) are rejected.
-- **HTTP security headers**: Helmet is added with a Content Security Policy,
-  `X-Frame-Options: sameorigin`, and other standard hardening headers.
-- **Prototype pollution guard**: Denies query/body keys that would shadow Object
-  prototype properties.
+ImageMagick fills transparent areas with black by default, producing dark,
+unreadable thumbnail icons for such files. This change adds `-background white
+-flatten` to the thumbnail command so that transparent pixels are composited
+over white before the image is resized, matching the appearance of the document
+in a typical PDF viewer.
 
-This branch is the **common base** for all other feature branches in this fork.
-Every feature branch is rebased onto `feature/security` rather than `master` directly.
+Existing cached thumbnails in the thumbnails directory must be deleted manually
+to trigger regeneration with the corrected command.
