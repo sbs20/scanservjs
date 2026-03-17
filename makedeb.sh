@@ -33,6 +33,7 @@ mkdir -pv $DIR_DOC
 cp -rv dist/* $DIR_LIB
 cp -rv autocrop $DIR_LIB
 cp -rv editor $DIR_LIB
+cp -rv xfa-convert $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB

@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const FileInfo = require('./file-info');
 const Process = require('./process');
+const XfaTool = require('./xfa-tool');
 const log = require('loglevel').getLogger('EditorSession');
 
 const SESSION_PREFIX = 'editor-';
@@ -292,12 +293,31 @@ class EditorSession {
       stream.on('error', reject);
     });
 
+    // XFA PDF → flat static PDF conversion.
+    // If the uploaded file is a dynamic XFA form and the xfa-convert pipeline
+    // is installed, convert it transparently before handing the file off to
+    // the PDF tool.  On success, uploadPath is repointed to the flat PDF and
+    // the original XFA file is removed so no ephemeral files are left behind.
+    // On failure (pipeline absent, conversion error) we fall through and let
+    // the PDF tool attempt to handle the file directly.
+    let resolvedPath = uploadPath;
+    if (ext === '.pdf' && XfaTool.isAvailable() && await XfaTool.isXfaPdf(uploadPath)) {
+      log.info(`XFA form detected in ${safeName}; converting to static PDF`);
+      const flat = await XfaTool.convertXfa(uploadPath);
+      if (flat) {
+        resolvedPath = flat;
+        log.info(`XFA conversion succeeded: ${path.basename(flat)}`);
+      } else {
+        log.warn(`XFA conversion failed for ${safeName}; proceeding with original`);
+      }
+    }
+
     const newPages = [];
     if (ext === '.pdf') {
-      const info = await this.pdfTool.getInfo(uploadPath);
+      const info = await this.pdfTool.getInfo(resolvedPath);
       for (let i = 0; i < info.pages.length; i++) {
         newPages.push({
-          source: uploadPath,
+          source: resolvedPath,
           sourceType: 'pdf',
           pageNum: i + 1,
           width: info.pages[i].width,
@@ -305,9 +325,9 @@ class EditorSession {
         });
       }
     } else {
-      const dims = await EditorSession._getImageDimensions(uploadPath);
+      const dims = await EditorSession._getImageDimensions(resolvedPath);
       newPages.push({
-        source: uploadPath,
+        source: resolvedPath,
         sourceType: 'image',
         pageNum: 1,
         width: dims.width,
