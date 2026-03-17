@@ -46,6 +46,10 @@
           :no-data-text="$t('global.no-data-text')"
           :items="batchModes" item-value="value" item-title="text" />
 
+        <v-select v-model="request.autoCropMode" :label="$t('scan.autocrop-mode')"
+          :no-data-text="$t('global.no-data-text')"
+          :items="autoCropModes" item-value="value" item-title="text" />
+
         <v-select
           v-model="request.filters"
           :no-data-text="$t('global.no-data-text')"
@@ -74,7 +78,7 @@
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`, overflow: 'hidden'}">
         <div class="d-flex justify-center mb-2">
           <v-btn-group density="comfortable" variant="outlined">
-            <v-btn :disabled="!img || isBatchOrAdf" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
+            <v-btn :disabled="!img || (isBatchOrAdf && !isBatchAutoCrop)" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
@@ -321,6 +325,17 @@ export default {
       });
     },
 
+    autoCropModes() {
+      return this.device.settings.autoCropMode.options.map(mode => {
+        const key = `autocrop-mode.${sanitiseLocaleKey(mode)}`;
+        let translation = this.$t(key);
+        return {
+          text: translation === key ? mode : translation,
+          value: mode
+        };
+      });
+    },
+
     filters() {
       return this.device.settings.filters.options.map(f => {
         return {
@@ -440,6 +455,10 @@ export default {
       const source = this.request && this.request.params ? this.request.params.source : '';
       const isAdf = source && typeof source === 'string' && source.toLowerCase().includes('adf');
       return isBatch || isAdf;
+    },
+
+    isBatchAutoCrop() {
+      return this.request && this.request.autoCropMode === 'batch';
     }
   },
 
@@ -910,6 +929,8 @@ export default {
       params.top = 0;
       params.width = this.deviceSize.width;
       params.height = this.deviceSize.height;
+      // Forward autoCropMode so api.js can pass --mode to the Python script
+      params.autoCropMode = this.request.autoCropMode || 'interactive';
 
       Common.fetch('api/v1/autocrop', {
         method: 'POST',
