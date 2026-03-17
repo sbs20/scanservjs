@@ -163,13 +163,32 @@ def run_heuristic_a(masked, debug=False, img_path=None):
             'thresh': thresh,
         }
 
-    median_angle = float(np.median(angles))
-    angle_std = float(np.std(angles))
-    n_lines = len(angles)
+    # Refine the angle estimate using the dominant cluster rather than the
+    # global median.  Business letters often have bimodal distributions: body
+    # text at one angle and headers/footers/logos at a different angle; the
+    # global median can land between the two clusters.
+    #
+    # Slide a ±3° window to find the centre with the most agreeing lines and
+    # use the median of that cluster as the angle estimate.  Confidence is
+    # intentionally based on ALL detected lines (including off-cluster ones),
+    # which correctly penalises bimodal / inconsistent distributions.  Using
+    # only the cluster for confidence would inflate scores for documents with
+    # few but tightly-grouped lines (e.g. edge artefacts on photos).
+    angles_arr = np.array(angles, dtype=float)
+    best_center = float(np.median(angles_arr))
+    best_count = 0
+    for candidate in angles_arr:
+        mask = np.abs(angles_arr - candidate) <= 3.0
+        if mask.sum() > best_count:
+            best_count = int(mask.sum())
+            best_center = float(np.median(angles_arr[mask]))
 
-    # Score: rewarded for more lines AND tight angular agreement.
-    # Consistency is weighted more heavily so that images with many detected
-    # "lines" but inconsistent angles (photos, random blobs) score low.
+    median_angle = float(np.median(angles_arr[np.abs(angles_arr - best_center) <= 3.0]))
+    n_lines = len(angles)                             # total qualifying lines
+    angle_std = float(np.std(angles_arr))             # global std for confidence
+
+    # Score: rewards many parallel lines AND global angular consistency.
+    # High global std (bimodal distribution) → low confidence → risk-3 fallback.
     line_score = min(1.0, (n_lines - 3) / 7.0)          # 0.0 at 3, 1.0 at 10+
     consistency_score = max(0.0, 1.0 - angle_std / 5.0)  # 1.0 at 0°, 0.0 at 5°+
     confidence = 0.3 * line_score + 0.7 * consistency_score
@@ -389,6 +408,20 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
     rot, swap = rect_to_rotate_angle(b['angle_deg'])
     w_px = b['h_px'] if swap else b['w_px']
     h_px = b['w_px'] if swap else b['h_px']
+
+    # Full-bed guard for large text documents: when text lines are present
+    # (any positive text confidence) and the contour bounding box covers most
+    # of the bed, the document is a white-on-white page whose ink content area
+    # is smaller than the physical paper.  Cropping to the ink boundary would
+    # cut into the paper margins, so we fall back to full image dimensions.
+    # This is the typical business-letter-on-flatbed case.
+    if text_conf > 0.15:
+        img_w_t = thresh.shape[1]
+        img_h_t = thresh.shape[0]
+        if (w_px / img_w_t) > 0.80 and (h_px / img_h_t) > 0.80:
+            w_px = float(img_w_t)
+            h_px = float(img_h_t)
+
     return {
         'risk_level': 3,
         'rotate_angle': rot,
