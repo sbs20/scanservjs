@@ -73,6 +73,59 @@ def run_heuristic_b(masked, img_w, img_h, margin_x, margin_y,
 
 
 # ============================================================
+# Projection Variance Angle Detection
+# ============================================================
+
+def detect_angle_by_projection(thresh, img_h, img_w,
+                                coarse_step=0.5, fine_step=0.1,
+                                angle_range=15.0, trim_frac=0.15):
+    """
+    Find the document skew angle by maximising the variance of horizontal
+    row projections.  When text is aligned horizontally, the row sums
+    alternate sharply between dense (text) and sparse (inter-line gap)
+    values, giving maximum variance.
+
+    Works at any resolution and is immune to the scanner-border artefacts
+    that confound HoughLinesP on low-resolution previews (where individual
+    character strokes dominate rather than full-line blobs).
+
+    Returns (angle_deg, peak_ratio) where:
+      angle_deg   — rotation to apply to make text horizontal (OpenCV
+                    convention: negative = clockwise).  The caller passes
+                    this directly as text_angle to text_angle_to_rotate_angle().
+      peak_ratio  — variance at peak / variance at 0°.  > 1 means a real
+                    tilt was detected; higher = stronger signal.
+    """
+    # Trim top and bottom borders to exclude scanner-edge artefacts.
+    trim = int(img_h * trim_frac)
+    t_mid = thresh[trim: img_h - trim, :]
+    h2, w2 = t_mid.shape
+    center = (w2 // 2, h2 // 2)
+
+    def best_in_range(lo, hi, step):
+        best_a, best_v = 0.0, 0.0
+        var_0 = 0.0
+        for a in np.arange(lo, hi + step / 2, step):
+            M = cv2.getRotationMatrix2D(center, float(a), 1.0)
+            rot = cv2.warpAffine(t_mid, M, (w2, h2), borderValue=0)
+            v = float(np.var(np.sum(rot.astype(np.float32), axis=1)))
+            if abs(a) < step / 2:
+                var_0 = v
+            if v > best_v:
+                best_v = v
+                best_a = float(a)
+        return best_a, best_v, var_0
+
+    # Coarse pass, then refine around the peak.
+    best_coarse, _, _ = best_in_range(-angle_range, angle_range, coarse_step)
+    best_fine, best_v, var_0 = best_in_range(
+        best_coarse - coarse_step, best_coarse + coarse_step, fine_step)
+
+    peak_ratio = best_v / max(var_0, 1.0)
+    return best_fine, peak_ratio
+
+
+# ============================================================
 # Heuristic A: Text Presence & Skew Detection
 # ============================================================
 
@@ -211,14 +264,23 @@ def run_heuristic_a(masked, debug=False, img_path=None):
     else:
         textlines_bbox = text_bbox  # fallback: use full content bbox
 
+    # Replace the HoughLinesP-derived angle with the projection-variance
+    # result, which is robust against the scanner-border artefacts that
+    # dominate the HoughLinesP output at 100 dpi preview resolution.
+    # (At 100 dpi, the 40×1 dilation does not effectively merge characters
+    # into line-length blobs; individual strokes at ≈45° swamp the ±20°
+    # filter and all qualifying lines come from scanner top/bottom edges.)
+    proj_angle, proj_peak_ratio = detect_angle_by_projection(thresh, img_h, img_w)
+
     return {
-        'text_angle': median_angle,
+        'text_angle': proj_angle,   # projection-variance angle (accurate)
         'text_bbox': text_bbox,
         'textlines_bbox': textlines_bbox,
         'text_confidence_score': confidence,
         'thresh': thresh,
         'n_lines': n_lines,
         'angle_std': angle_std,
+        'proj_peak_ratio': proj_peak_ratio,
     }
 
 
@@ -424,9 +486,23 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode,
 
     # risk_level == 3
     b = heuristic_b
-    rot, swap = rect_to_rotate_angle(b['angle_deg'])
+    rot_contour, swap = rect_to_rotate_angle(b['angle_deg'])
     w_px = b['h_px'] if swap else b['w_px']
     h_px = b['w_px'] if swap else b['h_px']
+
+    # For the rotation, prefer the projection-variance angle (from heuristic_a)
+    # over the contour bounding-rect angle.  The contour angle is the angle of
+    # the ink bounding box, which for white-on-white documents is dominated by
+    # the nearly-rectangular text content and gives a near-zero angle even for
+    # noticeably tilted documents.  The projection angle is directly measured
+    # from the text-line periodicity and is much more accurate.
+    # When the projection signal is weak (e.g. blank page), fall back to
+    # the contour angle.
+    proj_peak = heuristic_a.get('proj_peak_ratio', 0.0)
+    if proj_peak > 1.1:
+        rot = text_angle_to_rotate_angle(heuristic_a['text_angle'])
+    else:
+        rot = rot_contour
 
     # Full-bed guard for large text documents: when text lines are present
     # (any positive text confidence) and the contour bounding box covers most
