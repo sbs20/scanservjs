@@ -179,7 +179,7 @@
     "rotate-ccw": "Ruota di 90° in senso antiorario",
     "flip-h": "Capovolgi orizzontalmente",
     "flip-v": "Capovolgi verticalmente",
-    "autocrop-mode": "Modalità ritaglio automatico"
+    "autocrop-mode": "Ritaglio automatico"
   },
   "document-dialog": {
     "view": "Visualizza",
@@ -295,8 +295,8 @@
     }
   },
   "autocrop-mode": {
-    "off": "Disattivato",
-    "interactive": "Interattivo",
-    "batch": "Batch (conservativo)"
+    "off": "Disabilitato",
+    "interactive": "Standard",
+    "batch": "Conservativo"
   }
 }

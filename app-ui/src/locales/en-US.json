@@ -177,7 +177,7 @@
     "rotate-ccw": "Rotate 90° counter-clockwise",
     "flip-h": "Flip horizontally",
     "flip-v": "Flip vertically",
-    "autocrop-mode": "Auto-Crop Mode"
+    "autocrop-mode": "Auto-Crop"
   },
   "document-dialog": {
     "view": "View",
@@ -294,8 +294,8 @@
     }
   },
   "autocrop-mode": {
-    "off": "Off",
-    "interactive": "Interactive",
-    "batch": "Batch (conservative)"
+    "off": "Disabled",
+    "interactive": "Standard",
+    "batch": "Conservative"
   }
 }

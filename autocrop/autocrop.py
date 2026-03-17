@@ -326,13 +326,30 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
 
     if risk_level == 1:
         bx, by, bw, bh = text_bbox
+        img_w_t = thresh.shape[1]
+        img_h_t = thresh.shape[0]
+
+        # Full-bed guard: if text spans > 90% in both dimensions, there is no
+        # meaningful crop to perform (e.g. white-on-white A4 letter filling the
+        # full A4 bed).  Only apply the deskew angle — keep full bed dimensions.
+        if (bw / img_w_t) > 0.90 and (bh / img_h_t) > 0.90:
+            c_x_px = img_w_t / 2.0
+            c_y_px = img_h_t / 2.0
+            w_px = float(img_w_t)
+            h_px = float(img_h_t)
+        else:
+            c_x_px = bx + bw / 2.0
+            c_y_px = by + bh / 2.0
+            w_px = float(bw)
+            h_px = float(bh)
+
         return {
             'risk_level': 1,
             'rotate_angle': text_angle_to_rotate_angle(text_angle),
-            'c_x_px': bx + bw / 2.0,
-            'c_y_px': by + bh / 2.0,
-            'w_px': float(bw),
-            'h_px': float(bh),
+            'c_x_px': c_x_px,
+            'c_y_px': c_y_px,
+            'w_px': w_px,
+            'h_px': h_px,
             'swap_dims': False,
         }
 

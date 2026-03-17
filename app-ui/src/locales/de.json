@@ -286,8 +286,8 @@
     }
   },
   "autocrop-mode": {
-    "off": "Aus",
-    "interactive": "Interaktiv",
-    "batch": "Batch (konservativ)"
+    "off": "Deaktiviert",
+    "interactive": "Standard",
+    "batch": "Konservativ"
   }
 }

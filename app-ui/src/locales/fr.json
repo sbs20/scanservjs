@@ -170,7 +170,7 @@
     "rotate-ccw": "Pivoter de 90° dans le sens inverse des aiguilles d'une montre",
     "flip-h": "Retourner horizontalement",
     "flip-v": "Retourner verticalement",
-    "autocrop-mode": "Mode de recadrage automatique"
+    "autocrop-mode": "Recadrage automatique"
   },
   "document-dialog": {
     "view": "Voir",
@@ -287,7 +287,7 @@
   },
   "autocrop-mode": {
     "off": "Désactivé",
-    "interactive": "Interactif",
-    "batch": "Lot (conservateur)"
+    "interactive": "Standard",
+    "batch": "Conservateur"
   }
 }

@@ -180,7 +180,7 @@
     "message:deleted-preview": "Deleted preview",
     "message:turn-documents": "Turn documents over",
     "message:preview-of-page": "Preview of page",
-    "autocrop-mode": "Auto-Crop Mode"
+    "autocrop-mode": "Auto-Crop"
   },
   "document-dialog": {
     "view": "View",
@@ -318,8 +318,8 @@
     "test": "Test"
   },
   "autocrop-mode": {
-    "off": "Off",
-    "interactive": "Interactive",
-    "batch": "Batch (conservative)"
+    "off": "Disabled",
+    "interactive": "Standard",
+    "batch": "Conservative"
   }
 }

@@ -168,7 +168,7 @@
     "rotate-ccw": "Rodar 90° no sentido anti-horário",
     "flip-h": "Inverter horizontalmente",
     "flip-v": "Inverter verticalmente",
-    "autocrop-mode": "Modo de recorte automático"
+    "autocrop-mode": "Recorte automático"
   },
   "document-dialog": {
     "view": "Ver",
@@ -299,8 +299,8 @@
     "test": "Test"
   },
   "autocrop-mode": {
-    "off": "Desligado",
-    "interactive": "Interativo",
-    "batch": "Lote (conservador)"
+    "off": "Desativado",
+    "interactive": "Padrão",
+    "batch": "Conservador"
   }
 }

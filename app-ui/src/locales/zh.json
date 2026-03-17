@@ -151,7 +151,7 @@
     "message:deleted-preview": "已清除预览",
     "message:turn-documents": "旋转文件",
     "message:preview-of-page": "页面预览",
-    "autocrop-mode": "自动裁剪模式"
+    "autocrop-mode": "自动裁剪"
   },
   "document-dialog": {
     "view": "查看",
@@ -226,8 +226,8 @@
     "clear-storage": "清空"
   },
   "autocrop-mode": {
-    "off": "关闭",
-    "interactive": "交互式",
-    "batch": "批量（保守）"
+    "off": "禁用",
+    "interactive": "标准",
+    "batch": "保守"
   }
 }

@@ -78,7 +78,7 @@
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`, overflow: 'hidden'}">
         <div class="d-flex justify-center mb-2">
           <v-btn-group density="comfortable" variant="outlined">
-            <v-btn :disabled="!img || (isBatchOrAdf && !isBatchAutoCrop)" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
+            <v-btn :disabled="!img || isAutoCropOff || (isBatchOrAdf && !isBatchAutoCrop)" :title="$t('scan.magic-wand')" :color="transformations.magic ? 'primary' : undefined" @click="autoCrop"><v-icon :icon="mdiAutoFix" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
             <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
@@ -94,73 +94,56 @@
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <template v-if="geometry">
           <v-row no-gutters class="mb-2">
-            <v-col cols="6">
+            <v-col cols="7">
               <v-text-field :model-value="request.params.top" :label="$t('scan.top')" type="text"
                  @input="onDimensionInput($event, 'top')" @blur="commitDimension('top', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" class="dimension-input" />
+                 prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.top)" type="text"
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.top, 'y')" label="px" type="text"
                  @input="onPixelInput($event, 'top')" @blur="commitPixel('top', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
+                 hide-details="auto" class="centered-input" density="compact" />
             </v-col>
-            <v-col cols="2" />
           </v-row>
           <v-row no-gutters class="mb-2">
-            <v-col cols="6">
+            <v-col cols="7">
               <v-text-field :model-value="request.params.left" :label="$t('scan.left')" type="text"
                  @input="onDimensionInput($event, 'left')" @blur="commitDimension('left', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" class="dimension-input" />
+                 prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.left)" type="text"
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.left, 'x')" label="px" type="text"
                  @input="onPixelInput($event, 'left')" @blur="commitPixel('left', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
+                 hide-details="auto" class="centered-input" density="compact" />
             </v-col>
-            <v-col cols="2" />
           </v-row>
-          <v-row no-gutters class="mb-0" align="stretch">
-            <v-col cols="6">
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
               <v-text-field :model-value="request.params.width" :label="$t('scan.width')" type="text"
                  @input="onDimensionInput($event, 'width')" @blur="commitDimension('width', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" class="dimension-input" />
+                 prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.width)" type="text"
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.width, 'x')" label="px" type="text"
                  @input="onPixelInput($event, 'width')" @blur="commitPixel('width', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
-            </v-col>
-            <v-col cols="2" class="lock-arm lock-arm-top" />
-          </v-row>
-          <v-row no-gutters style="height: 24px;">
-            <v-col cols="10" />
-            <v-col cols="2" class="d-flex align-center justify-center">
-              <v-btn
-                :icon="aspectRatioLocked ? mdiLock : mdiLockOpenOutline"
-                variant="text"
-                size="x-small"
-                density="compact"
-                :color="aspectRatioLocked ? 'primary' : undefined"
-                @click="toggleAspectRatioLock"
-              />
+                 hide-details="auto" class="centered-input" density="compact" />
             </v-col>
           </v-row>
-          <v-row no-gutters class="mb-2" align="stretch">
-            <v-col cols="6">
+          <v-row no-gutters class="mb-2">
+            <v-col cols="7">
               <v-text-field :model-value="request.params.height" :label="$t('scan.height')" type="text"
                  @input="onDimensionInput($event, 'height')" @blur="commitDimension('height', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="mm" hide-details="auto" class="dimension-input" />
+                 prefix="mm" hide-details="auto" />
             </v-col>
-            <v-col cols="4" class="d-flex align-center justify-center pl-2">
-              <v-text-field :model-value="toPixels(request.params.height)" type="text"
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-text-field :model-value="toPixels(request.params.height, 'y')" label="px" type="text"
                  @input="onPixelInput($event, 'height')" @blur="commitPixel('height', $event)" @keyup.enter="$event.target.blur()"
-                 suffix="px" hide-details="auto" density="compact" class="dimension-input" />
+                 hide-details="auto" class="centered-input" density="compact" />
             </v-col>
-            <v-col cols="2" class="lock-arm lock-arm-bottom" />
           </v-row>
 
           <v-row no-gutters class="mb-4">
-            <v-col>
+            <v-col cols="7">
               <v-menu offset-y>
                 <template #activator="{ props }">
                   <v-btn color="primary" block v-bind="props">{{ $t('scan.paperSize') }}</v-btn>
@@ -174,6 +157,15 @@
                   </v-list-item>
                 </v-list>
               </v-menu>
+            </v-col>
+            <v-col cols="5" class="d-flex align-center justify-center pl-2">
+              <v-btn
+                :icon="aspectRatioLocked ? mdiLock : mdiLockOpenOutline"
+                variant="text"
+                density="comfortable"
+                :color="aspectRatioLocked ? 'primary' : undefined"
+                @click="toggleAspectRatioLock"
+              />
             </v-col>
           </v-row>
         </template>
@@ -232,7 +224,6 @@ import Common from '../classes/common';
 import Device from '../classes/device';
 import Request from '../classes/request';
 import Storage from '../classes/storage';
-import { findByI18nName } from '../classes/i18n-match';
 
 import 'vue-advanced-cropper/dist/style.css';
 
@@ -388,11 +379,8 @@ export default {
         y: this.device.features['-y'].limits[1]
       };
 
-      // Tolerance of 2.0mm to account for minute rounding discrepancies 
-      // between standard paper sizes and scanner hardware reported limits.
-      const tolerance = 2.0;
       return this.context.paperSizes
-        .filter(paper => paper.dimensions.x <= deviceSize.x + tolerance && paper.dimensions.y <= deviceSize.y + tolerance)
+        .filter(paper => paper.dimensions.x <= deviceSize.x && paper.dimensions.y <= deviceSize.y)
         .map(paper => {
           const variables = (paper.name.match(/@:[a-z-.]+/ig) || []).map(s => s.substr(2));
           variables.forEach(v => {
@@ -471,6 +459,10 @@ export default {
 
     isBatchAutoCrop() {
       return this.request && this.request.autoCropMode === 'batch';
+    },
+
+    isAutoCropOff() {
+      return this.request && this.request.autoCropMode === 'off';
     }
   },
 
@@ -497,13 +489,6 @@ export default {
 
   mounted() {
     this._resizePreview();
-    
-    // PWA Kiosk mode: reset settings if requested via URL
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('kiosk') === '1') {
-      storage.request = null;
-    }
-
     this.readContext().then(() => {
       this.readPreview();
     });
@@ -537,7 +522,7 @@ export default {
         const availableWidth = window.innerWidth - 30;
         const availableHeight = window.innerHeight - appbarHeight;
         const desiredWidth = availableHeight * paperRatio;
-        this.preview.width = Math.min(availableWidth * 0.45, desiredWidth);
+        this.preview.width = Math.min(availableWidth * 0.4, desiredWidth);
         this.preview.key += 1;
       }
     },
@@ -755,17 +740,8 @@ export default {
         window.clearTimeout(timer);
         if (context.devices && context.devices.length > 0) {
           this.context = context;
-          
-          // Selection logic: URL param > pwaConfig scanner (standalone) > Default (first)
-          const urlParams = new URLSearchParams(window.location.search);
-          const requestedId = urlParams.get('deviceId')
-            || (window.matchMedia('(display-mode: standalone)').matches
-              ? storage.pwaConfig.scannerId : null);
-          const found = requestedId ? context.devices.find(d => d.id === requestedId) : null;
-
-          this.device = found || context.devices[0];
+          this.device = context.devices[0];
           this.request = this.buildRequest();
-          this._applyPwaPresets();
           for (let test of context.diagnostics) {
             if (!test.success) {
               this.notify({ type: 'e', message: test.message });
@@ -815,13 +791,8 @@ export default {
     },
 
     buildRequest() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlDeviceId = urlParams.get('deviceId');
       let request = storage.request;
-
-      // A URL deviceId (from an installed PWA) takes precedence over the
-      // device remembered in the last session.
-      if (!urlDeviceId && request && request.params) {
+      if (request && request.params) {
         this.device = this.context.devices.filter(d => d.id === request.params.deviceId)[0]
           || this.context.devices[0];
       }
@@ -930,11 +901,9 @@ export default {
     },
 
     updatePaperSize(value) {
-      if (value.dimensions && this.deviceSize) {
-        // Clamp dimensions to the actual device limits to avoid scanner errors,
-        // even if the selected paper size was slightly larger due to tolerance.
-        this.request.params.width = Math.min(value.dimensions.x, this.deviceSize.width);
-        this.request.params.height = Math.min(value.dimensions.y, this.deviceSize.height);
+      if (value.dimensions) {
+        this.request.params.width = value.dimensions.x;
+        this.request.params.height = value.dimensions.y;
         this.onCoordinatesChange();
       }
     },
@@ -957,7 +926,7 @@ export default {
 
       this.mask(1);
       this.originalParams = Common.clone(this.request.params);
-
+      
       // We send full bed dimensions to ensure the script doesn't try to scale-to-fit
       const params = Common.clone(this.request.params);
       params.left = 0;
@@ -1038,9 +1007,10 @@ export default {
       }
     },
 
-    toPixels(mm) {
-      const ppi = parseFloat(this.request.params.resolution) || 300;
-      return Math.round((mm / 25.4) * ppi);
+    toPixels(mm, axis) {
+      if (!this.$refs.cropper) return 0;
+      const scale = this.pixelsPerMm()[axis];
+      return Math.round(mm * scale);
     },
 
     onDimensionInput(event, field) {
@@ -1063,157 +1033,22 @@ export default {
     commitPixel(field, event) {
       let val = parseInt(event.target.value);
       if (isNaN(val)) val = 0;
-      const ppi = parseFloat(this.request.params.resolution) || 300;
-      const mm = round((val / ppi) * 25.4, 1);
+      const axis = (field === 'left' || field === 'width') ? 'x' : 'y';
+      const mm = round(val / this.pixelsPerMm()[axis], 1);
       const scanner = this.deviceSize;
       const max = (field === 'left' || field === 'width') ? scanner.width : scanner.height;
-
-      const params = this.request.params;
-      params[field] = Math.min(Math.max(0, mm), max);
-
-      if (this.aspectRatioLocked) {
-        if (field === 'width') {
-          params.height = round(params[field] / this.lockedAspectRatio, 1);
-        } else if (field === 'height') {
-          params.width = round(params[field] * this.lockedAspectRatio, 1);
-        }
-      }
-
+      this.request.params[field] = Math.min(Math.max(0, mm), max);
       this.onCoordinatesChange();
-    },
-
-
-    _applyPwaPresets() {
-      const urlParams = new URLSearchParams(window.location.search);
-
-      // When running as an installed PWA, read kiosk config from localStorage.
-      // URL params (from a properly-constructed start_url) take precedence if present.
-      const isPwa = window.matchMedia('(display-mode: standalone)').matches;
-      const kioskConfig = isPwa ? (storage.pwaConfig.kiosk || {}) : {};
-
-      // Collect parameters to reset to device defaults: URL 'reset' param plus
-      // any kiosk entries with mode='default'.
-      const resets = (urlParams.get('reset') || '').split(',').filter(x => x);
-      for (const [param, cfg] of Object.entries(kioskConfig)) {
-        if (cfg.mode === 'default' && !resets.includes(param)) {
-          resets.push(param);
-        }
-      }
-
-      // System Default: reset listed parameters to device/admin defaults.
-      resets.forEach(key => {
-        if (key === 'paperSize') {
-          // Paper size has no single device default; reset to the full scanner bed.
-          if (this.geometry) {
-            this.request.params.left = 0;
-            this.request.params.top = 0;
-            this.request.params.width = this.device.features['-x'].limits[1];
-            this.request.params.height = this.device.features['-y'].limits[1];
-          }
-        } else {
-          // device.settings covers pipeline/batchMode; device.features['--key'] covers scanner params.
-          const defaultValue = key in this.device.settings
-            ? this.device.settings[key].default
-            : (`--${key}` in this.device.features ? this.device.features[`--${key}`].default : undefined);
-          if (defaultValue !== undefined) {
-            // 'batchMode' is the kiosk param name; the request object uses 'batch'.
-            const requestKey = key === 'batchMode' ? 'batch' : key;
-            if (requestKey in this.request.params) {
-              this.request.params[requestKey] = defaultValue;
-            } else if (requestKey in this.request) {
-              this.request[requestKey] = defaultValue;
-            }
-          }
-        }
-      });
-
-      // PWA Preset: collect preset values from localStorage, then let URL params override.
-      const kioskPresets = {};
-      for (const [param, cfg] of Object.entries(kioskConfig)) {
-        if (cfg.mode === 'preset') {
-          kioskPresets[param] = cfg.value;
-        }
-      }
-      urlParams.forEach((value, key) => {
-        const match = key.match(/^kiosk\[(.+)\]$/);
-        if (match) {
-          kioskPresets[match[1]] = value;
-        }
-      });
-
-      // Apply all preset values.
-      for (const [param, value] of Object.entries(kioskPresets)) {
-        if (param === 'paperSize') {
-          // Match by raw key first, then fall back to locale-aware fuzzy matching
-          // so that translated names (e.g. "Letter (Portrait)") also work.
-          const paper = findByI18nName(
-            this.context.paperSizes, p => p.name, value, this.$i18n.locale.value
-          );
-          if (paper) {
-            this.request.params.width = paper.dimensions.x;
-            this.request.params.height = paper.dimensions.y;
-          }
-        } else if (param === 'pipeline') {
-          // Pipeline descriptions contain @: references; use locale-aware matching
-          // so that translated descriptions (e.g. "OCR | PDF (JPG | High quality)")
-          // resolve to the canonical key the server expects.
-          const opts = this.device.settings && this.device.settings.pipeline
-            ? this.device.settings.pipeline.options : [];
-          const matched = findByI18nName(opts, p => p, value, this.$i18n.locale.value);
-          if (matched != null) {
-            this.request.pipeline = matched;
-          }
-        } else if (param === 'batchMode') {
-          // 'batchMode' is the kiosk param name; the request object uses 'batch'.
-          this.request.batch = value;
-        } else if (param in this.request.params) {
-          this.request.params[param] = value;
-        } else if (param in this.request) {
-          this.request[param] = value;
-        }
-      }
-      // The cropper reads its initial position from the cropperDefaultPosition/
-      // cropperDefaultSize computed properties (derived from request.params), so
-      // no explicit sync call is needed here.
     }
   }
 };
 </script>
 
 <style scoped>
-
-.dimension-input :deep(input) {
-  text-align: right;
-}
-.dimension-input :deep(.v-text-field__suffix) {
-  padding-inline-start: 3px;
+.centered-input :deep(input) {
+  text-align: center;
 }
 .cropper {
   max-width: 100%;
-}
-.lock-arm {
-  position: relative;
-}
-.lock-arm-top::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: calc(50% - 8px);
-  bottom: 0;
-  width: 8px;
-  border-top: 2px solid rgba(128, 128, 128, 0.35);
-  border-right: 2px solid rgba(128, 128, 128, 0.35);
-  border-top-right-radius: 4px;
-}
-.lock-arm-bottom::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: calc(50% - 8px);
-  bottom: 50%;
-  width: 8px;
-  border-bottom: 2px solid rgba(128, 128, 128, 0.35);
-  border-right: 2px solid rgba(128, 128, 128, 0.35);
-  border-bottom-right-radius: 4px;
 }
 </style>

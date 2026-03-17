@@ -168,7 +168,7 @@
     "rotate-ccw": "Obróć o 90° przeciwnie do ruchu wskazówek zegara",
     "flip-h": "Odbij poziomo",
     "flip-v": "Odbij pionowo",
-    "autocrop-mode": "Tryb automatycznego kadrowania"
+    "autocrop-mode": "Automatyczne kadrowanie"
   },
   "document-dialog": {
     "view": "Podgląd",
@@ -285,7 +285,7 @@
   },
   "autocrop-mode": {
     "off": "Wyłączone",
-    "interactive": "Interaktywny",
-    "batch": "Wsadowy (zachowawczy)"
+    "interactive": "Standardowy",
+    "batch": "Zachowawczy"
   }
 }

@@ -174,7 +174,7 @@
     "rotate-ccw": "تدوير 90° عكس اتجاه عقارب الساعة",
     "flip-h": "قلب أفقي",
     "flip-v": "قلب رأسي",
-    "autocrop-mode": "وضع القص التلقائي"
+    "autocrop-mode": "القص التلقائي"
   },
   "document-dialog": {
     "view": "عرض",
@@ -290,8 +290,8 @@
     }
   },
   "autocrop-mode": {
-    "off": "إيقاف",
-    "interactive": "تفاعلي",
-    "batch": "دُفعة (محافظ)"
+    "off": "معطّل",
+    "interactive": "قياسي",
+    "batch": "محافظ"
   }
 }

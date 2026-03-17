@@ -168,7 +168,7 @@
     "rotate-ccw": "Saat yönünün tersine 90° döndür",
     "flip-h": "Yatay çevir",
     "flip-v": "Dikey çevir",
-    "autocrop-mode": "Otomatik kırpma modu"
+    "autocrop-mode": "Otomatik kırpma"
   },
   "document-dialog": {
     "view": "Görüntüle",
@@ -284,8 +284,8 @@
     }
   },
   "autocrop-mode": {
-    "off": "Kapalı",
-    "interactive": "Etkileşimli",
-    "batch": "Toplu (muhafazakâr)"
+    "off": "Devre dışı",
+    "interactive": "Standart",
+    "batch": "Muhafazakâr"
   }
 }

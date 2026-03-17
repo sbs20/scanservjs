@@ -177,7 +177,7 @@
     "rotate-ccw": "Elforgatás 90°-kal az óramutató járásával ellentétesen",
     "flip-h": "Vízszintes tükrözés",
     "flip-v": "Függőleges tükrözés",
-    "autocrop-mode": "Automatikus vágás módja"
+    "autocrop-mode": "Automatikus kivágás"
   },
   "document-dialog": {
     "view": "Megtekintés",
@@ -294,7 +294,7 @@
   },
   "autocrop-mode": {
     "off": "Kikapcsolva",
-    "interactive": "Interaktív",
-    "batch": "Kötegelt (konzervatív)"
+    "interactive": "Normál",
+    "batch": "Konzervatív"
   }
 }

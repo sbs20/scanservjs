@@ -168,7 +168,7 @@
     "rotate-ccw": "Rotar 90° en sentido antihorario",
     "flip-h": "Voltear horizontalmente",
     "flip-v": "Voltear verticalmente",
-    "autocrop-mode": "Modo de recorte automático"
+    "autocrop-mode": "Recorte automático"
   },
   "document-dialog": {
     "view": "Ver",
@@ -285,7 +285,7 @@
   },
   "autocrop-mode": {
     "off": "Desactivado",
-    "interactive": "Interactivo",
-    "batch": "Lote (conservador)"
+    "interactive": "Estándar",
+    "batch": "Conservador"
   }
 }

@@ -177,7 +177,7 @@
     "rotate-ccw": "Otočit o 90° proti směru hodinových ručiček",
     "flip-h": "Překlopit vodorovně",
     "flip-v": "Překlopit svisle",
-    "autocrop-mode": "Režim automatického ořezu"
+    "autocrop-mode": "Automatický ořez"
   },
   "document-dialog": {
     "view": "Zobrazit",
@@ -294,7 +294,7 @@
   },
   "autocrop-mode": {
     "off": "Vypnuto",
-    "interactive": "Interaktivní",
-    "batch": "Dávkové (konzervativní)"
+    "interactive": "Standardní",
+    "batch": "Konzervativní"
   }
 }
