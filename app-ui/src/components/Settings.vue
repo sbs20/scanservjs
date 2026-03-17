@@ -226,7 +226,7 @@ export default {
       paramGroups: [
         { key: 'scan-area',     titleKey: 'settings.pwa.group-scan-area',     params: ['paperSize'] },
         { key: 'image-quality', titleKey: 'settings.pwa.group-image-quality',  params: ['resolution', 'mode', 'brightness', 'contrast'] },
-        { key: 'source',        titleKey: 'settings.pwa.group-source',         params: ['source', 'batchMode'] },
+        { key: 'source',        titleKey: 'settings.pwa.group-source',         params: ['source', 'batchMode', 'autoCropMode'] },
         { key: 'output',        titleKey: 'settings.pwa.group-output',         params: ['pipeline'] }
       ]
     };
@@ -367,6 +367,7 @@ export default {
         contrast: 'settings.pwa.param-contrast',
         source: 'settings.pwa.param-source',
         batchMode: 'settings.pwa.param-batch-mode',
+        autoCropMode: 'settings.pwa.param-autocrop-mode',
         pipeline: 'settings.pwa.param-pipeline'
       };
       return map[param] || param;
@@ -425,6 +426,14 @@ export default {
             ? dev.settings.batchMode.options : [];
           return opts.map(m => {
             const key = `batch-mode.${sanitiseLocaleKey(m)}`;
+            return { text: this.te(key) ? this.$t(key) : m, value: m };
+          });
+        }
+        case 'autoCropMode': {
+          const opts = dev && dev.settings && dev.settings.autoCropMode
+            ? dev.settings.autoCropMode.options : [];
+          return opts.map(m => {
+            const key = `autocrop-mode.${sanitiseLocaleKey(m)}`;
             return { text: this.te(key) ? this.$t(key) : m, value: m };
           });
         }

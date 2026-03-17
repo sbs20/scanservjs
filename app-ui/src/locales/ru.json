@@ -280,7 +280,8 @@
       "param-contrast": "Contrast",
       "param-source": "Scan Source",
       "param-batch-mode": "Batch Mode",
-      "param-pipeline": "Output Pipeline"
+      "param-pipeline": "Output Pipeline",
+      "param-autocrop-mode": "Автообрезка"
     }
   },
   "autocrop-mode": {

@@ -290,7 +290,8 @@
       "param-source": "Scan Source",
       "param-batch-mode": "Batch Mode",
       "param-pipeline": "Output Pipeline",
-      "default-name": "Document Scanner"
+      "default-name": "Document Scanner",
+      "param-autocrop-mode": "Auto-Crop Mode"
     }
   },
   "autocrop-mode": {
