@@ -238,19 +238,22 @@ class ScanController {
     const left = parseFloat(this.request.params.left) || 0;
     const top = parseFloat(this.request.params.top) || 0;
     const mode = this.request.autoCropMode === Constants.AUTOCROP_BATCH ? 'batch' : 'interactive';
+    // Pass the actual scan dimensions as --width/--height so autocrop.py uses
+    // the correct paper size when capping the full-bed guard output.  The
+    // --no-scale flag disables scale-to-fit; scaling would distort the output
+    // when the scan height differs from the scanner bed height.
+    const scanW = parseFloat(this.request.params.width) || bedW;
+    const scanH = parseFloat(this.request.params.height) || bedH;
 
-    // Pass the full bed dimensions as the target width/height so autocrop.py
-    // treats this as a full-bed scan (is_full_bed=True, sx=sy=1.0).  This
-    // prevents spurious scale-to-fit logic when the user has chosen a paper
-    // size smaller than the physical bed (e.g. letter-sized on an A4 scanner).
     const args = [
       `--image '${previewPath}'`,
       `--left ${left}`,
       `--top ${top}`,
-      `--width ${bedW}`,
-      `--height ${bedH}`,
+      `--width ${scanW}`,
+      `--height ${scanH}`,
       `--bed-width ${bedW}`,
       `--bed-height ${bedH}`,
+      '--no-scale',
       `--mode ${mode}`
     ].join(' ');
 

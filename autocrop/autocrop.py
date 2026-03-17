@@ -296,11 +296,17 @@ _HIGH_CONF = 0.5   # minimum for interactive level-1/2
 _CLEAR_CONF = 0.65  # minimum for batch level-1/2
 
 
-def risk_decision_engine(heuristic_a, heuristic_b, mode):
+def risk_decision_engine(heuristic_a, heuristic_b, mode,
+                         t_w=None, t_h=None, bed_w=None, bed_h=None):
     """
     Merge Heuristic A (text) and B (contour) into a single result dict.
     Returns None for risk-level 0 (no-op / don't transform).
     Returns dict(risk_level, rotate_angle, c_x_px, c_y_px, w_px, h_px) otherwise.
+
+    t_w, t_h: user-selected target scan dimensions (mm).  Used to cap the
+    full-bed guard output to the actual scan area, preventing the padded
+    preview height (which represents the full scanner bed) from inflating
+    the output dimensions beyond the user's chosen paper size.
     """
     text_conf = heuristic_a['text_confidence_score']
     text_angle = heuristic_a['text_angle']
@@ -345,8 +351,18 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
                 # less area than the image, indicating clear visible edges.
                 # This keeps conservative mode safe for ADF (document fills bed,
                 # area ratio ≈ 1) while enabling it for clearly cropped docs.
+                img_w_b = thresh.shape[1]
+                img_h_b = thresh.shape[0]
+                b_w = heuristic_b['w_px'] if heuristic_b['angle_deg'] >= -45 else heuristic_b['h_px']
+                b_h = heuristic_b['h_px'] if heuristic_b['angle_deg'] >= -45 else heuristic_b['w_px']
+                contour_fills_image = (b_w / img_w_b > 0.99) and (b_h / img_h_b > 0.99)
                 if doc_area / img_area < 0.72:
                     pass  # clearly smaller than bed → keep risk-3
+                elif text_conf > 0.15 and not contour_fills_image:
+                    # Large document with text and a non-trivial contour: the
+                    # full-bed guard will apply in the output step (no actual
+                    # crop), so this is safe in batch — it is just a deskew.
+                    pass
                 else:
                     risk_level = 0
             else:
@@ -365,13 +381,16 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
         img_h_t = thresh.shape[0]
 
         # Full-bed guard: if text spans > 90% in both dimensions, there is no
-        # meaningful crop to perform (e.g. white-on-white A4 letter filling the
-        # full A4 bed).  Only apply the deskew angle — keep full bed dimensions.
+        # meaningful crop to perform.  Only apply the deskew angle.
+        # Cap to the actual scan dims (t_w/t_h) if provided so that the padded
+        # preview height does not inflate the output beyond the user's paper size.
         if (bw / img_w_t) > 0.90 and (bh / img_h_t) > 0.90:
-            c_x_px = img_w_t / 2.0
-            c_y_px = img_h_t / 2.0
-            w_px = float(img_w_t)
-            h_px = float(img_h_t)
+            cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
+            cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
+            w_px = float(min(img_w_t, cap_w))
+            h_px = float(min(img_h_t, cap_h))
+            c_x_px = w_px / 2.0
+            c_y_px = h_px / 2.0
         else:
             c_x_px = bx + bw / 2.0
             c_y_px = by + bh / 2.0
@@ -419,8 +438,12 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
         img_w_t = thresh.shape[1]
         img_h_t = thresh.shape[0]
         if (w_px / img_w_t) > 0.80 and (h_px / img_h_t) > 0.80:
-            w_px = float(img_w_t)
-            h_px = float(img_h_t)
+            # Cap to actual scan dims (t_w/t_h) to avoid using the padded
+            # preview height when the user selected a paper shorter than the bed.
+            cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
+            cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
+            w_px = float(min(img_w_t, cap_w))
+            h_px = float(min(img_h_t, cap_h))
 
     return {
         'risk_level': 3,
@@ -457,6 +480,10 @@ def main():
                         default='interactive',
                         help='interactive: allow up to risk-3 crops; '
                              'batch: conservative, only high-confidence crops')
+    parser.add_argument('--no-scale', action='store_true',
+                        help='Force scale factors sx=sy=1.0 (disable scale-to-fit). '
+                             'Use when the caller handles sizing externally, e.g. '
+                             'scan-controller automatic mode.')
     parser.add_argument('--debug', action='store_true',
                         help='Output visual debug images')
 
@@ -515,7 +542,8 @@ def main():
         )
 
     # ── Step 3: Risk decision engine ────────────────────────────────────────
-    result = risk_decision_engine(heuristic_a, heuristic_b, mode)
+    result = risk_decision_engine(heuristic_a, heuristic_b, mode,
+                                  t_w=t_w, t_h=t_h, bed_w=bed_w, bed_h=bed_h)
 
     if result is None:
         # Risk level 0: return no-op (caller will not apply any transformation)
@@ -537,10 +565,16 @@ def main():
     doc_w_mm = w_px / px_per_mm_x
     doc_h_mm = h_px / px_per_mm_y
 
-    # ── Step 5: Scale-to-fit logic (unchanged from original) ─────────────────
-    is_full_bed = (t_w >= bed_w - 1.0) and (t_h >= bed_h - 1.0)
-
-    if is_full_bed:
+    # ── Step 5: Scale-to-fit logic ───────────────────────────────────────────
+    # --no-scale forces sx=sy=1.0 regardless of paper-size selection.
+    # This is used by the automatic scan-time path (scan-controller) to prevent
+    # scale-to-fit from distorting the output when the scan was done with a
+    # paper size shorter than the full bed.
+    if args.no_scale:
+        sx = 1.0
+        sy = 1.0
+    elif (t_w >= bed_w - 1.0) and (t_h >= bed_h - 1.0):
+        # Target dimensions equal the full bed: no scaling needed.
         sx = 1.0
         sy = 1.0
     else:
