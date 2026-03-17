@@ -321,4 +321,58 @@ module.exports = new class Api {
       return { magic: null, error: `Execution failed: ${(e.stderr || e.message || "Unknown error").substring(0, 100)}` };
     }
   }
+
+  pwaManifest(query) {
+    const name = query.name || config.pwa.name;
+    const shortName = query.shortName || config.pwa.shortName;
+    const startUrl = query.startUrl || '/';
+    const display = query.display || config.pwa.display;
+    const themeColor = query.themeColor || config.pwa.themeColor;
+
+    let icons;
+    const iconFiles = config.pwa.iconFiles;
+    if (iconFiles && iconFiles.length > 0) {
+      const path = require('path');
+      const seen = new Set();
+      icons = iconFiles
+        .map(file => {
+          const ext = path.extname(file).toLowerCase();
+          const src = `/icons/pwa-icon${ext}`;
+          if (seen.has(src)) return null;
+          seen.add(src);
+          const mimeType = ext === '.svg' ? 'image/svg+xml' : 'image/png';
+          const sizes = ext === '.svg' ? 'any' : '512x512';
+          return { src, sizes, type: mimeType, purpose: 'any maskable' };
+        })
+        .filter(Boolean);
+    } else {
+      icons = [
+        { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
+        { src: '/icons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/icons/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+      ];
+    }
+
+    return {
+      name,
+      short_name: shortName,
+      start_url: startUrl,
+      scope: '/',
+      display,
+      theme_color: themeColor,
+      background_color: '#ffffff',
+      icons
+    };
+  }
+
+  /**
+   * @returns {string}
+   */
+  pwaServiceWorker() {
+    return `
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
+    `;
+  }
 };
