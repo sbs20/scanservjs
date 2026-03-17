@@ -8,6 +8,311 @@ import argparse
 
 
 # ============================================================
+# Standard Paper Sizes & Matching
+# ============================================================
+
+# All sizes in portrait orientation (shorter dimension first).
+# Credit card is listed both ways to handle landscape placement.
+_STANDARD_SIZES = [
+    (53.98,  85.60, 'Credit Card'),
+    (54.0,   85.6,  'Credit Card'),       # rounded
+    (74.0,  105.0,  'A7'),
+    (85.6,   54.0,  'Credit Card-L'),
+    (105.0, 148.0,  'A6'),
+    (128.0, 178.0,  'Half-Letter'),       # 5×7 in
+    (139.7, 215.9,  'Half-Letter-P'),
+    (148.0, 210.0,  'A5'),
+    (176.0, 250.0,  'B5'),
+    (184.2, 266.7,  'Junior Legal'),
+    (210.0, 297.0,  'A4'),
+    (215.9, 279.4,  'Letter'),
+    (215.9, 355.6,  'Legal'),
+    (257.0, 364.0,  'B4'),
+]
+
+
+def match_standard_size(w_mm, h_mm, tolerance_mm=8.0):
+    """
+    Return (matched_w, matched_h, name) for the closest standard paper size
+    within tolerance_mm on each dimension, or None if no match.
+    Input orientation is normalised (smaller dimension first) so landscape
+    placements are also matched.
+    """
+    w, h = min(w_mm, h_mm), max(w_mm, h_mm)
+    best = None
+    best_dist = float('inf')
+    for sw, sh, name in _STANDARD_SIZES:
+        sw2, sh2 = min(sw, sh), max(sw, sh)
+        if abs(w - sw2) <= tolerance_mm and abs(h - sh2) <= tolerance_mm:
+            dist = math.hypot(w - sw2, h - sh2)
+            if dist < best_dist:
+                best_dist = dist
+                # Return in the same orientation as the input
+                if w_mm <= h_mm:
+                    best = (sw2, sh2, name)
+                else:
+                    best = (sh2, sw2, name)
+    return best
+
+
+# ============================================================
+# Heuristic C: Paper Corner Detection from Scanner-Border Contrast
+# ============================================================
+
+def run_heuristic_c(raw_gray, img_w, img_h, t_w, t_h, bed_w, bed_h,
+                    text_bbox=None, bright_thresh=200, search_px=30,
+                    debug=False, img_path=None):
+    """
+    Detect the paper boundary at the scanner bed edges using the contrast
+    between the scanner lid (darker) and the paper (brighter) in the RAW
+    (non-wiped) grayscale image.
+
+    The scanner bezel / lid is typically 30-150 gray units darker than
+    the paper surface.  This contrast is only visible in the first few
+    pixels at the image borders and is destroyed by the 1.5% bezel wipe.
+    This function must therefore receive the raw image before any wipe.
+
+    Returns a dict with positioning information and a confidence score
+    (0–1).  Returns {'overall_conf': 0.0, ...} when detection fails.
+    """
+    px_per_mm_x = img_w / bed_w
+    px_per_mm_y = img_h / bed_h
+    MIN_COV = 0.5   # minimum fraction of rows/cols with a detected transition
+
+    # ── Guard: only apply to bright-paper documents ───────────────────────
+    # For dark documents (photos, coloured paper) the scanner lid is brighter
+    # than the document surface.  Heuristic C would incorrectly treat the
+    # bright lid pixels at row 0 / col 0 as the paper boundary.  Detect this
+    # by comparing the image interior mean to the bright_thresh; if the
+    # document content is predominantly dark, return immediately.
+    interior_mean = float(raw_gray[img_h // 4: 3 * img_h // 4,
+                                   img_w // 4: 3 * img_w // 4].mean())
+    if interior_mean < 180:
+        return {'overall_conf': 0.0, 'corner_x_mm': None, 'corner_y_mm': None,
+                'right_clipped': False, 'bottom_clipped': False,
+                'top_coverage': 0.0, 'left_coverage': 0.0}
+
+    # ── Top edge: first bright row per column ─────────────────────────────
+    top_ys = []
+    for c in range(img_w):
+        for r in range(min(search_px, img_h)):
+            if int(raw_gray[r, c]) > bright_thresh:
+                top_ys.append(r)
+                break
+        else:
+            top_ys.append(None)
+
+    # ── Left edge: first bright column per row ────────────────────────────
+    left_xs = []
+    for r in range(img_h):
+        for c in range(min(search_px, img_w)):
+            if int(raw_gray[r, c]) > bright_thresh:
+                left_xs.append(c)
+                break
+        else:
+            left_xs.append(None)
+
+    # ── Right edge (middle rows): first bright column from the right ───────
+    # Use a larger search band: paper edges can be up to ~30 mm from the
+    # scanner border (≈ 120 px at 4 px/mm).
+    right_search = min(int(img_w * 0.15), img_w // 2)
+    right_xs_mid = []
+    for r in range(img_h // 4, 3 * img_h // 4):
+        for c in range(img_w - 1, img_w - 1 - right_search, -1):
+            if int(raw_gray[r, c]) > bright_thresh:
+                right_xs_mid.append(c)
+                break
+        else:
+            right_xs_mid.append(None)
+
+    # ── Bottom edge (middle cols): first bright row from the bottom ────────
+    bottom_search = min(int(img_h * 0.15), img_h // 2)
+    bottom_ys_mid = []
+    for c in range(img_w // 4, 3 * img_w // 4):
+        for r in range(img_h - 1, img_h - 1 - bottom_search, -1):
+            if int(raw_gray[r, c]) > bright_thresh:
+                bottom_ys_mid.append(r)
+                break
+        else:
+            bottom_ys_mid.append(None)
+
+    top_valid  = [v for v in top_ys  if v is not None]
+    left_valid = [v for v in left_xs if v is not None]
+    top_cov  = len(top_valid)  / img_w
+    left_cov = len(left_valid) / img_h
+
+    right_valid_mid  = [v for v in right_xs_mid  if v is not None]
+    bottom_valid_mid = [v for v in bottom_ys_mid if v is not None]
+
+    # Detected paper boundaries from right/bottom scan (for visible edges)
+    # Use MAXIMUM position: the farthest bright pixel from the image edge is
+    # the paper boundary (the minimum would be the outermost lid pixel).
+    right_x_px  = float(max(right_valid_mid))  if len(right_valid_mid)  > img_h // 8 else None
+    bottom_y_px = float(max(bottom_valid_mid)) if len(bottom_valid_mid) > img_w // 8 else None
+
+    # ── Clipping detection (middle 50% strip, 5-pixel border) ────────────
+    qh, qw = img_h // 4, img_w // 4
+    interior = raw_gray[qh:-qh, qw:-qw]
+    int_mean = max(float(interior_mean), 1.0)
+
+    def _clipped(strip):
+        return (abs(float(strip.mean()) / int_mean - 1.0) < 0.20
+                and float(strip.std()) < 25)
+
+    right_clipped  = _clipped(raw_gray[qh:-qh, -5:])
+    bottom_clipped = _clipped(raw_gray[-5:, qw:-qw])
+
+    if top_cov < MIN_COV and left_cov < MIN_COV:
+        return {'overall_conf': 0.0, 'corner_x_mm': None, 'corner_y_mm': None,
+                'right_clipped': right_clipped, 'bottom_clipped': bottom_clipped,
+                'top_coverage': top_cov, 'left_coverage': left_cov}
+
+    # ── Corner position: MINIMUM detected value, not median ───────────────
+    # The paper edge runs diagonally for tilted documents.  The minimum y
+    # in the top scan corresponds to the actual top-left corner of the paper;
+    # the median would give the midpoint of the diagonal.
+    top_y_px  = float(min(top_valid))  if top_cov  >= MIN_COV else None
+    left_x_px = float(min(left_valid)) if left_cov >= MIN_COV else None
+
+    # Guard: if the minimum transition is at pixel 0 or 1, the scan is
+    # detecting the scanner background (which is bright throughout) rather
+    # than a real lid→paper boundary.  Null out that edge so it does not
+    # anchor the crop to the scanner origin.
+    if top_y_px is not None and top_y_px <= 1:
+        # Check if most transitions are also near 0 (background, not edge)
+        near_zero_frac = sum(1 for v in top_valid if v <= 2) / max(len(top_valid), 1)
+        if near_zero_frac > 0.5:
+            top_y_px = None
+            top_cov  = 0.0
+    if left_x_px is not None and left_x_px <= 1:
+        near_zero_frac = sum(1 for v in left_valid if v <= 2) / max(len(left_valid), 1)
+        if near_zero_frac > 0.5:
+            left_x_px = None
+            left_cov  = 0.0
+
+    top_std   = float(np.std(top_valid))  if top_valid  else 99.0
+    left_std  = float(np.std(left_valid)) if left_valid else 99.0
+
+    corner_x_mm = left_x_px / px_per_mm_x if left_x_px is not None else None
+    corner_y_mm = top_y_px  / px_per_mm_y if top_y_px  is not None else None
+
+    # ── Paper dimension estimation ─────────────────────────────────────────
+    is_full_bed_intent = (t_w >= bed_w - 1.0) and (t_h >= bed_h - 1.0)
+    cx0 = corner_x_mm or 0.0
+    cy0 = corner_y_mm or 0.0
+
+    # Width: prefer detected right edge → user t_w → full extent to bed edge
+    if right_x_px is not None and not right_clipped:
+        paper_w_mm = right_x_px / px_per_mm_x - cx0
+    elif right_clipped and not is_full_bed_intent:
+        paper_w_mm = t_w
+    else:
+        paper_w_mm = bed_w - cx0
+
+    # Height: prefer detected bottom edge → user t_h → full extent to bed edge
+    if bottom_y_px is not None and not bottom_clipped:
+        paper_h_mm = bottom_y_px / px_per_mm_y - cy0
+    elif bottom_clipped and not is_full_bed_intent:
+        paper_h_mm = t_h
+    else:
+        paper_h_mm = bed_h - cy0
+
+    # ── Standard size snap ────────────────────────────────────────────────
+    # Snap to a known paper size when dimensions are close — but do NOT snap
+    # if the raw detected dimensions are already very close to the user-specified
+    # t_w / t_h (within 3 mm).  Snapping in that case would override an accurate
+    # user selection with a different standard size (e.g. Letter snapped to A4).
+    close_to_user = (abs(paper_w_mm - t_w) < 3.0 and abs(paper_h_mm - t_h) < 3.0)
+    matched = None if close_to_user else match_standard_size(paper_w_mm, paper_h_mm,
+                                                              tolerance_mm=10.0)
+    matched_size = None
+    if matched:
+        matched_size = matched[2]
+        # Snap dimensions — preserve orientation
+        if paper_w_mm <= paper_h_mm:
+            paper_w_mm, paper_h_mm = (min(matched[0], matched[1]),
+                                      max(matched[0], matched[1]))
+        else:
+            paper_w_mm, paper_h_mm = (max(matched[0], matched[1]),
+                                      min(matched[0], matched[1]))
+
+    # ── Document centre ───────────────────────────────────────────────────
+    if corner_x_mm is not None and corner_y_mm is not None:
+        doc_c_x_mm = corner_x_mm + paper_w_mm / 2.0
+        doc_c_y_mm = corner_y_mm + paper_h_mm / 2.0
+    elif corner_y_mm is not None:
+        doc_c_x_mm = bed_w / 2.0            # horizontal: centre on bed
+        doc_c_y_mm = corner_y_mm + paper_h_mm / 2.0
+    elif corner_x_mm is not None:
+        doc_c_x_mm = corner_x_mm + paper_w_mm / 2.0
+        doc_c_y_mm = bed_h / 2.0            # vertical: centre on bed
+    else:
+        return {'overall_conf': 0.0, 'corner_x_mm': None, 'corner_y_mm': None,
+                'right_clipped': right_clipped, 'bottom_clipped': bottom_clipped,
+                'top_coverage': top_cov, 'left_coverage': left_cov}
+
+    # ── Text-body margin sanity check ─────────────────────────────────────
+    corner_validated = False
+    if text_bbox is not None and corner_x_mm is not None and corner_y_mm is not None:
+        bx, by, _bw, _bh = text_bbox
+        margin_left_mm = (bx / px_per_mm_x) - corner_x_mm
+        margin_top_mm  = (by / px_per_mm_y) - corner_y_mm
+        # Standard margins: 15–40 mm.  DocuSign markers can be as close as
+        # 10 mm; generous upper bound of 50 mm for unusual layouts.
+        corner_validated = (10.0 <= margin_left_mm <= 50.0 and
+                            10.0 <= margin_top_mm  <= 55.0)
+
+    # ── Confidence score ─────────────────────────────────────────────────
+    top_rel  = max(0.0, 1.0 - top_std  / search_px)
+    left_rel = max(0.0, 1.0 - left_std / search_px)
+    edge_conf = (top_cov * top_rel + left_cov * left_rel) / 2.0
+
+    validation_bonus = 0.15 if corner_validated else 0.0
+    size_bonus       = 0.10 if matched_size     else 0.0
+    one_edge_penalty = 0.15 if (top_cov < MIN_COV) != (left_cov < MIN_COV) else 0.0
+
+    overall_conf = min(1.0, edge_conf + validation_bonus + size_bonus - one_edge_penalty)
+
+    if debug and img_path:
+        dbg = cv2.cvtColor(raw_gray, cv2.COLOR_GRAY2BGR)
+        # Draw detected edges
+        for c, r in enumerate(top_ys):
+            if r is not None:
+                cv2.circle(dbg, (c, r), 1, (0, 255, 0), -1)
+        for r, c in enumerate(left_xs):
+            if c is not None:
+                cv2.circle(dbg, (c, r), 1, (255, 0, 0), -1)
+        if corner_x_mm is not None and corner_y_mm is not None:
+            cx = int(corner_x_mm * px_per_mm_x)
+            cy = int(corner_y_mm * px_per_mm_y)
+            cv2.circle(dbg, (cx, cy), 5, (0, 0, 255), -1)
+            cv2.putText(dbg, f"C conf={overall_conf:.2f} {matched_size or ''}",
+                        (cx + 8, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
+        cv2.imwrite(img_path + ".debug-C-edges.jpg", dbg)
+
+    return {
+        'corner_x_mm': corner_x_mm,
+        'corner_y_mm': corner_y_mm,
+        'paper_w_mm':  paper_w_mm,
+        'paper_h_mm':  paper_h_mm,
+        'doc_c_x_mm':  doc_c_x_mm,
+        'doc_c_y_mm':  doc_c_y_mm,
+        'overall_conf':    overall_conf,
+        'right_clipped':   right_clipped,
+        'bottom_clipped':  bottom_clipped,
+        'top_coverage':    top_cov,
+        'left_coverage':   left_cov,
+        'matched_size':    matched_size,
+        'corner_validated': corner_validated,
+    }
+
+
+# Confidence thresholds for applying the Heuristic C override
+_HC_CONF_INTERACTIVE = 0.40
+_HC_CONF_BATCH       = 0.60
+
+
+# ============================================================
 # Heuristic B: Contour/Edge Analysis (original "Smart-Anchor")
 # ============================================================
 
@@ -442,13 +747,14 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode,
         img_w_t = thresh.shape[1]
         img_h_t = thresh.shape[0]
 
-        # Full-bed guard: if text spans > 90% in both dimensions, there is no
-        # meaningful crop to perform.  Only apply the deskew angle.
-        # Cap to the actual scan dims (t_w/t_h) if provided so that the padded
-        # preview height does not inflate the output beyond the user's paper size.
-        # 80% threshold: a standard 25 mm margin on each side leaves ≈ 83% of
-        # the A4/letter page covered by text.  90% was too conservative.
-        if (bw / img_w_t) > 0.80 and (bh / img_h_t) > 0.80:
+        # Full-bed guard: apply when text spans > 80% of the image in both
+        # dimensions, OR when the user explicitly selected the full scanner
+        # bed as the target (ADF / no-paper-size-override).  In either case
+        # the text bounding box is unreliable as a crop boundary and we should
+        # only apply the deskew angle, returning the user's target dimensions.
+        is_full_bed_intent = bool(t_w and bed_w and t_h and bed_h and
+                                  t_w >= bed_w - 1.0 and t_h >= bed_h - 1.0)
+        if is_full_bed_intent or ((bw / img_w_t) > 0.80 and (bh / img_h_t) > 0.80):
             cap_w = int(t_w / bed_w * img_w_t) if (t_w and bed_w) else img_w_t
             cap_h = int(t_h / bed_h * img_h_t) if (t_h and bed_h) else img_h_t
             w_px = float(min(img_w_t, cap_w))
@@ -602,6 +908,8 @@ def main():
 
     # ── Step 1: Bezel Wipe (1.5% margin on all sides) ──────────────────────
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # raw_gray is preserved before the wipe for Heuristic C (border edge detection)
+    raw_gray = gray
     margin_x = int(img_w * 0.015)
     margin_y = int(img_h * 0.015)
 
@@ -614,13 +922,18 @@ def main():
     if args.debug:
         cv2.imwrite(img_path + ".debug-1-wipe.jpg", masked)
 
-    # ── Step 2: Run both heuristics ─────────────────────────────────────────
+    # ── Step 2: Run all heuristics ──────────────────────────────────────────
     heuristic_b = run_heuristic_b(
         masked, img_w, img_h, margin_x, margin_y,
         debug=args.debug, img_path=img_path, img_orig=img
     )
     heuristic_a = run_heuristic_a(
         masked, debug=args.debug, img_path=img_path
+    )
+    heuristic_c = run_heuristic_c(
+        raw_gray, img_w, img_h, t_w, t_h, bed_w, bed_h,
+        text_bbox=heuristic_a.get('text_bbox'),
+        debug=args.debug, img_path=img_path
     )
 
     if args.debug:
@@ -629,7 +942,9 @@ def main():
             f"text_conf={heuristic_a['text_confidence_score']:.3f} "
             f"text_angle={heuristic_a['text_angle']:.2f} "
             f"n_lines={heuristic_a.get('n_lines', 0)} "
-            f"heuristic_b={'ok' if heuristic_b else 'none'}\n"
+            f"heuristic_b={'ok' if heuristic_b else 'none'} "
+            f"hc_conf={heuristic_c['overall_conf']:.2f} "
+            f"hc_snap={heuristic_c.get('matched_size') or '-'}\n"
         )
 
     # ── Step 3: Risk decision engine ────────────────────────────────────────
@@ -655,6 +970,40 @@ def main():
     doc_c_y = c_y_px / px_per_mm_y
     doc_w_mm = w_px / px_per_mm_x
     doc_h_mm = h_px / px_per_mm_y
+
+    # ── Step 4b: Heuristic C override ────────────────────────────────────────
+    # When the paper-corner detection has sufficient confidence, override the
+    # document centre and dimensions with the corner-anchored values.
+    # The rotation angle is NOT overridden — it comes from the projection method
+    # in Heuristic A which is far more accurate than anything derivable from
+    # the 1-5 px border strip that Heuristic C uses.
+    hc_conf = heuristic_c.get('overall_conf', 0.0)
+    hc_thresh = _HC_CONF_BATCH if mode == 'batch' else _HC_CONF_INTERACTIVE
+    hc_applies = (
+        hc_conf >= hc_thresh
+        and heuristic_c.get('doc_c_x_mm') is not None
+        and heuristic_c.get('doc_c_y_mm') is not None
+        and heuristic_c.get('paper_w_mm') is not None
+        and heuristic_c.get('paper_h_mm') is not None
+        # Sanity: dimensions must be plausible (not smaller than 30mm or
+        # larger than the scanner bed + 5mm margin)
+        and heuristic_c['paper_w_mm'] > 30.0
+        and heuristic_c['paper_h_mm'] > 30.0
+        and heuristic_c['paper_w_mm'] <= bed_w + 5.0
+        and heuristic_c['paper_h_mm'] <= bed_h + 5.0
+    )
+    if hc_applies:
+        doc_c_x  = heuristic_c['doc_c_x_mm']
+        doc_c_y  = heuristic_c['doc_c_y_mm']
+        doc_w_mm = heuristic_c['paper_w_mm']
+        doc_h_mm = heuristic_c['paper_h_mm']
+        if args.debug:
+            sys.stderr.write(
+                f"[autocrop] heuristic_c override: "
+                f"centre=({doc_c_x:.1f},{doc_c_y:.1f})mm "
+                f"dims={doc_w_mm:.1f}x{doc_h_mm:.1f}mm "
+                f"snap={heuristic_c.get('matched_size') or 'none'}\n"
+            )
 
     # ── Step 5: Scale-to-fit logic ───────────────────────────────────────────
     # --no-scale forces sx=sy=1.0 regardless of paper-size selection.
