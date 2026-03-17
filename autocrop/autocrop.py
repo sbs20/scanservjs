@@ -314,8 +314,24 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
     # --- Batch-mode safety cap ---
     if mode == 'batch':
         if risk_level == 3:
-            # Contour-only crop in batch is risky (no text anchor) → no-op
-            risk_level = 0
+            # Contour-only crop in batch is generally risky (no text anchor).
+            # Exception: allow it when the contour detection shows the document
+            # is clearly smaller than the scanner bed in both dimensions, which
+            # indicates a high-confidence edge detection (visible document on bed).
+            # This covers flatbed scans of photos, IDs, and non-text documents.
+            if heuristic_b is not None:
+                img_area = thresh.shape[0] * thresh.shape[1]
+                doc_area = heuristic_b['w_px'] * heuristic_b['h_px']
+                # Allow risk-3 only when the document occupies significantly
+                # less area than the image, indicating clear visible edges.
+                # This keeps conservative mode safe for ADF (document fills bed,
+                # area ratio ≈ 1) while enabling it for clearly cropped docs.
+                if doc_area / img_area < 0.72:
+                    pass  # clearly smaller than bed → keep risk-3
+                else:
+                    risk_level = 0
+            else:
+                risk_level = 0
         elif risk_level in (1, 2) and not clear_conf:
             # Not confident enough for automatic crop → no-op
             risk_level = 0
@@ -326,13 +342,30 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
 
     if risk_level == 1:
         bx, by, bw, bh = text_bbox
+        img_w_t = thresh.shape[1]
+        img_h_t = thresh.shape[0]
+
+        # Full-bed guard: if text spans > 90% in both dimensions, there is no
+        # meaningful crop to perform (e.g. white-on-white A4 letter filling the
+        # full A4 bed).  Only apply the deskew angle — keep full bed dimensions.
+        if (bw / img_w_t) > 0.90 and (bh / img_h_t) > 0.90:
+            c_x_px = img_w_t / 2.0
+            c_y_px = img_h_t / 2.0
+            w_px = float(img_w_t)
+            h_px = float(img_h_t)
+        else:
+            c_x_px = bx + bw / 2.0
+            c_y_px = by + bh / 2.0
+            w_px = float(bw)
+            h_px = float(bh)
+
         return {
             'risk_level': 1,
             'rotate_angle': text_angle_to_rotate_angle(text_angle),
-            'c_x_px': bx + bw / 2.0,
-            'c_y_px': by + bh / 2.0,
-            'w_px': float(bw),
-            'h_px': float(bh),
+            'c_x_px': c_x_px,
+            'c_y_px': c_y_px,
+            'w_px': w_px,
+            'h_px': h_px,
             'swap_dims': False,
         }
 
@@ -491,10 +524,17 @@ def main():
             sy = s
 
     # ── Step 6: Build ImageMagick SRT string ─────────────────────────────────
+    # Source center: document center in input pixels (rotate around this point).
     fx_cx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
     fx_cy = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
-    fx_tx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
-    fx_ty = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
+    # Destination center: always the image center so that the document ends up
+    # centred in the output regardless of where it sat on the scanner bed.
+    # The downstream surgical crop (`-gravity center -extent WxH`) then extracts
+    # the document precisely.  When the scan was pre-cropped to the document area
+    # (magic-wand workflow) the document centre already coincides with the image
+    # centre, so this has no practical effect on that path.
+    fx_tx = "%[fx:w/2]"
+    fx_ty = "%[fx:h/2]"
 
     srt_str = f"{fx_cx},{fx_cy} {sx:f},{sy:f} {rotate_angle:.6f} {fx_tx},{fx_ty}"
     magic_str = (f"-background white -virtual-pixel white "

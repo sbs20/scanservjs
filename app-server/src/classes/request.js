@@ -49,12 +49,14 @@ module.exports = class Request {
       filters: data.filters || device.settings.filters.default,
       pipeline: data.pipeline || device.settings.pipeline.default,
       batch: data.batch || device.settings.batchMode.default,
+      autoCropMode: data.autoCropMode || device.settings.autoCropMode.default,
       index: data.index || 1
     });
 
     assertContains(device.settings['filters'].options, this.filters, 'Invalid filters');
     assertContains(device.settings['pipeline'].options, this.pipeline, 'Invalid pipeline');
     assertContains(device.settings['batchMode'].options, this.batch, 'Invalid batchMode');
+    assertContains(device.settings['autoCropMode'].options, this.autoCropMode, 'Invalid autoCropMode');
 
     if ('-t' in features) {
       this.params.top = constrainWithFeature(data.params.top || features['-t'].limits[0], features['-t']);
