@@ -63,6 +63,10 @@ const data = readFileSync(inputPath);
 const pdf  = await getDocument({
   data: new Uint8Array(data),
   enableXfa: true,
+  // pdfjs 5.5.x NodeStandardFontDataFactory uses process.getBuiltinModule('fs')
+  // which requires Node.js ≥ 22.  On Node 18 the factory silently fails and
+  // pdfjs falls back to its built-in Foxit metrics; the path is still passed so
+  // the factory knows where to look when it does work.
   standardFontDataUrl: resolve(SCRIPT_DIR, 'node_modules/pdfjs-dist/standard_fonts') + '/',
   cMapUrl:             resolve(SCRIPT_DIR, 'node_modules/pdfjs-dist/cmaps') + '/',
   cMapPacked: true,
@@ -413,29 +417,34 @@ const XFA_CSS = `
  * "Metric-compatible" means identical character widths — text fits in
  * containers sized for the original font.
  * See docs/xfa-rendering.md § "Font Dependencies" for the full list. */
-@font-face { font-family: "Calibri"; font-weight: normal; font-style: normal; src: local("Carlito"); }
-@font-face { font-family: "Calibri"; font-weight: bold;   font-style: normal; src: local("Carlito Bold"); }
-@font-face { font-family: "Calibri"; font-weight: normal; font-style: italic; src: local("Carlito Italic"); }
-@font-face { font-family: "Calibri"; font-weight: bold;   font-style: italic; src: local("Carlito Bold Italic"); }
-@font-face { font-family: "Cambria"; font-weight: normal; font-style: normal; src: local("Caladea"); }
-@font-face { font-family: "Cambria"; font-weight: bold;   font-style: normal; src: local("Caladea Bold"); }
-@font-face { font-family: "Cambria"; font-weight: normal; font-style: italic; src: local("Caladea Italic"); }
-@font-face { font-family: "Cambria"; font-weight: bold;   font-style: italic; src: local("Caladea Bold Italic"); }
-@font-face { font-family: "Arial";   font-weight: normal; font-style: normal; src: local("Liberation Sans"); }
-@font-face { font-family: "Arial";   font-weight: bold;   font-style: normal; src: local("Liberation Sans Bold"); }
-@font-face { font-family: "Arial";   font-weight: normal; font-style: italic; src: local("Liberation Sans Italic"); }
-@font-face { font-family: "Arial";   font-weight: bold;   font-style: italic; src: local("Liberation Sans Bold Italic"); }
-@font-face { font-family: "Times New Roman"; font-weight: normal; font-style: normal; src: local("Liberation Serif"); }
-@font-face { font-family: "Times New Roman"; font-weight: bold;   font-style: normal; src: local("Liberation Serif Bold"); }
-@font-face { font-family: "Times New Roman"; font-weight: normal; font-style: italic; src: local("Liberation Serif Italic"); }
-@font-face { font-family: "Times New Roman"; font-weight: bold;   font-style: italic; src: local("Liberation Serif Bold Italic"); }
-@font-face { font-family: "Courier New"; font-weight: normal; font-style: normal; src: local("Liberation Mono"); }
-@font-face { font-family: "Courier New"; font-weight: bold;   font-style: normal; src: local("Liberation Mono Bold"); }
+/* WeasyPrint resolves local() by PostScript name (nameID=6) or full name (nameID=4).
+ * Use the PostScript name first; the full name ("Family Style") is the fallback. */
+@font-face { font-family: "Calibri"; font-weight: normal; font-style: normal; src: local("Carlito-Regular"),    local("Carlito Regular"); }
+@font-face { font-family: "Calibri"; font-weight: bold;   font-style: normal; src: local("Carlito-Bold"),       local("Carlito Bold"); }
+@font-face { font-family: "Calibri"; font-weight: normal; font-style: italic; src: local("Carlito-Italic"),     local("Carlito Italic"); }
+@font-face { font-family: "Calibri"; font-weight: bold;   font-style: italic; src: local("Carlito-BoldItalic"), local("Carlito Bold Italic"); }
+@font-face { font-family: "Cambria"; font-weight: normal; font-style: normal; src: local("Caladea-Regular"),    local("Caladea Regular"); }
+@font-face { font-family: "Cambria"; font-weight: bold;   font-style: normal; src: local("Caladea-Bold"),       local("Caladea Bold"); }
+@font-face { font-family: "Cambria"; font-weight: normal; font-style: italic; src: local("Caladea-Italic"),     local("Caladea Italic"); }
+@font-face { font-family: "Cambria"; font-weight: bold;   font-style: italic; src: local("Caladea-BoldItalic"), local("Caladea Bold Italic"); }
+@font-face { font-family: "Arial";   font-weight: normal; font-style: normal; src: local("LiberationSans"),           local("Liberation Sans"); }
+@font-face { font-family: "Arial";   font-weight: bold;   font-style: normal; src: local("LiberationSans-Bold"),      local("Liberation Sans Bold"); }
+@font-face { font-family: "Arial";   font-weight: normal; font-style: italic; src: local("LiberationSans-Italic"),    local("Liberation Sans Italic"); }
+@font-face { font-family: "Arial";   font-weight: bold;   font-style: italic; src: local("LiberationSans-BoldItalic"),local("Liberation Sans Bold Italic"); }
+@font-face { font-family: "Times New Roman"; font-weight: normal; font-style: normal; src: local("LiberationSerif"),           local("Liberation Serif"); }
+@font-face { font-family: "Times New Roman"; font-weight: bold;   font-style: normal; src: local("LiberationSerif-Bold"),      local("Liberation Serif Bold"); }
+@font-face { font-family: "Times New Roman"; font-weight: normal; font-style: italic; src: local("LiberationSerif-Italic"),    local("Liberation Serif Italic"); }
+@font-face { font-family: "Times New Roman"; font-weight: bold;   font-style: italic; src: local("LiberationSerif-BoldItalic"),local("Liberation Serif Bold Italic"); }
+@font-face { font-family: "Courier New"; font-weight: normal; font-style: normal; src: local("LiberationMono"),      local("Liberation Mono"); }
+@font-face { font-family: "Courier New"; font-weight: bold;   font-style: normal; src: local("LiberationMono-Bold"), local("Liberation Mono Bold"); }
+/* "Courier" (without "New") appears in some XFA forms — map the same way. */
+@font-face { font-family: "Courier"; font-weight: normal; font-style: normal; src: local("LiberationMono"),      local("Liberation Mono"); }
+@font-face { font-family: "Courier"; font-weight: bold;   font-style: normal; src: local("LiberationMono-Bold"), local("Liberation Mono Bold"); }
 /* Myriad Pro: Adobe proprietary humanist sans-serif; no free metric-compatible
  * substitute is available in standard Linux repositories.  Map to Liberation Sans
  * as a visually similar fallback — text may overflow slightly in narrow containers. */
-@font-face { font-family: "Myriad Pro"; font-weight: normal; font-style: normal; src: local("Liberation Sans"); }
-@font-face { font-family: "Myriad Pro"; font-weight: bold;   font-style: normal; src: local("Liberation Sans Bold"); }
+@font-face { font-family: "Myriad Pro"; font-weight: normal; font-style: normal; src: local("LiberationSans"),      local("Liberation Sans"); }
+@font-face { font-family: "Myriad Pro"; font-weight: bold;   font-style: normal; src: local("LiberationSans-Bold"), local("Liberation Sans Bold"); }
 
 body { margin: 0; background: white; }
 .xfaPage { page-break-after: always; break-after: page; background: white; }
@@ -713,10 +722,26 @@ function nodeToHTML(node, ctx = {}) {
     children = children.filter(c => c && c.name !== 'br');
   }
 
+  // xfaWrapper elements that contain an image-only draw (e.g. a "Lines" overlay
+  // image) must be raised above the white-background text fields so the overlay
+  // graphic remains visible.  Without z-index: 1, the white field background
+  // (needed to hide grey section backgrounds) covers the overlay image.
+  let effectiveStyle = style;
+  if (classes.includes('xfaWrapper')) {
+    const hasImageOverlay = children.some(c => {
+      if (!c || c.name !== 'div') return false;
+      const cc = c.attributes?.class || [];
+      if (!cc.includes('xfaDraw')) return false;
+      const gc = (c.children || []).filter(Boolean);
+      return gc.length === 1 && gc[0].name === 'img';
+    });
+    if (hasImageOverlay) effectiveStyle = Object.assign({}, style, { zIndex: '1' });
+  }
+
   const parts = [];
   if (classes.length > 0) parts.push(`class="${escAttr(classes.join(' '))}"`);
   if (attrs.id)            parts.push(`id="${escAttr(attrs.id)}"`);
-  const css = styleToCSS(style);
+  const css = styleToCSS(effectiveStyle);
   if (css)                 parts.push(`style="${escAttr(css)}"`);
 
   // For img, include the resolved src and alt.
