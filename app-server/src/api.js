@@ -284,6 +284,11 @@ module.exports = new class Api {
     const top = parseFloat(params.top) || 0;
     const width = parseFloat(params.width) || bedW;
     const height = parseFloat(params.height) || bedH;
+    // The /api/v1/autocrop endpoint is exclusively invoked by the interactive
+    // magic-wand button.  Always use interactive mode regardless of what the
+    // client sends; batch/conservative mode is reserved for the future
+    // automatic per-page scanning path which has its own endpoint.
+    const mode = 'interactive';
 
     const args = [
       `--image '${source.fullname}'`,
@@ -292,7 +297,8 @@ module.exports = new class Api {
       `--width ${width}`,
       `--height ${height}`,
       `--bed-width ${bedW}`,
-      `--bed-height ${bedH}`
+      `--bed-height ${bedH}`,
+      `--mode ${mode}`
     ].join(' ');
 
     const cmd = `.venv/bin/python autocrop/autocrop.py ${args}`;
