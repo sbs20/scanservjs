@@ -314,8 +314,24 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode):
     # --- Batch-mode safety cap ---
     if mode == 'batch':
         if risk_level == 3:
-            # Contour-only crop in batch is risky (no text anchor) → no-op
-            risk_level = 0
+            # Contour-only crop in batch is generally risky (no text anchor).
+            # Exception: allow it when the contour detection shows the document
+            # is clearly smaller than the scanner bed in both dimensions, which
+            # indicates a high-confidence edge detection (visible document on bed).
+            # This covers flatbed scans of photos, IDs, and non-text documents.
+            if heuristic_b is not None:
+                img_area = thresh.shape[0] * thresh.shape[1]
+                doc_area = heuristic_b['w_px'] * heuristic_b['h_px']
+                # Allow risk-3 only when the document occupies significantly
+                # less area than the image, indicating clear visible edges.
+                # This keeps conservative mode safe for ADF (document fills bed,
+                # area ratio ≈ 1) while enabling it for clearly cropped docs.
+                if doc_area / img_area < 0.72:
+                    pass  # clearly smaller than bed → keep risk-3
+                else:
+                    risk_level = 0
+            else:
+                risk_level = 0
         elif risk_level in (1, 2) and not clear_conf:
             # Not confident enough for automatic crop → no-op
             risk_level = 0
@@ -508,10 +524,17 @@ def main():
             sy = s
 
     # ── Step 6: Build ImageMagick SRT string ─────────────────────────────────
+    # Source center: document center in input pixels (rotate around this point).
     fx_cx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
     fx_cy = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
-    fx_tx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
-    fx_ty = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
+    # Destination center: always the image center so that the document ends up
+    # centred in the output regardless of where it sat on the scanner bed.
+    # The downstream surgical crop (`-gravity center -extent WxH`) then extracts
+    # the document precisely.  When the scan was pre-cropped to the document area
+    # (magic-wand workflow) the document centre already coincides with the image
+    # centre, so this has no practical effect on that path.
+    fx_tx = "%[fx:w/2]"
+    fx_ty = "%[fx:h/2]"
 
     srt_str = f"{fx_cx},{fx_cy} {sx:f},{sy:f} {rotate_angle:.6f} {fx_tx},{fx_ty}"
     magic_str = (f"-background white -virtual-pixel white "
