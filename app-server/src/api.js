@@ -165,28 +165,28 @@ module.exports = new class Api {
     const params = [];
 
     if (transformations.magic && inputImageBounds) {
-        const ox = inputImageBounds.left;
-        const oy = inputImageBounds.top;
-        const iw = inputImageBounds.width;
-        const ih = inputImageBounds.height;
+      const ox = inputImageBounds.left;
+      const oy = inputImageBounds.top;
+      const iw = inputImageBounds.width;
+      const ih = inputImageBounds.height;
 
-        const width = parseFloat(transformations.width) || iw;
-        const height = parseFloat(transformations.height) || ih;
+      const width = parseFloat(transformations.width) || iw;
+      const height = parseFloat(transformations.height) || ih;
 
-        let magic = transformations.magic;
-        magic = magic.replace(/{OX}/g, ox);
-        magic = magic.replace(/{OY}/g, oy);
-        magic = magic.replace(/{IW}/g, iw);
-        magic = magic.replace(/{IH}/g, ih);
-        magic = magic.replace(/{TW}/g, width);
-        magic = magic.replace(/{TH}/g, height);
-        // Safety for legacy placeholders
-        magic = magic.replace(/{TCX}/g, '0');
-        magic = magic.replace(/{TCY}/g, '0');
-        if (/[;|&$`\n\r{}<>]/.test(magic)) {
-          throw new Error('Transformation contains unsafe characters');
-        }
-        params.push(magic);
+      let magic = transformations.magic;
+      magic = magic.replace(/{OX}/g, ox);
+      magic = magic.replace(/{OY}/g, oy);
+      magic = magic.replace(/{IW}/g, iw);
+      magic = magic.replace(/{IH}/g, ih);
+      magic = magic.replace(/{TW}/g, width);
+      magic = magic.replace(/{TH}/g, height);
+      // Safety for legacy placeholders
+      magic = magic.replace(/{TCX}/g, '0');
+      magic = magic.replace(/{TCY}/g, '0');
+      if (/[;|&$`\n\r{}<>]/.test(magic)) {
+        throw new Error('Transformation contains unsafe characters');
+      }
+      params.push(magic);
     }
 
     // Handle rotation
@@ -268,7 +268,7 @@ module.exports = new class Api {
   async autoCrop(params) {
     log.trace('autoCrop()', params);
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
-    
+
     // Guardrail: if preview image does not exist, immediately return zero-value
     if (!source.exists()) {
       log.info('AutoCrop aborted: preview.tif does not exist');
@@ -318,7 +318,7 @@ module.exports = new class Api {
       return parsed;
     } catch (e) {
       log.error('AutoCrop execution failed', e.message, e.stderr);
-      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || "Unknown error").substring(0, 100)}` };
+      return { magic: null, error: `Execution failed: ${(e.stderr || e.message || 'Unknown error').substring(0, 100)}` };
     }
   }
 };

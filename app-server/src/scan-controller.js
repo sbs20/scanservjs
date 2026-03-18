@@ -165,40 +165,40 @@ class ScanController {
     const params = [];
 
     if (transformations.magic) {
-        let offsetX = 0;
-        let offsetY = 0;
-        let width = 0;
-        let height = 0;
-        if (request && request.params) {
-            offsetX = parseFloat(request.params['-l'] || request.params.left) || 0;
-            offsetY = parseFloat(request.params['-t'] || request.params.top) || 0;
-            width = parseFloat(request.params['-x'] || request.params.width) || 0;
-            height = parseFloat(request.params['-y'] || request.params.height) || 0;
-        }
-        let magic = transformations.magic;
-        magic = magic.replace(/{OX}/g, offsetX);
-        magic = magic.replace(/{OY}/g, offsetY);
-        magic = magic.replace(/{IW}/g, width);
-        magic = magic.replace(/{IH}/g, height);
-        magic = magic.replace(/{TW}/g, width);
-        magic = magic.replace(/{TH}/g, height);
-        // Safety for legacy placeholders
-        magic = magic.replace(/{TCX}/g, '0');
-        magic = magic.replace(/{TCY}/g, '0');
-        if (/[;|&$`\n\r{}<>]/.test(magic)) {
-          throw new Error('Transformation contains unsafe characters');
-        }
-        params.push(magic);
+      let offsetX = 0;
+      let offsetY = 0;
+      let width = 0;
+      let height = 0;
+      if (request && request.params) {
+        offsetX = parseFloat(request.params['-l'] || request.params.left) || 0;
+        offsetY = parseFloat(request.params['-t'] || request.params.top) || 0;
+        width = parseFloat(request.params['-x'] || request.params.width) || 0;
+        height = parseFloat(request.params['-y'] || request.params.height) || 0;
+      }
+      let magic = transformations.magic;
+      magic = magic.replace(/{OX}/g, offsetX);
+      magic = magic.replace(/{OY}/g, offsetY);
+      magic = magic.replace(/{IW}/g, width);
+      magic = magic.replace(/{IH}/g, height);
+      magic = magic.replace(/{TW}/g, width);
+      magic = magic.replace(/{TH}/g, height);
+      // Safety for legacy placeholders
+      magic = magic.replace(/{TCX}/g, '0');
+      magic = magic.replace(/{TCY}/g, '0');
+      if (/[;|&$`\n\r{}<>]/.test(magic)) {
+        throw new Error('Transformation contains unsafe characters');
+      }
+      params.push(magic);
 
-        // Surgical crop to remove AABB padding in the final scan
-        if (transformations.width && transformations.height) {
-          const res = request.params.resolution || 300;
-          const w_px = Math.round(parseFloat(transformations.width) * res / 25.4);
-          const h_px = Math.round(parseFloat(transformations.height) * res / 25.4);
-          params.push(`-gravity center -extent ${w_px}x${h_px} +repage`);
-        }
+      // Surgical crop to remove AABB padding in the final scan
+      if (transformations.width && transformations.height) {
+        const res = request.params.resolution || 300;
+        const w_px = Math.round(parseFloat(transformations.width) * res / 25.4);
+        const h_px = Math.round(parseFloat(transformations.height) * res / 25.4);
+        params.push(`-gravity center -extent ${w_px}x${h_px} +repage`);
+      }
     }
-    
+
     // Handle rotation
     const rotation = parseInt(transformations.rotation, 10) || 0;
     if (rotation !== 0) {
@@ -264,7 +264,7 @@ class ScanController {
         log.debug(`AutoCrop (auto): no transformation (${parsed.error || 'no-op'})`);
         return;
       }
-      log.info(`AutoCrop (auto): mode=${mode} angle=${parsed.angle?.toFixed(2)}° doc=${parsed.doc_w?.toFixed(1)}x${parsed.doc_h?.toFixed(1)}mm`);
+      log.info(`AutoCrop (auto): mode=${mode} angle=${typeof parsed.angle === 'number' ? parsed.angle.toFixed(2) : 'n/a'}° doc=${typeof parsed.doc_w === 'number' ? parsed.doc_w.toFixed(1) : 'n/a'}x${typeof parsed.doc_h === 'number' ? parsed.doc_h.toFixed(1) : 'n/a'}mm`);
       // Populate transformations so _buildTransformParams applies the SRT + surgical crop.
       // Preserve any non-magic transformation fields (rotation, flip) the user may have set.
       this.request.transformations = Object.assign(
