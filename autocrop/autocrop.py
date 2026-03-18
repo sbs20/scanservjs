@@ -174,19 +174,34 @@ def run_heuristic_c(raw_gray, img_w, img_h, t_w, t_h, bed_w, bed_h,
     top_y_px  = float(min(top_valid))  if top_cov  >= MIN_COV else None
     left_x_px = float(min(left_valid)) if left_cov >= MIN_COV else None
 
-    # Guard: if the minimum transition is at pixel 0 or 1, the scan is
-    # detecting the scanner background (which is bright throughout) rather
-    # than a real lid→paper boundary.  Null out that edge so it does not
-    # anchor the crop to the scanner origin.
+    # Estimate scanner lid brightness from corner samples taken a few pixels
+    # inward to avoid hardware artefacts (lid hinges, bezel shadows) that
+    # can darken the very edge pixels even when the lid is white.  Any of
+    # the four corners may instead contain a document — either way a bright
+    # corner means we cannot reliably distinguish the lid from paper at the
+    # border, so the near-zero guards below must remain active.
+    _cs, _co = 10, 5   # corner sample size and inward offset
+    _lid_corners = [
+        float(raw_gray[_co:_co + _cs, _co:_co + _cs].mean()),
+        float(raw_gray[_co:_co + _cs, img_w - _co - _cs:img_w - _co].mean()),
+        float(raw_gray[img_h - _co - _cs:img_h - _co, _co:_co + _cs].mean()),
+        float(raw_gray[img_h - _co - _cs:img_h - _co,
+                        img_w - _co - _cs:img_w - _co].mean()),
+    ]
+    lid_is_bright = float(np.median(_lid_corners)) > bright_thresh - 20
+
+    # Guard: if the minimum transition is at pixel 0 or 1 and the scanner
+    # lid is bright, the scan is likely detecting the background rather than
+    # a real lid→paper boundary.  When the lid is dark the detection at
+    # col 1 / row 1 is a genuine paper edge and should be kept.
     if top_y_px is not None and top_y_px <= 1:
-        # Check if most transitions are also near 0 (background, not edge)
         near_zero_frac = sum(1 for v in top_valid if v <= 2) / max(len(top_valid), 1)
-        if near_zero_frac > 0.5:
+        if lid_is_bright and near_zero_frac > 0.5:
             top_y_px = None
             top_cov  = 0.0
     if left_x_px is not None and left_x_px <= 1:
         near_zero_frac = sum(1 for v in left_valid if v <= 2) / max(len(left_valid), 1)
-        if near_zero_frac > 0.5:
+        if lid_is_bright and near_zero_frac > 0.5:
             left_x_px = None
             left_cov  = 0.0
 
@@ -702,6 +717,29 @@ def risk_decision_engine(heuristic_a, heuristic_b, mode,
         risk_level = 1  # safe tight crop around text
     else:
         risk_level = 2  # text deskew + contour crop boundary
+
+    # When heuristic B found a document clearly smaller than the image AND the
+    # text bbox overflows the contour in at least one dimension, the document is
+    # tilted and smaller than the bed — text lines from opposite sides of the
+    # rotated paper extend to the image edges while the contour correctly
+    # captures only the ink cluster.  In this case the contour boundary is more
+    # reliable than the text bbox for cropping.  Promote risk-1 to risk-2 so
+    # the crop uses the contour dimensions.
+    #
+    # The text-overflow guard prevents false promotion for full-bed ADF scans
+    # where the text bbox stays comfortably within the image (no overflow) even
+    # though the contour bbox may be smaller than the full image.
+    if risk_level == 1 and heuristic_b is not None and text_bbox is not None:
+        _, swap_b = rect_to_rotate_angle(heuristic_b['angle_deg'])
+        b_w_test = heuristic_b['h_px'] if swap_b else heuristic_b['w_px']
+        b_h_test = heuristic_b['w_px'] if swap_b else heuristic_b['h_px']
+        img_w_t0 = thresh.shape[1]
+        img_h_t0 = thresh.shape[0]
+        _bx, _by, _bw, _bh = text_bbox
+        text_overflows = (_bw / img_w_t0) > 0.80 or (_bh / img_h_t0) > 0.80
+        if ((b_w_test / img_w_t0) < 0.80 and (b_h_test / img_h_t0) < 0.80
+                and text_overflows):
+            risk_level = 2
 
     # --- Batch-mode safety cap ---
     if mode == 'batch':
