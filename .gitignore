@@ -83,8 +83,13 @@ build-test-deb.sh
 scanserv-support.tar
 scanserv-support-*.tar
 
-# Runtime output and crash artifacts
+# Runtime output and crash artifacts.
+# /output/ is used locally for test documents, scan results, and temporary
+# uploads (e.g. favicons in transit).  It must never be committed.
+# The features/*/output/ pattern covers the same directory inside each
+# feature worktree, which shares this repository but has its own path root.
 /output/
+features/*/output/
 crash.log*.txt
 
 # Editor source SVG (stored in feature/pwa, not production root)
