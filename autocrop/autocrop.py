@@ -1032,16 +1032,26 @@ def main():
 
     # ── Step 6: Build ImageMagick SRT string ─────────────────────────────────
     # Source center: document center in input pixels (rotate around this point).
+    # Source centre: the document centre in the input image, expressed as a
+    # fraction of the scan dimensions (OX/OY/IW/IH placeholders are replaced
+    # by scan-controller.js at scan time with the actual values).
     fx_cx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
     fx_cy = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
-    # Destination center: always the image center so that the document ends up
-    # centred in the output regardless of where it sat on the scanner bed.
-    # The downstream surgical crop (`-gravity center -extent WxH`) then extracts
-    # the document precisely.  When the scan was pre-cropped to the document area
-    # (magic-wand workflow) the document centre already coincides with the image
-    # centre, so this has no practical effect on that path.
-    fx_tx = "%[fx:w/2]"
-    fx_ty = "%[fx:h/2]"
+    # Destination centre: same as the source centre.  This keeps the document
+    # at its natural pixel position in the output after rotation.  The Scan.vue
+    # AABB calculation sizes the scanner capture area so that the USER'S DESIRED
+    # CROP CENTRE lands at the scan image centre.  Using tx=cx means the
+    # document stays at its pixel position and the `-gravity center -extent`
+    # surgical crop — which cuts from the image centre — correctly extracts the
+    # user's crop.
+    #
+    # WARNING: do NOT change these to %[fx:w/2],%[fx:h/2].  Doing so would
+    # move the document centre to the image centre instead of the crop centre.
+    # When the user has manually repositioned the crop after using the wand
+    # (so crop centre ≠ document centre) the extent would cut 4–5 mm too early.
+    # The AABB-based approach makes tx=cx the correct formula for all cases.
+    fx_tx = f"%[fx:((({doc_c_x:.6f} - {{OX}}) / {{IW}}) * w)]"
+    fx_ty = f"%[fx:((({doc_c_y:.6f} - {{OY}}) / {{IH}}) * h)]"
 
     srt_str = f"{fx_cx},{fx_cy} {sx:f},{sy:f} {rotate_angle:.6f} {fx_tx},{fx_ty}"
     magic_str = (f"-background white -virtual-pixel white "
