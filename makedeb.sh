@@ -138,12 +138,28 @@ if [ "\$1" = "configure" ] ; then
   /usr/lib/$APP_NAME/.venv/bin/pip install -r /usr/lib/$APP_NAME/editor/requirements.txt
   chown -R $USER:$GROUP /usr/lib/$APP_NAME/.venv
 
-  # Setup isolated Python environment for XFA convert (WeasyPrint)
+  # Setup isolated Python environment for XFA convert (WeasyPrint requires Python >=3.9)
+  # Use a versioned binary explicitly if available (e.g. installed via PPA alongside an older default).
   echo "Setting up XFA convert Python environment..."
-  python3 -m venv $PATH_LIB/xfa-convert/.venv
-  $PATH_LIB/xfa-convert/.venv/bin/pip install --upgrade pip
-  $PATH_LIB/xfa-convert/.venv/bin/pip install -r $PATH_LIB/xfa-convert/requirements.txt
-  chown -R $USER:$GROUP $PATH_LIB/xfa-convert/.venv
+  XFA_PYTHON=""
+  for cand in python3.9 python3.10 python3.11 python3.12 python3; do
+    if command -v "\$cand" >/dev/null 2>&1 && "\$cand" -c "import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)" 2>/dev/null; then
+      XFA_PYTHON="\$cand"
+      break
+    fi
+  done
+  if [ -n "\$XFA_PYTHON" ]; then
+    \$XFA_PYTHON -m venv $PATH_LIB/xfa-convert/.venv
+    $PATH_LIB/xfa-convert/.venv/bin/pip install --upgrade pip
+    if $PATH_LIB/xfa-convert/.venv/bin/pip install -r $PATH_LIB/xfa-convert/requirements.txt; then
+      chown -R $USER:$GROUP $PATH_LIB/xfa-convert/.venv
+    else
+      echo "Warning: WeasyPrint installation failed. XFA PDF conversion will not be available."
+      rm -rf $PATH_LIB/xfa-convert/.venv
+    fi
+  else
+    echo "Note: XFA PDF conversion requires Python >=3.9 (system has \$(python3 --version 2>&1)). Skipping."
+  fi
 
   if [ -d /etc/ImageMagick-6 ]; then
     # Enable PDF
@@ -228,6 +244,8 @@ case "\$1" in
 
   remove|upgrade)
     deb-systemd-helper mask 'scanservjs.service' >/dev/null || true
+    # Remove venvs created by postinst (not tracked by dpkg, so dpkg won't clean them)
+    rm -rf $PATH_LIB/.venv $PATH_LIB/xfa-convert/.venv
   ;;
 
   purge)
