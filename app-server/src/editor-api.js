@@ -23,7 +23,9 @@ module.exports = new class EditorApi {
    * @returns {Promise<import('./classes/pdf-tool')>}
    */
   async _getPdfTool() {
-    if (this._pdfTool) return this._pdfTool;
+    if (this._pdfTool) {
+      return this._pdfTool;
+    }
 
     if (await PikepdfTool.isAvailable()) {
       log.info('Using pikepdf for PDF operations');

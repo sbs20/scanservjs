@@ -89,12 +89,18 @@ async function convertXfa(inputPath) {
       (err, _stdout, stderr) => {
         if (err) {
           log.warn(`XFA conversion failed for ${path.basename(inputPath)}: ${err.message}`);
-          if (stderr) log.warn(stderr.trim());
+          if (stderr) {
+            log.warn(stderr.trim());
+          }
           resolve(null);
           return;
         }
         // Remove the original XFA file; only the flat PDF remains.
-        try { fs.unlinkSync(inputPath); } catch (_) {}
+        try {
+          fs.unlinkSync(inputPath);
+        } catch (_) {
+          // ignore
+        }
         resolve(output);
       }
     );

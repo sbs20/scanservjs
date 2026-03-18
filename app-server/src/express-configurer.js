@@ -109,7 +109,7 @@ const EndpointSpecs = [
       const name = req.params[0];
       const file = FileInfo.unsafe(config.outputDirectory, name);
       const ext = path.extname(name).toLowerCase();
-      
+
       if (req.query.preview === 'true') {
         const mimeTypes = {
           '.pdf': 'application/pdf',
@@ -415,35 +415,12 @@ module.exports = class ExpressConfigurer {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", 'https://static.cloudflareinsights.com'],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:"],
+          imgSrc: ["'self'", 'data:'],
           frameSrc: ["'self'"],
-          connectSrc: ["'self'"],
-          fontSrc: ["'self'", "data:"],
-        }
-      },
-      crossOriginEmbedderPolicy: false,
-      frameguard: { action: 'sameorigin' },
-    }));
-    return this;
-  }
-
-  /**
-   * Configures security headers
-   * @returns {ExpressConfigurer}
-   */
-  securityHeaders() {
-    this.app.use(helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "https://static.cloudflareinsights.com"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:"],
-          frameSrc: ["'self'"],
-          connectSrc: ["'self'", "https://cloudflareinsights.com"],
-          fontSrc: ["'self'", "data:"],
+          connectSrc: ["'self'", 'https://cloudflareinsights.com'],
+          fontSrc: ["'self'", 'data:'],
         }
       },
       crossOriginEmbedderPolicy: false,

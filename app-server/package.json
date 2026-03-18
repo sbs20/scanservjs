@@ -27,7 +27,7 @@
   "author": "Sam Strachan",
   "license": "GPL-2.0",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.5.0"
   },
   "dependencies": {
     "adm-zip": "0.5.10",
