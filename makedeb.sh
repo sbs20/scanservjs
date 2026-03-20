@@ -37,7 +37,7 @@ cp -rv xfa-convert $DIR_LIB
 
 # Install node deps
 npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB
-npm clean-install --omit=dev --only=prod --loglevel=error --prefix $DIR_LIB/xfa-convert
+npm clean-install --omit=dev --omit=optional --only=prod --loglevel=error --prefix $DIR_LIB/xfa-convert
 
 # Get rid of map files
 find $DIR_LIB -name "*.map" -type f -delete
