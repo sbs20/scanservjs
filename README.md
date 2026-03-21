@@ -24,7 +24,6 @@ sudo apt install ./scanservjs_3.0.4-1_all.deb
 - **File Previews**: In-browser previews for PDFs, images, and OCR text, with on-the-fly TIFF transcoding.
 - **Scan on Tab Click**: Optional immediate scan trigger when revisiting the Scan tab.
 - **UI Fixes**: Various interface refinements and bug fixes.
-- **Security Hardening**: Input validation, HTTP security headers, and fixes for common injection and traversal patterns.
 
 ---
 
@@ -68,7 +67,6 @@ complicated installation.
 ## Features
 
 * Cropping
-* Image transformations: Rotate (90° clockwise/counter-clockwise) and Flip (horizontal/vertical)
 * Source selection (Flatbed / ADF)
 * Resolution
 * Output formats (TIF, JPG, PNG, PDF and TXT with Tesseract OCR) with varying
@@ -158,18 +156,6 @@ see [Configuration and device override](docs/10-configuration.md) for more). If
 geometry is available (selecting scan size and position) then you will have
 cropping available to you.
 
-#### Image Transformations
-
-Above the preview image, you will find image transformation controls:
-* **Rotate 90° counter-clockwise**: Rotates the image 90 degrees to the left
-* **Rotate 90° clockwise**: Rotates the image 90 degrees to the right
-* **Flip horizontally**: Mirrors the image along the vertical axis
-* **Flip vertically**: Mirrors the image along the horizontal axis
-
-These transformations are applied to both the preview and the final scanned
-output. The flip buttons are highlighted when active. Transformations are reset
-when you clear the preview.
-
 There is also the ability to perform batch scanning. If you have a document
 feeder, then just use the `Auto` option. If not then use `Manual` and the app
 will prompt you to change pages between scans.
@@ -195,11 +181,6 @@ and possibilities are endless and are beyond the scope of the app.
 
 scanservjs can integrate files either through pipeline automation or file
 actions. See [integration documentation](docs/11-integration.md) for more.
-
-PDF files also have an **Edit** button that opens the document editor, where
-you can rearrange or delete pages, rotate pages, adjust paper size, perform
-duplex page-order operations (interleave/deinterleave for double-sided scans),
-and merge multiple documents into one — all without leaving the browser.
 
 ### Settings
 
