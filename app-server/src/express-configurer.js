@@ -1,5 +1,6 @@
 const express = require('express');
 const basicAuth = require('express-basic-auth');
+const helmet = require('helmet');
 const fs = require('fs');
 const path = require('path');
 const rootLog = require('loglevel');
@@ -7,17 +8,22 @@ const prefix = require('loglevel-plugin-prefix');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const FileInfo = require('./classes/file-info');
+const Process = require('./classes/process');
 const application = require('./application');
 const config = application.config();
+
+const logBuffer = require('./classes/log-buffer');
 
 // We need to apply logging setting prior to anything else using a logger
 prefix.reg(rootLog);
 rootLog.enableAll();
 rootLog.setLevel(config.log.level);
 prefix.apply(rootLog, config.log.prefix);
+logBuffer.install();
 
 const log = rootLog.getLogger('Http');
 const api = require('./api');
+const editorApi = require('./editor-api');
 
 /**
  * @param {import('express').Response} res
@@ -102,7 +108,38 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const name = req.params[0];
       const file = FileInfo.unsafe(config.outputDirectory, name);
-      res.download(file.fullname);
+      const ext = path.extname(name).toLowerCase();
+
+      if (req.query.preview === 'true') {
+        const mimeTypes = {
+          '.pdf': 'application/pdf',
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.png': 'image/png',
+          '.tif': 'image/tiff',
+          '.tiff': 'image/tiff',
+          '.txt': 'text/plain'
+        };
+
+        if (ext === '.tif' || ext === '.tiff') {
+          try {
+            const buffer = await Process.spawn(`convert '${file.fullname}'[0] jpg:-`);
+            res.setHeader('Content-Type', 'image/jpeg');
+            res.setHeader('Content-Disposition', `inline; filename="${name}.jpg"`);
+            res.send(buffer);
+            return;
+          } catch (e) {
+            log.error(`TIFF preview failed for ${name}: ${e.message}`);
+          }
+        }
+
+        const contentType = mimeTypes[ext] || 'application/octet-stream';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Disposition', `inline; filename="${name}"`);
+        res.sendFile(path.resolve(file.fullname));
+      } else {
+        res.download(file.fullname);
+      }
     }
   },
   {
@@ -128,16 +165,37 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/preview',
     callback: async (req, res) => {
-      const buffer = await api.readPreview(req.query.filter);
+      const transformations = {
+        magic: req.query.magic,
+        rotation: req.query.rotation,
+        flipH: req.query.flipH,
+        flipV: req.query.flipV,
+        left: req.query.left,
+        top: req.query.top,
+        width: req.query.width,
+        height: req.query.height
+      };
+      const result = await api.readPreview(req.query.filter, transformations);
       res.send({
-        content: buffer.toString('base64')
+        content: result.buffer.toString('base64'),
+        isDefault: result.isDefault
       });
     }
+  },
+  {
+    method: 'post',
+    path: '/api/v1/autocrop',
+    callback: async (req, res) => res.send(await api.autoCrop(req.body))
   },
   {
     method: 'delete',
     path: '/api/v1/preview',
     callback: async (req, res) => res.send(api.deletePreview())
+  },
+  {
+    method: 'post',
+    path: '/api/v1/autocrop',
+    callback: async (req, res) => res.send(await api.autoCrop(req.body))
   },
   {
     method: 'post',
@@ -153,6 +211,162 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/system',
     callback: async (req, res) => res.send(await api.readSystem())
+  },
+  {
+    method: 'get',
+    path: '/manifest.json',
+    callback: async (req, res) => res.send(api.pwaManifest(req.query))
+  },
+  {
+    method: 'get',
+    path: '/service-worker.js',
+    callback: async (req, res) => {
+      res.type('text/javascript');
+      res.send(api.pwaServiceWorker());
+    }
+  },
+  {
+    method: 'get',
+    path: '/favicon.svg',
+    callback: async (req, res) => {
+      const iconFiles = config.pwa.iconFiles || [];
+      const svgFile = iconFiles.find(f => path.extname(f).toLowerCase() === '.svg');
+      if (svgFile && fs.existsSync(svgFile)) {
+        res.type('image/svg+xml');
+        res.sendFile(path.resolve(svgFile));
+        return;
+      }
+      res.type('image/svg+xml');
+      res.send(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="60" y="240" width="392" height="210" rx="15" fill="#2D3748"/>
+  <rect x="100" y="380" width="312" height="40" rx="4" fill="#4A5568"/>
+  <rect x="40" y="170" width="432" height="75" rx="8" fill="#3182CE"/>
+  <rect x="55" y="185" width="402" height="45" rx="4" fill="#63B3ED" opacity="0.4"/>
+  <path d="M60 120 L452 120 L472 170 L40 170 Z" fill="#E2E8F0"/>
+  <rect x="140" y="70" width="232" height="50" rx="10" fill="#A0AEC0"/>
+  <rect x="170" y="60" width="172" height="15" rx="3" fill="#CBD5E0"/>
+  <rect x="30" y="90" width="160" height="120" rx="10" fill="#1A202C"/>
+  <rect x="38" y="98" width="144" height="12" rx="2" fill="#718096"/>
+  <rect x="38" y="110" width="144" height="70" fill="white"/>
+  <rect x="48" y="130" width="25" height="25" rx="4" fill="#48BB78"/>
+  <rect x="83" y="130" width="25" height="25" rx="4" fill="#9F7AEA"/>
+  <rect x="118" y="130" width="25" height="25" rx="4" fill="#4299E1"/>
+  <rect x="38" y="180" width="144" height="24" rx="2" fill="#E2E8F0"/>
+  <rect x="155" y="184" width="16" height="16" rx="4" fill="#38A169"/>
+</svg>`);
+    }
+  },
+  {
+    method: 'get',
+    path: /\/icons\/pwa-icon\.(png|svg)$/,
+    callback: async (req, res) => {
+      const requestedExt = `.${req.params[0]}`;
+      const iconFiles = config.pwa.iconFiles || [];
+      const iconFile = iconFiles.find(f => path.extname(f).toLowerCase() === requestedExt);
+      if (!iconFile || !fs.existsSync(iconFile)) {
+        res.status(404).send('Not found');
+        return;
+      }
+      res.type(requestedExt === '.svg' ? 'image/svg+xml' : 'image/png');
+      res.sendFile(path.resolve(iconFile));
+    }
+  },
+  {
+    method: 'post',
+    path: '/api/v1/editor/sessions',
+    callback: async (req, res) => {
+      const result = await editorApi.createSession(req.body.files);
+      res.send(result);
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)$/,
+    callback: async (req, res) => {
+      res.send(editorApi.getSession(req.params[0]));
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/pages\/(\d+)\/thumbnail/,
+    callback: async (req, res) => {
+      let sizeOpts = null;
+      if (req.query.w && req.query.h && req.query.fitMode) {
+        sizeOpts = {
+          w: parseInt(req.query.w, 10),
+          h: parseInt(req.query.h, 10),
+          fitMode: req.query.fitMode,
+          margin: parseInt(req.query.margin || '0', 10),
+          rotation: parseInt(req.query.rotation || '0', 10)
+        };
+      }
+      const buffer = await editorApi.getThumbnail(
+        req.params[0], parseInt(req.params[1], 10), sizeOpts);
+      res.type('jpg');
+      res.send(buffer);
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/pages/,
+    callback: async (req, res) => {
+      const result = await editorApi.addPages(req.params[0], req.body.file);
+      res.send(result);
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      await editorApi.assemblePreview(req.params[0], req.body.pages);
+      res.send({ ok: true });
+    }
+  },
+  {
+    method: 'get',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/preview/,
+    callback: async (req, res) => {
+      const previewPath = editorApi.getPreviewPath(req.params[0]);
+      if (req.query.download === 'true') {
+        let filename = 'document.pdf';
+        if (req.query.filename) {
+          try {
+            FileInfo.assertFilenameIsSafe(req.query.filename);
+            filename = req.query.filename;
+          } catch (e) {
+            // Invalid filename chars — use safe default
+          }
+        }
+        res.download(path.resolve(previewPath), filename);
+      } else {
+        res.type('pdf');
+        res.sendFile(path.resolve(previewPath));
+      }
+    }
+  },
+  {
+    method: 'post',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)\/save/,
+    callback: async (req, res) => {
+      const result = await editorApi.save(
+        req.params[0], req.body.pages, req.body.filename,
+        req.body.paperSize || null, req.body.fitMode || null,
+        req.body.fitMargin || false);
+      res.send(result);
+    }
+  },
+  {
+    method: 'delete',
+    path: /\/api\/v1\/editor\/sessions\/([^/]+)/,
+    callback: async (req, res) => {
+      editorApi.deleteSession(req.params[0]);
+      res.send({});
+    }
+  },
+  {
+    method: 'get',
+    path: '/api/v1/logs',
+    callback: async (req, res) => res.send(logBuffer.getEntries())
   }
 ];
 
@@ -172,6 +386,47 @@ module.exports = class ExpressConfigurer {
       log.warn(`Error ensuring output and temp directories exist: ${exception}`);
       log.warn(`Currently running node version ${process.version}.`);
     }
+
+    // Editor: clean up orphaned sessions from previous runs
+    editorApi.startupCleanup();
+    // Editor: TTL-based cleanup every 5 minutes
+    setInterval(() => editorApi.ttlCleanup(), 5 * 60 * 1000);
+
+    const iconFiles = config.pwa.iconFiles || [];
+    if (iconFiles.length > 0) {
+      const hasRaster = iconFiles.some(f => path.extname(f).toLowerCase() !== '.svg');
+      if (!hasRaster) {
+        log.warn('config.pwa.iconFiles: no PNG icon provided. PWA installation on Chrome/Chromium requires at least one raster (PNG) icon — SVG alone is not sufficient.');
+      }
+      for (const f of iconFiles) {
+        if (!fs.existsSync(f)) {
+          log.warn(`config.pwa.iconFiles: file not found: ${f}`);
+        }
+      }
+    }
+  }
+
+  /**
+   * Configures security headers
+   * @returns {ExpressConfigurer}
+   */
+  securityHeaders() {
+    this.app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", 'https://static.cloudflareinsights.com'],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:'],
+          frameSrc: ["'self'"],
+          connectSrc: ["'self'", 'https://cloudflareinsights.com'],
+          fontSrc: ["'self'", 'data:'],
+        }
+      },
+      crossOriginEmbedderPolicy: false,
+      frameguard: { action: 'sameorigin' },
+    }));
+    return this;
   }
 
   /**
@@ -194,7 +449,9 @@ module.exports = class ExpressConfigurer {
    */
   encoding() {
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(express.json());
+    // Raise the JSON body limit to 10 MB so that large edit lists (many hundreds
+    // of pages) are not rejected by the default 100 kB cap.
+    this.app.use(express.json({ limit: '10mb' }));
     return this;
   }
 
@@ -213,6 +470,28 @@ module.exports = class ExpressConfigurer {
         }
       });
     });
+
+    // Ephemeral file upload: stream request body directly to disk — no in-memory
+    // buffer, so file size is limited only by available disk space, not RAM.
+    this.app.post(
+      /\/api\/v1\/editor\/sessions\/([^/]+)\/upload/,
+      async (req, res) => {
+        log.info({ method: req.method, path: req.path, query: req.query,
+          contentLength: req.headers['content-length'] !== undefined ? req.headers['content-length'] : 'unknown' });
+        try {
+          const filename = req.query.filename;
+          if (!filename || typeof filename !== 'string') {
+            req.resume(); // drain so the connection closes cleanly
+            res.status(400).send({ message: 'filename query parameter required' });
+            return;
+          }
+          const result = await editorApi.uploadStream(req.params[0], req, filename);
+          res.send(result);
+        } catch (error) {
+          sendError(res, 500, error);
+        }
+      }
+    );
   }
 
   /**

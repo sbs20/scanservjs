@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs es una interfaz gráfica simple y basada en web. Permite compartir uno o mas escáneres (utilizando SANE) en una red sin la necesidad de controladores adicionales o una instalación complicada. Permite guardar en formato TIF, JPG, PNG, PDF, y TXT (con Tesseract OCR) con varias configuraciones de compresión, todas ellas configurables. Soporta el escaneo multipágina y todos los dispositivos SANE compatibles.",
+    "system-info": "Información del sistema",
     "issue": "Indicar una incidencia o ver el código fuente:",
-    "system-info": "Información del sistema"
+    "logs": "Registros",
+    "logs-copy": "Copiar",
+    "logs-refresh": "Actualizar",
+    "logs-copied": "Registros copiados al portapapeles",
+    "logs-empty": "No hay entradas de registro"
   },
-
   "colors": {
     "accent-4": "Estándar",
     "red": "Rojo",
@@ -38,14 +40,12 @@
     "blue-grey": "Gris azulado",
     "grey": "Gris"
   },
-
   "batch-dialog": {
     "btn-cancel": "Cancelar",
     "btn-finish": "Terminar",
     "btn-rescan": "Reescanear página",
     "btn-next": "Siguiente"
   },
-
   "files": {
     "filename": "Nombre de fichero",
     "date": "Fecha",
@@ -55,22 +55,30 @@
     "message:deleted": "Borrado {0}",
     "message:renamed": "Fichero renombrado",
     "button:delete-selected": "Eliminar seleccionados",
+    "button:zip-selected": "Comprimir seleccionados",
     "dialog:rename": "Renombrar",
     "dialog:rename-cancel": "Cancelar",
     "dialog:rename-save": "Guardar",
     "actions": "Acciones",
+    "button:download": "Descargar",
+    "button:delete": "Eliminar",
+    "button:preview": "Vista previa",
     "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-size": "Thumbnail size",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:rename": "Renombrar"
   },
-
   "navigation": {
     "scan": "Escanear",
     "files": "Ficheros",
     "settings": "Configuración",
     "about": "Acerca de",
-    "version": "Versión"  
+    "version": "Versión"
   },
-
   "batch-mode": {
     "none": "Nada",
     "manual": "Manual (con aviso)",
@@ -78,26 +86,22 @@
     "auto-collate-standard": "Auto (ordenación 1, 3... 4, 2)",
     "auto-collate-reverse": "Auto (inversa 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "Autonivelar",
     "threshold": "Umbral",
     "blur": "Difuminar"
   },
-
   "mode": {
     "color": "Color",
     "halftone": "Punteado",
     "gray": "Gris",
     "lineart": "Blanco y negro",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Cuna",
     "adf": "Alimentador automático",
@@ -106,14 +110,12 @@
     "centrally-aligned": "Alineado al centro",
     "duplex": "Dúplex",
     "transparency unit": "Unidad de transparencia",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Calidad alta",
     "medium-quality": "Calidad media",
@@ -122,8 +124,7 @@
     "lzw-compressed": "Compresión LZW",
     "ocr": "OCR",
     "text-file": "Fichero de texto"
-  },  
-
+  },
   "paper-size": {
     "letter": "Letter (216 × 279 mm)",
     "legal": "Legal (216 × 356 mm)",
@@ -134,7 +135,6 @@
     "portrait": "Retrato",
     "landscape": "Apaisado"
   },
-
   "scan": {
     "device": "Dispositivo",
     "source": "Origen",
@@ -160,9 +160,67 @@
     "message:no-devices": "No se encuentran dispositivos",
     "message:deleted-preview": "Vista previa eliminada",
     "message:turn-documents": "Girar documentos",
-    "message:preview-of-page": "Vista previa de página"  
+    "message:preview-of-page": "Vista previa de página",
+    "rotate-cw": "Rotar 90° en sentido horario",
+    "rotate-ccw": "Rotar 90° en sentido antihorario",
+    "flip-h": "Voltear horizontalmente",
+    "flip-v": "Voltear verticalmente",
+    "autocrop-mode": "Recorte automático"
   },
-
+  "document-dialog": {
+    "view": "Ver",
+    "edit": "Editar",
+    "discard-changes": "Tiene cambios sin guardar. ¿Descartarlos?",
+    "preview-failed": "No se pudo generar la vista previa",
+    "back-to-editor": "Volver al editor"
+  },
+  "editor": {
+    "title": "Editor",
+    "undo": "Deshacer",
+    "redo": "Rehacer",
+    "add-pages": "Añadir páginas desde archivo",
+    "add-blank": "Añadir página en blanco",
+    "rotate-cw": "Rotar en sentido horario",
+    "rotate-ccw": "Rotar en sentido antihorario",
+    "delete": "Eliminar seleccionados",
+    "save": "Guardar",
+    "save-as": "Guardar como…",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "select-file": "Seleccionar archivo",
+    "status": "{0} páginas",
+    "sources": "Fuente: {0}",
+    "confirm-overwrite": "Ya existe un archivo llamado \"{0}\". ¿Sobrescribirlo?",
+    "overwrite-warning": "\"{0}\" ya existe y será sobrescrito",
+    "button:edit": "Editar",
+    "button:edit-selected": "Editar seleccionados",
+    "insert-blank-before": "Insertar página en blanco antes",
+    "insert-blank-after": "Insertar página en blanco después",
+    "select-all": "Seleccionar todo",
+    "deselect-all": "Deseleccionar todo",
+    "jump-to": "Ir a la página",
+    "selection-mode": "Modo selección",
+    "done": "Listo",
+    "page-order": "Orden de páginas",
+    "scope-selection": "Aplicar a {0} páginas seleccionadas",
+    "scope-all": "Aplicar a las {0} páginas",
+    "op-reverse": "Invertir orden de páginas",
+    "op-interleave": "Combinar anverso y reverso",
+    "op-interleave-reverse": "Combinar anverso y reverso (invertido)",
+    "op-interleave-reverse-hint": "Más común para escaneo dúplex con ADF símplex",
+    "op-swap-pairs": "Intercambiar cada par de páginas",
+    "op-deinterleave": "Separar anverso y reverso",
+    "paper-size": "Tamaño de papel",
+    "fit-mode": "Aplicar como",
+    "fit-set-size": "Establecer solo el tamaño de página (seguro para OCR)",
+    "fit-fit": "Ajustar contenido a la página",
+    "fit-ocr-warning": "El escalado de contenido puede afectar el texto buscable en documentos con OCR",
+    "fit-fill": "Escalar para rellenar (puede recortar)",
+    "fit-use-margin": "Añadir margen ~1 cm",
+    "set-page-size": "Establecer tamaño de página",
+    "apply": "Aplicar",
+    "upload-file": "Subir archivo"
+  },
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Comportamiento e interfaz gráfica",
@@ -180,6 +238,52 @@
     "reset:description": "Limpia los dispositivos almacenados y fuerza la recarga",
     "reset": "Reestablecer",
     "clear-storage:description": "Limpia el almacenamiento local y cualquier parámetro en caché",
-    "clear-storage": "Limpiar"
+    "clear-storage": "Limpiar",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
+    "clear-storage:notification": "Local scan parameters cleared.",
+    "pwa": {
+      "section-title": "Desktop App (PWA)",
+      "section-title-installed": "App Status",
+      "description": "Install scanservjs as a standalone desktop application for faster access.",
+      "description-installed": "You are running scanservjs as an installed app. You can reconfigure its launch parameters here.",
+      "btn-install": "Install App",
+      "btn-reconfigure": "Reconfigure App",
+      "dialog-title": "Install as Desktop App",
+      "dialog-title-reconfigure": "Reconfigure Application",
+      "reinstall-note": "Changes will only take effect after you uninstall and reinstall the application.",
+      "label-name": "App Name",
+      "hint-name": "The name shown on your desktop or home screen",
+      "label-scanner": "Default Scanner",
+      "hint-scanner": "The scanner pre-selected on startup",
+      "advanced-title": "Advanced Startup Presets",
+      "advanced-description": "Choose how each parameter behaves when the app starts up.",
+      "col-parameter": "Parameter",
+      "col-behavior": "Startup Behavior",
+      "mode-persist": "Persist",
+      "mode-default": "Default",
+      "mode-preset": "Preset",
+      "btn-apply": "Apply & Install",
+      "btn-save-pending": "Set Pending Config",
+      "saved": "Configuration saved. You can now install the app from your browser.",
+      "saved-reinstall": "Configuration saved. Uninstall and reinstall the app to apply changes.",
+      "group-scan-area": "Scan Area",
+      "group-image-quality": "Image Quality",
+      "group-source": "Source",
+      "group-output": "Output",
+      "param-paper-size": "Paper Size",
+      "param-resolution": "Resolution (dpi)",
+      "param-mode": "Scan Mode",
+      "param-brightness": "Brightness",
+      "param-contrast": "Contrast",
+      "param-source": "Scan Source",
+      "param-batch-mode": "Batch Mode",
+      "param-pipeline": "Output Pipeline",
+      "param-autocrop-mode": "Recorte automático"
+    }
+  },
+  "autocrop-mode": {
+    "off": "Desactivado",
+    "interactive": "Estándar",
+    "batch": "Conservador"
   }
 }

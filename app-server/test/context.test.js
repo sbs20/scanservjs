@@ -41,6 +41,10 @@ describe('Context', () => {
         ],
         default: 'none'
       },
+      autoCropMode: {
+        options: ['off', 'interactive', 'batch'],
+        default: 'off'
+      },
       filters: {
         options: [
           'filter.auto-contrast',
@@ -111,6 +115,10 @@ describe('Context', () => {
         ],
         default: 'banana'
       },
+      autoCropMode: {
+        options: ['off', 'interactive', 'batch'],
+        default: 'off'
+      },
       filters: {
         options: [
           'filter.auto-level'
@@ -180,6 +188,10 @@ describe('Context', () => {
         ],
         default: 'banana'
       },
+      autoCropMode: {
+        options: ['off', 'interactive', 'batch'],
+        default: 'off'
+      },
       filters: {
         options: [
           'filter.auto-level'
@@ -203,6 +215,10 @@ describe('Context', () => {
           'auto-collate-standard'
         ],
         default: 'auto'
+      },
+      autoCropMode: {
+        options: ['off', 'interactive', 'batch'],
+        default: 'off'
       },
       filters: {
         options: [

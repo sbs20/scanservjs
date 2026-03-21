@@ -35,6 +35,10 @@ module.exports = class Context {
           options: config.batchModes,
           default: config.batchModes[0]
         },
+        autoCropMode: {
+          options: config.autoCropModes,
+          default: config.autoCropModes[0]
+        },
         filters: {
           options: config.filters.map(f => f.description),
           default: []
@@ -60,6 +64,7 @@ module.exports = class Context {
 
     this.devices = devices;
     this.version = config.version;
+    this.scanOnTabClick = config.scanOnTabClick;
     this.diagnostics = [
       diagnostic(config.scanimage),
       diagnostic(config.convert)
@@ -70,6 +75,8 @@ module.exports = class Context {
 
     /** @type {string[]} */
     this.actions = userOptions.actions().map(a => a.name);
+
+    this.pwa = config.pwa;
   }
 
   /**

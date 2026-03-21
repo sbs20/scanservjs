@@ -4,8 +4,48 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="./favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <title>scanservjs</title>
+    <link rel="manifest" href="/manifest.json" id="pwa-manifest">
+    <script>
+      (function() {
+        try {
+          const config = JSON.parse(localStorage.getItem('pwa-config') || '{}');
+          if (config.name || config.scannerId || config.kiosk) {
+            const params = new URLSearchParams();
+            if (config.name) {
+              params.append('name', config.name);
+              params.append('shortName', config.shortName || config.name.split(' ')[0] || 'Scanner');
+            }
+            const startUrl = new URL(window.location.origin);
+            if (config.scannerId) startUrl.searchParams.append('deviceId', config.scannerId);
+            
+            // Add kiosk/reset parameters
+            if (config.kiosk) {
+              Object.keys(config.kiosk).forEach(key => {
+                const setting = config.kiosk[key];
+                if (setting.mode === 'preset') {
+                  startUrl.searchParams.append(`kiosk[${key}]`, setting.value);
+                } else if (setting.mode === 'default') {
+                  const resets = startUrl.searchParams.get('reset') ? startUrl.searchParams.get('reset').split(',') : [];
+                  resets.push(key);
+                  startUrl.searchParams.set('reset', resets.join(','));
+                }
+              });
+            }
+            params.append('startUrl', startUrl.pathname + startUrl.search);
+            
+            document.getElementById('pwa-manifest').href = '/manifest.json?' + params.toString();
+          }
+        } catch (e) { console.error('PWA config error', e); }
+        
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+          });
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.js" defer></script>
   </head>
   <body role="document">

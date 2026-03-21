@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs - простой веб-интерфейс для сканеров, который предоставляет общий доступ к сканерам по сети (используя SANE) без необходимости устанавливать драйверы и исключая сложную процедуру настройки. Поддерживаются форматы TIF, JPG, PNG, PDF и TXT (используется Tesseract OCR) с возможностью задать степень сжатия. Доступно сканирование многостраничных документов. Работает со всеми SANE-совместимыми устройствами.",
+    "system-info": "Информация о системе",
     "issue": "Обратная связь, исходный код:",
-    "system-info": "Информация о системе"
+    "logs": "Журналы",
+    "logs-copy": "Копировать",
+    "logs-refresh": "Обновить",
+    "logs-copied": "Журналы скопированы в буфер обмена",
+    "logs-empty": "Нет записей в журнале"
   },
-
   "colors": {
     "accent-4": "По умолчанию",
     "red": "Красный",
@@ -38,14 +40,12 @@
     "blue-grey": "Серо-голубой",
     "grey": "Серый"
   },
-
   "batch-dialog": {
     "btn-cancel": "Отмена",
     "btn-finish": "Готово",
     "btn-rescan": "Переснять",
     "btn-next": "Далее"
   },
-
   "files": {
     "filename": "Имя файла",
     "date": "Дата",
@@ -55,14 +55,23 @@
     "message:deleted": "Удален {0}",
     "message:renamed": "Файл переименован",
     "button:delete-selected": "Удалить выбранное",
+    "button:zip-selected": "Архивировать выбранные",
     "dialog:rename": "Переименовать",
     "dialog:rename-cancel": "Отмена",
     "dialog:rename-save": "Сохранить",
     "actions": "Действие",
+    "button:download": "Скачать",
+    "button:delete": "Удалить",
+    "button:preview": "Предпросмотр",
     "thumbnail-show": "Показывать миниатюры",
-    "thumbnail-size": "Размер миниатюры"
+    "thumbnail-size": "Размер миниатюры",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:rename": "Переименовать"
   },
-
   "navigation": {
     "scan": "Сканирование",
     "files": "Файлы",
@@ -70,7 +79,6 @@
     "about": "О программе",
     "version": "Версия"
   },
-
   "batch-mode": {
     "none": "Не выбрано",
     "manual": "Вручную (с предпросмотром)",
@@ -78,26 +86,22 @@
     "auto-collate-standard": "Авто (Сопоставить 1, 3... 4, 2)",
     "auto-collate-reverse": "Авто (В обратном порядке 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "Автоматическое выравнивание",
     "threshold": "Порог",
     "blur": "Размытие"
   },
-
   "mode": {
     "color": "Цветной",
     "halftone": "Полутона",
     "gray": "Серый",
     "lineart": "Черно-белый",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Планшет",
     "adf": "Автоподача документов",
@@ -106,14 +110,12 @@
     "centrally-aligned": "Выровнено по центру",
     "duplex": "Duplex",
     "transparency unit": "Transparency Unit",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Высокое качество",
     "medium-quality": "Среднее качество",
@@ -123,7 +125,6 @@
     "ocr": "OCR",
     "text-file": "Текстовый файл"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +135,6 @@
     "portrait": "Portrait",
     "landscape": "Landscape"
   },
-
   "scan": {
     "device": "Устройство",
     "source": "Источник",
@@ -160,9 +160,67 @@
     "message:no-devices": "Устройства не обнаружены",
     "message:deleted-preview": "Удалено",
     "message:turn-documents": "Повернуть",
-    "message:preview-of-page": "Предпросмотр страницы"
+    "message:preview-of-page": "Предпросмотр страницы",
+    "rotate-cw": "Повернуть на 90° по часовой стрелке",
+    "rotate-ccw": "Повернуть на 90° против часовой стрелки",
+    "flip-h": "Отразить по горизонтали",
+    "flip-v": "Отразить по вертикали",
+    "autocrop-mode": "Автообрезка"
   },
-
+  "document-dialog": {
+    "view": "Просмотр",
+    "edit": "Редактировать",
+    "discard-changes": "Есть несохранённые изменения. Отменить их?",
+    "preview-failed": "Не удалось создать предпросмотр",
+    "back-to-editor": "Вернуться к редактору"
+  },
+  "editor": {
+    "title": "Редактор",
+    "undo": "Отменить",
+    "redo": "Повторить",
+    "add-pages": "Добавить страницы из файла",
+    "add-blank": "Добавить пустую страницу",
+    "rotate-cw": "Повернуть по часовой стрелке",
+    "rotate-ccw": "Повернуть против часовой стрелки",
+    "delete": "Удалить выбранные",
+    "save": "Сохранить",
+    "save-as": "Сохранить как…",
+    "cancel": "Отмена",
+    "add": "Добавить",
+    "select-file": "Выбрать файл",
+    "status": "{0} страниц",
+    "sources": "Источник: {0}",
+    "confirm-overwrite": "Файл с именем \"{0}\" уже существует. Перезаписать?",
+    "overwrite-warning": "\"{0}\" уже существует и будет перезаписан",
+    "button:edit": "Редактировать",
+    "button:edit-selected": "Редактировать выбранные",
+    "insert-blank-before": "Вставить пустую страницу перед",
+    "insert-blank-after": "Вставить пустую страницу после",
+    "select-all": "Выбрать все",
+    "deselect-all": "Снять выделение",
+    "jump-to": "Перейти на страницу",
+    "selection-mode": "Режим выбора",
+    "done": "Готово",
+    "page-order": "Порядок страниц",
+    "scope-selection": "Применить к {0} выбранным страницам",
+    "scope-all": "Применить ко всем {0} страницам",
+    "op-reverse": "Обратный порядок страниц",
+    "op-interleave": "Объединить лицевые и обратные страницы",
+    "op-interleave-reverse": "Объединить лицевые и обратные страницы (обратный порядок)",
+    "op-interleave-reverse-hint": "Самый распространённый вариант для дуплексного сканирования с симплексным АПД",
+    "op-swap-pairs": "Поменять местами каждую пару страниц",
+    "op-deinterleave": "Разделить лицевые и обратные страницы",
+    "paper-size": "Размер бумаги",
+    "fit-mode": "Применить как",
+    "fit-set-size": "Только задать размер страницы (безопасно для OCR)",
+    "fit-fit": "Масштабировать содержимое по странице",
+    "fit-ocr-warning": "Масштабирование содержимого может повлиять на распознанный текст в документах с OCR",
+    "fit-fill": "Масштаб для заполнения (может обрезать)",
+    "fit-use-margin": "Добавить поля ~1 см",
+    "set-page-size": "Задать размер страницы",
+    "apply": "Применить",
+    "upload-file": "Загрузить файл"
+  },
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Пользовательский интерфейс и поведение",
@@ -180,6 +238,52 @@
     "reset:description": "Очистить сохраненные устройства сканера и перезагрузиться",
     "reset": "Сбросить",
     "clear-storage:description": "Очистить локальное хранилище и сбросить настройки по умолчанию",
-    "clear-storage": "Очистить"
+    "clear-storage": "Очистить",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
+    "clear-storage:notification": "Local scan parameters cleared.",
+    "pwa": {
+      "section-title": "Desktop App (PWA)",
+      "section-title-installed": "App Status",
+      "description": "Install scanservjs as a standalone desktop application for faster access.",
+      "description-installed": "You are running scanservjs as an installed app. You can reconfigure its launch parameters here.",
+      "btn-install": "Install App",
+      "btn-reconfigure": "Reconfigure App",
+      "dialog-title": "Install as Desktop App",
+      "dialog-title-reconfigure": "Reconfigure Application",
+      "reinstall-note": "Changes will only take effect after you uninstall and reinstall the application.",
+      "label-name": "App Name",
+      "hint-name": "The name shown on your desktop or home screen",
+      "label-scanner": "Default Scanner",
+      "hint-scanner": "The scanner pre-selected on startup",
+      "advanced-title": "Advanced Startup Presets",
+      "advanced-description": "Choose how each parameter behaves when the app starts up.",
+      "col-parameter": "Parameter",
+      "col-behavior": "Startup Behavior",
+      "mode-persist": "Persist",
+      "mode-default": "Default",
+      "mode-preset": "Preset",
+      "btn-apply": "Apply & Install",
+      "btn-save-pending": "Set Pending Config",
+      "saved": "Configuration saved. You can now install the app from your browser.",
+      "saved-reinstall": "Configuration saved. Uninstall and reinstall the app to apply changes.",
+      "group-scan-area": "Scan Area",
+      "group-image-quality": "Image Quality",
+      "group-source": "Source",
+      "group-output": "Output",
+      "param-paper-size": "Paper Size",
+      "param-resolution": "Resolution (dpi)",
+      "param-mode": "Scan Mode",
+      "param-brightness": "Brightness",
+      "param-contrast": "Contrast",
+      "param-source": "Scan Source",
+      "param-batch-mode": "Batch Mode",
+      "param-pipeline": "Output Pipeline",
+      "param-autocrop-mode": "Автообрезка"
+    }
+  },
+  "autocrop-mode": {
+    "off": "Отключено",
+    "interactive": "Стандартный",
+    "batch": "Консервативный"
   }
 }

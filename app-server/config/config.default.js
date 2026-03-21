@@ -24,6 +24,13 @@ module.exports = {
     // config.convert = '/usr/bin/convert';
     // config.tesseract = '/usr/bin/tesseract';
     // config.previewResolution = 100;
+    // config.pwa.name = 'scanservjs';
+    // config.pwa.shortName = 'Scanner';
+    // config.pwa.themeColor = '#1976D2';
+    // config.pwa.iconFiles = ['/etc/scanservjs/pwa-icon.png'];
+    // config.pwa.iconFiles = ['/etc/scanservjs/pwa-icon.svg', '/etc/scanservjs/pwa-icon.png'];
+    // config.pwa.lockName = false;
+    // config.pwa.lockDevice = false;
 
     /* When all scans are complete, the filenames are all piped into stdin of the
     first pipeline command. It would be nicer to pipe the binary output of scanimage
@@ -112,6 +119,18 @@ module.exports = {
     //   device.features['--contrast'].default = 20;
     //   device.features['-x'].default = 215;
     //   device.features['-y'].default = 297;
+    // }
+
+    // Override the default automatic crop mode for a specific device.
+    // Valid values: 'off' (disabled), 'interactive' (standard, full algorithm),
+    //               'batch' (conservative, high-confidence crops only).
+    // This controls automatic per-page cropping during batch/ADF scanning.
+    // The manual magic-wand button always uses the full interactive algorithm
+    // regardless of this setting.
+    //
+    // const device = devices[0];
+    // if (device) {
+    //   device.settings.autoCropMode.default = 'batch';
     // }
   },
 

@@ -5,19 +5,21 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Nincs elérhető adat"
   },
-
   "about": {
     "main": "A scanservjs egy egyszerű webes felhasználói felület a szkenneréhez. Lehetővé teszi egy vagy több szkenner (SANE használatával) megosztását egy hálózaton, illesztőprogramok vagy bonyolult telepítés nélkül. TIF, JPG, PNG, PDF és TXT formátumba (Tesseract OCR segítségével) tud menteni, különböző tömörítési beállításokkal, amelyek mindegyike konfigurálható. Támogatja a többoldalas szkennelést és az összes SANE-kompatibilis eszközt.",
-    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
     "api": "Swagger API dokumentáció:",
-    "system-info": "Rendszer információ"
+    "system-info": "Rendszer információ",
+    "issue": "Hiba bejelentése vagy a forráskód megtekintése:",
+    "logs": "Naplók",
+    "logs-copy": "Másolás",
+    "logs-refresh": "Frissítés",
+    "logs-copied": "Naplók vágólapra másolva",
+    "logs-empty": "Nincsenek naplóbejegyzések"
   },
-
   "colors": {
     "accent-4": "Alapértelmezett",
     "red": "Piros",
@@ -40,14 +42,12 @@
     "blue-grey": "Kékesszürke",
     "grey": "Szürke"
   },
-
   "batch-dialog": {
     "btn-cancel": "Mégsem",
     "btn-finish": "Kész",
     "btn-rescan": "Oldal újrascannelése",
     "btn-next": "Következő"
   },
-
   "files": {
     "filename": "Fájlnév",
     "date": "Dátum",
@@ -59,14 +59,23 @@
     "message:renamed": "Fájl átnevezve",
     "button:action-selected": "Feladat futtatása...",
     "button:delete-selected": "Kijelöltek törlése",
+    "button:zip-selected": "Kiválasztottak tömörítése",
     "dialog:rename": "Fájl átnevezése",
     "dialog:rename-cancel": "Mégsem",
     "dialog:rename-save": "Mentés",
     "actions": "Akciók",
+    "button:download": "Letöltés",
+    "button:delete": "Törlés",
+    "button:preview": "Előnézet",
     "thumbnail-show": "Bélyegképek mutatása",
-    "thumbnail-size": "Bélyegképek mérete"
+    "thumbnail-size": "Bélyegképek mérete",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:rename": "Átnevezés"
   },
-
   "navigation": {
     "scan": "Szkennelés",
     "files": "Fájlok",
@@ -74,7 +83,6 @@
     "about": "A programról",
     "version": "Verzió"
   },
-
   "batch-mode": {
     "none": "Nincs",
     "manual": "Kézi (megerősítéssel)",
@@ -82,31 +90,26 @@
     "auto-collate-standard": "Automata (Leválogatás 1, 3... 4, 2)",
     "auto-collate-reverse": "Automata (Kihagyás 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Automata szint",
     "threshold": "Korlát",
     "blur": "Elmosás"
   },
-
   "mode": {
     "color": "Színes",
     "halftone": "Féltónus",
     "gray": "Szürke",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "Egyoldalas",
     "duplex": "Kétoldalas"
   },
-
   "source": {
     "flatbed": "Síkágyas",
     "adf": "ADF",
@@ -115,14 +118,12 @@
     "centrally-aligned": "Középre Igazított",
     "duplex": "Kétoldalas",
     "transparency unit": "Átlátszósági egység",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Magas minőség",
     "medium-quality": "Közepes minőség",
@@ -132,7 +133,6 @@
     "ocr": "OCR",
     "text-file": "Szöveges fájl"
   },
-
   "paper-size": {
     "letter": "Levél",
     "legal": "Legal",
@@ -143,7 +143,6 @@
     "portrait": "Álló",
     "landscape": "Fekvő"
   },
-
   "scan": {
     "device": "Eszköz",
     "source": "Forrás",
@@ -170,9 +169,67 @@
     "message:no-devices": "Nem találtam eszközt",
     "message:deleted-preview": "Törölt előnézet",
     "message:turn-documents": "Fordítsa meg a dokumentumokat",
-    "message:preview-of-page": "Oldal előnézete"
+    "message:preview-of-page": "Oldal előnézete",
+    "rotate-cw": "Elforgatás 90°-kal az óramutató járásával megegyezően",
+    "rotate-ccw": "Elforgatás 90°-kal az óramutató járásával ellentétesen",
+    "flip-h": "Vízszintes tükrözés",
+    "flip-v": "Függőleges tükrözés",
+    "autocrop-mode": "Automatikus kivágás"
   },
-
+  "document-dialog": {
+    "view": "Megtekintés",
+    "edit": "Szerkesztés",
+    "discard-changes": "Nem mentett módosítások vannak. Elveti őket?",
+    "preview-failed": "Az előnézet nem generálható",
+    "back-to-editor": "Vissza a szerkesztőhöz"
+  },
+  "editor": {
+    "title": "Szerkesztő",
+    "undo": "Visszavonás",
+    "redo": "Újra",
+    "add-pages": "Oldalak hozzáadása fájlból",
+    "add-blank": "Üres oldal hozzáadása",
+    "rotate-cw": "Elforgatás az óramutató járásával",
+    "rotate-ccw": "Elforgatás az óramutató járásával ellentétesen",
+    "delete": "Kijelöltek törlése",
+    "save": "Mentés",
+    "save-as": "Mentés másként…",
+    "cancel": "Mégsem",
+    "add": "Hozzáadás",
+    "select-file": "Fájl kiválasztása",
+    "status": "{0} oldal",
+    "sources": "Forrás: {0}",
+    "confirm-overwrite": "Már létezik \"{0}\" nevű fájl. Felülírja?",
+    "overwrite-warning": "A(z) \"{0}\" már létezik, és felül lesz írva",
+    "button:edit": "Szerkesztés",
+    "button:edit-selected": "Kijelöltek szerkesztése",
+    "insert-blank-before": "Üres oldal beszúrása elé",
+    "insert-blank-after": "Üres oldal beszúrása mögé",
+    "select-all": "Összes kijelölése",
+    "deselect-all": "Kijelölés törlése",
+    "jump-to": "Ugrás az oldalra",
+    "selection-mode": "Kijelölési mód",
+    "done": "Kész",
+    "page-order": "Oldalak sorrendje",
+    "scope-selection": "Alkalmazás {0} kijelölt oldalra",
+    "scope-all": "Alkalmazás mind a {0} oldalra",
+    "op-reverse": "Oldalsorrend megfordítása",
+    "op-interleave": "Elő- és hátoldalak összefésülése",
+    "op-interleave-reverse": "Elő- és hátoldalak összefésülése (fordított)",
+    "op-interleave-reverse-hint": "Leggyakoribb duplex szkennelésnél simplex ADF-fel",
+    "op-swap-pairs": "Oldalak páronkénti cseréje",
+    "op-deinterleave": "Elő- és hátoldalak szétválasztása",
+    "paper-size": "Papírméret",
+    "fit-mode": "Alkalmazás módja",
+    "fit-set-size": "Csak az oldalméret beállítása (OCR-biztonságos)",
+    "fit-fit": "Tartalom méretezése az oldalhoz",
+    "fit-ocr-warning": "A tartalom átméretezése befolyásolhatja az OCR-rel feldolgozott dokumentumok kereshető szövegét",
+    "fit-fill": "Kitöltés (levághat)",
+    "fit-use-margin": "~1 cm margó hozzáadása",
+    "set-page-size": "Oldalméret beállítása",
+    "apply": "Alkalmaz",
+    "upload-file": "Fájl feltöltése"
+  },
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Viselkedés és UI",
@@ -190,6 +247,52 @@
     "reset:description": "Törli a tárolt szkennereszközöket és újratöltést kényszerít ki.",
     "reset": "Reset",
     "clear-storage:description": "Törli a gyorsítótárazott paraméterek helyi tárolását",
-    "clear-storage": "Törlés"
+    "clear-storage": "Törlés",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
+    "clear-storage:notification": "Local scan parameters cleared.",
+    "pwa": {
+      "section-title": "Desktop App (PWA)",
+      "section-title-installed": "App Status",
+      "description": "Install scanservjs as a standalone desktop application for faster access.",
+      "description-installed": "You are running scanservjs as an installed app. You can reconfigure its launch parameters here.",
+      "btn-install": "Install App",
+      "btn-reconfigure": "Reconfigure App",
+      "dialog-title": "Install as Desktop App",
+      "dialog-title-reconfigure": "Reconfigure Application",
+      "reinstall-note": "Changes will only take effect after you uninstall and reinstall the application.",
+      "label-name": "App Name",
+      "hint-name": "The name shown on your desktop or home screen",
+      "label-scanner": "Default Scanner",
+      "hint-scanner": "The scanner pre-selected on startup",
+      "advanced-title": "Advanced Startup Presets",
+      "advanced-description": "Choose how each parameter behaves when the app starts up.",
+      "col-parameter": "Parameter",
+      "col-behavior": "Startup Behavior",
+      "mode-persist": "Persist",
+      "mode-default": "Default",
+      "mode-preset": "Preset",
+      "btn-apply": "Apply & Install",
+      "btn-save-pending": "Set Pending Config",
+      "saved": "Configuration saved. You can now install the app from your browser.",
+      "saved-reinstall": "Configuration saved. Uninstall and reinstall the app to apply changes.",
+      "group-scan-area": "Scan Area",
+      "group-image-quality": "Image Quality",
+      "group-source": "Source",
+      "group-output": "Output",
+      "param-paper-size": "Paper Size",
+      "param-resolution": "Resolution (dpi)",
+      "param-mode": "Scan Mode",
+      "param-brightness": "Brightness",
+      "param-contrast": "Contrast",
+      "param-source": "Scan Source",
+      "param-batch-mode": "Batch Mode",
+      "param-pipeline": "Output Pipeline",
+      "param-autocrop-mode": "Automatikus kivágás"
+    }
+  },
+  "autocrop-mode": {
+    "off": "Kikapcsolva",
+    "interactive": "Normál",
+    "batch": "Konzervatív"
   }
 }

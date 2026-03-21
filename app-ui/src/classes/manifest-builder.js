@@ -36,15 +36,34 @@ export default class ManifestBuilder {
     }
   }
 
+  startUrl() {
+    const pwaConfig = this.storage.pwaConfig;
+    const params = new URLSearchParams();
+    if (pwaConfig.scannerId) {
+      params.set('deviceId', pwaConfig.scannerId);
+    }
+    for (const [param, cfg] of Object.entries(pwaConfig.kiosk || {})) {
+      if (cfg.mode === 'preset') {
+        params.set(`kiosk[${param}]`, cfg.value);
+      } else if (cfg.mode === 'default') {
+        const resets = params.get('reset');
+        params.set('reset', resets ? `${resets},${param}` : param);
+      }
+    }
+    const qs = params.toString();
+    return qs ? `/?${qs}#/scan` : '/#/scan';
+  }
+
   build() {
+    const name = this.storage.pwaConfig.name || 'scanservjs';
     return {
       theme_color : this.themeColor(),
       background_color : this.dark ? '#000000' : '#FFFFFF',
       display : 'standalone',
       scope : '/',
-      start_url : '/#/scan',
-      name : 'scanservjs',
-      short_name : 'scanservjs',
+      start_url : this.startUrl(),
+      name : name,
+      short_name : name,
       description : 'SANE scanner nodejs web ui',
       icons : [
         {
@@ -58,18 +77,6 @@ export default class ManifestBuilder {
           sizes : '512x512',
           type : 'image/png',
           purpose : 'any'
-        },
-        {
-          src : './icons/android-chrome-maskable-192x192.png',
-          sizes : '192x192',
-          type : 'image/png',
-          purpose : 'maskable'
-        },
-        {
-          src : './icons/android-chrome-maskable-512x512.png',
-          sizes : '512x512',
-          type : 'image/png',
-          purpose : 'maskable'
         }
       ]
     };

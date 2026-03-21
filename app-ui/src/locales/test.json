@@ -5,19 +5,16 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "##APPNAME",
     "no-data-text": "##NODATA"
   },
-
   "about": {
     "main": "##ABOUT.MAIN",
     "issue": "##ABOUT.ISSUE",
     "api": "##SWAGGER API:",
     "system-info": "###ABOUT.SYSTEM-INFO"
   },
-
   "colors": {
     "accent-4": "##Default",
     "red": "##Red",
@@ -40,14 +37,12 @@
     "blue-grey": "##Blue grey",
     "grey": "##Grey"
   },
-
   "batch-dialog": {
     "btn-cancel": "##CANCEL",
     "btn-finish": "##FINISH",
     "btn-rescan": "##RESCAN",
     "btn-next": "##NEXT"
   },
-
   "files": {
     "filename": "##FILENAME",
     "date": "##DATE",
@@ -64,9 +59,13 @@
     "dialog:rename-save": "##SAVE",
     "actions": "##ACTIONS",
     "thumbnail-show": "##SHOWTHUMB",
-    "thumbnail-size": "##THUMBSIZE"
+    "thumbnail-size": "##THUMBSIZE",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers"
   },
-
   "navigation": {
     "appname": "##APPNAME",
     "scan": "##SCAN",
@@ -75,7 +74,6 @@
     "about": "##ABOUT",
     "version": "##VERSION"
   },
-
   "batch-mode": {
     "none": "##NONE",
     "manual": "##MANUAL",
@@ -83,7 +81,6 @@
     "auto-collate-standard": "##COLLATE-STANDARD",
     "auto-collate-reverse": "##COLLATE-REVERSE"
   },
-
   "filter": {
     "auto-level": "##SCAN.FILTERS:AUTO-LEVEL",
     "auto-contrast": "##SCAN.FILTERS:AUTO-CONTRAST",
@@ -91,25 +88,21 @@
     "threshold": "##SCAN.FILTERS:THRESHOLD",
     "blur": "##SCAN.FILTERS:BLUR"
   },
-
   "mode": {
     "color": "##COLOUR",
     "halftone": "##HALFTONE",
     "gray": "##GREY",
     "lineart": "##LINEART",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "adf-mode": {
     "simplex": "##SIMPLEX",
     "duplex": "##DUPLEX"
   },
-
   "source": {
     "flatbed": "##FLATBED",
     "adf": "##ADF",
@@ -118,14 +111,12 @@
     "centrally-aligned": "##CENTRAL",
     "duplex": "##DUPLEX",
     "transparency unit": "##TRANSPARENCY",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "##HIGH-QUALITY",
     "medium-quality": "##MEDIUM-QUALITY",
@@ -135,7 +126,6 @@
     "ocr": "##OCR",
     "text-file": "##TEXT-FILE"
   },
-
   "paper-size": {
     "letter": "##LETTER",
     "legal": "##LEGAL",
@@ -146,7 +136,6 @@
     "portrait": "##PORTRAIT",
     "landscape": "##LANDSCAPE"
   },
-
   "scan": {
     "device": "##SCAN.DEVICE",
     "source": "##SCAN.SOURCE",
@@ -175,7 +164,6 @@
     "message:turn-documents": "##SCAN.TURN",
     "message:preview-of-page": "##SCAN.PREVIEW-OF"
   },
-
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "##SETTINGS.BEHAVIOUR-UI",
@@ -193,6 +181,46 @@
     "reset:description": "##SETTINGS.RESET:DESCRIPTION",
     "reset": "##SETTINGS.RESET",
     "clear-storage:description": "##SETTINGS.CLEAR-STORAGE:DESCRIPTION",
-    "clear-storage": "##SETTINGS.CLEAR"
+    "clear-storage": "##SETTINGS.CLEAR",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
+    "clear-storage:notification": "Local scan parameters cleared.",
+    "pwa": {
+      "section-title": "Desktop App (PWA)",
+      "section-title-installed": "App Status",
+      "description": "Install scanservjs as a standalone desktop application for faster access.",
+      "description-installed": "You are running scanservjs as an installed app. You can reconfigure its launch parameters here.",
+      "btn-install": "Install App",
+      "btn-reconfigure": "Reconfigure App",
+      "dialog-title": "Install as Desktop App",
+      "dialog-title-reconfigure": "Reconfigure Application",
+      "reinstall-note": "Changes will only take effect after you uninstall and reinstall the application.",
+      "label-name": "App Name",
+      "hint-name": "The name shown on your desktop or home screen",
+      "label-scanner": "Default Scanner",
+      "hint-scanner": "The scanner pre-selected on startup",
+      "advanced-title": "Advanced Startup Presets",
+      "advanced-description": "Choose how each parameter behaves when the app starts up.",
+      "col-parameter": "Parameter",
+      "col-behavior": "Startup Behavior",
+      "mode-persist": "Persist",
+      "mode-default": "Default",
+      "mode-preset": "Preset",
+      "btn-apply": "Apply & Install",
+      "btn-save-pending": "Set Pending Config",
+      "saved": "Configuration saved. You can now install the app from your browser.",
+      "saved-reinstall": "Configuration saved. Uninstall and reinstall the app to apply changes.",
+      "group-scan-area": "Scan Area",
+      "group-image-quality": "Image Quality",
+      "group-source": "Source",
+      "group-output": "Output",
+      "param-paper-size": "Paper Size",
+      "param-resolution": "Resolution (dpi)",
+      "param-mode": "Scan Mode",
+      "param-brightness": "Brightness",
+      "param-contrast": "Contrast",
+      "param-source": "Scan Source",
+      "param-batch-mode": "Batch Mode",
+      "param-pipeline": "Output Pipeline"
+    }
   }
 }

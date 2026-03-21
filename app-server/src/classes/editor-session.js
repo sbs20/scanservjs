@@ -1,0 +1,561 @@
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const FileInfo = require('./file-info');
+const Process = require('./process');
+const XfaTool = require('./xfa-tool');
+const log = require('loglevel').getLogger('EditorSession');
+
+const SESSION_PREFIX = 'editor-';
+const THUMB_SIZE = 256;
+const THUMB_QUALITY = 60;
+
+/**
+ * Represents a single editor session with its working directory, pages,
+ * and lifecycle management.
+ */
+class EditorSession {
+  /**
+   * @param {string} id
+   * @param {string} dir - absolute path to session directory
+   * @param {Array} pages - page metadata array
+   * @param {object} config - app config
+   * @param {import('./pdf-tool')} pdfTool
+   */
+  constructor(id, dir, pages, config, pdfTool) {
+    this.id = id;
+    this.dir = dir;
+    this.pages = pages;
+    this.config = config;
+    this.pdfTool = pdfTool;
+    this.createdAt = new Date();
+    this.lastAccessedAt = new Date();
+  }
+
+  /**
+   * Create a new editor session from a list of files.
+   * @param {string[]} files - filenames relative to outputDirectory
+   * @param {object} config
+   * @param {import('./pdf-tool')} pdfTool
+   * @returns {Promise<EditorSession>}
+   */
+  static async create(files, config, pdfTool) {
+    const id = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : crypto.randomBytes(16).toString('hex');
+    const dir = path.join(config.tempDirectory, `${SESSION_PREFIX}${id}`);
+    fs.mkdirSync(path.join(dir, 'pages'), { recursive: true });
+    fs.mkdirSync(path.join(dir, 'thumbs'), { recursive: true });
+
+    const pages = [];
+    for (const file of files) {
+      FileInfo.unsafe(config.outputDirectory, file);
+      const filePath = path.join(config.outputDirectory, file);
+      if (!fs.existsSync(filePath)) {
+        throw new Error(`File not found: ${file}`);
+      }
+      const ext = path.extname(file).toLowerCase();
+      if (ext === '.pdf') {
+        const info = await pdfTool.getInfo(filePath);
+        for (let i = 0; i < info.pages.length; i++) {
+          pages.push({
+            source: file,
+            sourceType: 'pdf',
+            pageNum: i + 1,
+            width: info.pages[i].width,
+            height: info.pages[i].height
+          });
+        }
+      } else if (['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.webp'].includes(ext)) {
+        const dims = await EditorSession._getImageDimensions(filePath);
+        pages.push({
+          source: file,
+          sourceType: 'image',
+          pageNum: 1,
+          width: dims.width,
+          height: dims.height
+        });
+        // Symlink image into pages/ for easy access
+        const linkPath = path.join(dir, 'pages', file);
+        try {
+          fs.symlinkSync(filePath, linkPath);
+        } catch (e) {
+          // Fallback: hardlink, then copy
+          try {
+            fs.linkSync(filePath, linkPath);
+          } catch (e2) {
+            fs.copyFileSync(filePath, linkPath);
+          }
+        }
+      } else {
+        throw new Error(`Unsupported file type: ${ext}`);
+      }
+    }
+
+    const session = new EditorSession(id, dir, pages, config, pdfTool);
+    session._saveManifest();
+    return session;
+  }
+
+  /**
+   * Get image dimensions via ImageMagick identify.
+   * @param {string} filePath
+   * @returns {Promise<{width: number, height: number}>}
+   */
+  static async _getImageDimensions(filePath) {
+    const stdout = await Process.spawn(
+      `identify -format '%w %h' '${filePath}[0]'`);
+    const parts = stdout.toString().trim().split(/\s+/);
+    return { width: parseFloat(parts[0]), height: parseFloat(parts[1]) };
+  }
+
+  /**
+   * Resolve a source path: absolute paths are returned as-is (uploaded files);
+   * relative paths are joined with outputDirectory (regular scan files).
+   * @param {string} source
+   * @returns {string}
+   */
+  _resolveSource(source) {
+    return path.isAbsolute(source)
+      ? source
+      : path.join(this.config.outputDirectory, source);
+  }
+
+  /**
+   * Get a thumbnail for a page. Lazy: generates on first request.
+   * @param {number} pageIdx - 0-based index into this.pages
+   * @param {{w: number, h: number, fitMode: string, margin: number, rotation: number}|null} [sizeOpts]
+   *   Optional: if provided, generate a thumbnail after applying rotation and/or
+   *   paper-size adjustment. w/h are target dimensions in PDF points; margin in points.
+   * @returns {Promise<Buffer>}
+   */
+  async getThumbnail(pageIdx, sizeOpts = null) {
+    this.touch();
+    if (pageIdx < 0 || pageIdx >= this.pages.length) {
+      throw new Error(`Page index out of range: ${pageIdx}`);
+    }
+
+    let thumbName = `page-${String(pageIdx).padStart(4, '0')}`;
+    if (sizeOpts) {
+      const { w, h, fitMode, margin, rotation } = sizeOpts;
+      thumbName += `-r${rotation || 0}-${w}x${h}-${fitMode}${margin > 0 ? '-mg' : ''}`;
+    }
+    const thumbPath = path.join(this.dir, 'thumbs', `${thumbName}.jpg`);
+    if (fs.existsSync(thumbPath)) {
+      return fs.readFileSync(thumbPath);
+    }
+
+    const page = this.pages[pageIdx];
+
+    let buffer;
+    if (page.sourceType === 'pdf') {
+      let sourcePath;
+
+      if (sizeOpts) {
+        // For sized thumbnails: extract → rotate → place-on-page → JPEG
+        const { w, h, fitMode, margin, rotation } = sizeOpts;
+        const origSourcePath = this._resolveSource(page.source);
+
+        // Step 1: extract (with rotation if needed)
+        const extractedForSize = path.join(this.dir, 'thumbs', `${thumbName}-src.pdf`);
+        if (rotation && rotation !== 0) {
+          await this.pdfTool.extractRotatePage(
+            origSourcePath, page.pageNum, rotation, extractedForSize);
+        } else {
+          await this.pdfTool.extractPage(origSourcePath, page.pageNum, extractedForSize);
+        }
+
+        // Step 2: apply paper size
+        const sizedPdfPath = path.join(this.dir, 'thumbs', `${thumbName}.pdf`);
+        await this.pdfTool.placeOnPage(extractedForSize, w, h, fitMode, margin, sizedPdfPath);
+        sourcePath = sizedPdfPath;
+      } else {
+        sourcePath = await this._ensurePageExtracted(pageIdx);
+      }
+
+      buffer = await Process.spawn(
+        `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
+    } else {
+      // Image: generate thumbnail directly from source (size opts not applied for images)
+      const sourcePath = this._resolveSource(page.source);
+      buffer = await Process.spawn(
+        `convert '${sourcePath}[0]' -background white -flatten -resize ${THUMB_SIZE} -quality ${THUMB_QUALITY} jpg:-`);
+    }
+
+    fs.writeFileSync(thumbPath, buffer);
+    return buffer;
+  }
+
+  /**
+   * Ensure a PDF page is extracted to the pages/ directory.
+   * @param {number} pageIdx - 0-based
+   * @returns {Promise<string>} path to extracted page file
+   */
+  async _ensurePageExtracted(pageIdx) {
+    const pagePath = path.join(this.dir, 'pages', `page-${String(pageIdx).padStart(4, '0')}.pdf`);
+    if (fs.existsSync(pagePath)) {
+      return pagePath;
+    }
+    const page = this.pages[pageIdx];
+    const sourcePath = this._resolveSource(page.source);
+    await this.pdfTool.extractPage(sourcePath, page.pageNum, pagePath);
+    return pagePath;
+  }
+
+  /**
+   * Add pages from another file to this session.
+   * @param {string} file - filename relative to outputDirectory
+   * @returns {Promise<Array>} the new pages added
+   */
+  async addPages(file) {
+    this.touch();
+    FileInfo.unsafe(this.config.outputDirectory, file);
+    const filePath = path.join(this.config.outputDirectory, file);
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File not found: ${file}`);
+    }
+
+    const ext = path.extname(file).toLowerCase();
+    const newPages = [];
+
+    if (ext === '.pdf') {
+      const info = await this.pdfTool.getInfo(filePath);
+      for (let i = 0; i < info.pages.length; i++) {
+        newPages.push({
+          source: file,
+          sourceType: 'pdf',
+          pageNum: i + 1,
+          width: info.pages[i].width,
+          height: info.pages[i].height
+        });
+      }
+    } else if (['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.webp'].includes(ext)) {
+      const dims = await EditorSession._getImageDimensions(filePath);
+      newPages.push({
+        source: file,
+        sourceType: 'image',
+        pageNum: 1,
+        width: dims.width,
+        height: dims.height
+      });
+      const linkPath = path.join(this.dir, 'pages', file);
+      if (!fs.existsSync(linkPath)) {
+        try {
+          fs.symlinkSync(filePath, linkPath);
+        } catch (e) {
+          try {
+            fs.linkSync(filePath, linkPath);
+          } catch (e2) {
+            fs.copyFileSync(filePath, linkPath);
+          }
+        }
+      }
+    } else {
+      throw new Error(`Unsupported file type: ${ext}`);
+    }
+
+    this.pages.push(...newPages);
+    this._saveManifest();
+    return newPages;
+  }
+
+  /**
+   * Add pages from an uploaded file (ephemeral — stored in session dir, not outputDirectory).
+   * The body is streamed directly to disk so memory usage stays constant regardless of
+   * file size — important on resource-constrained devices.
+   * @param {import('stream').Readable} stream - raw HTTP request body stream
+   * @param {string} filename - original filename from the client (used for extension detection)
+   * @returns {Promise<Array>} the new pages added
+   */
+  async addUploadedStream(stream, filename) {
+    this.touch();
+    const ALLOWED = ['.pdf', '.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.webp'];
+    const safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext = path.extname(safeName).toLowerCase();
+    if (!ALLOWED.includes(ext)) {
+      stream.resume(); // drain so the connection closes cleanly
+      throw new Error(`Unsupported file type: ${ext}`);
+    }
+
+    const uploadsDir = path.join(this.dir, 'uploads');
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    const tag = crypto.randomBytes(4).toString('hex');
+    // path.resolve() ensures an absolute path even when this.dir is relative,
+    // so _resolveSource() can distinguish uploaded files from output-dir files.
+    const uploadPath = path.resolve(uploadsDir, `${tag}-${safeName}`);
+
+    // Stream directly to disk — no in-memory buffer.
+    await new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(uploadPath);
+      stream.pipe(writeStream);
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+      stream.on('error', reject);
+    });
+
+    // XFA PDF → flat static PDF conversion.
+    // If the uploaded file is a dynamic XFA form and the xfa-convert pipeline
+    // is installed, convert it transparently before handing the file off to
+    // the PDF tool.  On success, uploadPath is repointed to the flat PDF and
+    // the original XFA file is removed so no ephemeral files are left behind.
+    // On failure (pipeline absent, conversion error) we fall through and let
+    // the PDF tool attempt to handle the file directly.
+    let resolvedPath = uploadPath;
+    if (ext === '.pdf' && XfaTool.isAvailable() && await XfaTool.isXfaPdf(uploadPath)) {
+      log.info(`XFA form detected in ${safeName}; converting to static PDF`);
+      const flat = await XfaTool.convertXfa(uploadPath);
+      if (flat) {
+        resolvedPath = flat;
+        log.info(`XFA conversion succeeded: ${path.basename(flat)}`);
+      } else {
+        log.warn(`XFA conversion failed for ${safeName}; proceeding with original`);
+      }
+    }
+
+    const newPages = [];
+    if (ext === '.pdf') {
+      const info = await this.pdfTool.getInfo(resolvedPath);
+      for (let i = 0; i < info.pages.length; i++) {
+        newPages.push({
+          source: resolvedPath,
+          sourceType: 'pdf',
+          pageNum: i + 1,
+          width: info.pages[i].width,
+          height: info.pages[i].height
+        });
+      }
+    } else {
+      const dims = await EditorSession._getImageDimensions(resolvedPath);
+      newPages.push({
+        source: resolvedPath,
+        sourceType: 'image',
+        pageNum: 1,
+        width: dims.width,
+        height: dims.height
+      });
+    }
+
+    this.pages.push(...newPages);
+    this._saveManifest();
+    return newPages;
+  }
+
+  /**
+   * Prepare and merge pages from an edit list into a single PDF.
+   * Shared by save() and assemblePreview().
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height, sourceType}
+   * @returns {Promise<string>} path to assembled PDF
+   */
+  async _assemblePages(editList) {
+    const preparedPaths = [];
+
+    for (let i = 0; i < editList.length; i++) {
+      const entry = editList[i];
+      const prepPath = path.join(this.dir, 'pages', `prepared-${String(i).padStart(4, '0')}.pdf`);
+
+      if (entry.isBlank) {
+        await this.pdfTool.createBlank(
+          entry.width || 595, entry.height || 842, prepPath);
+      } else if (entry.sourceType === 'pdf') {
+        const sourcePath = this._resolveSource(entry.source);
+        if (entry.rotation && entry.rotation !== 0) {
+          await this.pdfTool.extractRotatePage(
+            sourcePath, entry.pageNum, entry.rotation, prepPath);
+        } else {
+          await this.pdfTool.extractPage(sourcePath, entry.pageNum, prepPath);
+        }
+      } else {
+        // Image: convert to PDF, with optional rotation
+        const sourcePath = this._resolveSource(entry.source);
+        const rotation = parseInt(entry.rotation, 10) || 0;
+        if (rotation !== 0) {
+          await Process.spawn(
+            `convert '${sourcePath}' -rotate ${rotation} '${prepPath}'`);
+        } else {
+          await Process.spawn(`convert '${sourcePath}' '${prepPath}'`);
+        }
+      }
+
+      // Per-page paper size adjustment
+      if (entry.targetSize && entry.pageFitMode) {
+        const MM_TO_PT = 72 / 25.4;
+        const w = Math.round(entry.targetSize.x * MM_TO_PT);
+        const h = Math.round(entry.targetSize.y * MM_TO_PT);
+        const marginPts = entry.useMargin ? Math.round(10 * MM_TO_PT) : 0;
+        const sizedPath = path.join(this.dir, 'pages',
+          `sized-${String(i).padStart(4, '0')}.pdf`);
+        await this.pdfTool.placeOnPage(prepPath, w, h, entry.pageFitMode, marginPts, sizedPath);
+        preparedPaths.push(sizedPath);
+      } else {
+        preparedPaths.push(prepPath);
+      }
+    }
+
+    // Merge all prepared pages
+    const assembledPath = path.join(this.dir, 'assembled.pdf');
+    if (preparedPaths.length === 1) {
+      fs.copyFileSync(preparedPaths[0], assembledPath);
+    } else {
+      await this.pdfTool.mergePages(preparedPaths, assembledPath);
+    }
+
+    return assembledPath;
+  }
+
+  /**
+   * Apply document-level paper size adjustment to an assembled PDF.
+   * @param {string} inputPath - path to assembled PDF
+   * @param {{x: number, y: number}} paperSize - target dimensions in mm
+   * @param {'set-size'|'fit'|'fill'} fitMode
+   * @param {boolean} useMargin - whether to apply a ~1 cm margin
+   * @returns {Promise<string>} path to adjusted PDF
+   */
+  async _applyPaperSize(inputPath, paperSize, fitMode, useMargin) {
+    const MM_TO_PT = 72 / 25.4;
+    const w = Math.round(paperSize.x * MM_TO_PT);
+    const h = Math.round(paperSize.y * MM_TO_PT);
+    const marginPts = useMargin ? Math.round(10 * MM_TO_PT) : 0;
+    const outputPath = path.join(this.dir, 'paper-adjusted.pdf');
+    await this.pdfTool.placeOnPage(inputPath, w, h, fitMode, marginPts, outputPath);
+    return outputPath;
+  }
+
+  /**
+   * Save the final document from an edit list.
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height,
+   *   [targetSize], [pageFitMode], [useMargin]}
+   * @param {string} filename - output filename
+   * @param {{x: number, y: number}|null} [paperSize] - document-level target paper size in mm
+   * @param {'set-size'|'fit'|'fill'|null} [fitMode] - document-level fit mode
+   * @param {boolean} [fitMargin] - whether to apply a ~1 cm margin (document-level)
+   * @returns {Promise<string>} path to saved file
+   */
+  async save(editList, filename, paperSize = null, fitMode = null, fitMargin = false) {
+    this.touch();
+    FileInfo.unsafe(this.config.outputDirectory, filename);
+    let assembledPath = await this._assemblePages(editList);
+
+    if (paperSize && fitMode) {
+      assembledPath = await this._applyPaperSize(assembledPath, paperSize, fitMode, fitMargin);
+    }
+
+    // Atomic write to output directory
+    const tempOutputPath = path.join(this.config.outputDirectory, `.tmp-${this.id}.pdf`);
+    const finalPath = path.join(this.config.outputDirectory, filename);
+    fs.copyFileSync(assembledPath, tempOutputPath);
+    fs.renameSync(tempOutputPath, finalPath);
+
+    // Invalidate thumbnail cache for this filename
+    const thumbPath = path.join(this.config.thumbnailDirectory, filename);
+    if (fs.existsSync(thumbPath)) {
+      fs.unlinkSync(thumbPath);
+    }
+
+    return finalPath;
+  }
+
+  /**
+   * Assemble an ephemeral preview PDF from the current edit list.
+   * Overwrites any previous preview in the session directory.
+   * @param {Array} editList - array of {source, pageNum, rotation, isBlank, width, height, sourceType}
+   * @returns {Promise<string>} path to preview.pdf
+   */
+  async assemblePreview(editList) {
+    this.touch();
+    const assembledPath = await this._assemblePages(editList);
+    const previewPath = path.join(this.dir, 'preview.pdf');
+    fs.copyFileSync(assembledPath, previewPath);
+    return previewPath;
+  }
+
+  /** Update lastAccessedAt timestamp. */
+  touch() {
+    this.lastAccessedAt = new Date();
+  }
+
+  /** Remove the entire session directory. */
+  destroy() {
+    try {
+      fs.rmSync(this.dir, { recursive: true, force: true });
+    } catch (e) {
+      log.warn(`Failed to clean up session ${this.id}:`, e.message);
+    }
+  }
+
+  /** Save manifest.json to session directory. */
+  _saveManifest() {
+    const manifest = {
+      id: this.id,
+      pages: this.pages,
+      createdAt: this.createdAt.toISOString(),
+      lastAccessedAt: this.lastAccessedAt.toISOString()
+    };
+    fs.writeFileSync(
+      path.join(this.dir, 'manifest.json'),
+      JSON.stringify(manifest, null, 2)
+    );
+  }
+
+  /**
+   * Remove all editor session directories from temp (startup cleanup).
+   * @param {string} tempDir
+   */
+  static cleanupAll(tempDir) {
+    if (!fs.existsSync(tempDir)) {
+      return;
+    }
+    const entries = fs.readdirSync(tempDir);
+    for (const entry of entries) {
+      if (entry.startsWith(SESSION_PREFIX)) {
+        const fullPath = path.join(tempDir, entry);
+        try {
+          fs.rmSync(fullPath, { recursive: true, force: true });
+          log.info(`Cleaned up orphaned session: ${entry}`);
+        } catch (e) {
+          log.warn(`Failed to clean up ${entry}:`, e.message);
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove expired session directories (TTL-based cleanup).
+   * @param {string} tempDir
+   * @param {number} maxAgeMs - maximum age in milliseconds
+   */
+  static cleanup(tempDir, maxAgeMs) {
+    if (!fs.existsSync(tempDir)) {
+      return;
+    }
+    const now = Date.now();
+    const entries = fs.readdirSync(tempDir);
+    for (const entry of entries) {
+      if (!entry.startsWith(SESSION_PREFIX)) {
+        continue;
+      }
+      const fullPath = path.join(tempDir, entry);
+      const manifestPath = path.join(fullPath, 'manifest.json');
+      try {
+        if (fs.existsSync(manifestPath)) {
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+          const lastAccess = new Date(manifest.lastAccessedAt).getTime();
+          if (now - lastAccess > maxAgeMs) {
+            fs.rmSync(fullPath, { recursive: true, force: true });
+            log.info(`Expired session: ${entry}`);
+          }
+        } else {
+          // No manifest — orphaned directory, remove it
+          const stat = fs.statSync(fullPath);
+          if (now - stat.mtimeMs > maxAgeMs) {
+            fs.rmSync(fullPath, { recursive: true, force: true });
+            log.info(`Removed orphaned session dir: ${entry}`);
+          }
+        }
+      } catch (e) {
+        log.warn(`Error during cleanup of ${entry}:`, e.message);
+      }
+    }
+  }
+}
+
+module.exports = EditorSession;

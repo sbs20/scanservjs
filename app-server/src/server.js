@@ -6,6 +6,7 @@ const app = express();
 const ExpressConfigurer = require('./express-configurer');
 
 ExpressConfigurer.with(app)
+  .securityHeaders()
   .encoding()
   .statics()
   .basicAuth()

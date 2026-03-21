@@ -36,6 +36,57 @@ like:
   * Preview resolution
   * Output filename
   * Pipelines (output format)
+  * PWA appearance (see below)
+
+### PWA configuration
+
+scanservjs can be installed as a Progressive Web App (PWA) — a shortcut on the
+home screen or app launcher that opens the scanner UI in a standalone window.
+The following `config.pwa` properties can be set inside `afterConfig`:
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `name` | string | `"scanservjs"` | Full application name shown during installation and on the splash screen |
+| `shortName` | string | `"Scanner"` | Abbreviated name used where space is limited (e.g. icon labels) |
+| `themeColor` | string | `"#1976D2"` | Browser chrome and splash screen colour (CSS colour value) |
+| `iconFiles` | string[] | `[]` | Ordered list of absolute paths to icon files served at `/icons/pwa-icon.{ext}`. An empty array uses the built-in scanservjs icons. See notes below. |
+| `lockName` | bool | `false` | When `true`, the user cannot rename the app from the Settings page |
+| `lockDevice` | bool | `false` | When `true`, the user cannot change the pre-selected scanner from the Settings page |
+
+#### Icon format notes
+
+**SVG** scales perfectly to any size and is the best choice for the browser tab
+favicon.  However, Chrome, Chromium, and Android's PWA installer do not accept
+SVG entries in the web app manifest — they require a raster image.
+
+**PNG** is required for PWA installation (home screen / app launcher icon).
+A 512×512 PNG covers all use cases.  192×192 can also be listed for older
+Android versions, but a single 512-pixel image is sufficient today.
+
+Providing both an SVG and a PNG gives the best result across all contexts:
+- The SVG is used by the browser for the tab strip and bookmark icon.
+- The PNG is used by the OS when installing the PWA.
+
+```javascript
+afterConfig(config) {
+  config.pwa.name = "Office Scanner";
+  config.pwa.shortName = "Scanner";
+  config.pwa.themeColor = '#2B6CB0';
+  // Both SVG (browser tab) and PNG (PWA install icon) are recommended.
+  // PNG is required; omitting it triggers a startup warning and the PWA
+  // install icon will be missing or fall back to a browser-generated image.
+  config.pwa.iconFiles = [
+    '/etc/scanservjs/pwa-icon.svg',   // scalable; browser tab favicon
+    '/etc/scanservjs/pwa-icon.png',   // 512×512 raster; required for PWA install
+  ];
+}
+```
+
+All listed files must be readable by the `scanservjs` user.  If a file is
+missing, a warning is logged at startup but the server continues to run.
+If `iconFiles` is non-empty but contains no PNG (or other raster format),
+a warning is logged because Chrome/Chromium will not be able to install the
+PWA with a usable icon.
 
 ## `afterDevices(devices)`
 

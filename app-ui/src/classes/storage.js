@@ -16,6 +16,26 @@ export default class Storage {
     }
   }
 
+  get transformations() {
+    return localStorage.transformations ? JSON.parse(localStorage.transformations) : null;
+  }
+
+  set transformations(transformations) {
+    if (transformations) {
+      localStorage.transformations = JSON.stringify(transformations);
+    } else {
+      localStorage.removeItem('transformations');
+    }
+  }
+
+  get isPreviewScan() {
+    return localStorage.isPreviewScan === 'true';
+  }
+
+  set isPreviewScan(isPreviewScan) {
+    localStorage.isPreviewScan = isPreviewScan ? 'true' : 'false';
+  }
+
   /**
    * @returns {Settings}
    */
@@ -32,6 +52,24 @@ export default class Storage {
       localStorage.settings = JSON.stringify(settings);
     } else {
       localStorage.removeItem('settings');
+    }
+  }
+
+  /**
+   * @returns {any}
+   */
+  get pwaConfig() {
+    return localStorage.getItem('pwa-config') ? JSON.parse(localStorage.getItem('pwa-config')) : {};
+  }
+
+  /**
+   * @param {any} config
+   */
+  set pwaConfig(config) {
+    if (config) {
+      localStorage.setItem('pwa-config', JSON.stringify(config));
+    } else {
+      localStorage.removeItem('pwa-config');
     }
   }
 

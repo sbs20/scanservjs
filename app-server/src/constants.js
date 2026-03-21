@@ -4,5 +4,11 @@ module.exports = {
   BATCH_AUTO: 'auto',
   BATCH_COLLATE_STANDARD: 'auto-collate-standard',
   BATCH_COLLATE_REVERSE: 'auto-collate-reverse',
-  TEMP_FILESTEM: '~tmp-scan'
+  AUTOCROP_OFF: 'off',
+  AUTOCROP_INTERACTIVE: 'interactive',
+  AUTOCROP_BATCH: 'batch',
+  TEMP_FILESTEM: '~tmp-scan',
+  SCAN_ON_TAB_CLICK_USER: 'user',
+  SCAN_ON_TAB_CLICK_ALWAYS: 'always',
+  SCAN_ON_TAB_CLICK_NEVER: 'never'
 };

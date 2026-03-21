@@ -2,7 +2,7 @@
   <div>
     <v-app-bar class="elevation-0" :color="appColor" app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="unselectable">{{ $t('global.application-name') }}</v-toolbar-title>
+      <v-toolbar-title class="unselectable">{{ appTitle }}</v-toolbar-title>
       <v-spacer />
       <v-toolbar-items class="d-none d-md-block">
         <v-btn class="transparent" elevation="0" @click="go('/scan')"><v-icon class="mr-2" :icon="mdiCamera" />{{ $t('navigation.scan') }}</v-btn>
@@ -60,8 +60,11 @@
 </template>
 
 <script>
-import Constants from '../classes/constants';
 import { mdiCamera, mdiCog, mdiFileDocumentMultiple, mdiInformation, mdiTools } from '@mdi/js';
+import Common from '../classes/common';
+import Constants from '../classes/constants';
+import Storage from '../classes/storage';
+const storage = Storage.instance();
 export default {
   name: 'Navigation',
 
@@ -85,12 +88,40 @@ export default {
   data() {
     return {
       drawer: false,
-      version: Constants.Version
+      version: Constants.Version,
+      context: {}
     };
+  },
+
+  computed: {
+    appTitle() {
+      const configured = storage.pwaConfig.name;
+      return configured || this.$t('global.application-name');
+    }
+  },
+
+  mounted() {
+    Common.fetch('api/v1/context').then(context => {
+      this.context = context;
+    });
   },
 
   methods: {
     go(location) {
+      if (this.$route.path === location && location === '/scan') {
+        const config = this.context.scanOnTabClick;
+        let trigger = false;
+        
+        if (config === Constants.ScanOnTabClick.Always) {
+          trigger = true;
+        } else if (config === Constants.ScanOnTabClick.User) {
+          trigger = storage.settings.scanOnTabClick;
+        }
+        
+        if (trigger) {
+          window.dispatchEvent(new CustomEvent('scan-trigger'));
+        }
+      }
       if (this.$route.path !== location) {
         this.$router.push(location);
       }

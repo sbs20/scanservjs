@@ -1,4 +1,31 @@
-# scanservjs
+# scanservjs (Community Fork)
+
+> [!IMPORTANT]
+> This is a community fork of [sbs20/scanservjs](https://github.com/sbs20/scanservjs),
+> maintained by [Markus Gutschke](https://github.com/gutschke). The `master` branch mirrors
+> upstream. For the full feature set and a pre-built package, see the
+> [`production` branch](https://github.com/gutschke/scanservjs/tree/production).
+
+## Installing this fork
+
+Pre-built Debian/Ubuntu packages are available:
+
+```sh
+wget https://github.com/gutschke/scanservjs/raw/refs/heads/binary/scanservjs_3.0.4-1_all.deb
+sudo apt install ./scanservjs_3.0.4-1_all.deb
+```
+
+## Enhancements over upstream
+
+- **PDF Editor**: Rearrange, rotate, and delete pages in scanned PDFs directly in the browser; merge multiple documents into one with drag-and-drop and full undo/redo.
+- **Smart Autocrop**: Automatic document boundary detection, deskew, and crop for flatbed scans.
+- **Installable PWA**: Add scanservjs to your home screen; the app name is configurable per instance.
+- **Pixel-Precise Coordinates**: Dual mm/pixel input fields with aspect-ratio lock for exact scan geometry.
+- **File Previews**: In-browser previews for PDFs, images, and OCR text, with on-the-fly TIFF transcoding.
+- **Scan on Tab Click**: Optional immediate scan trigger when revisiting the Scan tab.
+- **UI Fixes**: Various interface refinements and bug fixes.
+
+---
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sbs20/scanservjs/build.yml?branch=master&style=for-the-badge)](https://github.com/sbs20/scanservjs/actions)
 [![Code QL Status](https://img.shields.io/github/actions/workflow/status/sbs20/scanservjs/codeql-analysis.yml?branch=master&style=for-the-badge&label=CodeQL)](https://github.com/sbs20/scanservjs/actions)
@@ -9,7 +36,7 @@
 
 ![screenshot](https://github.com/sbs20/scanservjs/raw/master/docs/screen0.jpg)
 
-Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20)
+Copyright 2016-2023 [Sam Strachan](https://github.com/sbs20) (Original) | Community Fork Maintainer: [Markus](https://github.com/gutschke) (Current)
 
 ## What people are saying
 

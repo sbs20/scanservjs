@@ -81,6 +81,9 @@ module.exports = new class Process {
 
       proc.on('close', (code) => {
         this.log().trace(`close(${code}): ${cmd}`);
+        if (stderr) {
+          this.log().info({ stderr: stderr.trim() });
+        }
         if (code !== 0 && !options.ignoreErrors) {
           reject(new Error(`${cmd} exited with code: ${code}, stderr: ${stderr}`));
         } else {

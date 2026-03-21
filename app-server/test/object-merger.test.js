@@ -36,6 +36,18 @@ describe('ObjectMerger', () => {
     });
   });
 
+  it('Prototype pollution guard', () => {
+    const malicious = JSON.parse('{"__proto__": {"polluted": true}}');
+    ObjectMerger.deepMerge({}, malicious);
+    assert.strictEqual(({}).polluted, undefined);
+  });
+
+  it('Constructor pollution guard', () => {
+    const malicious = JSON.parse('{"constructor": {"prototype": {"polluted": true}}}');
+    ObjectMerger.deepMerge({}, malicious);
+    assert.strictEqual(({}).polluted, undefined);
+  });
+
   it('Deep merge', () => {
     const result = Object.assign({}, target, source);
     assert.deepStrictEqual(result, {

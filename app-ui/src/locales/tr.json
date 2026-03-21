@@ -5,17 +5,19 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs tarayıcınız için basit bir web arayüzüdür. Bir veya birden fazla tarayıcıyı ağ üzerinden (SANE kullanarak), kolay kurulum ve sürücü gerektirmeden paylaşmanızı sağlar. TIF, JPG, PNG, PDF ve TXT (Tesseract OCR ile) dosya uzantıları ile çeşitli sıkıştırma ayarlarıyla kaydedebilir ve tümü ayarlanabilir. Çoklu sayfa taramasını ve tüm SANE uyumlu cihazları destekler.",
+    "system-info": "Sistem bilgisi",
     "issue": "Sorun bildirin veya kaynak kodu görüntüleyin:",
-    "system-info": "Sistem bilgisi"
+    "logs": "Günlükler",
+    "logs-copy": "Kopyala",
+    "logs-refresh": "Yenile",
+    "logs-copied": "Günlükler panoya kopyalandı",
+    "logs-empty": "Günlük girişi yok"
   },
-
   "colors": {
     "accent-4": "Varsayılan",
     "red": "Kırmızı",
@@ -38,14 +40,12 @@
     "blue-grey": "Mavi gri",
     "grey": "Gri"
   },
-
   "batch-dialog": {
     "btn-cancel": "İptal",
     "btn-finish": "Bitir",
     "btn-rescan": "Sayfayı tekrar tara",
     "btn-next": "İleri"
   },
-
   "files": {
     "filename": "Dosya adı",
     "date": "Tarih",
@@ -55,14 +55,23 @@
     "message:deleted": "Silindi {0}",
     "message:renamed": "İsimlendirilen dosya",
     "button:delete-selected": "Seçileni Sil",
+    "button:zip-selected": "Seçilenleri Ziple",
     "dialog:rename": "Dosya adını değiştir",
     "dialog:rename-cancel": "İptal",
     "dialog:rename-save": "Kaydet",
     "actions": "Eylemler",
+    "button:download": "İndir",
+    "button:delete": "Sil",
+    "button:preview": "Önizleme",
     "thumbnail-show": "Show thumbnails",
-    "thumbnail-size": "Thumbnail size"
+    "thumbnail-size": "Thumbnail size",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "Close",
+    "download": "Download",
+    "tiff-browser-unsupported": "TIFF files are not supported natively by most browsers",
+    "button:rename": "Yeniden Adlandır"
   },
-
   "navigation": {
     "scan": "Tara",
     "files": "Dosyalar",
@@ -70,7 +79,6 @@
     "about": "Hakkında",
     "version": "Versiyon"
   },
-
   "batch-mode": {
     "none": "Hiçbiri",
     "manual": "Manüel (istemci ile)",
@@ -78,26 +86,22 @@
     "auto-collate-standard": "Oto (Sıraya koy 1, 3... 4, 2)",
     "auto-collate-reverse": "Oto (Ters 1, 3... 2, 4)"
   },
-
   "filter": {
     "auto-level": "Oto serviye",
     "threshold": "Eşik",
     "blur": "Bulanıklık"
   },
-
   "mode": {
     "color": "Renk",
     "halftone": "Yarım ton",
     "gray": "Gri",
     "lineart": "Lineart",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "Düz platform",
     "adf": "ADF",
@@ -106,14 +110,12 @@
     "centrally-aligned": "Ortaya hizalı",
     "duplex": "Arkalı önlü",
     "transparency unit": "Şeffaflık Birimi",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "Yüksek kalite",
     "medium-quality": "Orta kalite",
@@ -123,7 +125,6 @@
     "ocr": "OCR",
     "text-file": "Metin dosyası"
   },
-
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -134,7 +135,6 @@
     "portrait": "Dikey",
     "landscape": "Yatay"
   },
-
   "scan": {
     "device": "Cihaz",
     "source": "Kaynak",
@@ -160,9 +160,67 @@
     "message:no-devices": "Hiç cihaz bulunamadı",
     "message:deleted-preview": "Önizleme silindi",
     "message:turn-documents": "Dökümanı çevir",
-    "message:preview-of-page": "Sayfaynın önizlemesi"
+    "message:preview-of-page": "Sayfaynın önizlemesi",
+    "rotate-cw": "Saat yönünde 90° döndür",
+    "rotate-ccw": "Saat yönünün tersine 90° döndür",
+    "flip-h": "Yatay çevir",
+    "flip-v": "Dikey çevir",
+    "autocrop-mode": "Otomatik kırpma"
   },
-
+  "document-dialog": {
+    "view": "Görüntüle",
+    "edit": "Düzenle",
+    "discard-changes": "Kaydedilmemiş değişiklikleriniz var. Bunları iptal etmek istiyor musunuz?",
+    "preview-failed": "Önizleme oluşturulamadı",
+    "back-to-editor": "Editöre Geri Dön"
+  },
+  "editor": {
+    "title": "Editör",
+    "undo": "Geri Al",
+    "redo": "Yinele",
+    "add-pages": "Dosyadan Sayfa Ekle",
+    "add-blank": "Boş Sayfa Ekle",
+    "rotate-cw": "Saat yönünde döndür",
+    "rotate-ccw": "Saat yönünün tersine döndür",
+    "delete": "Seçilenleri Sil",
+    "save": "Kaydet",
+    "save-as": "Farklı Kaydet…",
+    "cancel": "İptal",
+    "add": "Ekle",
+    "select-file": "Dosya Seç",
+    "status": "{0} sayfa",
+    "sources": "Kaynak: {0}",
+    "confirm-overwrite": "\"{0}\" adlı bir dosya zaten mevcut. Üzerine yazılsın mı?",
+    "overwrite-warning": "\"{0}\" zaten mevcut ve üzerine yazılacak",
+    "button:edit": "Düzenle",
+    "button:edit-selected": "Seçilenleri Düzenle",
+    "insert-blank-before": "Önüne Boş Sayfa Ekle",
+    "insert-blank-after": "Arkasına Boş Sayfa Ekle",
+    "select-all": "Tümünü Seç",
+    "deselect-all": "Tümünün Seçimini Kaldır",
+    "jump-to": "Sayfaya Git",
+    "selection-mode": "Seçim Modu",
+    "done": "Tamam",
+    "page-order": "Sayfa sırası",
+    "scope-selection": "{0} seçili sayfaya uygula",
+    "scope-all": "Tüm {0} sayfaya uygula",
+    "op-reverse": "Sayfa sırasını tersine çevir",
+    "op-interleave": "Ön ve arka sayfaları birleştir",
+    "op-interleave-reverse": "Ön ve arka sayfaları birleştir (tersine)",
+    "op-interleave-reverse-hint": "Simpleks ADF ile dupleks tarama için en yaygın yöntem",
+    "op-swap-pairs": "Her sayfa çiftini değiştir",
+    "op-deinterleave": "Ön ve arka sayfaları ayır",
+    "paper-size": "Kağıt boyutu",
+    "fit-mode": "Uygulama şekli",
+    "fit-set-size": "Yalnızca sayfa boyutunu ayarla (OCR güvenli)",
+    "fit-fit": "İçeriği sayfaya sığdır",
+    "fit-ocr-warning": "İçerik ölçeklendirme, OCR'li belgelerdeki aranabilir metni etkileyebilir",
+    "fit-fill": "Doldurmak için ölçekle (kırpabilir)",
+    "fit-use-margin": "~1 cm kenar boşluğu ekle",
+    "set-page-size": "Sayfa boyutunu ayarla",
+    "apply": "Uygula",
+    "upload-file": "Dosya yükle"
+  },
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Davranış ve arayüz",
@@ -180,6 +238,52 @@
     "reset:description": "Kayıtlı cihazları temizler ve yeniden yükler",
     "reset": "Sıfırla",
     "clear-storage:description": "Depolanmış önbellekteki parametreleri temizler",
-    "clear-storage": "Temizle"
+    "clear-storage": "Temizle",
+    "scan-on-tab-click:description": "Trigger a scan if the 'Scan' tab is clicked while already on the scan page",
+    "clear-storage:notification": "Local scan parameters cleared.",
+    "pwa": {
+      "section-title": "Desktop App (PWA)",
+      "section-title-installed": "App Status",
+      "description": "Install scanservjs as a standalone desktop application for faster access.",
+      "description-installed": "You are running scanservjs as an installed app. You can reconfigure its launch parameters here.",
+      "btn-install": "Install App",
+      "btn-reconfigure": "Reconfigure App",
+      "dialog-title": "Install as Desktop App",
+      "dialog-title-reconfigure": "Reconfigure Application",
+      "reinstall-note": "Changes will only take effect after you uninstall and reinstall the application.",
+      "label-name": "App Name",
+      "hint-name": "The name shown on your desktop or home screen",
+      "label-scanner": "Default Scanner",
+      "hint-scanner": "The scanner pre-selected on startup",
+      "advanced-title": "Advanced Startup Presets",
+      "advanced-description": "Choose how each parameter behaves when the app starts up.",
+      "col-parameter": "Parameter",
+      "col-behavior": "Startup Behavior",
+      "mode-persist": "Persist",
+      "mode-default": "Default",
+      "mode-preset": "Preset",
+      "btn-apply": "Apply & Install",
+      "btn-save-pending": "Set Pending Config",
+      "saved": "Configuration saved. You can now install the app from your browser.",
+      "saved-reinstall": "Configuration saved. Uninstall and reinstall the app to apply changes.",
+      "group-scan-area": "Scan Area",
+      "group-image-quality": "Image Quality",
+      "group-source": "Source",
+      "group-output": "Output",
+      "param-paper-size": "Paper Size",
+      "param-resolution": "Resolution (dpi)",
+      "param-mode": "Scan Mode",
+      "param-brightness": "Brightness",
+      "param-contrast": "Contrast",
+      "param-source": "Scan Source",
+      "param-batch-mode": "Batch Mode",
+      "param-pipeline": "Output Pipeline",
+      "param-autocrop-mode": "Otomatik kırpma"
+    }
+  },
+  "autocrop-mode": {
+    "off": "Devre dışı",
+    "interactive": "Standart",
+    "batch": "Muhafazakâr"
   }
 }

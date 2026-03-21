@@ -5,17 +5,14 @@
     },
     "noDataText": "@:global.no-data-text"
   },
-
   "global": {
     "application-name": "scanservjs"
   },
-
   "about": {
     "main": "scanservjs 是一个基于网页的扫描仪 UI 。 它（使用 SANE ）实现了在局域网内共享一个或多个扫描仪而无需繁复的驱动安装。 可以配置多种压缩率将扫描的文件保存为 TIF, JPG, PNG, PDF 和 TXT (使用 Tesseract OCR )等格式。 它亦提供多页扫描功能并支持所有与 SANE 兼容的设备。",
     "issue": "反馈问题或查看源码：",
     "system-info": "系统信息"
   },
-
   "colors": {
     "accent-4": "默认",
     "red": "红",
@@ -38,14 +35,12 @@
     "blue-grey": "蓝灰",
     "grey": "灰"
   },
-
   "batch-dialog": {
     "btn-cancel": "取消",
     "btn-finish": "完成",
     "btn-rescan": "重新扫描",
     "btn-next": "下一张"
   },
-
   "files": {
     "filename": "文件名",
     "date": "日期",
@@ -58,17 +53,23 @@
     "dialog:rename": "更改文件名称",
     "dialog:rename-cancel": "取消",
     "dialog:rename-save": "保存",
-    "actions": "操作"
+    "actions": "操作",
+    "button:download": "下载",
+    "button:delete": "删除",
+    "button:preview": "预览",
+    "message:preview": "Previewing {0}",
+    "no-preview": "No preview available for this file type",
+    "close": "关闭",
+    "download": "下载",
+    "tiff-browser-unsupported": "大多数浏览器不原生支持 TIFF 文件"
   },
-
   "navigation": {
     "scan": "扫描",
     "files": "文件",
     "settings": "设置",
     "about": "关于",
-    "version": "版本"  
+    "version": "版本"
   },
-
   "batch-mode": {
     "none": "无",
     "manual": "手动 (有提示)",
@@ -76,26 +77,22 @@
     "auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
     "auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)"
   },
-  
   "filter": {
     "auto-level": "自动调整",
     "threshold": "阈值",
     "blur": "模糊"
   },
-
   "mode": {
     "color": "彩色",
     "halftone": "半调",
     "gray": "灰度",
     "lineart": "线性",
-
-    "24bitcolor":"@:mode.color",
+    "24bitcolor": "@:mode.color",
     "black & white": "@:mode.lineart",
     "gray(error diffusion)": "@:mode.halftone",
     "true gray": "@:mode.gray",
     "24bit color(fast)": "@:mode.color"
   },
-
   "source": {
     "flatbed": "稿台",
     "adf": "自动进纸器",
@@ -103,14 +100,12 @@
     "left-aligned": "左对齐",
     "centrally-aligned": "中间对齐",
     "duplex": "双面",
-
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
     "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
     "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
     "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
   },
-
   "pipeline": {
     "high-quality": "高画质",
     "medium-quality": "中画质",
@@ -119,8 +114,7 @@
     "lzw-compressed": "LZW 压缩",
     "ocr": "OCR文字识别",
     "text-file": "文本文档"
-  },  
-
+  },
   "paper-size": {
     "letter": "Letter",
     "legal": "Legal",
@@ -131,7 +125,6 @@
     "portrait": "纵向",
     "landscape": "横向"
   },
-
   "scan": {
     "device": "设备",
     "source": "来源",
@@ -157,9 +150,63 @@
     "message:no-devices": "未找到设备",
     "message:deleted-preview": "已清除预览",
     "message:turn-documents": "旋转文件",
-    "message:preview-of-page": "页面预览"  
+    "message:preview-of-page": "页面预览",
+    "autocrop-mode": "自动裁剪"
   },
-
+  "document-dialog": {
+    "view": "查看",
+    "edit": "编辑",
+    "discard-changes": "您有未保存的更改。是否放弃？",
+    "preview-failed": "无法生成预览",
+    "back-to-editor": "返回编辑器"
+  },
+  "editor": {
+    "title": "编辑器",
+    "undo": "撤销",
+    "redo": "重做",
+    "add-pages": "从文件添加页面",
+    "add-blank": "添加空白页",
+    "rotate-cw": "顺时针旋转",
+    "rotate-ccw": "逆时针旋转",
+    "delete": "删除所选",
+    "save": "保存",
+    "save-as": "另存为…",
+    "cancel": "取消",
+    "add": "添加",
+    "select-file": "选择文件",
+    "status": "{0} 页",
+    "sources": "来源：{0}",
+    "confirm-overwrite": "名为 \"{0}\" 的文件已存在。覆盖它？",
+    "overwrite-warning": "\"{0}\" 已存在，将被覆盖",
+    "button:edit": "编辑",
+    "button:edit-selected": "编辑所选",
+    "insert-blank-before": "在前面插入空白页",
+    "insert-blank-after": "在后面插入空白页",
+    "select-all": "全选",
+    "deselect-all": "取消全选",
+    "jump-to": "跳转到页面",
+    "selection-mode": "选择模式",
+    "done": "完成",
+    "page-order": "页面顺序",
+    "scope-selection": "应用于 {0} 个选中页面",
+    "scope-all": "应用于全部 {0} 个页面",
+    "op-reverse": "反转页面顺序",
+    "op-interleave": "合并正反面页面",
+    "op-interleave-reverse": "合并正反面页面（反向）",
+    "op-interleave-reverse-hint": "单面ADF进行双面扫描时最常用",
+    "op-swap-pairs": "交换每对页面",
+    "op-deinterleave": "分离正反面页面",
+    "paper-size": "纸张大小",
+    "fit-mode": "应用方式",
+    "fit-set-size": "仅设置页面大小（OCR 安全）",
+    "fit-fit": "缩放内容以适应页面",
+    "fit-ocr-warning": "缩放内容可能影响 OCR 文档中的可搜索文本",
+    "fit-fill": "缩放填充（可能裁剪）",
+    "fit-use-margin": "添加约 1 厘米边距",
+    "set-page-size": "设置页面大小",
+    "apply": "应用",
+    "upload-file": "上传文件"
+  },
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "用户界面",
@@ -177,5 +224,10 @@
     "reset": "重置",
     "clear-storage:description": "清空本地缓存",
     "clear-storage": "清空"
+  },
+  "autocrop-mode": {
+    "off": "禁用",
+    "interactive": "标准",
+    "batch": "保守"
   }
 }

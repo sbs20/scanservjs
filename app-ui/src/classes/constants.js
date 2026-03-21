@@ -76,7 +76,13 @@ const Constants = {
     'brown',
     'blue-grey',
     'grey'
-  ]
+  ],
+  
+  ScanOnTabClick: {
+    Always: 'always',
+    Never: 'never',
+    User: 'user'
+  }
 };
 
 export default Constants;
