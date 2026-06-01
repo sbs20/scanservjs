@@ -1,42 +1,45 @@
 {
   "$vuetify": {
     "dataFooter": {
+      "pageText": "{0} - {1} / {2}",
       "itemsPerPageAll": "@:files.items-per-page-all"
     },
     "noDataText": "@:global.no-data-text"
   },
 
   "global": {
-    "application-name": "scanservjs"
+    "application-name": "scanservjs",
+    "no-data-text": "无可用数据"
   },
 
   "about": {
-    "main": "scanservjs 是一个基于网页的扫描仪 UI 。 它（使用 SANE ）实现了在局域网内共享一个或多个扫描仪而无需繁复的驱动安装。 可以配置多种压缩率将扫描的文件保存为 TIF, JPG, PNG, PDF 和 TXT (使用 Tesseract OCR )等格式。 它亦提供多页扫描功能并支持所有与 SANE 兼容的设备。",
+    "main": "scanservjs 是一个基于网页的扫描仪用户界面。 它可以在局域网内共享一个或多个扫描仪（使用SANE作为后端），免去了为所有客户机安装驱动程序的麻烦。 扫描的文件有多种压缩率和格式可选，如：TIF、 JPG、 PNG、 PDF 和 TXT（配合 Tesseract OCR）。  它适用于所有 SANE 兼容的设备并支持批量扫描。",
     "issue": "反馈问题或查看源码：",
+    "api": "OpenAPI 文档：",
     "system-info": "系统信息"
   },
 
   "colors": {
     "accent-4": "默认",
-    "red": "红",
+    "red": "大红",
     "pink": "桃红",
-    "purple": "紫",
-    "deep-purple": "绛紫",
-    "indigo": "靛",
-    "blue": "蓝",
-    "light-blue": "湖蓝",
-    "cyan": "青",
-    "teal": "苍",
-    "green": "绿",
-    "light-green": "草绿",
-    "lime": "绿黄",
-    "yellow": "黄",
-    "amber": "琥珀",
-    "orange": "橙",
-    "deep-orange": "橘",
-    "brown": "棕",
+    "purple": "大紫",
+    "deep-purple": "绀青",
+    "indigo": "靛蓝",
+    "blue": "天蓝",
+    "light-blue": "蔚蓝",
+    "cyan": "碧蓝",
+    "teal": "苍青",
+    "green": "碧绿",
+    "light-green": "翠绿",
+    "lime": "葱黄",
+    "yellow": "明黄",
+    "amber": "杏黄",
+    "orange": "橙黄",
+    "deep-orange": "橘红",
+    "brown": "棕褐",
     "blue-grey": "蓝灰",
-    "grey": "灰"
+    "grey": "墨灰"
   },
 
   "batch-dialog": {
@@ -52,13 +55,17 @@
     "size": "大小",
     "items-per-page": "每页文件数",
     "items-per-page-all": "展示全部",
+    "message:action": "对{1}执行{0} ",
     "message:deleted": "已删除 {0}",
-    "message:renamed": "文件已更名",
+    "message:renamed": "文件名已更改",
+    "button:action-selected": "执行操作...",
     "button:delete-selected": "删除所选",
     "dialog:rename": "更改文件名称",
     "dialog:rename-cancel": "取消",
     "dialog:rename-save": "保存",
-    "actions": "操作"
+    "actions": "操作",
+    "thumbnail-show": "显示缩略图",
+    "thumbnail-size": "缩略图大小"
   },
 
   "navigation": {
@@ -76,9 +83,11 @@
     "auto-collate-standard": "自动 (标准校对 1, 3... 4, 2)",
     "auto-collate-reverse": "自动 (逆向校对 1, 3... 2, 4)"
   },
-  
+
   "filter": {
     "auto-level": "自动调整",
+    "auto-contrast": "自动对比度",
+    "more-contrast": "高对比度",
     "threshold": "阈值",
     "blur": "模糊"
   },
@@ -96,6 +105,11 @@
     "24bit color(fast)": "@:mode.color"
   },
 
+  "adf-mode": {
+    "simplex": "单面",
+    "duplex": "双面"
+  },
+
   "source": {
     "flatbed": "稿台",
     "adf": "自动进纸器",
@@ -103,6 +117,7 @@
     "left-aligned": "左对齐",
     "centrally-aligned": "中间对齐",
     "duplex": "双面",
+    "transparency unit": "透明单元",
 
     "automatic document feeder": "@:source.adf",
     "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
@@ -119,15 +134,15 @@
     "lzw-compressed": "LZW 压缩",
     "ocr": "OCR文字识别",
     "text-file": "文本文档"
-  },  
+  },
 
   "paper-size": {
-    "letter": "Letter",
-    "legal": "Legal",
-    "tabloid": "Tabloid",
-    "ledger": "Ledger",
-    "junior-legal": "Junior legal",
-    "half-letter": "Half letter",
+    "letter": "信纸",
+    "legal": "法定纸张",
+    "tabloid": "小报",
+    "ledger": "账册",
+    "junior-legal": "小号法定纸张",
+    "half-letter": "半幅信纸",
     "portrait": "纵向",
     "landscape": "横向"
   },
@@ -137,10 +152,11 @@
     "source": "来源",
     "resolution": "分辨率",
     "mode": "模式",
+    "adf-mode": "自动进纸模式",
     "dynamic-lineart": "动态线性",
-    "dynamic-lineart:enabled": "开启",
-    "dynamic-lineart:disabled": "关闭",
-    "batch": "批量",
+    "dynamic-lineart:enabled": "启用",
+    "dynamic-lineart:disabled": "停用",
+    "batch": "批量扫描",
     "filters": "滤镜",
     "format": "格式",
     "btn-preview": "预览",
@@ -156,7 +172,7 @@
     "message:loading-devices": "加载设备 ...",
     "message:no-devices": "未找到设备",
     "message:deleted-preview": "已清除预览",
-    "message:turn-documents": "旋转文件",
+    "message:turn-documents": "文件翻面",
     "message:preview-of-page": "页面预览"  
   },
 
@@ -172,6 +188,7 @@
     "theme:dark": "深色",
     "color": "颜色",
     "color:description": "切换顶部应用栏的颜色。",
+    "show-files-after-scan:description": "扫描完成后显示文件",
     "devices": "设备和存储",
     "reset:description": "清空扫描仪列表并强制重新加载设备",
     "reset": "重置",
