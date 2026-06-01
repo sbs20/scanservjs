@@ -20,6 +20,7 @@ module.exports = new class Api {
     const dir = FileInfo.create(config.outputDirectory);
     let files = await dir.list();
     files = files
+      .filter(file => !file.isDirectory)
       .sort((f1, f2) => f2.lastModified - f1.lastModified);
     log.trace(LogFormatter.format().full(files));
     return files;
