@@ -5,6 +5,7 @@
   "scripts": {
     "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
     "build": "npm run build:version && npm run build --workspaces && node build.js --assemble",
+    "check": "npm run lint && npm run test && npm run build && ./makedeb.sh",
     "clean": "npm run clean:dist && npm run clean:modules && npm run clean:debian && npm run clean:jekyll",
     "clean:debian": "rm -rf ./debian",
     "clean:dist": "rm -rf ./dist && npm run clean:dist --workspaces",
