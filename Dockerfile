@@ -22,12 +22,12 @@ RUN ./makedeb.sh
 
 # Sane image
 #
-# This is the minimum bookworm/node/sane image required which is used elsewhere.
+# This is the minimum trixie/node/sane image required which is used elsewhere.
 # Dependencies are installed here in order to anticipate and cache what will
 # be required by the deb package. It would all still work perfectly well if this
 # layer did not exist but testing would be slower and more painful.
 # ==============================================================================
-FROM debian:bookworm-slim AS scanservjs-base
+FROM debian:trixie-slim AS scanservjs-base
 RUN apt-get update \
   && apt-get install -yq \
     nodejs \
