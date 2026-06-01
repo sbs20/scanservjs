@@ -41,8 +41,14 @@ function assertPathIsSafe(path) {
  * @returns {void}
  */
 function assertFilenameIsSafe(filename) {
-  if (/[/\\?%*:|"<>;=]/.test(filename)) {
-    throw new Error('Name cannot contain illegal characters: /\\?%*:|"<>;=');
+  if (!/^[ \p{L}\p{N}._-]+$/u.test(filename)) {
+    const badMatches = filename.match(/[^\p{L}\p{N}._-]/gu);
+    const badChars = [...new Set(badMatches)].join('');
+    throw new Error(`Name cannot contain illegal characters: ${badChars}`);
+  }
+
+  if (filename === '.' || filename === '..') {
+    throw new Error('Name cannot be "." or ".."');
   }
 }
 

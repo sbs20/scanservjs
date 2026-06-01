@@ -13,10 +13,13 @@ describe('FileInfo', () => {
   it('Security', () => {
     assert.throws(
       () => FileInfo.unsafe('', '../package.json'),
-      /Error: Name cannot contain illegal characters.*/);
+      /Error: Name cannot contain illegal characters: \//);
     assert.throws(
       () => FileInfo.unsafe('', '/usr/bin/ls'),
-      /Error: Name cannot contain illegal characters.*/);
+      /Error: Name cannot contain illegal characters: \//);
+    assert.throws(
+      () => FileInfo.unsafe('', 'x\'$(sleep)\'.jpg'),
+      /Error: Name cannot contain illegal characters: '\$\(\)/);
   });
 
   it('Check file path variations', () => {
@@ -76,6 +79,14 @@ describe('FileInfo', () => {
     assert.throws(() => FileInfo.unsafe('', 'a?1'), /Error: Name .* illegal char.*/);
     assert.throws(() => FileInfo.unsafe('', 'a<1'), /Error: Name .* illegal char.*/);
     assert.throws(() => FileInfo.unsafe('', 'a>1'), /Error: Name .* illegal char.*/);
+    assert.throws(() => FileInfo.unsafe('', 'a`1'), /Error: Name .* illegal char.*/);
+    assert.throws(() => FileInfo.unsafe('', 'a\'1'), /Error: Name .* illegal char.*/);
+    assert.throws(() => FileInfo.unsafe('', 'x\'$(sleep)\'.jpg'), /Error: Name .* illegal char.*/);
+  });
+
+  it('Illegal characters', async () => {
+    assert.throws(() => FileInfo.unsafe('', '.'), /Error: Name cannot be.*/);
+    assert.throws(() => FileInfo.unsafe('', '..'), /Error: Name cannot be.*/);
   });
 
   it('Directory traversal', async () => {
@@ -85,29 +96,29 @@ describe('FileInfo', () => {
   });
 
   it('File move, rename and delete', async () => {
-    let file = FileInfo.create('./test/resource/~tmp');
+    let file = FileInfo.create('./test/resource/-tmp');
     file.save('Hello world');
-    file = await file.move('./test/resource/~temp');
+    file = await file.move('./test/resource/-temp');
 
-    let file2 = FileInfo.create('./test/resource/~tmp2');
+    let file2 = FileInfo.create('./test/resource/-tmp2');
     file2.save('Goodbye cruel world');
     await assert.rejects(
-      async () => await file2.rename('~temp'),
-      /Error: .*~temp already exists/);
+      async () => await file2.rename('-temp'),
+      /Error: .*-temp already exists/);
     file2.delete();
 
-    assert.strictEqual(FileInfo.create('./test/resource/~tmp').exists(), false);
-    assert.strictEqual(FileInfo.create('./test/resource/~temp').exists(), true);
+    assert.strictEqual(FileInfo.create('./test/resource/-tmp').exists(), false);
+    assert.strictEqual(FileInfo.create('./test/resource/-temp').exists(), true);
 
     await assert.rejects(
       async () => await file.rename('../thing'),
       /Error: Name .* illegal char.*/);
-    file = await file.rename('~temporary');
+    file = await file.rename('-temporary');
 
-    assert.strictEqual(FileInfo.create('./test/resource/~temp').exists(), false);
-    assert.strictEqual(FileInfo.create('./test/resource/~temporary').exists(), true);
+    assert.strictEqual(FileInfo.create('./test/resource/-temp').exists(), false);
+    assert.strictEqual(FileInfo.create('./test/resource/-temporary').exists(), true);
 
     file.delete();
-    assert.strictEqual(FileInfo.create('./test/resource/~temporary').exists(), false);
+    assert.strictEqual(FileInfo.create('./test/resource/-temporary').exists(), false);
   });
 });
