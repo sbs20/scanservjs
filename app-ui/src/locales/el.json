@@ -1,0 +1,221 @@
+{
+  "$vuetify": {
+    "dataFooter": {
+      "pageText": "{0} - {1} / {2}",
+      "itemsPerPageAll": "@:files.items-per-page-all"
+    },
+    "noDataText": "@:global.no-data-text"
+  },
+
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "Δεν υπάρχουν διαθέσιμα δεδομένα"
+  },
+
+  "about": {
+    "main": "Το scanservjs είναι μια απλή διαδικτυακή διεπαφή χρήστη για τον σαρωτή σας. Σας επιτρέπει να μοιράζεστε έναν ή περισσότερους σαρωτές (χρησιμοποιώντας το SANE) σε ένα δίκτυο χωρίς την ανάγκη προγραμμάτων οδήγησης ή περίπλοκης εγκατάστασης. Μπορεί να αποθηκεύσει σαρώσεις σε TIF, JPG, PNG, PDF και TXT (με Tesseract OCR) με ποικίλες ρυθμίσεις συμπίεσης, τις οποίες μπορείτε να ορίσετε. Υποστηρίζει σάρωση πολλαπλών σελίδων και όλες τις συσκευές που είναι συμβατές με το SANE.",
+    "issue": "Υποβολή ζητήματος (issue) ή προβολή πηγαίου κώδικα:",
+    "api": "Τεκμηρίωση OpenAPI:",
+    "system-info": "Πληροφορίες συστήματος"
+  },
+
+  "colors": {
+    "accent-4": "Προεπιλογή",
+    "red": "Κόκκινο",
+    "pink": "Ροζ",
+    "purple": "Μωβ",
+    "deep-purple": "Σκούρο μωβ",
+    "indigo": "Λουλακί",
+    "blue": "Μπλε",
+    "light-blue": "Ανοιχτό μπλέ",
+    "cyan": "Κυανό",
+    "teal": "Γαλαζοπράσινο",
+    "green": "Πράσινο",
+    "light-green": "Ανοιχτό πράσινο",
+    "lime": "Λαχανί",
+    "yellow": "Κίτρινο",
+    "amber": "Κεχριμπάρι",
+    "orange": "Πορτοκαλί",
+    "deep-orange": "Σκούρο πορτοκαλί",
+    "brown": "Καφέ",
+    "blue-grey": "Μπλε-γκρι",
+    "grey": "Γκρι"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Ακυρο",
+    "btn-finish": "Τέλος",
+    "btn-rescan": "Σάρωση σελίδας ξανά",
+    "btn-next": "Επόμενο"
+  },
+
+  "files": {
+    "filename": "Ονομα αρχείου",
+    "date": "Ημερομηνία",
+    "size": "Μέγεθος",
+    "items-per-page": "Αρχεία ανά σελίδα",
+    "items-per-page-all": "Ολα",
+    "message:action": "Εκτέλεση ενέργειας {0} στις {1}",
+    "message:deleted": "To {0} διαγράφτηκε",
+    "message:renamed": "Το αρχείο μετονομάστηκε",
+    "button:action-selected": "Εκτέλεση ενέργειας...",
+    "button:delete-selected": "Διαγραφή επιλεγμένων",
+    "dialog:rename": "Αλλαγή ονόματος αρχείου",
+    "dialog:rename-cancel": "Ακυρο",
+    "dialog:rename-save": "Αποθήκευση",
+    "actions": "Ενέργειες",
+    "thumbnail-show": "Εμφάνιση μικρογραφιών",
+    "thumbnail-size": "Μέγεθος μικρογραφιών"
+  },
+
+  "navigation": {
+    "scan": "Σάρωση",
+    "files": "Αρχεία",
+    "settings": "Ρυθμίσεις",
+    "about": "Σχετικά",
+    "version": "Εκδοση"
+  },
+
+  "batch-mode": {
+    "none": "Ανενεργό",
+    "manual": "Χειροκίνητα (με προτροπή)",
+    "auto": "Αυτόματο (τροφοδότης εγγράφων)",
+    "auto-collate-standard": "Αυτόματο (Συρραφή 1, 3... 4, 2)",
+    "auto-collate-reverse": "Αυτόματο (Αντίστροφα 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Αυτόματη ρύθμιση επιπέδου",
+    "auto-contrast": "Αυτόματη αντίθεση",
+    "more-contrast": "Περισσότερη αντίθεση",
+    "threshold": "Κατώφλι",
+    "blur": "Θάμπωμα"
+  },
+
+  "mode": {
+    "color": "Εγχρωμο",
+    "halftone": "Διόρθωση ημιτόνων",
+    "gray": "Γκρι",
+    "lineart": "Σκίτσο",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Σάρωση μονής όψης",
+    "duplex": "Σάρωση διπλής όψης"
+  },
+
+  "source": {
+    "flatbed": "Επίπεδη επιφάνεια",
+    "adf": "Αυτόματος Τροφοδότης Εγγράφων (ADF)",
+    "auto": "Αυτόματο",
+    "left-aligned": "Στοίχιση στα αριστερά",
+    "centrally-aligned": "Κεντράρισμα",
+    "duplex": "Σάρωση διπλής όψης",
+    "transparency unit": "Μονάδα διάφανης σάρωσης",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Υψηλή ποιότητα",
+    "medium-quality": "Μέτρια ποιότητα",
+    "low-quality": "Χαμηλή ποιότητα",
+    "uncompressed": "Χωρίς συμπίεση",
+    "lzw-compressed": "Συμπίεση LZW",
+    "ocr": "Οπτική αναγνώριση χαρακτήρων (OCR)",
+    "text-file": "Αρχείο κειμένου"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Κατακόρυφο",
+    "landscape": "Οριζόντιο"
+  },
+
+  "scan": {
+    "device": "Συσκευή",
+    "source": "Πηγή",
+    "resolution": "Ανάλυση",
+    "mode": "Λειτουργία",
+    "adf-mode": "Λειτουργία Αυτόματου Τροφοδότη Εγγράφων (ADF)",
+    "dynamic-lineart": "Δυναμικό σκίτσο",
+    "dynamic-lineart:enabled": "Ενεργό",
+    "dynamic-lineart:disabled": "Ανενεργό",
+    "batch": "Μαζική σάρωση",
+    "filters": "Φίλτρα",
+    "format": "Μορφή",
+    "btn-preview": "Προεπισκόπηση",
+    "btn-clear": "Εκκαθάριση",
+    "btn-scan": "Σάρωση",
+    "top": "Πάνω",
+    "left": "Αριστερά",
+    "width": "Πλάτος",
+    "height": "Υψος",
+    "paperSize": "Μέγεθος χαρτιού",
+    "brightness": "Φωτεινότητα",
+    "contrast": "Αντίθεση",
+    "message:loading-devices": "Φόρτωση συσκευών...",
+    "message:no-devices": "Δεν βρέθηκαν συσκευές",
+    "message:deleted-preview": "Η προεπισκόπηση διαγράφτηκε",
+    "message:turn-documents": "Αναποδογύρισμα εγγράφων",
+    "message:preview-of-page": "Προεπισκόπηση σελίδας"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Συμπεριφορά και διεπαφή χρήστη",
+    "locale": "Γλώσσα",
+    "locale:description": "Επιλέξτε γλώσσα",
+    "theme": "Θέμα",
+    "theme:description": "Θέμα. Εάν χρησιμοποιείτε το θέμα του συστήματος και το αλλάξετε, θα χρειαστεί να επαναφορτώσετε την εφαρμογή.",
+    "theme:system": "Σύστημα",
+    "theme:light": "Φωτεινό",
+    "theme:dark": "Σκοτεινό",
+    "color": "Χρώμα",
+    "color:description": "Χρώμα. Αυτό θα αλλάξει το χρώμα της επάνω γραμμής της εφαρμογής.",
+    "show-files-after-scan:description": "Εμφάνιση αρχείων μετά την ολοκλήρωση της σάρωσης",
+    "devices": "Συσκευές και χώρος αποθήκευσης",
+    "reset:description": "Καθαρίζει τις αποθηκευμένες συσκευές σάρωσης και κάνει αναγκαστική επαναφόρτωση",
+    "reset": "Επαναφορά",
+    "clear-storage:description": "Καθαρίζει τον τοπικό χώρο αποθήκευσης από τυχόν προσωρινές παραμέτρους",
+    "clear-storage": "Εκκαθάριση"
+  },
+
+  "locales": {
+    "ar": "العربية",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά (GR)",
+    "en": "English (UK)",
+    "en-US": "English (US)",
+    "es": "Español",
+    "fr": "Français",
+    "hu": "Magyar",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Portuguese (Portugal)",
+    "pt-BR": "Portuguese (Brazilian)",
+    "ru": "Russian",
+    "sk": "Slovenčina",
+    "tr": "Türkçe",
+    "uk": "Yкраїнська",
+    "zh": "简体中文",
+    "test": "Test"
+  }
+}
