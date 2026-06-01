@@ -1,18 +1,11 @@
 {
-  "$vuetify": {
-    "dataFooter": {
-      "itemsPerPageAll": "@:files.items-per-page-all"
-    },
-    "noDataText": "@:global.no-data-text"
-  },
-
   "global": {
     "application-name": "scanservjs",
     "no-data-text": "Žiadne dáta nie sú k dispozícii"
   },
 
   "about": {
-    "main": "scanservjs je jednoduché webové užívateľské rozhranie pre váš skener. Umožňuje vám zdieľať jeden alebo viac skenerov (s využitím SANE) bez ovládačov či komplikovanej inštalácie. Dokáže ukladať do formátov TIF, JPG, PNG, PDF a TXT (pre rozpoznávanie znakov využíva Tesseract OCR) spolu s nastavením úrovne kompresie. Podporuje viacstránkové skenovanie a všetky zariadenia kompatibilné so SANE.",
+    "main": "scanservjs je jednoduché webové užívateľské rozhranie pre váš skener. Umožňuje vám zdieľať skenery po sieti (s využitím SANE) bez ovládačov či komplikovanej inštalácie. Dokáže ukladať skeny do formátov TIF, JPG, PNG, PDF a TXT (pre rozpoznávanie znakov využíva Tesseract OCR) s nastaviteľnou úrovňou kompresie. Podporuje všetky zariadenia kompatibilné so SANE a aj viacstránkové skenovanie.",
     "issue": "Nahláste chybu alebo si prezrite zdrojový kód:",
     "api": "Swagger API dokumentácia:",
     "system-info": "Informácie o systéme"
@@ -28,7 +21,7 @@
     "blue": "Modrá",
     "light-blue": "Svetlomodrá",
     "cyan": "Azúrová",
-    "teal": "Zelenomodrá",
+    "teal": "Modrozelená",
     "green": "Zelená",
     "light-green": "Svetlozelená",
     "lime": "Limetková",
@@ -54,8 +47,10 @@
     "size": "Veľkosť",
     "items-per-page": "Počet súborov na stránku",
     "items-per-page-all": "Všetky",
+    "message:action": "Akcia {0} bola vykonaná na {1}",
     "message:deleted": "Súbor {0} bol odstránený",
     "message:renamed": "Súbor bol premenovaný",
+    "button:action-selected": "Spustiť akciu...",
     "button:delete-selected": "Odstrániť výber",
     "dialog:rename": "Premenovať",
     "dialog:rename-cancel": "Zrušiť",
@@ -77,12 +72,14 @@
     "none": "Vypnutý",
     "manual": "Manuálny (s výzvou)",
     "auto": "Automatický (Podávač dokumentov)",
-    "auto-collate-standard": "Automatický (V poradí 1, 3... ...4, 2)",
-    "auto-collate-reverse": "Automatický (Reverzne 1, 3... 2, 4...)"
+    "auto-collate-standard": "Automatický (V poradí 1, 3... 4, 2)",
+    "auto-collate-reverse": "Automatický (Reverzne 1, 3... 2, 4)"
   },
     
   "filter": {
     "auto-level": "Automatická úroveň",
+    "auto-contrast": "Automatický kontrast",
+    "more-contrast": "Zvýšený kontrast",
     "threshold": "Prah",
     "blur": "Rozostrenie"
   },
@@ -174,15 +171,15 @@
   "settings": {
     "title": "@:navigation.settings",
     "behaviour-ui": "Správanie a uživateľské rozhranie",
-    "locale": "Lokalizácia",
-    "locale:description": "Vyberte si vašu lokalizáciu",
+    "locale": "Jazyk",
+    "locale:description": "Zvoľte si jazyk",
     "theme": "Motív",
-    "theme:description": "Motív. Ak používate systémový motív a zmeníte ho, bude potrebné obnoviť stránku s aplikáciou.",
+    "theme:description": "Zmena motívu. Ak používate systémový motív a zmeníte ho, bude potrebné obnoviť stránku s aplikáciou.",
     "theme:system": "Podľa systému",
     "theme:light": "Svetlý",
     "theme:dark": "Tmavý",
     "color": "Farba",
-    "color:description": "Farba. Toto nastavenie zmení farbu vrchného panelu.",
+    "color:description": "Zmena farby vrchného panelu.",
     "show-files-after-scan:description": "Zobraziť súbory po dokončení skenovania.",
     "devices": "Zariadenia a úložisko",
     "reset:description": "Odstráni skenovacie zariadenia a vynúti ich opätovné načítanie.",
