@@ -129,9 +129,15 @@ const EndpointSpecs = [
     method: 'get',
     path: '/api/v1/preview',
     callback: async (req, res) => {
-      const buffer = await api.readPreview(req.query.filter);
+      const transformations = {
+        rotation: req.query.rotation,
+        flipH: req.query.flipH,
+        flipV: req.query.flipV
+      };
+      const result = await api.readPreview(req.query.filter, transformations);
       res.send({
-        content: buffer.toString('base64')
+        content: result.buffer.toString('base64'),
+        isDefault: result.isDefault
       });
     }
   },

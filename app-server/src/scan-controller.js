@@ -81,6 +81,17 @@ class ScanController {
       files = Collator.collate(files, this.request.batch === Constants.BATCH_COLLATE_STANDARD);
     }
 
+    // Apply transformations (rotation, flip)
+    if (this.request.transformations) {
+      const transformParams = this._buildTransformParams(this.request.transformations);
+      if (transformParams) {
+        const stdin = files.map(f => `${f.name}\n`).join('');
+        const cmd = `convert @- ${transformParams} t-%04d.tif`;
+        await Process.spawn(cmd, stdin, { cwd: config.tempDirectory });
+        files = (await this.listFiles()).filter(f => f.name.match(/t-\d{4}\.tif/));
+      }
+    }
+
     // Apply filters
     if (this.request.filters.length > 0) {
       const stdin = files.map(f => `${f.name}\n`).join('');
@@ -127,6 +138,37 @@ class ScanController {
     let buffer = FileInfo.create(filepath).toBuffer();
     buffer = await Process.chain(config.previewPipeline.commands, buffer, { ignoreErrors: true });
     return buffer;
+  }
+
+  /**
+   * Build ImageMagick transformation parameters
+   * @param {Object} transformations
+   * @returns {string}
+   */
+  _buildTransformParams(transformations) {
+    if (!transformations) {
+      return '';
+    }
+
+    const params = [];
+    
+    // Handle rotation
+    const rotation = parseInt(transformations.rotation, 10) || 0;
+    if (rotation !== 0) {
+      params.push(`-rotate ${rotation}`);
+    }
+
+    // Handle horizontal flip
+    if (transformations.flipH === 'true' || transformations.flipH === true) {
+      params.push('-flop');
+    }
+
+    // Handle vertical flip
+    if (transformations.flipV === 'true' || transformations.flipV === true) {
+      params.push('-flip');
+    }
+
+    return params.join(' ');
   }
 
   /**

@@ -90,10 +90,11 @@ module.exports = new class Api {
 
   /**
    * @param {string[]} filters
-   * @returns {Promise.<Buffer>}
+   * @param {Object} transformations
+   * @returns {Promise.<{buffer: Buffer, isDefault: boolean}>}
    */
-  async readPreview(filters) {
-    log.trace('readPreview()', filters);
+  async readPreview(filters, transformations) {
+    log.trace('readPreview()', filters, transformations);
     // The UI relies on this image being the correct aspect ratio. If there is a
     // preview image then just use it.
     const source = FileInfo.create(`${config.previewDirectory}/preview.tif`);
@@ -105,7 +106,16 @@ module.exports = new class Api {
         cmds.splice(0, 0, `convert - ${params} tif:-`);
       }
 
-      return await Process.chain(cmds, buffer, { ignoreErrors: true });
+      // Apply transformations (rotation, flip)
+      const transformParams = this._buildTransformParams(transformations);
+      if (transformParams) {
+        cmds.splice(0, 0, `convert - ${transformParams} tif:-`);
+      }
+
+      return {
+        buffer: await Process.chain(cmds, buffer, { ignoreErrors: true }),
+        isDefault: false
+      };
     }
 
     // If not then it's possible the default image is not quite the correct aspect ratio
@@ -118,10 +128,47 @@ module.exports = new class Api {
       const heightByWidth = device.features['-y'].limits[1] / device.features['-x'].limits[1];
       const width = 868;
       const height = Math.round(width * heightByWidth);
-      return await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer);
+      return {
+        buffer: await Process.spawn(`convert - -resize ${width}x${height}! jpg:-`, buffer),
+        isDefault: true
+      };
     } catch (e) {
-      return Promise.resolve(buffer);
+      return {
+        buffer: buffer,
+        isDefault: true
+      };
     }
+  }
+
+  /**
+   * Build ImageMagick transformation parameters
+   * @param {Object} transformations
+   * @returns {string}
+   */
+  _buildTransformParams(transformations) {
+    if (!transformations) {
+      return '';
+    }
+
+    const params = [];
+    
+    // Handle rotation
+    const rotation = parseInt(transformations.rotation, 10) || 0;
+    if (rotation !== 0) {
+      params.push(`-rotate ${rotation}`);
+    }
+
+    // Handle horizontal flip
+    if (transformations.flipH === 'true' || transformations.flipH === true) {
+      params.push('-flop');
+    }
+
+    // Handle vertical flip
+    if (transformations.flipV === 'true' || transformations.flipV === true) {
+      params.push('-flip');
+    }
+
+    return params.join(' ');
   }
 
   /**

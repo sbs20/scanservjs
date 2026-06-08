@@ -71,6 +71,14 @@
       </v-col>
 
       <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
+        <div class="d-flex justify-center mb-2">
+          <v-btn-group density="comfortable" variant="outlined">
+            <v-btn :disabled="!img" :title="$t('scan.rotate-ccw')" @click="rotateCounterClockwise"><v-icon :icon="mdiRotateLeft" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.rotate-cw')" @click="rotateClockwise"><v-icon :icon="mdiRotateRight" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-h')" :color="transformations.flipH ? 'primary' : undefined" @click="toggleFlipHorizontal"><v-icon :icon="mdiFlipHorizontal" /></v-btn>
+            <v-btn :disabled="!img" :title="$t('scan.flip-v')" :color="transformations.flipV ? 'primary' : undefined" @click="toggleFlipVertical"><v-icon :icon="mdiFlipVertical" /></v-btn>
+          </v-btn-group>
+        </div>
         <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
             :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
             :src="img" @change="onCropperChange" />
@@ -132,7 +140,7 @@
 </template>
 
 <script>
-import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh } from '@mdi/js';
+import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh, mdiRotateLeft, mdiRotateRight, mdiFlipHorizontal, mdiFlipVertical } from '@mdi/js';
 import { Cropper } from 'vue-advanced-cropper';
 import { useI18n } from 'vue-i18n';
 import BatchDialog from './BatchDialog.vue';
@@ -173,6 +181,10 @@ export default {
       mdiDelete,
       mdiMagnify,
       mdiRefresh,
+      mdiRotateLeft,
+      mdiRotateRight,
+      mdiFlipHorizontal,
+      mdiFlipVertical,
       te
     };
   },
@@ -197,6 +209,11 @@ export default {
         timer: 0,
         width: 400,
         key: 0
+      },
+      transformations: {
+        rotation: 0,
+        flipH: false,
+        flipV: false
       }
     };
   },
@@ -328,6 +345,32 @@ export default {
   },
 
   methods: {
+    rotateClockwise() {
+      this.transformations.rotation = (this.transformations.rotation + 90) % 360;
+      this.readPreview();
+    },
+
+    rotateCounterClockwise() {
+      this.transformations.rotation = (this.transformations.rotation - 90 + 360) % 360;
+      this.readPreview();
+    },
+
+    toggleFlipHorizontal() {
+      this.transformations.flipH = !this.transformations.flipH;
+      this.readPreview();
+    },
+
+    toggleFlipVertical() {
+      this.transformations.flipV = !this.transformations.flipV;
+      this.readPreview();
+    },
+
+    resetTransformations() {
+      this.transformations.rotation = 0;
+      this.transformations.flipH = false;
+      this.transformations.flipV = false;
+    },
+
     _resizePreview() {
       const paperRatio = this.geometry
         ? this.deviceSize.width / this.deviceSize.height
@@ -402,14 +445,14 @@ export default {
 
     pixelsPerMm() {
       const scanner = this.deviceSize;
-
-      // The preview image may not have perfectly scaled dimensions
-      // because pixel counts are integers. So we report a horizontal
-      // and vertical resolution
       const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // After 90° or 270° rotation, image dimensions are swapped
+      const isRotated = rotation === 90 || rotation === 270;
       return {
-        x: image.width / scanner.width,
-        y: image.height / scanner.height
+        x: image.width / (isRotated ? scanner.height : scanner.width),
+        y: image.height / (isRotated ? scanner.width : scanner.height)
       };
     },
 
@@ -422,28 +465,88 @@ export default {
       };
     },
 
-    cropperDefaultPosition() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+    transformCoordinates(coords, origWidth, origHeight, toDisplay = true) {
+      const { rotation, flipH, flipV } = this.transformations;
+      let { left, top, width, height } = coords;
 
-      return {
-        left: adjusted.left,
-        top: adjusted.top
+      // Calculate current dimensions based on rotation
+      const rotated = rotation === 90 || rotation === 270;
+      const w = rotated ? origHeight : origWidth;
+      const h = rotated ? origWidth : origHeight;
+
+      if (!toDisplay) {
+        // Converting from display back to original: undo flips first
+        if (flipV) top = h - top - height;
+        if (flipH) left = w - left - width;
+      }
+
+      // Rotate coordinates
+      if (rotation === 90) {
+        [left, top, width, height] = toDisplay
+          ? [origHeight - top - height, left, height, width]
+          : [top, origHeight - left - width, height, width];
+      } else if (rotation === 180) {
+        left = origWidth - left - width;
+        top = origHeight - top - height;
+      } else if (rotation === 270) {
+        [left, top, width, height] = toDisplay
+          ? [top, origWidth - left - width, height, width]
+          : [origWidth - top - height, left, height, width];
+      }
+
+      if (toDisplay) {
+        // Converting to display: apply flips after rotation
+        if (flipH) left = w - left - width;
+        if (flipV) top = h - top - height;
+      }
+
+      return { left, top, width, height };
+    },
+
+    cropperDefaultPosition() {
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
       };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+
+      // Transform to displayed coordinates
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      return { left: transformed.left, top: transformed.top };
     },
 
     cropperDefaultSize() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
 
-      return {
-        width: adjusted.width,
-        height: adjusted.height
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
       };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+
+      // Transform to displayed coordinates
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      return { width: transformed.width, height: transformed.height };
     },
 
     mask(add) {
@@ -455,26 +558,45 @@ export default {
     },
 
     onCoordinatesChange() {
-      const adjusted = this.scaleCoordinates(
-        this.request.params,
-        this.pixelsPerMm().x,
-        this.pixelsPerMm().y);
+      const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
 
-      this.$refs.cropper.setCoordinates(adjusted);
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Scale from mm to pixels and transform
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
+      };
+      const scaled = this.scaleCoordinates(this.request.params, pxPerMm.x, pxPerMm.y);
+      const transformed = this.transformCoordinates(scaled, origWidth, origHeight, true);
+
+      this.$refs.cropper.setCoordinates(transformed);
     },
 
     onCropperChange({ coordinates }) {
-      const adjusted = this.scaleCoordinates(
-        coordinates,
-        1 / this.pixelsPerMm().x,
-        1 / this.pixelsPerMm().y);
-
-      // The cropper changes even when coordinates are set manually. This will
-      // result in manually set values being overwritten because of rounding.
-      // If someone is taking the trouble to set values manually then they
-      // should be preserved. We should only update the values if they breach
-      // a threshold or the scanner dimensions
       const scanner = this.deviceSize;
+      const image = this.$refs.cropper.imageSize;
+      const rotation = this.transformations.rotation;
+
+      // Calculate original image dimensions
+      const isRotated = rotation === 90 || rotation === 270;
+      const origWidth = isRotated ? image.height : image.width;
+      const origHeight = isRotated ? image.width : image.height;
+
+      // Reverse transform and scale back to mm
+      const reversed = this.transformCoordinates(coordinates, origWidth, origHeight, false);
+      const pxPerMm = {
+        x: origWidth / scanner.width,
+        y: origHeight / scanner.height
+      };
+      const adjusted = this.scaleCoordinates(reversed, 1 / pxPerMm.x, 1 / pxPerMm.y);
+
+      // Preserve manually-set values if they're close enough
       const params = this.request.params;
       const threshold = 0.4;
       const boundAndRound = (n, min, max) => round(Math.min(Math.max(min, n), max), 1);
@@ -522,14 +644,22 @@ export default {
 
     readPreview() {
       // Gets the preview image as a base64 encoded jpg and updates the UI
-      const uri = 'api/v1/preview?' + new URLSearchParams(
-        this.request.filters.map(e => ['filter', e]));
+      const params = [
+        ...this.request.filters.map(e => ['filter', e]),
+        ['rotation', this.transformations.rotation],
+        ['flipH', this.transformations.flipH],
+        ['flipV', this.transformations.flipV]
+      ];
+      const uri = 'api/v1/preview?' + new URLSearchParams(params);
 
       this._fetch(uri, {
         cache: 'no-store',
         method: 'GET'
       }).then(data => {
         this.img = 'data:image/jpeg;base64,' + data.content;
+        if (data.isDefault) {
+          this.resetTransformations();
+        }
         this._resizePreview();
       });
     },
@@ -548,6 +678,7 @@ export default {
     clear() {
       storage.request = null;
       this.request = this.buildRequest();
+      this.resetTransformations();
     },
 
     scan(index) {
@@ -556,6 +687,7 @@ export default {
       }
 
       const data = Common.clone(this.request);
+      data.transformations = Common.clone(this.transformations);
       this._fetch('api/v1/scan', {
         method: 'POST',
         body: JSON.stringify(data),

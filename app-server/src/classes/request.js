@@ -103,6 +103,13 @@ module.exports = class Request {
       assertContains(features['--ald'].options, this.params.ald, 'Invalid --ald');
     }
 
+    // Handle image transformations
+    this.transformations = data.transformations || {
+      rotation: 0,
+      flipH: false,
+      flipV: false
+    };
+
     log.trace(LogFormatter.format().full(this));
   }
 };
