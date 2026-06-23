@@ -27,10 +27,10 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
 
 # Clone the repo
-git clone https://github.com/sbs20/scanservjs.git
+git clone https://github.com/sbs20/scanservjs.git && cd scanservjs
 
-# Install all packages
-cd scanservjs && nvm install && npm install .
+# Clean install all packages
+nvm install && npm clean-install . && npm run bootstrap
 
 # Run (from the scanservjs directory)
 npm run dev
@@ -59,6 +59,11 @@ with Debian:
 ```sh
 echo fs.inotify.max_user_watches=131072 | sudo tee -a /etc/sysctl.d/50-default.conf; sudo sysctl -p
 ```
+
+## Updating dependencies
+
+If you find yourself needing to recreate dependencies then remove the
+package-lock(s) and run `npm run util:install`
 
 ## Build
 
