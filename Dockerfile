@@ -10,10 +10,10 @@ COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
 
-RUN npm clean-install .
+RUN npm clean-install . && npm run bootstrap
 
-COPY app-server/ "$APP_DIR/app-server/"
-COPY app-ui/ "$APP_DIR/app-ui/"
+COPY --exclude="**/node_modules" app-server/ "$APP_DIR/app-server/"
+COPY --exclude="**/node_modules" app-ui/ "$APP_DIR/app-ui/"
 
 RUN npm run build
 

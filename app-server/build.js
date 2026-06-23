@@ -6,6 +6,7 @@ async function assemble() {
   await fse.copy('./src', `${dist}/server`, options);
   [
     'package.json',
+    'package-lock.json',
     'config/config.default.js',
     'data/preview/default.jpg'
   ].forEach(async path => await fse.copy(path, `${dist}/${path}`, options));

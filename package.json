@@ -3,20 +3,22 @@
   "version": "3.1.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
-    "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --workspaces",
-    "build": "npm run build:version && npm run build --workspaces && node build.js --assemble",
+    "bootstrap": "npm clean-install --prefix app-server && npm clean-install --prefix app-ui",
+    "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-server && npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-ui",
+    "build": "npm run build:version && npm run --prefix app-server build && npm run --prefix app-ui build && node build.js --assemble",
     "check": "npm run lint && npm run test && npm run build && ./makedeb.sh",
     "clean": "npm run clean:dist && npm run clean:modules && npm run clean:debian && npm run clean:jekyll",
     "clean:debian": "rm -rf ./debian",
-    "clean:dist": "rm -rf ./dist && npm run clean:dist --workspaces",
+    "clean:dist": "rm -rf ./dist && npm run --prefix app-server clean:dist && npm run --prefix app-ui clean:dist",
     "clean:jekyll": "rm -rf ./.bundle ./.jekyll-cache ./_site .jekyll-metadata",
-    "clean:modules": "rm -rf ./node_modules && npm run clean:modules --workspaces",
-    "dev": "concurrently 'npm run dev --workspace app-ui' 'npm run dev --workspace app-server'",
-    "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspace=app-server",
+    "clean:modules": "rm -rf ./node_modules && npm run --prefix app-server clean:modules && npm run --prefix app-ui clean:modules",
+    "dev": "concurrently 'npm run --prefix app-ui dev' 'npm run --prefix app-server dev'",
+    "lint": "npm run --prefix app-server lint && npm run --prefix app-ui lint",
+    "test": "npm run --prefix app-server test",
     "util:docker-build": "docker build --target scanservjs-core --tag scanservjs-image .",
+    "util:install": "npm install --prefix app-server && npm install --prefix app-ui",
     "util:jekyll-serve": "bundle config set --local path ~/.gem && bundle install && bundle exec jekyll serve",
-    "util:missing-translations": "npm run missing-translations --workspace=app-ui"
+    "util:missing-translations": "npm run --prefix app-ui missing-translations"
   },
   "devDependencies": {
     "concurrently": "8.2.1",
@@ -27,9 +29,5 @@
     "url": "https://github.com/sbs20/scanservjs"
   },
   "author": "Sam Strachan",
-  "license": "GPL-2.0",
-  "workspaces": [
-    "app-server",
-    "app-ui"
-  ]
+  "license": "GPL-2.0"
 }
