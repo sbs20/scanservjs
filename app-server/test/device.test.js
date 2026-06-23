@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const Device = require('../src/classes/device');
 const FileInfo = require('../src/classes/file-info');

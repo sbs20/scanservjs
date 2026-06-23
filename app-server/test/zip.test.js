@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const FileInfo = require('../src/classes/file-info');
 const Zip = require('../src/classes/zip');

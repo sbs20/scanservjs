@@ -108,12 +108,12 @@ const EndpointSpecs = [
   },
   {
     method: 'delete',
-    path: '/api/v1/files/*',
+    path: /\/api\/v1\/files\/(.*)/,
     callback: async (req, res) => res.send(api.fileDelete(req.params[0]))
   },
   {
     method: 'put',
-    path: '/api/v1/files/*',
+    path: /\/api\/v1\/files\/(.*)/,
     callback: async (req, res) => {
       const name = req.params[0];
       const newName = req.body.newName;

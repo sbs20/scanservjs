@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const Regex = require('../src/classes/regex');
 

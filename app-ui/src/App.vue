@@ -47,7 +47,7 @@ export default {
         ? Constants.Themes.Dark
         : Constants.Themes.Light;
     }
-    vuetifyTheme.global.name.value = theme;
+    vuetifyTheme.change(theme);
     const manifest = ManifestBuilder.create()
       .withDark(theme === Constants.Themes.Dark)
       .withStorage(storage)

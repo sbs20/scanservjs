@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const Collator = require('../src/classes/collator');
 

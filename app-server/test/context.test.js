@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const Context = require('../src/classes/context');
 const UserOptions = require('../src/classes/user-options');
