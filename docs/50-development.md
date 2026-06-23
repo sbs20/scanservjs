@@ -14,7 +14,14 @@
 
 ```shell
 # Install dependencies
-sudo apt-get install curl nodejs npm imagemagick sane-utils tesseract-ocr
+sudo apt-get install curl imagemagick sane-utils tesseract-ocr
+
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# IMPORTANT: Restart your terminal or run:
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # Enable PDF (required for execution and unit tests)
 sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
@@ -23,7 +30,7 @@ sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="
 git clone https://github.com/sbs20/scanservjs.git
 
 # Install all packages
-cd scanservjs && npm install .
+cd scanservjs && nvm install && npm install .
 
 # Run (from the scanservjs directory)
 npm run dev
