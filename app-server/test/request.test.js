@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const Application = require('../src/application');
 const Context = require('../src/classes/context');

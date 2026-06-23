@@ -1,8 +1,6 @@
 <template>
   <div>
     <v-row>
-      <v-spacer />
-
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
         <div class="d-flex">
           <v-select v-if="context.devices.length > 0"
@@ -70,11 +68,13 @@
         </div>
       </v-col>
 
-      <v-col cols="12" md="auto" class="mb-10 mb-md-0" :style="{width: `${preview.width}px`}">
-        <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
-            :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
-            :src="img" @change="onCropperChange" />
-        <v-img v-if="!geometry" :src="img" />
+      <v-col cols="12" md="6" class="mb-10 mb-md-0 d-flex justify-center">
+        <div style="width: 100%" :style="{ maxWidth: `${preview.width}px` }">
+          <cropper v-if="geometry" ref="cropper" :key="preview.key" class="cropper" :transition-time="10" :wheel-resize="false"
+              :default-position="cropperDefaultPosition" :default-size="cropperDefaultSize"
+              :src="img" @change="onCropperChange" />
+          <v-img v-if="!geometry" :src="img" />
+        </div>
       </v-col>
 
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
@@ -123,8 +123,6 @@
           </v-slider>
         </div>
       </v-col>
-      
-      <v-spacer />
     </v-row>
 
     <batch-dialog ref="batchDialog" />
@@ -338,7 +336,7 @@ export default {
       if (window.innerWidth >= mdBreakpoint) {
         const appbarHeight = 80;
         const availableWidth = window.innerWidth - 30;
-        const availableHeight = window.innerHeight - appbarHeight;
+        const availableHeight = window.innerHeight - appbarHeight - 15;
         const desiredWidth = availableHeight * paperRatio;
         this.preview.width = Math.min(availableWidth / 2, desiredWidth);
         this.preview.key += 1;

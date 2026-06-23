@@ -1,0 +1,39 @@
+import js from "@eslint/js";
+import globals from "globals";
+
+export default [
+  js.configs.recommended,
+  {
+    languageOptions: {
+      ecmaVersion: 2018,
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+        ...globals.es2015,
+        ...globals.mocha
+      }
+    },
+    rules: {
+      "array-bracket-spacing": "error",
+      "brace-style": "error",
+      "comma-spacing": "error",
+      "curly": "error",
+      "eol-last": "error",
+      "eqeqeq": "error",
+      "indent": [ "error", 2, { "SwitchCase": 1, "flatTernaryExpressions": true } ],
+      "keyword-spacing": "error",
+      "no-mixed-spaces-and-tabs": "error",
+      "no-multiple-empty-lines": [ 1, { "max": 1 } ],
+      "no-trailing-spaces": "error",
+      "no-undef": "error",
+      "no-unused-vars": ["error", { "caughtErrors": "none" }],
+      "no-var": "error",
+      "object-shorthand": [ 1, "methods" ],
+      "prefer-arrow-callback": "error",
+      "quotes": [ "error", "single" ],
+      "semi": [ "error", "always" ],
+      "space-before-blocks": "error",
+      "space-infix-ops": "error"
+    }
+  }
+];

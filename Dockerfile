@@ -2,7 +2,7 @@
 #
 # The builder image builds the core javascript app and debian package
 # ==============================================================================
-FROM node:18-bookworm-slim AS scanservjs-build
+FROM node:24-trixie-slim AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 

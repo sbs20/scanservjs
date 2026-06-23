@@ -21,8 +21,8 @@
     "util:missing-translations": "npm run --prefix app-ui missing-translations"
   },
   "devDependencies": {
-    "concurrently": "8.2.1",
-    "fs-extra": "11.1.1"
+    "concurrently": "9.1.2",
+    "fs-extra": "11.3.5"
   },
   "repository": {
     "type": "git",

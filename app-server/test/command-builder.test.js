@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const CommandBuilder = require('../src/classes/command-builder');
 

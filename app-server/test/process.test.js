@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const assert = require('assert');
 const CmdBuilder = require('../src/classes/command-builder');
 const Process = require('../src/classes/process');
@@ -10,8 +9,7 @@ describe('Process', () => {
   });
 
   it('echo-security', async () => {
-    let result = null;
-    result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
+    let result = await Process.execute(new CmdBuilder('echo').arg('-n', 'hello" && ls -al;# world').build());
     assert.strictEqual(result, 'hello" && ls -al;# world');
 
     result = await Process.execute(new CmdBuilder('echo').arg('-n', '`ls -al`').build());
