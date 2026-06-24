@@ -12,7 +12,7 @@ curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh |
 If you wish to install a specific version then you can do so:
 
 ```sh
-curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v v2.23.0
+curl -s https://raw.githubusercontent.com/sbs20/scanservjs/master/bootstrap.sh | sudo bash -s -- -v v3.10.0
 ```
 
 Since v3.0.0, the oneline install is actually just downloading a `.deb` file.

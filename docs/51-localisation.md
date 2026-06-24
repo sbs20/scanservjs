@@ -12,6 +12,8 @@ ready for localisation) and localisation (l10n, implementing specific locales).
 
 * Copy an existing locale, name it according to the iso 639 and sub region; see
   [w3c](https://www.w3.org/International/articles/language-tags/)
+* Register it with the UI in
+  [`/app-ui/src/classes/constants.js`](../app-ui/src/classes/constants.js)
 * Update the translations
 * If possible, test it works (see [development](./50-development.md))
 * Raise a PR or attach it to a new issue or #154

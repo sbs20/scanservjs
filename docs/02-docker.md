@@ -33,7 +33,7 @@ docker run \
 container and will be lost if you recreate it. If you want to map your scanned
 images then see mapping section below
 
-✅ The docker image supports arm as well as amd64.
+✅ The docker image supports arm64 as well as amd64.
 
 ## Accessing hardware
 
