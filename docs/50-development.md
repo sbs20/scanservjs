@@ -2,12 +2,13 @@
 
 ## Summary
 
-* Development requires at least Node 16 in order to support the UI build.
-* All code in `app-server` must be able to run under Node 10; no modern
+* Development requires at least Node 22 in order to support the build.
+* All code in `app-server` must be able to run under Node 12; no modern
   features.
 * Any commit must pass the following;
   ```sh
-  npm run lint && npm run test && npm run build && ./makedeb.sh
+  # Run lint, test, build and deb
+  npm run check
   ```
 
 ## Getting started
@@ -17,14 +18,14 @@
 sudo apt-get install curl imagemagick sane-utils tesseract-ocr
 
 # Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
 
 # IMPORTANT: Restart your terminal or run:
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # Enable PDF (required for execution and unit tests)
-sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-6/policy.xml
+sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read | write" pattern="PDF"'/ /etc/ImageMagick-7/policy.xml
 
 # Clone the repo
 git clone https://github.com/sbs20/scanservjs.git && cd scanservjs
@@ -70,7 +71,7 @@ package-lock(s) and run `npm run util:install`
 Before committing please verify and build
 
 ```sh
-npm run lint && npm run test && npm run build && ./makedeb.sh
+npm run check
 ```
 
 ## Find missing translations
@@ -129,15 +130,15 @@ docker build --target scanservjs-core --tag scanservjs-image .
 docker rm --force scanservjs-container 2> /dev/null
 
 # Different run options
-docker run -d -p 8080:8080 --name scanservjs-container --privileged scanservjs-image
+docker run --detach --publish 8080:8080 --name scanservjs-container --privileged scanservjs-image
 ```
 
 ## Mount map configuration files
 
 ```sh
-docker run -d \
-  -p 8080:8080 \
-  -v `pwd`/var/:/app/config/ \
+docker run --detach \
+  --publish 8080:8080 \
+  --volume `pwd`/var/:/app/config/ \
   --name scanservjs-container \
   --privileged \
   scanservjs-image
@@ -150,7 +151,7 @@ various ways to achieve this but Docker works well.
 
 ```dockerfile
 # build.Dockerfile
-FROM node:18-bookworm-slim AS scanservjs-build
+FROM node:24-trixie-slim AS scanservjs-build
 ENV APP_DIR=/app
 WORKDIR "$APP_DIR"
 
@@ -158,10 +159,10 @@ COPY package*.json build.js "$APP_DIR/"
 COPY app-server/package*.json "$APP_DIR/app-server/"
 COPY app-ui/package*.json "$APP_DIR/app-ui/"
 
-RUN npm clean-install .
+RUN npm clean-install . && npm run bootstrap
 
-COPY app-server/ "$APP_DIR/app-server/"
-COPY app-ui/ "$APP_DIR/app-ui/"
+COPY --exclude="**/node_modules" app-server/ "$APP_DIR/app-server/"
+COPY --exclude="**/node_modules" app-ui/ "$APP_DIR/app-ui/"
 
 RUN npm run build
 

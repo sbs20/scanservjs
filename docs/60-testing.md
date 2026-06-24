@@ -10,18 +10,18 @@ However, this app needs to run in all combinations of the following:
 ### Architectures:
 
 * AMD64
-* ARM
+* ARM64
 
 ### Operating systems:
 
-* Debian 10 Buster
 * Debian 11 Bullseye
 * Debian 12 Bookworm
+* Debian 13 Trixie
 * Arch
 
 ### Node versions
 
-* 10+
+* 12+
 
 ### Browsers
 
@@ -38,7 +38,7 @@ Where possible, the app has been designed to minimise the differences with all
 permuations.
 
 * Docker builds a deb file and installs that
-* Docker uses Debian 12 and Node 18
+* Docker uses Debian 13 and Node 20
 * There are no known architecture differences
 
 Nonetheless there is a lot to cover.
