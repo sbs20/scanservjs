@@ -18,8 +18,8 @@ module.exports = class CommandBuilder {
     if (['boolean', 'number'].includes(typeof value)) {
       return `${value}`;
     } else if ('string' === typeof value) {
-      if (value.includes('\'')) {
-        throw Error('Argument must not contain single quote "\'"');
+      if (value.includes('\'') || value.includes('`') || value.includes('$') || value.includes(';') || value.includes('|') || value.includes('&') || value.includes('<') || value.includes('>') || value.includes('(') || value.includes(')') || value.includes('\\') || value.includes('"')) {
+        throw Error('Argument contains forbidden characters');
       } else if (/^[0-9a-z-=/~.:]+$/i.test(value)) {
         return `${value}`;
       }
