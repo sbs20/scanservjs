@@ -148,6 +148,7 @@
     "batch": "Assemblage",
     "filters": "Filtres",
     "format": "Format",
+    "filename-prefix": "Préfixe fichier",
     "btn-preview": "Aperçu",
     "btn-clear": "Effacer",
     "btn-scan": "Numériser",
