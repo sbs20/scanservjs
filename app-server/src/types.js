@@ -104,6 +104,7 @@
  * @property {string[]} filters
  * @property {string} pipeline
  * @property {string} batch
+ * @property {string} [filenamePrefix]
  * @property {number} index
  */
 
