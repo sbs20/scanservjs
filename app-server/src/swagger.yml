@@ -109,9 +109,14 @@ paths:
         description: New filename
         required: true
         content:
-          text/plain:
+          application/json:
             schema:
-              type: string
+              type: object
+              required:
+                - newName
+              properties:
+                newName:
+                  type: string
       produces:
         - application/pdf
         - image/png
