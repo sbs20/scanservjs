@@ -13,10 +13,10 @@ jobs:
         node-version: [24]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -36,7 +36,7 @@ jobs:
     - run: npm run build
     - run: ./makedeb.sh
 
-    # We may need the package name for a release later (if not the dev branch and it's node 12)
+    # We may need the package name for a release later
     - name: Retrieve package name
       run: |
         echo "PACKAGE_NAME=$(ls ./debian/ | grep .*\.deb)" >> $GITHUB_ENV
@@ -45,7 +45,7 @@ jobs:
     - name: Create Release
       id: create_release
       if: env.PACKAGE_NAME
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v3
       with:
         draft: true
         files: ./debian/${{ env.PACKAGE_NAME }}
