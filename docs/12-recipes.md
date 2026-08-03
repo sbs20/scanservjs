@@ -385,6 +385,47 @@ module.exports = {
 };
 ```
 
+## Different Page Height Variables for each source
+```javascript
+module.exports = {
+  afterConfig(config) {
+    devices.forEach(device => {
+      device.features['--page-height'] = {
+        default: 2720,
+        limits: [0, 2740]
+      };
+      device.features['--page-height-FB'] = {
+        default: 2730,
+        limits: [0, 2740]
+      };
+      device.features['--page-height-ADF'] = {
+        default: 2740,
+        limits: [0, 2740]
+      };
+    });
+  }
+};
+```
+
+The --page-height option will default to --page-height if neither specific option is set. Even if the default option is set, it will try to use the specific option first before falling back to the default. If you don't want to set the option for the flatbed, for example, you must not set the default option, as it will fall back to this value instead.
+
+If the page height option should only be set for an ADF scan, do this:
+
+```javascript
+module.exports = {
+  afterConfig(config) {
+    devices.forEach(device => {
+      device.features['--page-height-ADF'] = {
+        default: 2740,
+        limits: [0, 2740]
+      };
+    });
+  }
+};
+```
+
+The same also applies to --page-width*
+
 ## Other recipes?
 
 If you have other recipes then please share them.

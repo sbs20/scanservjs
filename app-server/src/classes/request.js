@@ -71,6 +71,12 @@ module.exports = class Request {
     if ('--page-height' in features) {
       this.params.pageHeight = constrainWithFeature(data.params.pageHeight, features['--page-height']);
     }
+    if ('--page-height-ADF' in features) {
+      this.params.pageHeightADF = constrainWithFeature(data.params.pageHeightADF, features['--page-height-ADF']);
+    }
+    if ('--page-height-FB' in features) {
+      this.params.pageHeightFB = constrainWithFeature(data.params.pageHeightFB, features['--page-height-FB']);
+    }
     if ('--page-width' in features) {
       this.params.pageWidth = constrainWithFeature(data.params.pageWidth, features['--page-width']);
     }
