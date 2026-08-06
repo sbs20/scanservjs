@@ -92,16 +92,16 @@ module.exports = class ScanimageCommand {
       cmdBuilder.arg('--page-height', params.pageHeight);
     }
     if ('left' in params) {
-      cmdBuilder.arg('-l', params.left);
+      cmdBuilder.arg('-l', Math.round(params.left));
     }
     if ('top' in params) {
-      cmdBuilder.arg('-t', params.top);
+      cmdBuilder.arg('-t', Math.round(params.top));
     }
     if ('width' in params) {
-      cmdBuilder.arg('-x', params.width);
+      cmdBuilder.arg('-x', Math.round(params.width));
     }
     if ('height' in params) {
-      cmdBuilder.arg('-y', params.height);
+      cmdBuilder.arg('-y', Math.round(params.height));
     }
 
     cmdBuilder.arg('--format', params.format);
