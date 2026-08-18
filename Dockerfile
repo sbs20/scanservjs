@@ -77,6 +77,10 @@ COPY entrypoint.sh /entrypoint.sh
 RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT [ "/entrypoint.sh" ]
 
+# Copy scripts for additional driver/dep setup
+RUN mkdir /scripts
+COPY scripts/*.sh /scripts/
+
 # Copy the code and install
 COPY --from=scanservjs-build "/app/debian/scanservjs_*.deb" "/"
 RUN apt-get install ./scanservjs_*.deb \
@@ -111,18 +115,6 @@ USER $UNAME
 
 # default build
 FROM scanservjs-core
-
-# hplip image
-#
-# This image adds the HP scanner libs to the image. This target is not built by
-# default - you will need to specifically target it.
-# ==============================================================================
-FROM scanservjs-core AS scanservjs-hplip
-RUN apt-get update \
-  && apt-get install -yq libsane-hpaio \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && echo hpaio >> /etc/sane.d/dll.conf
 
 # brscan4 image
 #

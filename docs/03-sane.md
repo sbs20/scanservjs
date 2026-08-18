@@ -112,6 +112,14 @@ Please follow the manufacturer's instructions for setting up such scanners.
 Once a scanner is listed in `scanimage -L`, it should be ready to use with
 scanservjs.
 
+### HP Printers
+
+To use most HP printers the [HP Linux Imaging and Printing software] (HPLIP) driver is required. For debian based systems this driver can be installed with `apt get install libsane-hpaio`.
+
+Additionally, some scanners/printers may require a [closed-source plugin binary](https://developers.hp.com/hp-linux-imaging-and-printing/binary_plugin.html). Installation of this plugin can be automated using the included script [`hplip.sh`](/scripts/docs/hplip.sh). Driver and plugin installation can also be specified in the [docker installation.](docker.md#hp-printers)
+
+NOTE: `hplip.sh` automates accepting the license included with the binary plugin installation. You should read it after installation.
+
 ## SANE Airscan
 
 [sane-airscan](https://github.com/alexpevzner/sane-airscan) is useful for
