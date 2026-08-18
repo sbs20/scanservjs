@@ -78,4 +78,10 @@ describe('Process', () => {
     assert.strictEqual(pdf.length > 4000, true);
   });
 
+  it('does not crash on EPIPE when writing to stdin of a process that exits early', async () => {
+    // ls does not read from stdin, so passing stdin should trigger EPIPE, but it should be caught/ignored and not crash the process.
+    const hugeBuffer = Buffer.alloc(10 * 1024 * 1024, 'a');
+    await Process.spawn('ls', hugeBuffer);
+  });
+
 });
