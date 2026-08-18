@@ -88,7 +88,10 @@ module.exports = new class Process {
         }
       });
 
-      if (stdin) {
+      if (stdin && proc.stdin) {
+        proc.stdin.on('error', (err) => {
+          this.log().debug(`stdin error: ${err.message}`);
+        });
         proc.stdin.write(stdin);
         proc.stdin.end();
       }
