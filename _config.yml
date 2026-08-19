@@ -33,3 +33,8 @@ description: |-
     <li><a href="/scanservjs/docs/90-references.html">References</a></li>
     <li><a href="/scanservjs/docs/91-qnap.html">QNAP</a></li>
   </ol>
+
+  <h3>External resources</h3>
+  <ol>
+    <li><a href="/scanservjs/docs/99-external.html">External resources</a></li>
+  </ol>
