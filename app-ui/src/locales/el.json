@@ -44,9 +44,9 @@
 
   "batch-dialog": {
     "btn-cancel": "Ακυρο",
-    "btn-finish": "Τελος",
-    "btn-rescan": "Σαρωση σελιδας ξανα",
-    "btn-next": "Επομενο"
+    "btn-finish": "Τέλος",
+    "btn-rescan": "Σάρωση σελίδας ξανά",
+    "btn-next": "Επόμενο"
   },
 
   "files": {
@@ -69,10 +69,10 @@
   },
 
   "navigation": {
-    "scan": "Σαρωση",
-    "files": "Αρχεια",
-    "settings": "Ρυθμισεις",
-    "about": "Σχετικα",
+    "scan": "Σάρωση",
+    "files": "Αρχεία",
+    "settings": "Ρυθμίσεις",
+    "about": "Σχετικά",
     "version": "Εκδοση"
   },
 
@@ -159,14 +159,14 @@
     "batch": "Μαζική σάρωση",
     "filters": "Φίλτρα",
     "format": "Μορφή",
-    "btn-preview": "Προεπισκοπηση",
-    "btn-clear": "Εκκαθαριση",
-    "btn-scan": "Σαρωση",
+    "btn-preview": "Προεπισκόπηση",
+    "btn-clear": "Εκκαθάριση",
+    "btn-scan": "Σάρωση",
     "top": "Πάνω",
     "left": "Αριστερά",
     "width": "Πλάτος",
     "height": "Υψος",
-    "paperSize": "Μεγεθος χαρτιου",
+    "paperSize": "Μέγεθος χαρτιού",
     "brightness": "Φωτεινότητα",
     "contrast": "Αντίθεση",
     "message:loading-devices": "Φόρτωση συσκευών...",
@@ -193,7 +193,7 @@
     "reset:description": "Καθαρίζει τις αποθηκευμένες συσκευές σάρωσης και κάνει αναγκαστική επαναφόρτωση",
     "reset": "Επαναφορα",
     "clear-storage:description": "Καθαρίζει τον τοπικό χώρο αποθήκευσης από τυχόν προσωρινές παραμέτρους",
-    "clear-storage": "Εκκαθαριση"
+    "clear-storage": "Εκκαθάριση"
   },
 
   "locales": {
