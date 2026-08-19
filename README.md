@@ -110,6 +110,10 @@ It supports any
 * [References](docs/90-references.md)
 * [QNAP](docs/91-qnap.md)
 
+### External resources
+
+* [External resources](docs/99-external.md)
+
 ## Running scanservjs
 
 In most cases the use of the app should be fairly self-explanatory. When the app
