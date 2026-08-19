@@ -1,10 +1,10 @@
 {
   "name": "scanservjs",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "scanservjs is a simple web-based UI for SANE which allows you to share a scanner on a network without the need for drivers or complicated installation.",
   "scripts": {
     "bootstrap": "npm clean-install --prefix app-server && npm clean-install --prefix app-ui",
-    "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-server && npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-ui",
+    "build:version": "npm --allow-same-version --no-git-tag-version version $npm_package_version && npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-server && npm --allow-same-version --no-git-tag-version version $npm_package_version --prefix app-ui",
     "build": "npm run build:version && npm run --prefix app-server build && npm run --prefix app-ui build && node build.js --assemble",
     "check": "npm run lint && npm run test && npm run build && ./makedeb.sh",
     "clean": "npm run clean:dist && npm run clean:modules && npm run clean:debian && npm run clean:jekyll",
