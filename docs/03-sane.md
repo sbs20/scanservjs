@@ -112,6 +112,8 @@ Please follow the manufacturer's instructions for setting up such scanners.
 Once a scanner is listed in `scanimage -L`, it should be ready to use with
 scanservjs.
 
+See also, this [HP setup guide](https://github.com/sbs20/scanservjs/issues/724).
+
 ## SANE Airscan
 
 [sane-airscan](https://github.com/alexpevzner/sane-airscan) is useful for
