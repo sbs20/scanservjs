@@ -11,6 +11,27 @@ function constrainWithFeature(value, feature) {
 }
 
 /**
+ * Sanitises a user supplied filename prefix so it is safe to use as (part of)
+ * a filename on disk. Strips path separators, control and reserved characters
+ * and leading dots, then trims and caps the length. Returns undefined when
+ * nothing usable remains, so the caller can fall back to the default.
+ * @param {*} value
+ * @returns {string|undefined}
+ */
+function sanitiseFilenamePrefix(value) {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const cleaned = value
+    // eslint-disable-next-line no-control-regex
+    .replace(/[/\\<>:"|?*\x00-\x1f\x7f]/g, '')
+    .replace(/^\.+/, '')
+    .trim()
+    .slice(0, 64);
+  return cleaned.length > 0 ? cleaned : undefined;
+}
+
+/**
  *
  * @param {string[]} list
  * @param {string|string[]} value
@@ -49,6 +70,7 @@ module.exports = class Request {
       filters: data.filters || device.settings.filters.default,
       pipeline: data.pipeline || device.settings.pipeline.default,
       batch: data.batch || device.settings.batchMode.default,
+      filenamePrefix: sanitiseFilenamePrefix(data.filenamePrefix),
       index: data.index || 1
     });
 

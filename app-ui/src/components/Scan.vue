@@ -2,6 +2,12 @@
   <div>
     <v-row>
       <v-col cols="12" md="3" class="mb-10 mb-md-0">
+        <v-text-field
+          v-model="request.filenamePrefix"
+          :label="$t('scan.filename-prefix')"
+          placeholder="scan_"
+          persistent-placeholder />
+
         <div class="d-flex">
           <v-select v-if="context.devices.length > 0"
             v-model="device"
