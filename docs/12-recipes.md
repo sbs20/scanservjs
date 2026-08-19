@@ -252,6 +252,17 @@ specific device or change the default. So just as with other device overrides:
   }
 ```
 
+## Add rotation filters
+
+```javascript
+  afterConfig(config) {
+    config.filters.push(
+      { description: 'Rotate 90° clockwise', params: '-rotate 90' },
+      { description: 'Rotate 90° counter-clockwise', params: '-rotate -90' }
+    );
+  }
+```
+
 ## Add actions and call after a specific pipeline
 
 Create a file action to do whatever you like - this might be useful for
