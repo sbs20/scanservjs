@@ -294,6 +294,81 @@ module.exports = {
 };
 ```
 
+## Send to paperless
+
+`etc/scanservjs/config.local.js`
+
+```javascript
+const fs = require('fs');
+
+/**
+ * Function to upload a file to a Paperless-NGX instance.
+ * @param {object} fileInfo - Object containing the full file path.
+ * @param {string} url - The base URL for the Paperless instance.
+ * @param {string} token - The authorization token.
+ * @returns {Promise<string>} The response text from the server.
+ */
+async function uploadToPaperless(fileInfo, url, token) {
+  const filename = fileInfo.fullname.split('/').pop();
+  
+  const fileBuffer = await new Promise((resolve, reject) => {
+    fs.readFile(fileInfo.fullname, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(data);
+    });
+  });
+
+const fileBlob = new Blob([fileBuffer], { type: 'application/octet-stream' });
+
+  var data = new FormData();
+  data.append('document', fileBlob, filename);
+  data.append('title', filename);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${token}`,
+    },
+    body: data,
+  };
+
+  try {
+      const response = await fetch(`${url}/api/documents/post_document/`, requestOptions);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! Status: ${response.status}. Response: ${errorText}`);
+      }
+      return await response.text();
+      
+  } catch (error) {
+      console.error('Upload failed:', error);
+      Process.spawn(`echo 'Paperless upload error: ${error.message}'`);
+      throw error;
+  }
+}
+
+// ... then inside module exports
+module.exports = {
+  //...
+  actions: [
+    {
+      name: 'To 1st paperless',
+      async execute(fileInfo) {
+        uploadToPaperless(fileInfo, "<paperless-ngx-url 1>", "<access token 1>");
+      }
+    },
+    {
+      name: 'To 2nd paperless',
+      async execute(fileInfo) {
+        uploadToPaperless(fileInfo, "<paperless-ngx url 2>", "<access token 2>");
+      }
+    }
+  ]
+}
+```
+
 ## Add Basic Authentication
 
 This is not meaningfully secure. There is no transport security by default, and
