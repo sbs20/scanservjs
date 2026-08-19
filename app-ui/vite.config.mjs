@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import path from "path";
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import packageJson from './package.json'
+import packageJson from './package.json' with { type: 'json' };
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,13 +18,13 @@ export default defineConfig({
     vue(),
     vuetify(),
     VueI18nPlugin({
-      include: [path.resolve(__dirname, './src/locales/**')],
+      include: [path.resolve(import.meta.dirname, './src/locales/**')],
       compositionOnly: false
     }),
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   css: {
