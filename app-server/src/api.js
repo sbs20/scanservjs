@@ -44,14 +44,17 @@ module.exports = new class Api {
    * Runs an action on a file
    * @param {string} actionName
    * @param {string} fileName
+   * @param {Object.<string, string>} [headers] - HTTP headers of the request
+   * which triggered the action (e.g. identity headers set by an upstream
+   * reverse proxy). Passed through as-is to the action's execute function.
    * @returns {Promise.<any>}
    */
-  async fileAction(actionName, fileName) {
+  async fileAction(actionName, fileName, headers) {
     const fileInfo = FileInfo.unsafe(config.outputDirectory, fileName);
     if (!fileInfo.exists()) {
       throw new Error(`File '${fileName}' does not exist`);
     }
-    await application.userOptions().action(actionName).execute(fileInfo);
+    await application.userOptions().action(actionName).execute(fileInfo, headers);
   }
 
   /**

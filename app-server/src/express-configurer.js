@@ -83,7 +83,7 @@ const EndpointSpecs = [
     callback: async (req, res) => {
       const fileName = req.params[0];
       const actionName = req.params[1];
-      await api.fileAction(actionName, fileName);
+      await api.fileAction(actionName, fileName, req.headers);
       res.send('200');
     }
   },

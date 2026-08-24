@@ -134,6 +134,7 @@
 /**
  * @typedef {Function} FnActionExec
  * @param {FileInfo} fileInfo
+ * @param {Object.<string, string>} [headers]
  * @returns {Promise.<any>}
  */
 
