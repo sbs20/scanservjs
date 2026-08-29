@@ -149,3 +149,13 @@ subnet, the autodiscovery won't work. You have two options:
    //config.devices.push('net:${bridge}:${device}');
    config.devices.push('net:10.0.100.171:airscan:e0:Canon TR8500 series-5');
    ```
+
+## SANE epsonds
+
+SANE contains backend for connecting to EPSON ESC/I-2 scanners through Network.
+You can specify the device's IP address in `/etc/sane.d/epsonds.conf` and test the connection using
+`scanimage -L`.
+
+```ini
+net 10.0.111.5
+```
