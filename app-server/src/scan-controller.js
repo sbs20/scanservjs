@@ -103,7 +103,7 @@ class ScanController {
         .deflate(filenames.map(f => `${config.tempDirectory}/${f}`));
     }
 
-    const destination = `${config.outputDirectory}/${config.filename()}.${extension}`;
+    const destination = `${config.outputDirectory}/${config.filename(this.request.filenamePrefix)}.${extension}`;
     await FileInfo
       .create(`${config.tempDirectory}/${filename}`)
       .move(destination);

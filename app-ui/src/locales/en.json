@@ -159,6 +159,7 @@
     "batch": "Batch",
     "filters": "Filters",
     "format": "Format",
+    "filename-prefix": "Filename prefix",
     "btn-preview": "Preview",
     "btn-clear": "Clear",
     "btn-scan": "Scan",

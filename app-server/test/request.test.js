@@ -165,4 +165,29 @@ describe('Request', () => {
     assert.strictEqual(request.params.dynamicLineart, undefined);
   });
 
+  it('filenamePrefix', () => {
+    const file = FileInfo.create('test/resource/scanimage-a1.txt');
+    const device = Device.from(file.toText());
+    const context = new Context(config, [device], new UserOptions());
+    const base = {
+      params: { deviceId: 'plustek:libusb:001:008' },
+      pipeline: config.pipelines[0].description
+    };
+
+    const build = filenamePrefix =>
+      new Request(context, { ...base, filenamePrefix });
+
+    // A clean value passes through unchanged
+    assert.strictEqual(build('invoice_').filenamePrefix, 'invoice_');
+    // Missing / empty / whitespace-only falls back to undefined (=> default)
+    assert.strictEqual(build(undefined).filenamePrefix, undefined);
+    assert.strictEqual(build('').filenamePrefix, undefined);
+    assert.strictEqual(build('   ').filenamePrefix, undefined);
+    // Path separators, reserved chars and leading dots are stripped
+    assert.strictEqual(build('../../etc/passwd').filenamePrefix, 'etcpasswd');
+    assert.strictEqual(build('a/b\\c:d*e?').filenamePrefix, 'abcde');
+    // Non-string input is ignored
+    assert.strictEqual(build(42).filenamePrefix, undefined);
+  });
+
 });

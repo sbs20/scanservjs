@@ -41,8 +41,8 @@ module.exports = class Config {
           }
         }
       },
-      filename() {
-        return `scan_${dayjs().format('YYYY-MM-DD HH.mm.ss')}`;
+      filename(prefix) {
+        return `${prefix || 'scan_'}${dayjs().format('YYYY-MM-DD HH.mm.ss')}`;
       },
 
       scanimage: '/usr/bin/scanimage',
