@@ -85,12 +85,22 @@ module.exports = class ScanimageCommand {
 
     cmdBuilder.arg('--resolution', params.resolution);
 
-    if ('pageWidth' in params) {
+    if ('pageWidth' in params && /ADF/.test(params.source)) {
+      cmdBuilder.arg('--page-width', params.pageWidthADF);
+    } else if ('pageWidth' in params && !/ADF/.test(params.source)) {
+      cmdBuilder.arg('--page-width', params.pageWidthFB);
+    } else if ('pageWidth' in params) {
       cmdBuilder.arg('--page-width', params.pageWidth);
     }
-    if ('pageHeight' in params) {
+
+    if ('pageHeightADF' in params && /ADF/.test(params.source)) {
+      cmdBuilder.arg('--page-height', params.pageHeightADF);
+    } else if ('pageHeightFB' in params && !/ADF/.test(params.source)) {
+      cmdBuilder.arg('--page-height', params.pageHeightFB);
+    } else if ('pageHeight' in params) {
       cmdBuilder.arg('--page-height', params.pageHeight);
     }
+    
     if ('left' in params) {
       cmdBuilder.arg('-l', params.left);
     }
