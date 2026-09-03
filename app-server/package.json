@@ -34,7 +34,7 @@
     "adm-zip": "0.5.18",
     "cors": "2.8.6",
     "dayjs": "1.11.23",
-    "express": "4.22.2",
+    "express": "5.2.1",
     "express-basic-auth": "1.2.1",
     "loglevel": "1.9.2",
     "loglevel-plugin-prefix": "0.8.4",
