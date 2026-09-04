@@ -141,5 +141,20 @@
 /**
  * @typedef {Object} Action
  * @property {string} name
+ * @property {string} [icon] - Icon to show in the UI. Either one of the
+ * shorthand names the UI knows (e.g. 'upload', 'cloud-upload', 'send',
+ * 'email', 'printer', 'share', 'run') or a raw SVG path (e.g. the value of
+ * any `@mdi/js` export).
+ * @property {boolean} [inline] - When true the action gets its own button on
+ * every file row. Defaults to false, which lists it in that row's overflow
+ * menu instead.
  * @property {FnActionExec} execute
+ */
+
+/**
+ * The subset of an Action which is sent to the browser
+ * @typedef {Object} ActionInfo
+ * @property {string} name
+ * @property {string} [icon]
+ * @property {boolean} inline
  */

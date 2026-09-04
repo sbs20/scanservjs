@@ -68,8 +68,14 @@ module.exports = class Context {
     /** @type {PaperSize[]} */
     this.paperSizes = config.paperSizes;
 
-    /** @type {string[]} */
-    this.actions = userOptions.actions().map(a => a.name);
+    /** @type {ActionInfo[]} */
+    this.actions = userOptions.actions().map(a => {
+      return {
+        name: a.name,
+        icon: a.icon,
+        inline: a.inline === true
+      };
+    });
   }
 
   /**

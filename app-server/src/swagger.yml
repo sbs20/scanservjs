@@ -464,7 +464,22 @@ definitions:
       actions:
         type: array
         items:
-          type: string
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Echo"
+            icon:
+              type: string
+              description: >
+                Shorthand icon name known to the UI, or a raw SVG path.
+              example: "run"
+            inline:
+              type: boolean
+              description: >
+                Show as a dedicated button on each file row rather than in
+                that row's overflow menu.
+              default: false
 
   SystemInfoOs:
     properties:

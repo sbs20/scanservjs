@@ -134,7 +134,22 @@ module.exports = {
   actions: [
     // {
     //   name: 'Echo',
-    //   async execute(fileInfo) {
+    //
+    //   // Optional. Icon to show in the UI - either one of the shorthand
+    //   // names the UI knows ('upload', 'cloud-upload', 'send', 'email',
+    //   // 'printer', 'share', 'run') or a raw SVG path (e.g. the value of any
+    //   // `@mdi/js` export).
+    //   icon: 'run',
+    //
+    //   // Optional, defaults to false. When true this action gets its own
+    //   // button on every file row. Otherwise it's listed in that row's
+    //   // overflow (⋮) menu. Either way it can also be applied to several
+    //   // files at once by selecting them and using the toolbar actions menu.
+    //   inline: true,
+    //
+    //   // `headers` holds the request headers of the UI click, and is only
+    //   // populated for actions run manually (not for `pipeline.afterAction`)
+    //   async execute(fileInfo, headers) {
     //     return await Process.spawn(`echo '${fileInfo.fullname}'`);
     //   }
     // }
