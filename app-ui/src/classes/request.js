@@ -35,10 +35,10 @@ export default class Request {
       this.params.top = request.params.top || device.features['-t'].default;
     }
     if ('--page-height' in device.features) {
-      this.params.pageHeight = request.params.pageHeight || device.features['--page-height'].default;
+      this.params.pageHeight = device.features['--page-height'].default;
     }
     if ('--page-width' in device.features) {
-      this.params.pageWidth = request.params.pageWidth || device.features['--page-width'].default;
+      this.params.pageWidth = device.features['--page-width'].default;
     }
     
     if ('--adf-mode' in device.features) {

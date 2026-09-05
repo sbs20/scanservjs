@@ -72,6 +72,10 @@ module.exports = new class Api {
         brightness: req.params.brightness,
         contrast: req.params.contrast,
         dynamicLineart: req.params.dynamicLineart,
+        left: req.params.left,
+        top: req.params.top,
+        width: req.params.width,
+        height: req.params.height,
         isPreview: true
       }
     });
