@@ -1,0 +1,223 @@
+{
+  "$vuetify": {
+    "dataFooter": {
+      "pageText": "{0} - {1} / {2}",
+      "itemsPerPageAll": "@:files.items-per-page-all"
+    },
+    "noDataText": "@:global.no-data-text"
+  },
+
+  "global": {
+    "application-name": "scanservjs",
+    "no-data-text": "Məlumat yoxdur"
+  },
+
+  "about": {
+    "main": "scanservjs skaner üçün sadə veb interfeysidir. O, SANE vasitəsilə bir və ya bir neçə skaneri sürücü və mürəkkəb quraşdırma tələb etmədən şəbəkədə paylaşmağa imkan verir. Skan edilmiş sənədləri müxtəlif sıxılma parametrləri ilə TIF, JPG, PNG, PDF və TXT (Tesseract OCR vasitəsilə) formatlarında yadda saxlamaq mümkündür. Bu parametrlərin hamısını dəyişmək olar. Tətbiq çoxsəhifəli skanlaşdırmanı və SANE ilə uyğun olan bütün cihazları dəstəkləyir.",
+    "issue": "Problem barədə bildir və ya mənbə koduna bax:",
+    "api": "OpenAPI sənədləri:",
+    "system-info": "Sistem məlumatları"
+  },
+
+  "colors": {
+    "accent-4": "Standart",
+    "red": "Qırmızı",
+    "pink": "Çəhrayı",
+    "purple": "Bənövşəyi",
+    "deep-purple": "Tünd bənövşəyi",
+    "indigo": "İndiqo",
+    "blue": "Mavi",
+    "light-blue": "Açıq mavi",
+    "cyan": "Firuzəyi",
+    "teal": "Mavi-yaşıl",
+    "green": "Yaşıl",
+    "light-green": "Açıq yaşıl",
+    "lime": "Sarımtıl yaşıl",
+    "yellow": "Sarı",
+    "amber": "Kəhrəba",
+    "orange": "Narıncı",
+    "deep-orange": "Tünd narıncı",
+    "brown": "Qəhvəyi",
+    "blue-grey": "Mavi-boz",
+    "grey": "Boz"
+  },
+
+  "batch-dialog": {
+    "btn-cancel": "Ləğv et",
+    "btn-finish": "Bitir",
+    "btn-rescan": "Səhifəni yenidən skan et",
+    "btn-next": "Davam et"
+  },
+
+  "files": {
+    "filename": "Fayl adı",
+    "date": "Tarix",
+    "size": "Ölçü",
+    "items-per-page": "Səhifədəki fayl sayı",
+    "items-per-page-all": "Hamısı",
+    "message:action": "{1} üzərində {0} əməliyyatı icra edildi",
+    "message:deleted": "{0} silindi",
+    "message:renamed": "Faylın adı dəyişdirildi",
+    "button:action-selected": "Əməliyyatı icra et...",
+    "button:delete-selected": "Seçilənləri sil",
+    "dialog:rename": "Fayl adının dəyişdirilməsi",
+    "dialog:rename-cancel": "Ləğv et",
+    "dialog:rename-save": "Yadda saxla",
+    "actions": "Əməliyyatlar",
+    "thumbnail-show": "Miniatürləri göstər",
+    "thumbnail-size": "Miniatür ölçüsü"
+  },
+
+  "navigation": {
+    "scan": "Skanlaşdırma",
+    "files": "Fayllar",
+    "settings": "Parametrlər",
+    "about": "Haqqında",
+    "version": "Versiya"
+  },
+
+  "batch-mode": {
+    "none": "Yoxdur",
+    "manual": "Əl ilə (təsdiq sorğusu ilə)",
+    "auto": "Avtomatik (avtomatik sənəd ötürücüsü)",
+    "auto-collate-standard": "Avtomatik (sıralama 1, 3... 4, 2)",
+    "auto-collate-reverse": "Avtomatik (əks sıralama 1, 3... 2, 4)"
+  },
+
+  "filter": {
+    "auto-level": "Avtomatik səviyyə",
+    "auto-contrast": "Avtomatik kontrast",
+    "more-contrast": "Artırılmış kontrast",
+    "threshold": "Hədd",
+    "blur": "Bulanıqlıq"
+  },
+
+  "mode": {
+    "color": "Rəngli",
+    "halftone": "Yarımton",
+    "gray": "Boz çalarlar",
+    "lineart": "Ağ-qara",
+
+    "24bitcolor":"@:mode.color",
+    "black & white": "@:mode.lineart",
+    "gray(error diffusion)": "@:mode.halftone",
+    "true gray": "@:mode.gray",
+    "24bit color(fast)": "@:mode.color"
+  },
+
+  "adf-mode": {
+    "simplex": "Birtərəfli",
+    "duplex": "İkitərəfli"
+  },
+
+  "source": {
+    "flatbed": "Planşet",
+    "adf": "Avtomatik sənəd ötürücüsü",
+    "auto": "Avtomatik",
+    "left-aligned": "Sola düzləndirilmiş",
+    "centrally-aligned": "Mərkəzə düzləndirilmiş",
+    "duplex": "İkitərəfli",
+    "transparency unit": "Şəffaf materialların skanlaşdırılması modulu",
+
+    "automatic document feeder": "@:source.adf",
+    "automatic document feeder(left aligned)": "@:source.adf (@:source.left-aligned)",
+    "automatic document feeder(left aligned,duplex)": "@:source.adf (@:source.left-aligned, @:source.duplex)",
+    "automatic document feeder(centrally aligned)": "@:source.adf (@:source.centrally-aligned)",
+    "automatic document feeder(centrally aligned,duplex)": "@:source.adf (@:source.centrally-aligned, @:source.duplex)"
+  },
+
+  "pipeline": {
+    "high-quality": "Yüksək keyfiyyət",
+    "medium-quality": "Orta keyfiyyət",
+    "low-quality": "Aşağı keyfiyyət",
+    "uncompressed": "Sıxılmamış",
+    "lzw-compressed": "LZW ilə sıxılmış",
+    "ocr": "OCR",
+    "text-file": "Mətn faylı"
+  },
+
+  "paper-size": {
+    "letter": "Letter",
+    "legal": "Legal",
+    "tabloid": "Tabloid",
+    "ledger": "Ledger",
+    "junior-legal": "Junior legal",
+    "half-letter": "Half letter",
+    "portrait": "Şaquli",
+    "landscape": "Üfüqi"
+  },
+
+  "scan": {
+    "device": "Cihaz",
+    "source": "Mənbə",
+    "resolution": "Rezolyusiya",
+    "mode": "Rejim",
+    "adf-mode": "Avtomatik sənəd ötürücüsünün rejimi",
+    "dynamic-lineart": "Dinamik ağ-qara rejim",
+    "dynamic-lineart:enabled": "Aktiv",
+    "dynamic-lineart:disabled": "Deaktiv",
+    "batch": "Toplu skanlaşdırma",
+    "filters": "Filtrlər",
+    "format": "Format",
+    "btn-preview": "Önbaxış",
+    "btn-clear": "Təmizlə",
+    "btn-scan": "Skan et",
+    "top": "Yuxarı",
+    "left": "Sol",
+    "width": "En",
+    "height": "Hündürlük",
+    "paperSize": "Kağız ölçüsü",
+    "brightness": "Parlaqlıq",
+    "contrast": "Kontrast",
+    "message:loading-devices": "Cihazlar yüklənir...",
+    "message:no-devices": "Cihaz tapılmadı",
+    "message:deleted-preview": "Önbaxış silindi",
+    "message:turn-documents": "Sənədləri digər üzlərinə çevir",
+    "message:preview-of-page": "Səhifənin önbaxışı"
+  },
+
+  "settings": {
+    "title": "@:navigation.settings",
+    "behaviour-ui": "Davranış və istifadəçi interfeysi",
+    "locale": "Dil",
+    "locale:description": "Dili seç",
+    "theme": "Mövzu",
+    "theme:description": "Mövzu. Sistem mövzusundan istifadə edirsənsə və onu dəyişdirsən, tətbiqi yenidən yükləməlisən.",
+    "theme:system": "Sistem",
+    "theme:light": "Açıq",
+    "theme:dark": "Tünd",
+    "color": "Rəng",
+    "color:description": "Rəng. Bu parametr tətbiqin yuxarı panelinin rəngini dəyişir.",
+    "show-files-after-scan:description": "Skanlaşdırma bitdikdən sonra faylları göstər",
+    "devices": "Cihazlar və yaddaş",
+    "reset:description": "Yadda saxlanmış skaner cihazlarını təmizləyir və yenidən yüklənməni başladır",
+    "reset": "Sıfırla",
+    "clear-storage:description": "Keşlənmiş bütün parametrləri yerli yaddaşdan silir",
+    "clear-storage": "Təmizlə"
+  },
+
+  "locales": {
+    "ar": "العربية",
+    "az": "Azərbaycan dili",
+    "cs": "Čeština",
+    "de": "Deutsch",
+    "el": "Ελληνικά",
+    "en": "English (UK)",
+    "en-US": "English (US)",
+    "es": "Español",
+    "fr": "Français",
+    "hu": "Magyar",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "pt": "Portuguese (Portugal)",
+    "pt-BR": "Portuguese (Brazilian)",
+    "ru": "Russian",
+    "sk": "Slovenčina",
+    "tr": "Türkçe",
+    "uk": "Yкраїнська",
+    "zh": "简体中文",
+    "zh-TW": "正體中文（臺灣）",
+    "test": "Test"
+  }
+}
