@@ -31,7 +31,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "adm-zip": "0.5.18",
+    "adm-zip": "0.6.1",
     "cors": "2.8.6",
     "dayjs": "1.11.23",
     "express": "4.22.2",
