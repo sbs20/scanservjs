@@ -155,6 +155,14 @@ module.exports = new class Api {
   }
 
   /**
+   * @param {ScanRequest} req
+   * @returns {Promise<ScanResponse|{ buffer: Buffer, name: string }>}
+   */
+  async scanDownload(req) {
+    return await ScanController.run(req, { download: true });
+  }
+
+  /**
    * @returns {void}
    */
   deleteContext() {

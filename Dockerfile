@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7-labs
 # Builder image
 #
 # The builder image builds the core javascript app and debian package

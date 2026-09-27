@@ -151,6 +151,19 @@ const EndpointSpecs = [
     callback: async (req, res) => res.send(await api.scan(req.body))
   },
   {
+    method: 'post',
+    path: '/api/v1/scan/download',
+    callback: async (req, res) => {
+      const result = await api.scanDownload(req.body);
+      if (result && result.buffer) {
+        res.attachment(result.name);
+        res.send(result.buffer);
+      } else {
+        res.send(result);
+      }
+    }
+  },
+  {
     method: 'get',
     path: '/api/v1/system',
     callback: async (req, res) => res.send(await api.readSystem())
