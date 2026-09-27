@@ -13,7 +13,10 @@ const config = application.config();
 const scanimageCommand = application.scanimageCommand();
 
 class ScanController {
-  constructor() {
+  /**
+   * @param {{ download?: boolean }} [options]
+   */
+  constructor(options = {}) {
     /** @type {Context} */
     this.context = null;
 
@@ -21,6 +24,7 @@ class ScanController {
     this.request = null;
 
     this.dir = FileInfo.create(config.tempDirectory);
+    this.download = options.download === true;
   }
 
   /**
@@ -67,9 +71,9 @@ class ScanController {
   }
 
   /**
-   * @returns {Promise.<FileInfo>}
+   * @returns {Promise.<{ tempFile: FileInfo, extension: string }>}
    */
-  async finish() {
+  async buildOutputFile() {
     log.debug(`Post processing: ${this.pipeline.description}`);
     let files = (await this.listFiles()).filter(f => f.extension === '.tif');
 
@@ -103,10 +107,19 @@ class ScanController {
         .deflate(filenames.map(f => `${config.tempDirectory}/${f}`));
     }
 
+    return {
+      tempFile: FileInfo.create(`${config.tempDirectory}/${filename}`),
+      extension
+    };
+  }
+
+  /**
+   * @returns {Promise.<FileInfo>}
+   */
+  async finish() {
+    const { tempFile, extension } = await this.buildOutputFile();
     const destination = `${config.outputDirectory}/${config.filename()}.${extension}`;
-    await FileInfo
-      .create(`${config.tempDirectory}/${filename}`)
-      .move(destination);
+    await tempFile.move(destination);
 
     log.debug({output: destination});
     await this.deleteFiles();
@@ -117,6 +130,19 @@ class ScanController {
     }
 
     return fileInfo;
+  }
+
+  /**
+   * @returns {Promise.<{ buffer: Buffer, name: string }>}
+   */
+  async finishDownload() {
+    const { tempFile, extension } = await this.buildOutputFile();
+    const name = `${config.filename()}.${extension}`;
+    const buffer = tempFile.toBuffer();
+    tempFile.delete();
+    await this.deleteFiles();
+    log.debug({ download: name });
+    return { buffer, name };
   }
 
   /**
@@ -175,6 +201,9 @@ class ScanController {
     }
 
     if (this.finishUp) {
+      if (this.download) {
+        return await this.finishDownload();
+      }
       const file = await this.finish();
       await userOptions.afterScan(file);
       return {
@@ -198,8 +227,13 @@ module.exports = {
    * @param {ScanRequest} req
    * @returns {Promise.<ScanResponse>}
    */
-  async run(req) {
-    const scan = new ScanController();
+  /**
+   * @param {ScanRequest} req
+   * @param {{ download?: boolean }} [options]
+   * @returns {Promise.<ScanResponse|{ buffer: Buffer, name: string }>}
+   */
+  async run(req, options = {}) {
+    const scan = new ScanController(options);
     return await scan.execute(req);
   }
 };

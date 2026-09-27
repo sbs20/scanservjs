@@ -262,6 +262,36 @@ paths:
               schema:
                 $ref: '#/definitions/ScanResponse'
 
+  /api/v1/scan/download:
+    post:
+      summary: Create a scan and download the result
+      description: |
+        Creates a scan using the same request body as `/api/v1/scan`, but returns
+        the finished file as a download instead of saving it on the server.
+
+        Multi-page batch flows return JSON (as for `/api/v1/scan`) until the
+        scan is complete, then return the file bytes.
+      tags:
+        - Scanner
+      requestBody:
+        description: Scan Request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ScanRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ScanResponse'
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
   /api/v1/system:
     get:
       summary: Gets host system information

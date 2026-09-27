@@ -63,6 +63,7 @@
 
         <div class="d-flex flex-row-reverse flex-wrap">
           <v-btn color="blue" class="ml-1 mb-1" @click="scan(1)">{{ $t('scan.btn-scan') }} <v-icon class="ml-2" :icon="mdiCamera" /></v-btn>
+          <v-btn color="blue-grey" class="ml-1 mb-1" @click="scanDownload(1)">{{ $t('scan.btn-scan-download') }} <v-icon class="ml-2" :icon="mdiDownload" /></v-btn>
           <v-btn v-if="geometry" color="green" class="ml-1 mb-1" @click="createPreview">{{ $t('scan.btn-preview') }} <v-icon class="ml-2" :icon="mdiMagnify" /></v-btn>
           <v-btn color="amber" class="ml-1 mb-1" @click="deletePreview">{{ $t('scan.btn-clear') }} <v-icon class="ml-2" :icon="mdiDelete" /></v-btn>
         </div>
@@ -130,7 +131,7 @@
 </template>
 
 <script>
-import { mdiCamera, mdiDelete, mdiMagnify, mdiRefresh } from '@mdi/js';
+import { mdiCamera, mdiDelete, mdiDownload, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Cropper } from 'vue-advanced-cropper';
 import { useI18n } from 'vue-i18n';
 import BatchDialog from './BatchDialog.vue';
@@ -169,6 +170,7 @@ export default {
     return {
       mdiCamera,
       mdiDelete,
+      mdiDownload,
       mdiMagnify,
       mdiRefresh,
       te
@@ -548,6 +550,31 @@ export default {
       this.request = this.buildRequest();
     },
 
+    handleBatchResponse(response, scanFn) {
+      const options = {
+        message: this.$t('scan.message:turn-documents'),
+        onFinish: () => {
+        },
+        onNext: () => {
+          this.request.index = response.index + 1;
+          scanFn();
+        }
+      };
+      if (response.image) {
+        options.message = `${this.$t('scan.message:preview-of-page')} ${response.index}`;
+        options.image = response.image;
+        options.onFinish = () => {
+          this.request.index = -1;
+          scanFn();
+        };
+        options.onRescan = () => {
+          this.request.index = response.index;
+          scanFn();
+        };
+      }
+      this.$refs.batchDialog.open(options);
+    },
+
     scan(index) {
       if (index !== undefined) {
         this.request.index = index;
@@ -563,28 +590,7 @@ export default {
         }
       }).then((response) => {
         if (response && 'index' in response) {
-          const options = {
-            message: this.$t('scan.message:turn-documents'),
-            onFinish: () => {
-            },
-            onNext: () => {
-              this.request.index = response.index + 1;
-              this.scan();
-            }
-          };
-          if (response.image) {
-            options.message = `${this.$t('scan.message:preview-of-page')} ${response.index}`;
-            options.image = response.image;
-            options.onFinish = () => {
-              this.request.index = -1;
-              this.scan();
-            };
-            options.onRescan = () => {
-              this.request.index = response.index;
-              this.scan();
-            };
-          }
-          this.$refs.batchDialog.open(options);
+          this.handleBatchResponse(response, () => this.scan());
         } else {
           // Finish
           if (storage.settings.showFilesAfterScan) {
@@ -593,6 +599,54 @@ export default {
             this.readPreview();
           }
         }
+      });
+    },
+
+    scanDownload(index) {
+      if (index !== undefined) {
+        this.request.index = index;
+      }
+
+      const data = Common.clone(this.request);
+      this.mask(1);
+      fetch('api/v1/scan/download', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(async (response) => {
+        this.mask(-1);
+        const contentType = response.headers.get('Content-Type') || '';
+        if (contentType.includes('application/json')) {
+          const json = await response.json();
+          if (!response.ok) {
+            throw JSON.stringify(json);
+          }
+          if (json && 'index' in json) {
+            this.handleBatchResponse(json, () => this.scanDownload());
+          }
+          return;
+        }
+        if (!response.ok) {
+          const json = await response.json();
+          throw JSON.stringify(json);
+        }
+        const blob = await response.blob();
+        const disposition = response.headers.get('Content-Disposition') || '';
+        const match = disposition.match(/filename="([^"]+)"/);
+        const filename = match ? match[1] : 'scan';
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+        this.readPreview();
+      }).catch(error => {
+        this.notify({ type: 'e', message: error });
+        this.mask(-1);
       });
     },
 
