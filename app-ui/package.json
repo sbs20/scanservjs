@@ -34,7 +34,7 @@
     "nodemon": "3.1.14",
     "sass": "1.102.0",
     "upath": "3.0.8",
-    "vite": "8.2.1"
+    "vite": "8.3.4"
   },
   "license": "GPL-2.0",
   "nodemonConfig": {
