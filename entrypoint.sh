@@ -16,7 +16,7 @@ DELIMITER=${DELIMITER:-;}
 
 # Insert a list of net hosts
 if [ ! -z "$SANED_NET_HOSTS" ]; then
-  hosts=$(echo $SANED_NET_HOSTS | sed "s/$DELIMITER/\n/")
+  hosts=$(echo $SANED_NET_HOSTS | sed "s/$DELIMITER/\n/g")
   for host in $hosts; do
     echo $host >> /etc/sane.d/net.conf
   done
@@ -24,7 +24,7 @@ fi
 
 # Insert airscan devices
 if [ ! -z "$AIRSCAN_DEVICES" ]; then
-  devices=$(echo $AIRSCAN_DEVICES | sed "s/$DELIMITER/\n/")
+  devices=$(echo $AIRSCAN_DEVICES | sed "s/$DELIMITER/\n/g")
   for device in $devices; do
     sed -i "/^\[devices\]/a $device" /etc/sane.d/airscan.conf
   done
@@ -32,9 +32,15 @@ fi
 
 # Insert pixma hosts
 if [ ! -z "$PIXMA_HOSTS" ]; then
-  hosts=$(echo $PIXMA_HOSTS | sed "s/$DELIMITER/\n/")
+  hosts=$(echo $PIXMA_HOSTS | sed "s/$DELIMITER/\n/g")
   for host in $hosts; do
-    echo "bjnp://$host" >> /etc/sane.d/pixma.conf
+    # Plain hosts default to bjnp://. Full URLs (e.g. mfnp://host for
+    # imageCLASS/i-SENSYS devices, or bjnp://host:port/timeout=...) are
+    # written as given.
+    case "$host" in
+      *://*) echo "$host" >> /etc/sane.d/pixma.conf ;;
+      *) echo "bjnp://$host" >> /etc/sane.d/pixma.conf ;;
+    esac
   done
 fi
 
