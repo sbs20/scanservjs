@@ -34,7 +34,13 @@ fi
 if [ ! -z "$PIXMA_HOSTS" ]; then
   hosts=$(echo $PIXMA_HOSTS | sed "s/$DELIMITER/\n/")
   for host in $hosts; do
-    echo "bjnp://$host" >> /etc/sane.d/pixma.conf
+    # Plain hosts default to bjnp://. Full URLs (e.g. mfnp://host for
+    # imageCLASS/i-SENSYS devices, or bjnp://host:port/timeout=...) are
+    # written as given.
+    case "$host" in
+      *://*) echo "$host" >> /etc/sane.d/pixma.conf ;;
+      *) echo "bjnp://$host" >> /etc/sane.d/pixma.conf ;;
+    esac
   done
 fi
 

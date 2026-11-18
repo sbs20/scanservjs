@@ -115,7 +115,10 @@ variables:
 * `PIXMA_HOSTS`: If you want to use a PIXMA scanner which uses the bjnp protocol
   then to perform the equivalent of adding hosts to `/etc/sane.d/pixma.conf`
   specify a list of ip addresses separated by semicolons in the `PIXMA_HOSTS`
-  environment variable.
+  environment variable. Plain addresses are added as `bjnp://<address>`. Full
+  URLs are added as given, which is needed for Canon imageCLASS / i-SENSYS
+  devices that use the mfnp protocol, e.g.
+  `PIXMA_HOSTS="mfnp://10.0.100.34;bjnp://10.0.100.35/timeout=1500"`.
 * `DELIMITER`: if you need to include semi-colons (`;`) in your environment
   variables, this allows you to choose an alternative delimiter.
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
