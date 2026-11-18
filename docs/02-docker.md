@@ -119,7 +119,9 @@ variables:
 * `DELIMITER`: if you need to include semi-colons (`;`) in your environment
   variables, this allows you to choose an alternative delimiter.
 * `DEVICES`: Force add devices use `DEVICES` (semicolon delimited)
-* `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L`
+* `SCANIMAGE_LIST_IGNORE`: To force ignore `scanimage -L` set this to `true`.
+  Leaving it empty or setting `false`, `0`, `no` or `off` keeps device
+  detection enabled.
 
 ## Mapping volumes
 

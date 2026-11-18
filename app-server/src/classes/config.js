@@ -264,9 +264,10 @@ module.exports = class Config {
 
     // scanservjs will attempt to find scanners locally using `scanimage -L` but
     // sometimes it will return nothing. If you are specifying devices manually you
-    // may also with to turn off the find.
-    this.devicesFind = process.env.SCANIMAGE_LIST_IGNORE === undefined
-      || process.env.SCANIMAGE_LIST_IGNORE.length === 0;
+    // may also with to turn off the find. Values such as 'false', '0' or 'no'
+    // (common defaults in container templates) keep the find enabled.
+    const listIgnore = (process.env.SCANIMAGE_LIST_IGNORE || '').trim().toLowerCase();
+    this.devicesFind = ['', 'false', '0', 'no', 'off'].includes(listIgnore);
 
     // Override the OCR language here
     if (process.env.OCR_LANG !== undefined && process.env.OCR_LANG.length > 0) {
